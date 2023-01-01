@@ -2,13 +2,16 @@ package sw.content;
 
 import arc.graphics.Color;
 import mindustry.content.*;
+import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Sounds;
+import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.storage.CoreBlock;
 import pl.world.blocks.defense.turrets.PressureTurret;
 import pl.world.blocks.distribution.PressureBridge;
 import pl.world.blocks.distribution.PressurePipe;
 import pl.world.blocks.distribution.PressureValve;
 import pl.world.blocks.pressure.Pressure;
+import pl.world.blocks.production.PressureGenericCrafter;
 import pl.world.blocks.sandbox.PressureSource;
 import pl.world.consumers.ConsumePressureTrigger;
 import mindustry.entities.bullet.LaserBulletType;
@@ -17,7 +20,6 @@ import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
-import sw.world.blocks.production.Heater;
 import sw.world.blocks.production.StackCrafter;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
@@ -29,7 +31,7 @@ public class SWBlocks {
 		pressurePipe, pressureBridge, pressureValve,
 		pressureSource,
 		steamBurner, hydraulicCrafter, pressurePress,
-		railgun,
+		bolt, railgun,
 		coreScaffold;
 
 	public static void load() {
@@ -37,7 +39,7 @@ public class SWBlocks {
 		pressurePipe = new PressurePipe("pressure-pipe") {{
 			requirements(Category.liquid, with(
 				Items.silicon, 1,
-				Items.graphite, 2
+				SWItems.tin, 2
 			));
 			health = 100;
 			pressureC = new Pressure() {{
@@ -48,7 +50,7 @@ public class SWBlocks {
 		pressureBridge = new PressureBridge("pressure-bridge") {{
 			requirements(Category.liquid, with(
 				Items.silicon, 5,
-				Items.graphite, 10,
+				SWItems.tin, 10,
 				SWItems.silver, 7
 			));
 			pressureC = new Pressure() {{
@@ -60,7 +62,7 @@ public class SWBlocks {
 		pressureValve = new PressureValve("pressure-valve") {{
 			requirements(Category.liquid, with(
 				Items.silicon, 4,
-				Items.graphite, 3,
+				Items.plastanium, 3,
 				SWItems.tin, 3
 			));
 			health = 120;
@@ -78,7 +80,7 @@ public class SWBlocks {
 			}};
 		}};
 //		crafting
-		steamBurner = new Heater("steam-burner") {{
+		steamBurner = new PressureGenericCrafter("steam-burner") {{
 			requirements(Category.production, with(
 				Items.metaglass, 120,
 				Items.graphite, 100,
@@ -87,9 +89,11 @@ public class SWBlocks {
 			size = 2;
 			consumeItem(Items.coal);
 			consumeLiquid(Liquids.water, 0.1f);
+			craftTime = 60;
+			updateEffect = Fx.smoke;
 			pressureSpeed = 2f;
 			pressureC = new Pressure() {{
-				maxPressure = 220f;
+				maxPressure = 125f;
 				internalSize = 12f;
 				acceptsPressure = false;
 			}};
@@ -157,6 +161,24 @@ public class SWBlocks {
 			}};
 		}};
 //		turrets
+		bolt = new PowerTurret("bolt") {{
+			requirements(Category.turret, with(
+							Items.silicon, 120,
+							Items.copper, 70,
+							SWItems.tin, 95
+			));
+			size = 2;
+			health = 200;
+			reload = 30f;
+			range = 120f;
+			consumePower(4f);
+			shootSound = Sounds.blaster;
+			shootType = new BasicBulletType(2.5f, 20, "circle-bullet") {{
+				lifetime = 48;
+				frontColor = Color.white;
+				backColor = Color.lightGray;
+			}};
+		}};
 		railgun = new PressureTurret("railgun") {{
 			requirements(Category.turret, with(
 							Items.graphite, 150,
@@ -191,7 +213,7 @@ public class SWBlocks {
 			size = 3;
 			health = 2000;
 			alwaysUnlocked = true;
-			unitType = UnitTypes.beta;
+			unitType = UnitTypes.nova;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
 		}};

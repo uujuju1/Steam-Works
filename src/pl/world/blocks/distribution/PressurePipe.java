@@ -72,8 +72,7 @@ public class PressurePipe extends Block implements PressureBlock {
     public int getIndex() {
       int out = 0;
       for (int i = 0; i < 4; i++) {
-        if (nearby(i) instanceof PressureBuild) {
-          PressureBuild next = ((PressureBuild) nearby(i));
+        if (nearby(i) instanceof PressureBuild next) {
           if (getPressureBuilds(self()).contains(nearby(i)) && next.acceptsPressure(this, 0) || next.outputsPressure(this, 0))
             out += (1 << i);
         }
