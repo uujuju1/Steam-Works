@@ -1,8 +1,6 @@
 package sw;
 
-import sw.content.SWBlocks;
-import sw.content.SWItems;
-import sw.content.SWTechTree;
+import sw.content.*;
 
 public class SWVars {
 //    public static ModSettings settings;
@@ -25,8 +23,8 @@ public class SWVars {
      * */
     public static void loadContent() {
         SWItems.load();
+        SWLiquids.load();
         SWBlocks.load();
-//        SWUnitTypes.load();
         SWTechTree.load();
     }
 }

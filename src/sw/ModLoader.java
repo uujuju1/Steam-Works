@@ -4,6 +4,7 @@ import mindustry.mod.Mod;
 
 public class ModLoader extends Mod {
   public ModLoader() {
+
   }
 
   @Override

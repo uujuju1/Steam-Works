@@ -2,7 +2,7 @@ displayName: "Steam Works"
 name: "sw"
 author: "Uujuju"
 main: "sw.ModLoader"
-description: "A Mindustry mod centered around a pressure system."
+description: "A Mindustry mod."
 version: 1.0.1
 minGameVersion: 140.4
 java: true
