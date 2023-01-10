@@ -20,6 +20,7 @@ public class ModularPlanetGenerator extends PlanetGenerator {
   public NoiseRegion[] regions = new NoiseRegion[0];
   // Block used when getBlock() would return null
   public Block defaultBlock = Blocks.grass;
+
   public class NoiseRegion {
     // Block heightMap
     public Block[] map = new Block[0];
