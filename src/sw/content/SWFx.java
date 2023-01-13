@@ -11,13 +11,13 @@ import mindustry.graphics.Pal;
 
 public class SWFx {
   public static Effect
-          tinCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
+          compoundCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
             Draw.color(Pal.accent);
             Lines.lineAngle(e.x + x, e.y + y, Angles.angle(e.x, e.y, e.x + x, e.y + y), 10 * e.foutpow());
             Draw.color(Color.darkGray);
             Fill.circle(e.x - x, e.y - y, 2 * e.fout());
           })),
-          silverCraft = new Effect(60f, e -> {
+          denseCraft = new Effect(60f, e -> {
             Draw.color(Color.darkGray);
             Lines.stroke(e.fout());
             Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> Fill.circle(e.x - x, e.y - y, 2 * e.fout()));

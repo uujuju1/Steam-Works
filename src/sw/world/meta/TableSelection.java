@@ -18,14 +18,10 @@ public class TableSelection {
       if (!(recipe.checkUnlocked())) continue;
       Button button = cont.button(button1 -> {
         for (ItemStack stack : recipe.outputItems) {
-          if (stack.item.unlocked()) {
-            button1.image(stack.item.uiIcon).pad(3);
-          }
+          button1.image(stack.item.uiIcon).pad(3);
         }
         for (LiquidStack stack : recipe.outputLiquids) {
-          if (stack.liquid.unlocked()) {
-            button1.image(stack.liquid.uiIcon).pad(3);
-          }
+          button1.image(stack.liquid.uiIcon).pad(3);
         }
       }, Styles.clearTogglei, () -> {}).growX().get();
       cont.row();

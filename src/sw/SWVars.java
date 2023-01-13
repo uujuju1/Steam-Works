@@ -24,6 +24,7 @@ public class SWVars {
     public static void loadContent() {
         SWItems.load();
         SWLiquids.load();
+        SWUnitTypes.load();
         SWBlocks.load();
         SWPlanets.load();
         SWTechTree.load();

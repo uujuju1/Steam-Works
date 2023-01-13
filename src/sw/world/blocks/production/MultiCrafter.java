@@ -14,6 +14,7 @@ import arc.util.Structs;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Icon;
+import mindustry.world.meta.StatUnit;
 import sw.world.consumers.ConsumeLiquidDynamic;
 import sw.world.recipes.GenericRecipe;
 import mindustry.entities.Effect;
@@ -36,8 +37,7 @@ import static sw.world.meta.TableSelection.genericRecipeSelection;
 public class MultiCrafter extends Block {
   public Seq<GenericRecipe> recipes = new Seq<>();
   public Effect changeEffect = new Effect(30f, e -> {
-    if (!(e.data instanceof Block)) return;
-    Block block = (Block) e.data;
+    if (!(e.data instanceof Block block)) return;
 
     Draw.mixcol(Pal.accent, 1);
     Draw.alpha(e.fout());
@@ -75,21 +75,30 @@ public class MultiCrafter extends Block {
         t.table(table -> {
           table.add(Core.bundle.get("category.crafting")).color(Pal.accent).left().row();
           table.table(input -> {
-            input.add("  " + Core.bundle.get("stat.input") + ":").color(Color.lightGray);
-            for (ItemStack stack : recipe.consumeItems) input.add(new ItemImage(stack));
-            for (LiquidStack stack : recipe.consumeLiquids) input.image(stack.liquid.uiIcon);
-          }).left().row();
+            input.add(" " + Core.bundle.get("stat.input") + ":").color(Color.lightGray);
+
+            for (ItemStack stack : recipe.consumeItems) input.add(new ItemImage(stack)).padLeft(5);
+            for (LiquidStack stack : recipe.consumeLiquids) input.image(stack.liquid.uiIcon).padLeft(5);
+
+          }).left().marginLeft(3f).row();
+
           table.table(output -> {
-            output.add("  " + Core.bundle.get("stat.output") + ":").color(Color.lightGray);
-            for (ItemStack stack : recipe.outputItems) output.add(new ItemImage(stack));
-            for (LiquidStack stack : recipe.outputLiquids) output.image(stack.liquid.uiIcon);
-          }).left().row();
+            output.add(" " + Core.bundle.get("stat.output") + ":").color(Color.lightGray);
+
+            for (ItemStack stack : recipe.outputItems) output.add(new ItemImage(stack)).padLeft(5);
+            for (LiquidStack stack : recipe.outputLiquids) output.image(stack.liquid.uiIcon).padLeft(5);
+          }).left().marginLeft(3f).row();
+
           table.table(time -> {
-            time.add("  " + Core.bundle.get("stat.productiontime") + ":").color(Color.lightGray);
-            time.add(StatValues.fixValue(recipe.craftTime));
-          }).left();
-          table.margin(5);
-        }).growX().left().row();
+            time.add(" " + Core.bundle.get("stat.productiontime") + ":").color(Color.lightGray).padRight(5);
+            StatValues.number(recipe.craftTime/60f, StatUnit.seconds).display(time);
+          }).left().margin(3f).row();
+
+          table.table(power -> {
+            power.add(" " + Core.bundle.get("stat.poweruse") + ":").color(Color.lightGray).padRight(5);
+            StatValues.number(recipe.consumePower * 60f, StatUnit.powerSecond).display(power);
+           }).left().margin(3f);
+        }).left().margin(5f).row();
       }
     });
   }
@@ -103,8 +112,8 @@ public class MultiCrafter extends Block {
   }
 
   public void addRecipeBars(GenericRecipe recipe) {
-    for (LiquidStack stack : recipe.consumeLiquids) addLiquidBar(stack.liquid);
-    for (LiquidStack stack : recipe.outputLiquids) addLiquidBar(stack.liquid);
+    for (LiquidStack stack : recipe.consumeLiquids) if (!barMap.containsKey("liquid-" + stack.liquid.name)) addLiquidBar(stack.liquid);
+    for (LiquidStack stack : recipe.outputLiquids) if (!barMap.containsKey("liquid-" + stack.liquid.name)) addLiquidBar(stack.liquid);
   }
 
   @Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {recipes.get(0).drawer.drawPlan(this, plan, list);}
@@ -116,7 +125,6 @@ public class MultiCrafter extends Block {
     super.load();
     for (GenericRecipe recipe : recipes) recipe.drawer.load(this);
   }
-
 
   public class MultiCrafterBuild extends Building {
     public int currentPlan = -1;

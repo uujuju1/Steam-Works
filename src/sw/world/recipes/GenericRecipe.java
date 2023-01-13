@@ -1,5 +1,6 @@
 package sw.world.recipes;
 
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.type.ItemStack;
@@ -21,6 +22,7 @@ public class GenericRecipe {
   public float craftTime = 60f;
 
   public boolean checkUnlocked() {
+    if (!Vars.state.isCampaign()) return true;
     for (ItemStack stack : consumeItems) if (!(stack.item.unlocked())) return false;
     for (LiquidStack stack : consumeLiquids) if (!(stack.liquid.unlocked())) return false;
     return true;

@@ -106,8 +106,9 @@ public class SWPlanets {
           pass((x, y) -> {
             if (noise(x, y, 13, 0.5, 13, 1) > 0.7f && block.isAir()) block = floor.asFloor().wall;
           });
+          cells(1, 312312, 5, 1);
 
-          Seq<Block> ores = Seq.with(Blocks.oreCopper, Blocks.oreLead);
+          Seq<Block> ores = Seq.with(Blocks.oreCopper, Blocks.oreLead, SWBlocks.oreNickel);
           float poles = Math.abs(sector.tile.v.y);
           if (Simplex.noise3d(this.seed, 2.0, 0.5, scl, sector.tile.v.x + 100, sector.tile.v.y, sector.tile.v.z) * 0.5f + poles > 0.25F * 1.5f) {
             ores.add(Blocks.oreCoal);

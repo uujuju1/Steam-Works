@@ -5,15 +5,14 @@ import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Sounds;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.AttributeCrafter;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.type.Category;
-import mindustry.type.ItemStack;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
-import sw.world.blocks.production.StackCrafter;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
 
@@ -21,15 +20,22 @@ import static mindustry.type.ItemStack.*;
 
 public class SWBlocks {
 	public static Block
+		oreNickel,
+
 		boiler, thermalBoiler,
-		hydraulicCrafter, pressurePress,
+		hydraulicCrafter,
+
 		bolt,
+
 		coreScaffold;
 
 	public static void load() {
+		oreNickel = new OreBlock(SWItems.nickel);
+
+//		crafting
 		boiler = new GenericCrafter("boiler") {{
 			requirements(Category.crafting, with(
-				SWItems.tin, 45,
+				SWItems.nickel, 45,
 							Items.graphite, 50,
 							Items.metaglass, 30
 			));
@@ -52,6 +58,7 @@ public class SWBlocks {
 
 		hydraulicCrafter = new MultiCrafter("hydraulic-crafter") {{
 			requirements(Category.crafting, with(
+				SWItems.nickel, 65,
 				Items.graphite, 80,
 				Items.copper, 60,
 				Items.lead, 75
@@ -61,55 +68,35 @@ public class SWBlocks {
 			recipes.add(
 				new GenericRecipe() {{
 					craftTime = 45f;
-					consumeItems = with(Items.graphite, 1, Items.lead, 2);
-					outputItems = with(SWItems.tin, 1);
+					consumeItems = with(SWItems.nickel, 1, Items.copper, 2);
+					outputItems = with(SWItems.compound, 1);
 					drawer = new DrawMulti(
 						new DrawDefault(),
 						new DrawFlame()
 					);
-					craftEffect = SWFx.tinCraft;
+					craftEffect = SWFx.compoundCraft;
 					updateEffect = 	Fx.smeltsmoke;
 				}},
 				new GenericRecipe() {{
 					craftTime = 60f;
-					consumeItems = with(SWItems.tin, 2, Items.graphite, 2);
+					consumeItems = with(SWItems.nickel, 2, Items.graphite, 2);
 					consumeLiquids = LiquidStack.with(SWLiquids.steam, 0.3f);
-					outputItems = with(SWItems.compound, 1);
+					outputItems = with(SWItems.denseAlloy, 1);
 					drawer = new DrawMulti(
 						new DrawDefault(),
 						new DrawRegion("-cap")
 					);
-					craftEffect = SWFx.silverCraft;
+					craftEffect = SWFx.denseCraft;
 					updateEffect = Fx.smoke;
 				}}
  			);
-		}};
-		pressurePress = new StackCrafter("pressure-press") {{
-			requirements(Category.crafting, with(
-							Items.plastanium, 120,
-							Items.silicon, 140,
-							Items.graphite, 115
-			));
-			size = 4;
-			health = 240;
-			craftTime = 60;
-			craftEffect = SWFx.quadPressureHoles;
-			updateEffect = Fx.smoke;
-			stackCraftEffect = Fx.plasticburn;
-			stacks = 3;
-			consumePower(1f);
-			consumeItems(with(
-							Items.graphite, 2,
-							SWItems.tin, 2
-			));
-			outputItem = new ItemStack(SWItems.denseAlloy, 1);
 		}};
 //		turrets
 		bolt = new PowerTurret("bolt") {{
 			requirements(Category.turret, with(
 							Items.silicon, 120,
 							Items.copper, 70,
-							SWItems.tin, 95
+							SWItems.nickel, 95
 			));
 			size = 2;
 			health = 200;
