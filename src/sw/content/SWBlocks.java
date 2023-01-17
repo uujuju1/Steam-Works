@@ -13,6 +13,7 @@ import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
+import sw.world.blocks.heat.HeatPipe;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
 
@@ -21,6 +22,8 @@ import static mindustry.type.ItemStack.*;
 public class SWBlocks {
 	public static Block
 		oreNickel,
+
+		heatPipe,
 
 		boiler, thermalBoiler,
 		hydraulicCrafter,
@@ -31,6 +34,11 @@ public class SWBlocks {
 
 	public static void load() {
 		oreNickel = new OreBlock(SWItems.nickel);
+
+//		distribution
+		heatPipe = new HeatPipe("heat-pipe") {{
+			requirements(Category.power, with(Items.copper, 1));
+		}};
 
 //		crafting
 		boiler = new GenericCrafter("boiler") {{
@@ -52,6 +60,10 @@ public class SWBlocks {
 			));
 			size = 2;
 			health = 160;
+			baseEfficiency = 0f;
+			minEfficiency = 0.25f;
+			maxBoost = 1.5f;
+			boostScale = 0.5f;
 			consumeLiquid(Liquids.water, 0.1f);
       outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
 		}};
