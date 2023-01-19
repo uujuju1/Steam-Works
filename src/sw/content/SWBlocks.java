@@ -13,6 +13,7 @@ import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
 import mindustry.world.draw.*;
+import sw.world.blocks.heat.HeatBridge;
 import sw.world.blocks.heat.HeatPipe;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
@@ -24,6 +25,7 @@ public class SWBlocks {
 		oreNickel,
 
 		heatPipe,
+	  heatBridge,
 
 		boiler, thermalBoiler,
 		hydraulicCrafter,
@@ -37,7 +39,11 @@ public class SWBlocks {
 
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
-			requirements(Category.power, with(Items.copper, 1));
+			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.denseAlloy, 3));
+		}};
+		heatBridge = new HeatBridge("heat-bridge") {{
+			requirements(Category.power, with(Items.silicon, 5, SWItems.denseAlloy, 6));
+
 		}};
 
 //		crafting

@@ -13,8 +13,9 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import sw.util.SWMath;
+import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
-import sw.world.pressure.HasHeat;
+import sw.world.heat.HasHeat;
 
 public class HeatPipe extends Block {
   public TextureRegion[] regions;
@@ -26,12 +27,19 @@ public class HeatPipe extends Block {
     super(name);
     update = sync = true;
     destructible = true;
+    underBullets = true;
   }
 
   @Override
   public void setBars() {
     super.setBars();
     addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Color.scarlet, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
+  }
+
+  @Override
+  public void setStats() {
+    super.setStats();
+    stats.add(SWStat.maxHeat, maxHeat);
   }
 
   @Override
@@ -78,7 +86,9 @@ public class HeatPipe extends Block {
 
     @Override
     public void updateTile() {
-      for (Building build : proximity) if (build instanceof HasHeat next) transferHeat(next.module());
+      if (module().heat < 0) module().heat = 0;
+      if (module().heat > maxHeat) kill();
+      for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
       module().subHeat(0.001f * Time.delta);
     }
     @Override
