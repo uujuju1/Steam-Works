@@ -3,6 +3,7 @@ package sw;
 import sw.content.*;
 
 public class SWVars {
+    public static final float maxHeatGlow = 100;
 //    public static ModSettings settings;
 //    public static ModNetClient netClient;
 //    public static ModNetServer netServer;

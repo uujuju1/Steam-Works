@@ -15,6 +15,7 @@ import mindustry.world.Block;
 import mindustry.world.draw.*;
 import sw.world.blocks.heat.HeatBridge;
 import sw.world.blocks.heat.HeatPipe;
+import sw.world.blocks.heat.HeatRadiator;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
 
@@ -26,6 +27,7 @@ public class SWBlocks {
 
 		heatPipe,
 	  heatBridge,
+		heatRadiator,
 
 		boiler, thermalBoiler,
 		hydraulicCrafter,
@@ -42,8 +44,10 @@ public class SWBlocks {
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.denseAlloy, 3));
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
-			requirements(Category.power, with(Items.silicon, 5, SWItems.denseAlloy, 6));
-
+			requirements(Category.power, with(Items.silicon, 5, SWItems.denseAlloy, 8));
+		}};
+		heatRadiator = new HeatRadiator("heat-radiator") {{
+			requirements(Category.power, with(Items.silicon, 3, SWItems.denseAlloy, 2, Items.graphite, 1));
 		}};
 
 //		crafting
