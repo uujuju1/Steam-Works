@@ -1,7 +1,6 @@
 package sw.world.blocks.heat;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
@@ -21,6 +20,7 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
+import mindustry.world.meta.StatUnit;
 import sw.util.SWMath;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
@@ -29,9 +29,11 @@ import sw.world.heat.HasHeat;
 import static mindustry.Vars.tilesize;
 
 public class HeatBridge extends Block {
-  public float maxHeat = 100f;
   public TextureRegion bridgeRegion, endRegion;
+
   public int range = 5;
+  public float maxHeat = 100f;
+  public float heatLoss = 0.1f;
 
   public HeatBridge(String name) {
     super(name);
@@ -48,13 +50,13 @@ public class HeatBridge extends Block {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Color.scarlet, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
+    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
   }
 
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat);
+    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
   }
 
   @Override
@@ -143,10 +145,10 @@ public class HeatBridge extends Block {
 
     @Override
     public void updateTile() {
-      if (module().heat < 0) module().heat = 0;
+      if (module().heat < 0) module().setHeat(0f);
       if (module().heat > maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(0.001f * Time.delta);
+      module().subHeat(heatLoss * Time.delta);
     }
 
     @Override

@@ -7,15 +7,17 @@ import mindustry.gen.Sounds;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.AttributeCrafter;
-import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.consumers.ConsumeItemFlammable;
 import mindustry.world.draw.*;
 import sw.world.blocks.heat.HeatBridge;
+import sw.world.blocks.heat.HeatGenericCrafter;
 import sw.world.blocks.heat.HeatPipe;
 import sw.world.blocks.heat.HeatRadiator;
+import sw.world.consumers.ConsumeHeat;
 import sw.world.recipes.GenericRecipe;
 import sw.world.blocks.production.MultiCrafter;
 
@@ -29,6 +31,7 @@ public class SWBlocks {
 	  heatBridge,
 		heatRadiator,
 
+		burner,
 		boiler, thermalBoiler,
 		hydraulicCrafter,
 
@@ -41,33 +44,49 @@ public class SWBlocks {
 
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
-			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.denseAlloy, 3));
+			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
+			maxHeat = 250f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
-			requirements(Category.power, with(Items.silicon, 5, SWItems.denseAlloy, 8));
+			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
+			maxHeat = 250f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
-			requirements(Category.power, with(Items.silicon, 3, SWItems.denseAlloy, 2, Items.graphite, 1));
+			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
+			maxHeat = 240f;
+			minHeatLoss = 180f;
 		}};
 
 //		crafting
-		boiler = new GenericCrafter("boiler") {{
-			requirements(Category.crafting, with(
-				SWItems.nickel, 45,
-							Items.graphite, 50,
-							Items.metaglass, 30
-			));
+		burner = new HeatGenericCrafter("burner") {{
+			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
 			size = 2;
 			health = 160;
+			consume(new ConsumeItemFlammable());
+			drawer = new DrawMulti(new DrawDefault(), new DrawFlame() {{
+				flameRadius = 1.5f;
+				flameRadiusIn = 0.75f;
+				flameRadiusMag = 1f;
+			}});
+			craftTime = 120f;
+			outputHeat = 250f;
+			acceptsHeat = false;
+			maxHeat = 300;
+		}};
+
+		boiler = new HeatGenericCrafter("boiler") {{
+			requirements(Category.production, with(SWItems.denseAlloy, 40, Items.metaglass, 35, Items.titanium, 30));
+			size = 2;
+			health = 160;
+			hasLiquids = true;
+			outputsHeat = false;
 			consumeLiquid(Liquids.water, 0.1f);
+			consume(new ConsumeHeat(0.5f, 100f, false));
 			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
+			maxHeat = 200f;
 		}};
 		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
-			requirements(Category.crafting, with(
-							SWItems.compound, 40,
-							Items.metaglass, 35,
-							Items.titanium, 30
-			));
+			requirements(Category.production, with(SWItems.compound, 40, Items.metaglass, 35, Items.titanium, 30));
 			size = 2;
 			health = 160;
 			baseEfficiency = 0f;

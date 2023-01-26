@@ -1,7 +1,6 @@
 package sw.world.blocks.heat;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
@@ -10,6 +9,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import mindustry.world.meta.StatUnit;
 import sw.world.heat.HasHeat;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
@@ -19,8 +19,11 @@ import static sw.util.SWMath.*;
 
 public class HeatRadiator extends Block {
   public TextureRegion[] regions, heatRegions, topRegions;
-  public float maxHeat = 250;
-  public float minHeatLoss = 100;
+
+  public float maxHeat = 250f;
+  public float minHeatLoss = 100f;
+  public float heatLoss = 0.1f;
+
   public HeatRadiator(String name) {
     super(name);
     solid = destructible = true;
@@ -31,14 +34,14 @@ public class HeatRadiator extends Block {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Color.scarlet, () -> heatMap(entity.module().heat, 0f, maxHeat)));
+    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.module().heat, 0f, maxHeat)));
   }
 
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat);
-    stats.add(SWStat.heatTresh, minHeatLoss);
+    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.heatTresh, minHeatLoss, StatUnit.degrees);
   }
 
   @Override
@@ -91,10 +94,10 @@ public class HeatRadiator extends Block {
 
     @Override
     public void updateTile() {
-      if (module().heat < 0) module().heat = 0;
+      if (module().heat < 0) module().setHeat(0f);
       if (module().heat > maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(0.001f * Math.max(0, module().heat - minHeatLoss) * Time.delta);
+      module().subHeat(heatLoss * Math.max(1, module().heat - minHeatLoss) * Time.delta);
     }
     @Override
     public void draw() {

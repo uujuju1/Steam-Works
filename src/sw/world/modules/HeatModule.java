@@ -13,6 +13,9 @@ public class HeatModule extends BlockModule {
   public float subHeat(float amount) {
     return heat-=amount;
   }
+  public float setHeat(float amount) {
+    return heat = amount;
+  }
 
   @Override public void write(Writes write) {
     write.f(heat);

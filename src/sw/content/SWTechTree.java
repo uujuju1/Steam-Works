@@ -27,7 +27,13 @@ public class SWTechTree {
 
       // crafting
       node(hydraulicCrafter, () -> {
-        node(boiler, () -> node(thermalBoiler));
+        node(burner, () -> {});
+        node(boiler, Seq.with(new Research(burner)), () -> node(thermalBoiler));
+      });
+
+      node(heatPipe, () -> {
+        node(heatBridge, () -> {});
+        node(heatRadiator, () -> {});
       });
 
       // turrets
