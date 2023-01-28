@@ -16,6 +16,7 @@ import arc.util.io.Writes;
 import mindustry.gen.Icon;
 import mindustry.world.meta.StatUnit;
 import sw.world.consumers.ConsumeLiquidDynamic;
+import sw.world.meta.SWStat;
 import sw.world.recipes.GenericRecipe;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
@@ -29,7 +30,6 @@ import mindustry.ui.ItemImage;
 import mindustry.world.Block;
 import mindustry.world.consumers.ConsumeItemDynamic;
 import mindustry.world.consumers.ConsumePowerDynamic;
-import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatValues;
 
 import static sw.world.meta.TableSelection.genericRecipeSelection;
@@ -54,14 +54,14 @@ public class MultiCrafter extends Block {
     solid = update = sync = destructible = true;
 
     consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.currentPlan != -1 ? e.getRecipe().consumeItems : ItemStack.empty));
-    consume(new ConsumeLiquidDynamic(e -> ((MultiCrafterBuild) e).getLiquidCons()));
+    consume(new ConsumeLiquidDynamic<>(MultiCrafterBuild::getLiquidCons));
     consume(new ConsumePowerDynamic(e -> ((MultiCrafterBuild) e).getPowerCons()));
   }
 
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(Stat.output, t -> {
+    stats.add(SWStat.recipes, t -> {
       t.row();
       t.left();
       for (GenericRecipe recipe : recipes) {

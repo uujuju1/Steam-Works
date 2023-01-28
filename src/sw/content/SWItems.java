@@ -9,6 +9,8 @@ public class SWItems {
     public static void load() {
         nickel = new Item("nickel", Color.valueOf("CCD4D9"));
         compound = new Item("compound", Color.valueOf("515151"));
-        denseAlloy = new Item("dense-alloy", Color.valueOf("6E7080"));
+        denseAlloy = new Item("dense-alloy", Color.valueOf("6E7080")) {{
+            cost = 1f;
+        }};
     }
 }
