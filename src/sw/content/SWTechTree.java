@@ -26,18 +26,18 @@ public class SWTechTree {
       /* blocks */
 
       // crafting
-      node(hydraulicCrafter, () -> {
+      node(rebuilder, () -> {
         node(burner, () -> {});
         node(boiler, Seq.with(new Research(burner)), () -> node(thermalBoiler));
       });
 
-      node(heatPipe, () -> {
+      node(heatPipe, Seq.with(new Produce(nickel), new Research(burner)), () -> {
         node(heatBridge, () -> {});
         node(heatRadiator, () -> {});
       });
 
       // turrets
-      node(bolt, Seq.with(new Produce(nickel)), () -> {});
+      node(bolt, () -> {});
 
       node(swarm, Seq.with(new Produce(nickel), new Research(Blocks.airFactory)), () -> {
         node(ambush, Seq.with(new Research(Blocks.additiveReconstructor)), () -> {

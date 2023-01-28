@@ -7,6 +7,8 @@ import mindustry.gen.Sounds;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.AttributeCrafter;
+import mindustry.world.blocks.production.Drill;
+import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
@@ -31,9 +33,12 @@ public class SWBlocks {
 	  heatBridge,
 		heatRadiator,
 
+		hydraulicDrill,
+
 		burner,
 		boiler, thermalBoiler,
-		hydraulicCrafter,
+		nickelForge,
+		rebuilder,
 
 		bolt,
 
@@ -45,16 +50,27 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
-			maxHeat = 250f;
+			maxHeat = 500f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
-			maxHeat = 250f;
+			maxHeat = 500f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
-			maxHeat = 240f;
-			minHeatLoss = 180f;
+			maxHeat = 500f;
+			minHeatLoss = 280f;
+		}};
+
+//		production
+		hydraulicDrill = new Drill("hydraulic-drill") {{
+			requirements(Category.production, with(Items.silicon, 12, SWItems.nickel, 6));
+			size = 2;
+			health = 160;
+			tier = 3;
+			drillTime = 300f;
+			consumeLiquid(SWLiquids.steam, 0.2f);
+			consumeLiquid(Liquids.water, 0.05f).boost();
 		}};
 
 //		crafting
@@ -71,7 +87,7 @@ public class SWBlocks {
 			craftTime = 120f;
 			outputHeat = 250f;
 			acceptsHeat = false;
-			maxHeat = 300;
+			maxHeat = 500f;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{
@@ -83,7 +99,7 @@ public class SWBlocks {
 			consumeLiquid(Liquids.water, 0.1f);
 			consume(new ConsumeHeat(0.5f, 100f, false));
 			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
-			maxHeat = 200f;
+			maxHeat = 300f;
 		}};
 		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
 			requirements(Category.production, with(SWItems.compound, 40, Items.metaglass, 35, Items.titanium, 30));
@@ -97,7 +113,17 @@ public class SWBlocks {
       outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
 		}};
 
-		hydraulicCrafter = new MultiCrafter("hydraulic-crafter") {{
+		nickelForge = new GenericCrafter("nickel-forge") {{
+			requirements(Category.crafting, with(Items.silicon, 40, Items.graphite, 25));
+			size = 2;
+			health = 160;
+			craftTime = 30f;
+			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+			consumeItems(with(Items.scrap, 2, Items.lead, 1));
+			consumePower(1f);
+			outputItems = with(SWItems.nickel, 1);
+		}};
+		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
 				Items.graphite, 80,
@@ -137,7 +163,7 @@ public class SWBlocks {
 			requirements(Category.turret, with(
 							Items.silicon, 120,
 							Items.copper, 70,
-							SWItems.nickel, 95
+							SWItems.compound, 95
 			));
 			size = 2;
 			health = 200;

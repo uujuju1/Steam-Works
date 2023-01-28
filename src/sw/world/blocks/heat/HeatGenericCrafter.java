@@ -5,6 +5,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -66,6 +68,17 @@ public class HeatGenericCrafter extends GenericCrafter {
       if (module().heat > maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
       module().subHeat(heatLoss * Time.delta);
+    }
+
+    @Override
+    public void write(Writes write) {
+      super.write(write);
+      module().write(write);
+    }
+    @Override
+    public void read(Reads read, byte revision) {
+      super.read(read, revision);
+      module().read(read);
     }
   }
 }

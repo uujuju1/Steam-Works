@@ -5,6 +5,8 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
@@ -107,6 +109,17 @@ public class HeatRadiator extends Block {
       Draw.rect(getRegion(heatRegions), x, y, 0);
       Draw.reset();
       Draw.rect(getRegion(topRegions), x, y, 0);
+    }
+
+    @Override
+    public void read(Reads read, byte revision) {
+      super.read(read, revision);
+      module().read(read);
+    }
+    @Override
+    public void write(Writes write) {
+      super.write(write);
+      module().write(write);
     }
   }
 }
