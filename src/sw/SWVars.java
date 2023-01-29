@@ -1,6 +1,7 @@
 package sw;
 
 import sw.content.*;
+import sw.entities.comp.SWEntityMapping;
 
 public class SWVars {
     public static final float maxHeatGlow = 100;
@@ -25,6 +26,7 @@ public class SWVars {
     public static void loadContent() {
         SWItems.load();
         SWLiquids.load();
+        SWEntityMapping.load();
         SWUnitTypes.load();
         SWBlocks.load();
         SWPlanets.load();
