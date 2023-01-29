@@ -29,7 +29,7 @@ public class SWVars {
         SWEntityMapping.load();
         SWUnitTypes.load();
         SWBlocks.load();
-        SWPlanets.load();
+//        SWPlanets.load();
         SWTechTree.load();
     }
 }

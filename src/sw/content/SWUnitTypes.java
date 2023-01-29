@@ -1,12 +1,11 @@
 package sw.content;
 
-import mindustry.content.Blocks;
-import mindustry.content.Fx;
-import mindustry.content.Items;
+import mindustry.content.*;
 import mindustry.entities.abilities.SpawnDeathAbility;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.entities.bullet.SapBulletType;
+import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.gen.Sounds;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Pal;
@@ -23,7 +22,7 @@ import static mindustry.world.blocks.units.UnitFactory.UnitPlan;
 public class SWUnitTypes {
   public static UnitType
   swarm, ambush, trap,
-  recluse;
+  recluse, retreat, evade;
 
   public static void load() {
     swarm = new UnitType("swarm") {{
@@ -131,9 +130,95 @@ public class SWUnitTypes {
         bullet = new SapBulletType() {{
           damage = 20f;
           length = 40f;
-          color = Pal.sap;
+          color = Pal.sapBullet;
         }};
       }});
+    }};
+    retreat = new SWUnitType("retreat") {{
+      health = 580;
+      speed = 0.9f;
+      hitSize = 11f;
+      accel = 0.4f;
+      drag = 0.14f;
+      rotateSpeed = 3.5f;
+      range = maxRange = 80f;
+      targetAir = false;
+      submerges = true;
+      vulnerabilityTime = 150f;
+
+      constructor = SubmarineUnit::new;
+
+      weapons.add(new Weapon("sw-retreat-weapon") {{
+        x = y = 0f;
+        reload = 60f;
+        mirror = false;
+        rotate = true;
+        shootSound = Sounds.artillery;
+        bullet = new ArtilleryBulletType(3f, 40) {{
+          width = height = 10f;
+          lifetime = 26.75f;
+          collidesGround = true;
+          splashDamage = 40f;
+          splashDamageRadius = 24f;
+          hitEffect = despawnEffect = Fx.hitBulletColor;
+          frontColor = hitColor = trailColor = Pal.sapBullet;
+          backColor = Pal.sapBulletBack;
+          trailLength = 40;
+          status = StatusEffects.sapped;
+          statusDuration = 120f;
+        }};
+      }});
+    }};
+    evade = new SWUnitType("evade") {{
+      health = 1200;
+      speed = 0.8f;
+      accel = 0.4f;
+      drag = 0.14f;
+      rotateSpeed = 3f;
+      range = maxRange = 100f;
+      submerges = true;
+      vulnerabilityTime = 240f;
+
+      constructor = SubmarineUnit::new;
+
+      weapons.add(
+              new Weapon("sw-evade-cannon") {{
+                x = 0f;
+                y = -7.25f;
+                reload = 120f;
+                targetAir = false;
+                mirror = false;
+                rotate = true;
+                shootSound = Sounds.artillery;
+                bullet = new ArtilleryBulletType(4f, 120) {{
+                  width = height = 12f;
+                  lifetime = 25f;
+                  collidesGround = true;
+                  splashDamage = 120f;
+                  splashDamageRadius = 24f;
+                  hitEffect = despawnEffect = Fx.hitBulletColor;
+                  frontColor = hitColor = trailColor = Pal.sapBullet;
+                  backColor = Pal.sapBulletBack;
+                  status = StatusEffects.sapped;
+                  statusDuration = 180f;
+                  trailLength = 40;
+                }};
+              }},
+              new Weapon("sw-evade-mount") {{
+                x = 8.75f;
+                y = 4f;
+                reload = 60f;
+                rotate = true;
+                shootSound = Sounds.shotgun;
+                bullet = new ShrapnelBulletType() {{
+                  damage = 80f;
+                  length = 40f;
+                  range = length;
+                  toColor = Pal.sapBullet;
+                  serrations = 4;
+                }};
+              }}
+      );
     }};
 
     ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, ItemStack.with(SWItems.nickel, 12, Items.silicon, 7)));
