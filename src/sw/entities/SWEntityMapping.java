@@ -1,4 +1,4 @@
-package sw.entities.comp;
+package sw.entities;
 
 import arc.func.Prov;
 import arc.struct.ObjectIntMap;
@@ -6,6 +6,7 @@ import arc.struct.ObjectMap.Entry;
 import arc.util.Structs;
 import mindustry.gen.EntityMapping;
 import mindustry.gen.Entityc;
+import sw.entities.comp.SubmarineUnit;
 
 
 public class SWEntityMapping {

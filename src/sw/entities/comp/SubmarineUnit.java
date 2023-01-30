@@ -2,6 +2,7 @@ package sw.entities.comp;
 
 import arc.util.Time;
 import mindustry.gen.UnitWaterMove;
+import sw.entities.SWEntityMapping;
 import sw.type.SWUnitType;
 
 public class SubmarineUnit extends UnitWaterMove {

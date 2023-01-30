@@ -39,9 +39,14 @@ public class SWTechTree {
       // turrets
       node(bolt, () -> {});
 
-      node(swarm, Seq.with(new Produce(nickel), new Research(Blocks.airFactory)), () -> {
+      node(swarm, Seq.with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
         node(ambush, Seq.with(new Research(Blocks.additiveReconstructor)), () -> {
           node(trap, Seq.with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+        });
+        node(recluse, Seq.with(new Research(Blocks.navalFactory)), () -> {
+          node(retreat, Seq.with(new Research(Blocks.additiveReconstructor)), () -> {
+            node(evade, Seq.with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+          });
         });
       });
     });

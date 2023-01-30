@@ -5,7 +5,6 @@ import mindustry.content.*;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.gen.Sounds;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.production.AttributeCrafter;
 import mindustry.world.blocks.production.Drill;
 import mindustry.world.blocks.production.GenericCrafter;
@@ -27,7 +26,6 @@ import static mindustry.type.ItemStack.*;
 
 public class SWBlocks {
 	public static Block
-		oreNickel,
 
 		heatPipe,
 	  heatBridge,
@@ -45,8 +43,6 @@ public class SWBlocks {
 		coreScaffold;
 
 	public static void load() {
-		oreNickel = new OreBlock(SWItems.nickel);
-
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));

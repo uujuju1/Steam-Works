@@ -1,7 +1,7 @@
 package sw;
 
 import sw.content.*;
-import sw.entities.comp.SWEntityMapping;
+import sw.entities.SWEntityMapping;
 
 public class SWVars {
     public static final float maxHeatGlow = 100;

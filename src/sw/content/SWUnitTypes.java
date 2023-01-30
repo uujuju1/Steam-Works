@@ -175,13 +175,34 @@ public class SWUnitTypes {
       accel = 0.4f;
       drag = 0.14f;
       rotateSpeed = 3f;
-      range = maxRange = 100f;
+      range = maxRange = 160f;
       submerges = true;
       vulnerabilityTime = 240f;
 
       constructor = SubmarineUnit::new;
 
       weapons.add(
+              new Weapon() {{
+                x = y = 0f;
+                reload = 240f;
+                rotateSpeed = 360f;
+                mirror = false;
+                rotate = true;
+                shootSound = Sounds.missileLaunch;
+                bullet = new BasicBulletType(4f, 200f) {{
+                  width = height = 15f;
+                  lifetime = 40f;
+                  drag = -0.01f;
+                  collideFloor = true;
+                  splashDamage = 120f;
+                  splashDamageRadius = 24f;
+                  frontColor = trailColor = hitColor = Pal.sapBullet;
+                  backColor = Pal.sapBulletBack;
+                  status = StatusEffects.sapped;
+                  statusDuration = 300f;
+                  trailLength = 80;
+                }};
+              }},
               new Weapon("sw-evade-cannon") {{
                 x = 0f;
                 y = -7.25f;
@@ -193,6 +214,7 @@ public class SWUnitTypes {
                 bullet = new ArtilleryBulletType(4f, 120) {{
                   width = height = 12f;
                   lifetime = 25f;
+                  range = 100f;
                   collidesGround = true;
                   splashDamage = 120f;
                   splashDamageRadius = 24f;
@@ -212,7 +234,7 @@ public class SWUnitTypes {
                 shootSound = Sounds.shotgun;
                 bullet = new ShrapnelBulletType() {{
                   damage = 80f;
-                  length = 40f;
+                  length = 12f;
                   range = length;
                   toColor = Pal.sapBullet;
                   serrations = 4;
@@ -221,8 +243,9 @@ public class SWUnitTypes {
       );
     }};
 
-    ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, ItemStack.with(SWItems.nickel, 12, Items.silicon, 7)));
-    ((Reconstructor) Blocks.additiveReconstructor).upgrades.add(new UnitType[]{swarm, ambush});
-    ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.add(new UnitType[]{ambush, trap});
+    ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, ItemStack.with(SWItems.compound, 12, Items.silicon, 7)));
+    ((UnitFactory) Blocks.navalFactory).plans.add(new UnitPlan(swarm, 60f * 15f, ItemStack.with(SWItems.compound, 10, Items.silicon, 10, Items.metaglass, 6)));
+    ((Reconstructor) Blocks.additiveReconstructor).upgrades.add(new UnitType[]{swarm, ambush}, new UnitType[]{recluse, retreat});
+    ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.add(new UnitType[]{ambush, trap}, new UnitType[]{retreat, evade});
   }
 }
