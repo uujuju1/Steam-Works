@@ -5,9 +5,9 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Geometry;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
+import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
@@ -19,21 +19,21 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
 import mindustry.world.meta.StatUnit;
+import sw.util.SWDraw;
 import sw.util.SWMath;
+import sw.world.heat.HeatBlockI;
+import sw.world.heat.HeatConfig;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
 import sw.world.heat.HasHeat;
 
-import static mindustry.Vars.tilesize;
 
-public class HeatBridge extends Block {
+public class HeatBridge extends Block implements HeatBlockI {
+  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
   public TextureRegion bridgeRegion, endRegion;
 
   public int range = 5;
-  public float maxHeat = 100f;
-  public float heatLoss = 0.1f;
 
   public HeatBridge(String name) {
     super(name);
@@ -41,22 +41,40 @@ public class HeatBridge extends Block {
     destructible = true;
     underBullets = true;
     solid = true;
-//    saveConfig = copyConfig = true;
+    saveConfig = copyConfig = true;
     configurable = true;
 
-    config(Integer.class, (HeatBridgeBuild tile, Integer val) -> tile.link = val);
+    config(Point2.class, (HeatBridgeBuild tile, Point2 next) -> tile.link = new Point2(next).add(Point2.unpack(tile.pos())).pack());
+    config(Integer.class, (HeatBridgeBuild tile, Integer i) -> tile.link = i);
   }
+
+  public boolean linkValid(Point2 p1, Point2 p2) {
+    if (p1.x == p2.x) return Math.abs(p1.y - p2.y) <= range + 1;
+    if (p1.y == p2.y) return Math.abs(p1.x - p2.x) <= range + 1;
+    return false;
+  }
+
+  @Override public HeatConfig heatConfig() {return heatConfig;}
 
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
+    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
   }
-
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
+  }
+
+  @Override
+  public void drawPlace(int x, int y, int rotation, boolean valid) {
+    super.drawPlace(x, y, rotation, valid);
+    for (int i = 0; i < 4; i++) {
+      Tmp.v1.trns(i * 90, 6f);
+      Tmp.v2.trns(i * 90, 8 * (range + 1));
+      Drawf.dashLine(Pal.accent, x * 8 + Tmp.v1.x, y * 8 + Tmp.v1.y, x * 8 + Tmp.v2.x, y * 8 + Tmp.v2.y);
+    }
   }
 
   @Override
@@ -66,28 +84,19 @@ public class HeatBridge extends Block {
     endRegion = Core.atlas.find(name + "-end");
   }
 
-  @Override
-  public void drawPlace(int x, int y, int rotation, boolean valid) {
-    super.drawPlace(x, y, rotation, valid);
-    for (Point2 next: Geometry.d4) {
-      Drawf.dashLine(Pal.placing,
-              x * tilesize + next.x * (tilesize/2f),
-              y * tilesize + next.y * (tilesize/2f),
-              (x + next.x * range) * tilesize,
-              (y + next.y * range) * tilesize
-      );
-    }
-  }
-
   public class HeatBridgeBuild extends Building implements HasHeat {
     HeatModule module = new HeatModule();
     public int link = -1;
 
+    public @Nullable Building getLink() {
+      return Vars.world.build(link);
+    }
+
     public void drawBridge() {
       Draw.reset();
       Draw.z(Layer.power);
-      if (Vars.world.tile(link).build == null) return;
-      Building next = Vars.world.tile(link).build;
+      if (getLink() == null) return;
+      Building next = getLink();
 
       float angle = Math.round(Angles.angle(x, y, next.x, next.y));
       float rot = (angle + 90) % 180 - 90;
@@ -110,61 +119,90 @@ public class HeatBridge extends Block {
       Draw.reset();
     }
 
-    public boolean linkValid(Tile from, Tile to) {
-      if (from.x == to.x) return Math.abs(from.y - to.y) <= range;
-      if (from.y == to.y) return Math.abs(from.x - to.x) <= range;
-      return false;
-    }
-
     @Override public HeatModule module() {
       return module;
     }
+    @Override public HeatBlockI type() {
+      return (HeatBlockI) block;
+    }
 
-    @Override
-    public Seq<HasHeat> nextBuilds(Building from) {
-      Seq<HasHeat> out = HasHeat.super.nextBuilds(from);
-      if (link != -1 && Vars.world.tile(link).build instanceof HasHeat next) out.add(next);
-      return out;
+    @Override public Seq<HasHeat> nextBuilds(Building from) {
+      if (getLink() != null) return HasHeat.super.nextBuilds(from).add((HasHeat) getLink());
+      return HasHeat.super.nextBuilds(from);
     }
 
     @Override
     public boolean onConfigureBuildTapped(Building other) {
-      if (other.pos() == pos() || other.pos() == link) {
+      if (other == this) {
         configure(-1);
-        return false;
-      }
-      if (linkValid(tile(), other.tile()) && other instanceof HeatBridgeBuild next) {
-        if (next.link == pos()) {
-          next.configure(-1);
-        }
-        configure(next.pos());
         return true;
       }
-      return true;
+      if (linkValid(Point2.unpack(pos()), Point2.unpack(other.pos())) && other instanceof HeatBridgeBuild next) {
+        if (next.link == pos()) {
+          configure(-1);
+          next.configure(Point2.unpack(pos()).sub(Point2.unpack(next.pos())));
+          return true;
+        }
+        if (next.pos() != link) {
+          configure(Point2.unpack(next.pos()).sub(Point2.unpack(pos())));
+        } else {
+          configure(-1);
+        }
+      }
+      return false;
     }
 
     @Override
     public void updateTile() {
       if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > maxHeat) kill();
+      if (module().heat > heatConfig().maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatLoss * Time.delta);
+      module().subHeat(heatConfig().heatLoss * Time.delta);
     }
-
     @Override
     public void draw() {
       super.draw();
-      if (link != -1) drawBridge();
+      drawBridge();
     }
     @Override
     public void drawSelect() {
       super.drawSelect();
-      for (Point2 next: Geometry.d4) {
-        Drawf.dashLine(Pal.accent,
-                x + next.x * (tilesize/2f),
-                y + next.y * (tilesize/2f),
-                x + next.x * range * tilesize,
-                y + next.y * range * tilesize
+      SWDraw.square(Pal.accent, x, y,8f, 0f);
+      if (getLink() != null) SWDraw.square(Pal.accent, getLink().x, getLink().y, 8f, 0f);
+      for (int i = 0; i < 4; i++) {
+        Tmp.v1.trns(i * 90, 6f);
+        Tmp.v2.trns(i * 90, 8 * (range + 1));
+        if (getLink() != null) {
+          float angle = Math.round(tile().angleTo(getLink().x, getLink().y));
+          if (angle == i * 90) {
+            Tmp.v1.trns(angle, 7.75f);
+            SWDraw.line(
+                    Pal.accent,
+                    x + Tmp.v1.x,
+                    y + Tmp.v1.y,
+                    angle,
+                    tile().dst(getLink().x, getLink().y) - 15.5f
+            );
+            continue;
+          }
+        }
+        Drawf.dashLine(Pal.accent, x + Tmp.v1.x, y + Tmp.v1.y, x + Tmp.v2.x, y + Tmp.v2.y);
+      }
+    }
+    @Override
+    public void drawConfigure() {
+      SWDraw.square(Pal.accent, x, y,8f, 0f);
+      if (getLink() != null) {
+        float angle = Math.round(tile().angleTo(getLink().x, getLink().y));
+        SWDraw.square(Pal.accent, getLink().x, getLink().y, 8f, 0f);
+
+        Tmp.v1.trns(angle, 7.75f);
+        SWDraw.line(
+                Pal.accent,
+                x + Tmp.v1.x,
+                y + Tmp.v1.y,
+                angle,
+                tile().dst(getLink().x, getLink().y) - 15.5f
         );
       }
     }

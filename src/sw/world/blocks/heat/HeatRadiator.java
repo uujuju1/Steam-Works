@@ -13,18 +13,18 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.meta.StatUnit;
 import sw.world.heat.HasHeat;
+import sw.world.heat.HeatBlockI;
+import sw.world.heat.HeatConfig;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWDraw.getRegions;
 import static sw.util.SWMath.*;
 
-public class HeatRadiator extends Block {
+public class HeatRadiator extends Block implements HeatBlockI {
+  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
   public TextureRegion[] regions, heatRegions, topRegions;
-
-  public float maxHeat = 250f;
   public float minHeatLoss = 100f;
-  public float heatLoss = 0.1f;
 
   public HeatRadiator(String name) {
     super(name);
@@ -33,16 +33,17 @@ public class HeatRadiator extends Block {
     rotate = true;
   }
 
+  @Override public HeatConfig heatConfig() {return heatConfig;}
+
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.module().heat, 0f, maxHeat)));
+    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.module().heat, 0f, heatConfig().maxHeat)));
   }
-
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
     stats.add(SWStat.heatTresh, minHeatLoss, StatUnit.degrees);
   }
 
@@ -57,27 +58,21 @@ public class HeatRadiator extends Block {
   public class HeatRadiatorBuild extends Building implements HasHeat {
     HeatModule module = new HeatModule();
 
+    @Override public HeatModule module() {
+      return module;
+    }
+    @Override public HeatBlockI type() {return (HeatBlockI) block;}
+
     public TextureRegion getRegion(TextureRegion[] regions) {
       int index = 0;
-      if (front() instanceof HasHeat next && next.connects(this) && connects(next)) index++;
-      if (back() instanceof HasHeat next && next.connects(this) && connects(next)) index+=2;
+      if (front() instanceof HasHeat next && next.type().heatConfig().connects()) index++;
+      if (back() instanceof HasHeat next && next.type().heatConfig().connects()) index+=2;
       index += rotation * 4;
       return regions[index];
     }
 
-    @Override public boolean acceptsHeat(HasHeat from, float amount) {
-      return connects(from) && HasHeat.super.acceptsHeat(from, amount);
-    }
     @Override public boolean outputsHeat(HasHeat to, float amount) {
       return !to.overflows(amount) && HasHeat.super.outputsHeat(to, amount) && connects(to);
-    }
-
-    @Override public boolean connects(HasHeat to) {
-      return front() == to || back() == to;
-    }
-
-    @Override public HeatModule module() {
-      return module;
     }
 
     @Override
@@ -96,10 +91,10 @@ public class HeatRadiator extends Block {
 
     @Override
     public void updateTile() {
-      if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > maxHeat) kill();
+      if (module().heat < heatConfig().minHeat) module().setHeat(heatConfig().minHeat);
+      if (module().heat > heatConfig().maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatLoss * Math.max(1, module().heat - minHeatLoss) * Time.delta);
+      module().subHeat(heatConfig().heatLoss * Math.max(1, module().heat - minHeatLoss) * Time.delta);
     }
     @Override
     public void draw() {

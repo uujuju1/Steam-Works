@@ -12,17 +12,17 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.meta.StatUnit;
 import sw.util.*;
+import sw.world.heat.HeatBlockI;
+import sw.world.heat.HeatConfig;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
 import sw.world.heat.HasHeat;
 
 import static sw.util.SWDraw.*;
 
-public class HeatPipe extends Block {
+public class HeatPipe extends Block implements HeatBlockI {
+  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
   public TextureRegion[] regions, heatRegions, topRegions;
-
-  public float maxHeat = 100f;
-  public float heatLoss = 0.1f;
 
   public HeatPipe(String name) {
     super(name);
@@ -31,16 +31,19 @@ public class HeatPipe extends Block {
     underBullets = true;
   }
 
-  @Override
-  public void setBars() {
-    super.setBars();
-    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
+  @Override public HeatConfig heatConfig() {
+    return heatConfig;
   }
 
   @Override
+  public void setBars() {
+    super.setBars();
+    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
+  }
+  @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
   }
 
   @Override
@@ -56,26 +59,23 @@ public class HeatPipe extends Block {
 
     public TextureRegion getRegion(TextureRegion[] regions) {
       int index = 0;
-      for (int i = 0; i < 4; i++) {
-        if (nearby(i) instanceof HasHeat next && connects(next) && next.connects(this)) index += 1<<i;
-      }
+      for (int i = 0; i < 4; i++) if (nearby(i) instanceof HasHeat next && next.type().heatConfig().connects()) index += 1 << i;
       return regions[index];
     }
 
     @Override public HeatModule module() {
       return module;
     }
-
-    @Override public boolean overflows(float amount) {
-      return module().heat + amount >= maxHeat;
+    @Override public HeatBlockI type() {
+      return (HeatBlockI) block;
     }
 
     @Override
     public void updateTile() {
-      if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > maxHeat) kill();
+      if (module().heat < heatConfig().minHeat) module().setHeat(heatConfig().minHeat);
+      if (overflows(0f)) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatLoss * Time.delta);
+      module().subHeat(heatConfig().heatLoss * Time.delta);
     }
     @Override
     public void draw() {

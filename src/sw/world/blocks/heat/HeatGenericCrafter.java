@@ -13,31 +13,31 @@ import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
 import sw.util.SWMath;
 import sw.world.heat.HasHeat;
+import sw.world.heat.HeatBlockI;
+import sw.world.heat.HeatConfig;
 import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
 
-public class HeatGenericCrafter extends GenericCrafter {
-  public float maxHeat = 100f;
-  public float heatLoss = 0.1f;
+public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
+  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
   public float outputHeat = -1f;
-  public boolean acceptsHeat = true;
-  public boolean outputsHeat = true;
 
   public HeatGenericCrafter(String name) {
     super(name);
   }
 
+  @Override public HeatConfig heatConfig() {return heatConfig;}
+
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
     if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
   }
-
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, 0f, maxHeat)));
+    addBar("heat", (HeatGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
   }
 
   @Override
@@ -51,12 +51,15 @@ public class HeatGenericCrafter extends GenericCrafter {
     @Override public HeatModule module() {
       return module;
     }
+    @Override public HeatBlockI type() {
+      return (HeatBlockI) block;
+    }
 
     @Override public boolean acceptsHeat(HasHeat from, float amount) {
-      return HasHeat.super.acceptsHeat(from, amount) && acceptsHeat;
+      return HasHeat.super.acceptsHeat(from, amount) && heatConfig().acceptHeat;
     }
     @Override public boolean outputsHeat(HasHeat to, float amount) {
-      return HasHeat.super.outputsHeat(to, amount) && outputsHeat;
+      return HasHeat.super.outputsHeat(to, amount) && heatConfig().outputHeat;
     }
 
     @Override
@@ -65,9 +68,9 @@ public class HeatGenericCrafter extends GenericCrafter {
       if (efficiency > 0 && outputHeat >= 0) module().setHeat(Mathf.approachDelta(module().heat, outputHeat * efficiencyScale(), efficiencyScale()));
 
       if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > maxHeat) kill();
+      if (module().heat > heatConfig().maxHeat) kill();
       for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatLoss * Time.delta);
+      module().subHeat(heatConfig().heatLoss * Time.delta);
     }
 
     @Override

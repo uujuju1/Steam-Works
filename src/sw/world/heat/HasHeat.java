@@ -7,6 +7,7 @@ import sw.world.modules.HeatModule;
 
 public interface HasHeat {
   HeatModule module();
+  HeatBlockI type();
 
   default void transferHeat(HeatModule to) {
     float amount = SWMath.heatTransferDelta(0.2f, module().heat, to.heat, true);
@@ -25,6 +26,15 @@ public interface HasHeat {
     }
     return out;
   }
+  default Seq<HasHeat> nextBuildsStatic(Building from) {
+    Seq<HasHeat> out = new Seq<>();
+    if (!(from instanceof HasHeat)) return out;
+    for (Building build : from.proximity) {
+
+      if (build instanceof HasHeat next && next.type().heatConfig().connects()) out.add(next);
+    }
+    return out;
+  }
 
 //  only used for possible connection, won't change based on heat
   default boolean connects(HasHeat to) {return true;}
@@ -32,5 +42,5 @@ public interface HasHeat {
   default boolean acceptsHeat(HasHeat from, float amount) {return module().heat < from.module().heat;}
   default boolean outputsHeat(HasHeat to, float amount) {return to.module().heat < module().heat;}
 
-  default boolean overflows(float amount) {return false;}
+  default boolean overflows(float amount) {return module().heat + amount > type().heatConfig().maxHeat;}
 }

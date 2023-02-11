@@ -244,7 +244,6 @@ public class SWUnitTypes {
     }};
 
     ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, ItemStack.with(SWItems.compound, 12, Items.silicon, 7)));
-    ((UnitFactory) Blocks.navalFactory).plans.add(new UnitPlan(swarm, 60f * 15f, ItemStack.with(SWItems.compound, 10, Items.silicon, 10, Items.metaglass, 6)));
     ((Reconstructor) Blocks.additiveReconstructor).upgrades.add(new UnitType[]{swarm, ambush}, new UnitType[]{recluse, retreat});
     ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.add(new UnitType[]{ambush, trap}, new UnitType[]{retreat, evade});
   }

@@ -1,10 +1,10 @@
 package sw.content;
 
-import arc.struct.Seq;
 import mindustry.content.Blocks;
 import mindustry.content.TechTree;
 import mindustry.game.Objectives.*;
 
+import static arc.struct.Seq.with;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
@@ -20,33 +20,38 @@ public class SWTechTree {
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> {});
         nodeProduce(compound, () -> {});
-        nodeProduce(denseAlloy, Seq.with(new Produce(steam)), () -> {});
+        nodeProduce(denseAlloy, with(new Produce(steam)), () -> {});
       });
 
       /* blocks */
 
       // crafting
-      node(rebuilder, () -> {
-        node(burner, () -> {});
-        node(boiler, Seq.with(new Research(burner)), () -> node(thermalBoiler));
+      node(nickelForge, () -> {
+        node(rebuilder, () -> node(burner));
+        node(boiler, with(new Research(burner)), () -> node(thermalBoiler));
       });
 
-      node(heatPipe, Seq.with(new Produce(nickel), new Research(burner)), () -> {
+      node(hydraulicDrill, with(new Produce(steam)), () -> node(stirlingGenerator));
+
+      node(heatPipe, with(new Produce(nickel), new Research(burner)), () -> {
         node(heatBridge, () -> {});
         node(heatRadiator, () -> {});
       });
 
       // turrets
-      node(bolt, () -> {});
+      node(bolt, () -> node(light));
 
-      node(swarm, Seq.with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
-        node(ambush, Seq.with(new Research(Blocks.additiveReconstructor)), () -> {
-          node(trap, Seq.with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
-        });
-        node(recluse, Seq.with(new Research(Blocks.navalFactory)), () -> {
-          node(retreat, Seq.with(new Research(Blocks.additiveReconstructor)), () -> {
-            node(evade, Seq.with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+      node(subFactory, () -> {
+        node(recluse, () -> {
+          node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
+            node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
           });
+        });
+      });
+
+      node(swarm, with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
+        node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
+          node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
         });
       });
     });

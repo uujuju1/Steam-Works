@@ -52,10 +52,13 @@ public class MultiCrafter extends Block {
     configurable = true;
     hasItems = true;
     solid = update = sync = destructible = true;
+    saveConfig = copyConfig = true;
 
     consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.currentPlan != -1 ? e.getRecipe().consumeItems : ItemStack.empty));
     consume(new ConsumeLiquidDynamic<>(MultiCrafterBuild::getLiquidCons));
     consume(new ConsumePowerDynamic(e -> ((MultiCrafterBuild) e).getPowerCons()));
+
+    config(GenericRecipe.class, MultiCrafterBuild::changeRecipe);
   }
 
   @Override
@@ -163,7 +166,7 @@ public class MultiCrafter extends Block {
 
     @Override
     public void buildConfiguration(Table table) {
-      genericRecipeSelection(table, recipes, this::changeRecipe, this::getRecipe);
+      genericRecipeSelection(table, recipes, this::configure, this::getRecipe);
     }
 
     @Override
