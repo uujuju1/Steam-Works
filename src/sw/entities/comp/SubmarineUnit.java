@@ -17,7 +17,7 @@ public class SubmarineUnit extends UnitWaterMove {
     return (SWUnitType) super.type();
   }
   @Override public int classId() {
-    return SWEntityMapping.idMap.get("SubmarineUnit");
+    return SWEntityMapping.idMap.get(getClass());
   }
 
   @Override

@@ -1,6 +1,9 @@
 package sw.content;
 
-import mindustry.content.*;
+import mindustry.content.Blocks;
+import mindustry.content.Fx;
+import mindustry.content.Items;
+import mindustry.content.StatusEffects;
 import mindustry.entities.abilities.SpawnDeathAbility;
 import mindustry.entities.bullet.ArtilleryBulletType;
 import mindustry.entities.bullet.BasicBulletType;
@@ -9,20 +12,24 @@ import mindustry.entities.bullet.ShrapnelBulletType;
 import mindustry.gen.Sounds;
 import mindustry.gen.UnitEntity;
 import mindustry.graphics.Pal;
-import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.world.blocks.units.Reconstructor;
 import mindustry.world.blocks.units.UnitFactory;
 import sw.entities.comp.SubmarineUnit;
+import sw.entities.comp.CrafterUnit;
 import sw.type.SWUnitType;
+import sw.world.recipes.GenericRecipe;
 
+import static mindustry.type.ItemStack.with;
 import static mindustry.world.blocks.units.UnitFactory.UnitPlan;
 
 public class SWUnitTypes {
   public static UnitType
   swarm, ambush, trap,
-  recluse, retreat, evade;
+  recluse, retreat, evade,
+
+  bakler;
 
   public static void load() {
     swarm = new UnitType("swarm") {{
@@ -75,7 +82,6 @@ public class SWUnitTypes {
 
       abilities.add(new SpawnDeathAbility(swarm, 1, 0));
     }};
-
     trap = new UnitType("trap") {{
       health = 1300;
       speed = 2f;
@@ -107,7 +113,6 @@ public class SWUnitTypes {
 
       abilities.addAll(new SpawnDeathAbility(ambush, 1, 0));
     }};
-
 
     recluse = new SWUnitType("recluse") {{
       speed = 1;
@@ -243,7 +248,31 @@ public class SWUnitTypes {
       );
     }};
 
-    ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, ItemStack.with(SWItems.compound, 12, Items.silicon, 7)));
+    bakler = new SWUnitType("bakler") {{
+      health = 1500;
+      speed = 2f;
+      hitSize = 12f;
+      payloadCapacity = 256f;
+      useUnitCap = false;
+      flying = true;
+
+      engineOffset = 12f;
+      engineSize = 5f;
+      setEnginesMirror(new UnitEngine(10, -2, 5, -45));
+      engines.add(new UnitEngine(0, 0, 3, 90));
+
+      recipe = new GenericRecipe() {{
+        consumeItems = with(Items.coal, 6, Items.sand, 10);
+        craftTime = 60f;
+        outputItems = with(Items.silicon, 10);
+        craftEffect = SWFx.baklerSiliconCraft;
+        updateEffect = Fx.smoke;
+      }};
+
+      constructor = CrafterUnit::new;
+    }};
+
+    ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, with(SWItems.compound, 12, Items.silicon, 7)));
     ((Reconstructor) Blocks.additiveReconstructor).upgrades.add(new UnitType[]{swarm, ambush}, new UnitType[]{recluse, retreat});
     ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.add(new UnitType[]{ambush, trap}, new UnitType[]{retreat, evade});
   }

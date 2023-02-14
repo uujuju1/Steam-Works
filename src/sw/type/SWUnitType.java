@@ -7,24 +7,43 @@ import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.graphics.Pal;
+import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
+import mindustry.ui.ItemImage;
 import mindustry.world.blocks.environment.Floor;
+import mindustry.world.meta.Stat;
 import sw.entities.comp.SubmarineUnit;
+import sw.world.recipes.GenericRecipe;
 
 import static mindustry.Vars.world;
 
 public class SWUnitType extends UnitType {
+  // Submarine stuff
   public boolean submerges = false;
   public float vulnerabilityTime = 60f;
+
+  // Crafter unit stuff
+  public GenericRecipe recipe;
 
   public SWUnitType(String name) {
     super(name);
   }
 
   @Override
-  public boolean targetable(Unit unit, Team targeter) {
+  public void setStats() {
+    super.setStats();
+    stats.add(Stat.input, t -> {
+      for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack));
+    });
+    stats.add(Stat.output, t -> {
+      for (ItemStack stack : recipe.outputItems) t.add(new ItemImage(stack));
+    });
+  }
+
+  @Override
+  public boolean targetable(Unit unit, Team from) {
     if (submerges && unit instanceof SubmarineUnit u) return !u.submerged();
-    return super.targetable(unit, targeter);
+    return super.targetable(unit, from);
   }
 
   @Override

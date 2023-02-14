@@ -22,5 +22,12 @@ public class SWFx {
             Lines.stroke(e.fout());
             Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> Fill.circle(e.x - x, e.y - y, 2 * e.fout()));
             Lines.circle(e.x, e.y, 40 * e.finpow());
-          });
+          }),
+          baklerSiliconCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
+            Draw.color(Pal.accent);
+            Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10 * e.foutpow());
+            Draw.color(Color.darkGray);
+            Fill.circle(e.x - x, e.y - y, 2 * e.fout());
+          }));
+
 }
