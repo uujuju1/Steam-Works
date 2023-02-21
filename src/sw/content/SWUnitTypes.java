@@ -256,10 +256,9 @@ public class SWUnitTypes {
       useUnitCap = false;
       flying = true;
 
-      engineOffset = 12f;
-      engineSize = 5f;
-      setEnginesMirror(new UnitEngine(10, -2, 5, -45));
-      engines.add(new UnitEngine(0, 0, 3, 90));
+      engineOffset = 9f;
+      engineSize = 3f;
+      setEnginesMirror(new UnitEngine(7, -2, 3, -45));
 
       recipe = new GenericRecipe() {{
         consumeItems = with(Items.coal, 6, Items.sand, 10);

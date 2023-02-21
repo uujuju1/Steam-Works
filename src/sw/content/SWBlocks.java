@@ -138,7 +138,7 @@ public class SWBlocks {
 				rotateSpeed = 0.2f;
 				blurThresh = 1.1f;
 			}});
-			outputItems = with(Items.graphite, 8);
+			outputItems = with(Items.graphite, 1);
 		}};
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(

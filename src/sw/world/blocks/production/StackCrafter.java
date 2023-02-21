@@ -26,9 +26,9 @@ public class StackCrafter extends GenericCrafter {
     public void craft() {
       consume();
       stack++;
-      if (stack >= stacks) if (outputItems != null) {
+      if (stack >= stacks && outputItems != null) {
         for (ItemStack output : outputItems) {
-          for (int i = 0; i < output.amount * stacks; i++) offload(output.item);
+          for (int i = 0; i < output.amount; i++) offload(output.item);
         }
         stack = 0;
         stackCraftEffect.at(x, y);

@@ -38,6 +38,9 @@ public class CrafterUnit extends PayloadUnit {
       for (ItemStack stack : type().recipe.consumeItems) {
         if (payload.build.items().get(stack.item) < stack.amount) crafting = false;
       }
+      for (ItemStack stack : type().recipe.outputItems) {
+        if (payload.build.items().get(stack.item) > payload.build.block.itemCapacity - stack.amount) crafting = false;
+      }
 
       if (crafting) {
         progress += Time.delta;
@@ -49,9 +52,7 @@ public class CrafterUnit extends PayloadUnit {
         if (progress >= type().recipe.craftTime) {
           progress %= 1f;
           for (ItemStack stack : type().recipe.consumeItems) payload.build.items().remove(stack);
-          for (ItemStack stack : type().recipe.outputItems) {
-            if (payload.build.items().get(stack.item) <= payload.build.block.itemCapacity) payload.build.items().add(stack.item, stack.amount);
-          }
+          for (ItemStack stack : type().recipe.outputItems) payload.build.items().add(stack.item, stack.amount);
           type().recipe.craftEffect.at(this);
         }
       }
