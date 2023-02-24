@@ -26,10 +26,12 @@ import sw.world.blocks.heat.HeatPipe;
 import sw.world.blocks.heat.HeatRadiator;
 import sw.world.blocks.production.MultiCrafter;
 import sw.world.blocks.production.StackCrafter;
+import sw.world.blocks.units.SingleUnitFactory;
 import sw.world.consumers.ConsumeHeat;
 import sw.world.recipes.GenericRecipe;
 
 import static mindustry.type.ItemStack.with;
+import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWBlocks {
 	public static Block
@@ -51,6 +53,7 @@ public class SWBlocks {
 		bolt, light, /*thunder,*/
 
     subFactory,
+		crafterFactory,
 
 		coreScaffold;
 
@@ -131,14 +134,15 @@ public class SWBlocks {
 			requirements(Category.crafting, with(Items.titanium, 120, Items.silicon, 50, Items.graphite, 75, SWItems.nickel, 150));
 			size = 3;
 			health = 200;
-			craftTime = 10f;
+			craftTime = 30f;
+			stacks = 6;
 			consumeItem(Items.coal, 1);
 			consumeLiquid(SWLiquids.steam, 0.02f);
       drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 1f) {{
 				rotateSpeed = 0.2f;
 				blurThresh = 1.1f;
 			}});
-			outputItems = with(Items.graphite, 1);
+			outputItems = with(Items.graphite, 8);
 		}};
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
@@ -255,6 +259,19 @@ public class SWBlocks {
 			health = 160;
 			consumePower(1.5f);
 			plans.add(new UnitPlan(SWUnitTypes.recluse, 60f * 50f, with(Items.silicon, 15, Items.metaglass, 25, SWItems.compound, 20)));
+		}};
+		crafterFactory = new SingleUnitFactory("crafter-factory") {{
+			requirements(Category.units, with(
+							SWItems.compound, 130,
+							Items.titanium, 120,
+							Items.silicon, 150
+			));
+			size = 2;
+			health = 160;
+			consumePower(2f);
+			itemCapacity = 40;
+			unitPlan = new UnitPlan(SWUnitTypes.bakler, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
+			consumeItems(unitPlan.requirements);
 		}};
 
 //		storage

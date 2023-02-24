@@ -32,12 +32,14 @@ public class SWUnitType extends UnitType {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(Stat.input, t -> {
-      for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack));
-    });
-    stats.add(Stat.output, t -> {
-      for (ItemStack stack : recipe.outputItems) t.add(new ItemImage(stack));
-    });
+    if (recipe != null) {
+      stats.add(Stat.input, t -> {
+        for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack)).pad(3f);
+      });
+      stats.add(Stat.output, t -> {
+        for (ItemStack stack : recipe.outputItems) t.add(new ItemImage(stack)).pad(3f);
+      });
+    }
   }
 
   @Override
