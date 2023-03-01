@@ -179,6 +179,7 @@ public class SWUnitTypes {
       speed = 0.8f;
       accel = 0.4f;
       drag = 0.14f;
+      hitSize = 18f;
       rotateSpeed = 3f;
       range = maxRange = 160f;
       submerges = true;

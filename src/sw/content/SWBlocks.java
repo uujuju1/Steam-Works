@@ -92,6 +92,7 @@ public class SWBlocks {
 				flameRadiusIn = 0.75f;
 				flameRadiusMag = 1f;
 			}});
+			updateEffect = Fx.coalSmeltsmoke;
 			craftTime = 120f;
 			outputHeat = 400f;
 			heatConfig().acceptHeat = false;
@@ -106,6 +107,7 @@ public class SWBlocks {
 			heatConfig().outputHeat = false;
 			consumeLiquid(Liquids.water, 0.1f);
 			consume(new ConsumeHeat(0.5f, 100f, false));
+			updateEffect = Fx.smoke;
 			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
 		}};
 		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
@@ -117,6 +119,7 @@ public class SWBlocks {
 			maxBoost = 1.5f;
 			boostScale = 0.5f;
 			consumeLiquid(Liquids.water, 0.1f);
+			updateEffect = Fx.smoke;
       outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
 		}};
 
@@ -126,6 +129,7 @@ public class SWBlocks {
 			health = 160;
 			craftTime = 30f;
 			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+      updateEffect = Fx.smeltsmoke;
 			consumeItems(with(Items.scrap, 2, Items.lead, 1));
 			consumePower(1f);
 			outputItems = with(SWItems.nickel, 1);
@@ -138,10 +142,9 @@ public class SWBlocks {
 			stacks = 6;
 			consumeItem(Items.coal, 1);
 			consumeLiquid(SWLiquids.steam, 0.02f);
-      drawer = new DrawMulti(new DrawDefault(), new DrawBlurSpin("-rotator", 1f) {{
-				rotateSpeed = 0.2f;
-				blurThresh = 1.1f;
-			}});
+			craftEffect = SWFx.graphiteCraft;
+			updateEffect = Fx.smoke;
+      drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
 			outputItems = with(Items.graphite, 8);
 		}};
 		rebuilder = new MultiCrafter("rebuilder") {{
@@ -153,15 +156,15 @@ public class SWBlocks {
 			));
 			size = 3;
 			health = 200;
+			hasLiquids = true;
 			recipes.add(
 				new GenericRecipe() {{
 					craftTime = 45f;
 					consumeItems = with(SWItems.nickel, 1, Items.copper, 2);
 					outputItems = with(SWItems.compound, 1);
-					drawer = new DrawMulti(
-						new DrawDefault(),
-						new DrawFlame()
-					);
+					drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawBlurSpin("-rotator", 2) {{
+						blurThresh = 12331;
+					}}, new DrawDefault(), new DrawRegion("-cap"));
 					craftEffect = SWFx.compoundCraft;
 					updateEffect = 	Fx.smeltsmoke;
 				}},
@@ -170,11 +173,7 @@ public class SWBlocks {
 					consumeItems = with(SWItems.nickel, 2, Items.graphite, 2);
 					consumeLiquids = LiquidStack.with(SWLiquids.steam, 0.3f);
 					outputItems = with(SWItems.denseAlloy, 1);
-					drawer = new DrawMulti(
-						new DrawDefault(),
-						new DrawRegion("-cap")
-					);
-					craftEffect = SWFx.denseCraft;
+					drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidRegion(SWLiquids.steam), new DrawDefault(), new DrawRegion("-top"));
 					updateEffect = Fx.smoke;
 				}}
  			);
@@ -195,16 +194,12 @@ public class SWBlocks {
 			generateEffectRange = 12f;
 			effectChance = 0.1f;
 			consumeLiquid(SWLiquids.steam, 0.03f);
-			drawer = new DrawMulti(
-							new DrawRegion("-bottom"),
-							new DrawPistons() {{
-								sides = 8;
-								sideOffset = 10f;
-								sinScl = -2.5f;
-								sinMag = 2f;
-							}},
-							new DrawDefault()
-			);
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPistons() {{
+				sides = 8;
+				sideOffset = 10f;
+				sinScl = -2.5f;
+				sinMag = 2f;
+			}}, new DrawDefault());
     }};
 
 //		turrets

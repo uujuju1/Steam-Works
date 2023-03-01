@@ -3,6 +3,6 @@ name: "sw"
 author: "Uujuju"
 main: "sw.ModLoader"
 description: "A Mindustry mod."
-version: 1.0.3
-minGameVersion: 140.4
+version: 1.0.4
+minGameVersion: 142
 java: true

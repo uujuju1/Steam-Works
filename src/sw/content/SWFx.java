@@ -17,11 +17,13 @@ public class SWFx {
             Draw.color(Color.darkGray);
             Fill.circle(e.x - x, e.y - y, 2 * e.fout());
           })),
-          denseCraft = new Effect(60f, e -> {
-            Draw.color(Color.darkGray);
-            Lines.stroke(e.fout());
-            Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> Fill.circle(e.x - x, e.y - y, 2 * e.fout()));
-            Lines.circle(e.x, e.y, 40 * e.finpow());
+          nickelCraft = new Effect(30f, e -> {
+            Draw.color(Pal.accent);
+            Angles.randLenVectors(e.id + 1, 10, e.finpow() * 30f, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+          }),
+          graphiteCraft = new Effect(30f, e -> {
+            Draw.color(Pal.accent, Color.gray, e.fin());
+            Angles.randLenVectors(e.id, 10, e.finpow() * 30f, (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Angles.angle(x, y), 5f * e.foutpow()));
           }),
           baklerSiliconCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
             Draw.color(Pal.accent);

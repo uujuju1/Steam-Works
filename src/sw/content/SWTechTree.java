@@ -48,7 +48,7 @@ public class SWTechTree {
           });
         });
       });
-
+      node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
       node(swarm, with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
         node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
           node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
