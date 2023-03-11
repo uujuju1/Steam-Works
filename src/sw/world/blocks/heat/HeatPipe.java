@@ -3,22 +3,19 @@ package sw.world.blocks.heat;
 import arc.Core;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.meta.StatUnit;
-import sw.util.*;
+import sw.util.SWMath;
+import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
-import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
-import sw.world.heat.HasHeat;
 
-import static sw.util.SWDraw.*;
+import static sw.util.SWDraw.getRegions;
 
 public class HeatPipe extends Block implements HeatBlockI {
   HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
@@ -43,7 +40,7 @@ public class HeatPipe extends Block implements HeatBlockI {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
+    heatStats(stats);
   }
 
   @Override
@@ -70,20 +67,13 @@ public class HeatPipe extends Block implements HeatBlockI {
       return (HeatBlockI) block;
     }
 
-    @Override
-    public void updateTile() {
-      if (module().heat < heatConfig().minHeat) module().setHeat(heatConfig().minHeat);
-      if (overflows(0f)) kill();
-      for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatConfig().heatLoss * Time.delta);
+    @Override public void updateTile() {
+      updateHeat(this);
     }
     @Override
     public void draw() {
       Draw.rect(getRegion(regions), x, y, 0);
-      Draw.color(Pal.accent);
-      Draw.alpha(SWMath.heatGlow(module().heat));
-      Draw.rect(getRegion(heatRegions), x, y, 0);
-      Draw.reset();
+      drawHeat(getRegion(heatRegions), this);
       Draw.rect(getRegion(topRegions), x, y, 0);
     }
 

@@ -11,6 +11,7 @@ import mindustry.gen.Sounds;
 import mindustry.type.Category;
 import mindustry.type.LiquidStack;
 import mindustry.world.Block;
+import mindustry.world.blocks.defense.Wall;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
 import mindustry.world.blocks.power.ConsumeGenerator;
 import mindustry.world.blocks.production.AttributeCrafter;
@@ -30,8 +31,9 @@ import sw.world.blocks.units.SingleUnitFactory;
 import sw.world.consumers.ConsumeHeat;
 import sw.world.recipes.GenericRecipe;
 
+import static mindustry.type.ItemStack.mult;
 import static mindustry.type.ItemStack.with;
-import static mindustry.world.blocks.units.UnitFactory.*;
+import static mindustry.world.blocks.units.UnitFactory.UnitPlan;
 
 public class SWBlocks {
 	public static Block
@@ -52,6 +54,8 @@ public class SWBlocks {
 
 		bolt, light, /*thunder,*/
 
+    compoundWall, compoundWallLarge, denseWall, denseWallLarge,
+
     subFactory,
 		crafterFactory,
 
@@ -61,13 +65,17 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
+			heatConfig().maxHeat = 2200f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
+			heatConfig().maxHeat = 2200f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
-			minHeatLoss = 280f;
+			size = 2;
+			heatConfig().maxHeat = 2000f;
+			heatConfig().heatLoss = 0.2f;
 		}};
 
 //		production
@@ -129,6 +137,7 @@ public class SWBlocks {
 			health = 160;
 			craftTime = 30f;
 			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+			craftEffect = SWFx.nickelCraft;
       updateEffect = Fx.smeltsmoke;
 			consumeItems(with(Items.scrap, 2, Items.lead, 1));
 			consumePower(1f);
@@ -143,6 +152,7 @@ public class SWBlocks {
 			consumeItem(Items.coal, 1);
 			consumeLiquid(SWLiquids.steam, 0.02f);
 			craftEffect = SWFx.graphiteCraft;
+			stackCraftEffect = SWFx.graphiteStackCraft;
 			updateEffect = Fx.smoke;
       drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
 			outputItems = with(Items.graphite, 8);
@@ -241,6 +251,17 @@ public class SWBlocks {
 				fromColor = Color.white;
 				toColor = Color.lightGray;
 			}};
+		}};
+
+//    walls
+    compoundWall = new Wall("compound-wall") {{
+      requirements(Category.defense, with(SWItems.compound, 6));
+      health = 120 * 4;
+    }};
+		compoundWallLarge = new Wall("compound-wall-large") {{
+			requirements(Category.defense, mult(compoundWall.requirements, 4));
+			size = 2;
+			health = 120 * 4 * 4;
 		}};
 
 //		units

@@ -8,7 +8,6 @@ import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Nullable;
-import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
@@ -19,14 +18,14 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.meta.StatUnit;
 import sw.util.SWDraw;
 import sw.util.SWMath;
+import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
-import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
-import sw.world.heat.HasHeat;
+
+import java.util.Objects;
 
 
 public class HeatBridge extends Block implements HeatBlockI {
@@ -64,7 +63,7 @@ public class HeatBridge extends Block implements HeatBlockI {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
+    heatStats(stats);
   }
 
   @Override
@@ -126,9 +125,8 @@ public class HeatBridge extends Block implements HeatBlockI {
       return (HeatBlockI) block;
     }
 
-    @Override public Seq<HasHeat> nextBuilds(Building from) {
-      if (getLink() != null) return HasHeat.super.nextBuilds(from).add((HasHeat) getLink());
-      return HasHeat.super.nextBuilds(from);
+    @Override public Seq<Building> heatProximity(Building build) {
+      return HasHeat.super.heatProximity(build).add(getLink()).removeAll(Objects::isNull);
     }
 
     @Override
@@ -152,13 +150,10 @@ public class HeatBridge extends Block implements HeatBlockI {
       return false;
     }
 
-    @Override
-    public void updateTile() {
-      if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > heatConfig().maxHeat) kill();
-      for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatConfig().heatLoss * Time.delta);
+    @Override public void updateTile() {
+      updateHeat(this);
     }
+
     @Override
     public void draw() {
       super.draw();

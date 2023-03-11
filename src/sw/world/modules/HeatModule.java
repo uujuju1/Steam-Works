@@ -7,14 +7,14 @@ import mindustry.world.modules.BlockModule;
 public class HeatModule extends BlockModule {
   public float heat;
 
-  public float addHeat(float amount) {
-    return heat+=amount;
+  public void addHeat(float amount) {
+    heat+=amount;
   }
-  public float subHeat(float amount) {
-    return heat-=amount;
+  public void subHeat(float amount) {
+    heat-=amount;
   }
-  public float setHeat(float amount) {
-    return heat = amount;
+  public void setHeat(float amount) {
+    heat = amount;
   }
 
   @Override public void write(Writes write) {

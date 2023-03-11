@@ -7,6 +7,8 @@ import arc.math.Mathf;
 import mindustry.graphics.Pal;
 
 public class SWDraw {
+  public static final Color heatPal = Pal.accent.cpy();
+
   public static TextureRegion[] getRegions(TextureRegion base, int width, int height, int size) {
     int arraySize = width * height;
     TextureRegion[] out = new TextureRegion[arraySize];

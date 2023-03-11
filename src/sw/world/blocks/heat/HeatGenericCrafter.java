@@ -1,17 +1,13 @@
 package sw.world.blocks.heat;
 
 import arc.Core;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.struct.Seq;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
-import sw.util.SWMath;
 import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
@@ -31,18 +27,13 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(SWStat.maxHeat, heatConfig().maxHeat, StatUnit.degrees);
+    heatStats(stats);
     if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
   }
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
-  }
-
-  @Override
-  public void getRegionsToOutline(Seq<TextureRegion> out) {
-    super.getRegionsToOutline(out);
+    addBar("heat", (HeatGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
   }
 
   public class HeatGenericCrafterBuild extends GenericCrafterBuild implements HasHeat {
@@ -55,22 +46,11 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
       return (HeatBlockI) block;
     }
 
-    @Override public boolean acceptsHeat(HasHeat from, float amount) {
-      return HasHeat.super.acceptsHeat(from, amount) && heatConfig().acceptHeat;
-    }
-    @Override public boolean outputsHeat(HasHeat to, float amount) {
-      return HasHeat.super.outputsHeat(to, amount) && heatConfig().outputHeat;
-    }
-
     @Override
     public void updateTile() {
       super.updateTile();
       if (efficiency > 0 && outputHeat >= 0) module().setHeat(Mathf.approachDelta(module().heat, outputHeat * efficiencyScale(), efficiencyScale()));
-
-      if (module().heat < 0) module().setHeat(0f);
-      if (module().heat > heatConfig().maxHeat) kill();
-      for (HasHeat build : nextBuilds(self())) transferHeat(build.module());
-      module().subHeat(heatConfig().heatLoss * Time.delta);
+      updateHeat(this);
     }
 
     @Override

@@ -6,7 +6,9 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
+import arc.util.Tmp;
 import mindustry.entities.Effect;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 
 public class SWFx {
@@ -24,6 +26,16 @@ public class SWFx {
           graphiteCraft = new Effect(30f, e -> {
             Draw.color(Pal.accent, Color.gray, e.fin());
             Angles.randLenVectors(e.id, 10, e.finpow() * 30f, (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Angles.angle(x, y), 5f * e.foutpow()));
+          }),
+          graphiteStackCraft = new Effect(30f, e ->{
+            if (e.time < 2) Effect.shake(3, 3, e.x, e.y);
+            for (int i = 0; i < 4; i++) {
+              Tmp.v1.trns(i * 90, 5.75f);
+              Draw.color(Pal.accent);
+              Drawf.tri(e.x, e.y, 8 * e.foutpow(), 8 + e.foutpow(), i * 90);
+              Draw.color();
+              Drawf.tri(e.x, e.y, 4 * e.foutpow(), 4 + e.foutpow(), i * 90);
+            }
           }),
           baklerSiliconCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
             Draw.color(Pal.accent);

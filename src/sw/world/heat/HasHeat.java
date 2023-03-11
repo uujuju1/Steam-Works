@@ -1,46 +1,57 @@
 package sw.world.heat;
 
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.gen.Building;
 import sw.util.SWMath;
 import sw.world.modules.HeatModule;
 
+import static sw.util.SWDraw.heatPal;
+
 public interface HasHeat {
   HeatModule module();
   HeatBlockI type();
+  default HeatConfig heatC() {return type().heatConfig();}
 
-  default void transferHeat(HeatModule to) {
-    float amount = SWMath.heatTransferDelta(0.2f, module().heat, to.heat, true);
-    module().subHeat(amount);
-    to.addHeat(amount);
+  default float heat() {return module().heat;}
+  default float fraction() {return Mathf.map(heat(), heatC().minHeat, heatC().maxHeat, 0, 1);}
+  default float fractionNeg() {return Mathf.map(heat(), 0, heatC().maxHeat, 0, 1);}
+
+  default void addHeat(float amount) {module().addHeat(amount);}
+  default void subHeat(float amount) {module().subHeat(amount);}
+  default void setHeat(float amount) {module().setHeat(amount);}
+  default void transferHeat(HasHeat to, float amount) {subHeat(amount); to.addHeat(amount);}
+  default void transferHeat(HasHeat to) {transferHeat(to, SWMath.heatTransferDelta(heatC().heatEmissivity, heat(), to.heat(), true));}
+
+  default void updateHeat(Building to) {
+    if (overflows()) to.kill();
+    if (heat() < heatC().minHeat) setHeat(heatC().minHeat);
+    heatProximity(to).map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.heat() >= heat()).each(this::transferHeat);
+    subHeat(heatC().heatLoss * (fractionNeg() * 4));
   }
-  default Seq<HasHeat> nextBuilds(Building from) {
-    Seq<HasHeat> out = new Seq<>();
-    if (!(from instanceof HasHeat)) return out;
-    for (Building build : from.proximity) {
 
-      if (build instanceof HasHeat next) {
-        float amount = SWMath.heatTransferDelta(0.2f, module().heat, next.module().heat, true);
-        if (next.acceptsHeat(this, amount) && outputsHeat(next, amount)) out.add(next);
-      }
-    }
+  default void drawHeat(TextureRegion region, Building build) {
+    Draw.color(heatPal);
+    Draw.alpha(fractionNeg());
+    Draw.rect(region, build.x, build.y, 0);
+    Draw.color();
+  }
+
+  default Seq<Building> connections(Building build) {
+    Seq<Building> out = new Seq<>();
+    for (int i = 0; i < 4; i++) if (build.nearby(i) instanceof HasHeat) out.add(build.nearby(i));
     return out;
   }
-  default Seq<HasHeat> nextBuildsStatic(Building from) {
-    Seq<HasHeat> out = new Seq<>();
-    if (!(from instanceof HasHeat)) return out;
-    for (Building build : from.proximity) {
-
-      if (build instanceof HasHeat next && next.type().heatConfig().connects()) out.add(next);
-    }
+  default Seq<Building> heatProximity(Building build) {
+    Seq<Building> out = new Seq<>();
+    for (Building next : build.proximity) if (next instanceof HasHeat) out.add(next);
     return out;
   }
 
-//  only used for possible connection, won't change based on heat
-  default boolean connects(HasHeat to) {return true;}
-
-  default boolean acceptsHeat(HasHeat from, float amount) {return module().heat < from.module().heat;}
-  default boolean outputsHeat(HasHeat to, float amount) {return to.module().heat < module().heat;}
-
-  default boolean overflows(float amount) {return module().heat + amount > type().heatConfig().maxHeat;}
+  default boolean acceptsHeat(HasHeat from, float amount) {return heatC().acceptHeat;}
+  default boolean outputsHeat(HasHeat from, float amount) {return heatC().outputHeat;}
+  default boolean overflows(float amount) {return heat() + amount > heatC().maxHeat;}
+  default boolean overflows() {return overflows(0);}
 }
