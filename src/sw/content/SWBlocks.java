@@ -21,6 +21,7 @@ import mindustry.world.blocks.storage.CoreBlock;
 import mindustry.world.blocks.units.UnitFactory;
 import mindustry.world.consumers.ConsumeItemFlammable;
 import mindustry.world.draw.*;
+import sw.world.blocks.defense.HeatableWall;
 import sw.world.blocks.heat.HeatBridge;
 import sw.world.blocks.heat.HeatGenericCrafter;
 import sw.world.blocks.heat.HeatPipe;
@@ -74,8 +75,6 @@ public class SWBlocks {
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
 			size = 2;
-			heatConfig().maxHeat = 2000f;
-			heatConfig().heatLoss = 0.2f;
 		}};
 
 //		production
@@ -92,6 +91,7 @@ public class SWBlocks {
 //		crafting
 		burner = new HeatGenericCrafter("burner") {{
 			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
+			heatConfig().maxHeat = 2000f;
 			size = 2;
 			health = 160;
 			consume(new ConsumeItemFlammable());
@@ -108,6 +108,7 @@ public class SWBlocks {
 
 		boiler = new HeatGenericCrafter("boiler") {{
 			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
+			heatConfig().maxHeat = 2000f;
 			size = 2;
 			health = 160;
 			hasLiquids = true;
@@ -262,6 +263,17 @@ public class SWBlocks {
 			requirements(Category.defense, mult(compoundWall.requirements, 4));
 			size = 2;
 			health = 120 * 4 * 4;
+		}};
+		denseWall = new HeatableWall("dense-wall") {{
+			requirements(Category.defense, with(SWItems.denseAlloy, 6));
+			health = 200 * 4;
+			absorbLasers = true;
+		}};
+		denseWallLarge = new HeatableWall("dense-wall-large") {{
+			requirements(Category.defense, mult(denseWall.requirements, 4));
+			size = 2;
+			health = 200 * 4 * 4;
+			absorbLasers = true;
 		}};
 
 //		units

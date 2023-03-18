@@ -32,9 +32,9 @@ public class SWFx {
             for (int i = 0; i < 4; i++) {
               Tmp.v1.trns(i * 90, 5.75f);
               Draw.color(Pal.accent);
-              Drawf.tri(e.x, e.y, 8 * e.foutpow(), 8 + e.foutpow(), i * 90);
+              Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 8 * e.foutpow(), 8 + e.foutpow(), i * 90);
               Draw.color();
-              Drawf.tri(e.x, e.y, 4 * e.foutpow(), 4 + e.foutpow(), i * 90);
+              Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 4 * e.foutpow(), 4 + e.foutpow(), i * 90);
             }
           }),
           baklerSiliconCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
