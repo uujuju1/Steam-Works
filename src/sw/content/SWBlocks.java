@@ -1,40 +1,28 @@
 package sw.content;
 
-import arc.graphics.Color;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.Liquids;
-import mindustry.content.UnitTypes;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.gen.Sounds;
-import mindustry.type.Category;
-import mindustry.type.LiquidStack;
-import mindustry.world.Block;
-import mindustry.world.blocks.defense.Wall;
-import mindustry.world.blocks.defense.turrets.PowerTurret;
-import mindustry.world.blocks.power.ConsumeGenerator;
-import mindustry.world.blocks.production.AttributeCrafter;
-import mindustry.world.blocks.production.Drill;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.blocks.units.UnitFactory;
-import mindustry.world.consumers.ConsumeItemFlammable;
+import arc.graphics.*;
+import mindustry.content.*;
+import mindustry.entities.bullet.*;
+import mindustry.gen.*;
+import mindustry.type.*;
+import mindustry.world.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.production.*;
+import mindustry.world.blocks.storage.*;
+import mindustry.world.blocks.units.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
-import sw.world.blocks.defense.HeatableWall;
-import sw.world.blocks.heat.HeatBridge;
-import sw.world.blocks.heat.HeatGenericCrafter;
-import sw.world.blocks.heat.HeatPipe;
-import sw.world.blocks.heat.HeatRadiator;
-import sw.world.blocks.production.MultiCrafter;
-import sw.world.blocks.production.StackCrafter;
-import sw.world.blocks.units.SingleUnitFactory;
-import sw.world.consumers.ConsumeHeat;
-import sw.world.recipes.GenericRecipe;
+import sw.world.blocks.defense.*;
+import sw.world.blocks.heat.*;
+import sw.world.blocks.production.*;
+import sw.world.blocks.units.*;
+import sw.world.consumers.*;
+import sw.world.recipes.*;
 
-import static mindustry.type.ItemStack.mult;
-import static mindustry.type.ItemStack.with;
-import static mindustry.world.blocks.units.UnitFactory.UnitPlan;
+import static mindustry.type.ItemStack.*;
+import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWBlocks {
 	public static Block

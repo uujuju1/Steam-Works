@@ -1,21 +1,17 @@
 package sw.world.blocks.heat;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.gen.Building;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.Block;
-import sw.SWVars;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
-import sw.world.modules.HeatModule;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.util.io.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import sw.*;
+import sw.world.heat.*;
+import sw.world.modules.*;
 
-import static sw.util.SWMath.heatMap;
+import static sw.util.SWMath.*;
 
 public class HeatRadiator extends Block implements HeatBlockI {
   HeatConfig heatConfig = SWVars.baseConfig.copy();
