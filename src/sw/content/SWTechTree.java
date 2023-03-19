@@ -20,7 +20,7 @@ public class SWTechTree {
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> {});
         nodeProduce(compound, () -> {});
-        nodeProduce(denseAlloy, with(new Produce(steam)), () -> {});
+        nodeProduce(denseAlloy, () -> {});
       });
 
       /* blocks */
@@ -36,6 +36,11 @@ public class SWTechTree {
       node(heatPipe, with(new Produce(nickel), new Research(burner)), () -> {
         node(heatBridge, () -> {});
         node(heatRadiator, () -> {});
+      });
+
+      node(compoundWall, with(new Produce(compound)), () -> {
+        node(compoundWallLarge);
+        node(denseWall, with(new Produce(denseAlloy)), () -> node(denseWallLarge));
       });
 
       // turrets
