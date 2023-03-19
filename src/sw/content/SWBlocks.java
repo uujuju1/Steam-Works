@@ -66,15 +66,14 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
-			heatConfig().maxHeat = 2200f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
-			heatConfig().maxHeat = 2200f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
 			size = 2;
+			heatConfig().maxHeat = 2000;
 		}};
 
 //		production
@@ -91,7 +90,6 @@ public class SWBlocks {
 //		crafting
 		burner = new HeatGenericCrafter("burner") {{
 			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
-			heatConfig().maxHeat = 2000f;
 			size = 2;
 			health = 160;
 			consume(new ConsumeItemFlammable());
@@ -102,18 +100,17 @@ public class SWBlocks {
 			}});
 			updateEffect = Fx.coalSmeltsmoke;
 			craftTime = 120f;
-			outputHeat = 400f;
+			outputHeat = 3f;
 			heatConfig().acceptHeat = false;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{
 			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
 			heatConfig().maxHeat = 2000f;
+			heatConfig().outputHeat = false;
 			size = 2;
 			health = 160;
 			hasLiquids = true;
-			heatConfig().maxHeat = 300f;
-			heatConfig().outputHeat = false;
 			consumeLiquid(Liquids.water, 0.1f);
 			consume(new ConsumeHeat(0.5f, 100f, false));
 			updateEffect = Fx.smoke;
@@ -267,12 +264,14 @@ public class SWBlocks {
 		denseWall = new HeatableWall("dense-wall") {{
 			requirements(Category.defense, with(SWItems.denseAlloy, 6));
 			health = 200 * 4;
+			heatConfig().heatLoss = 0f;
 			absorbLasers = true;
 		}};
 		denseWallLarge = new HeatableWall("dense-wall-large") {{
 			requirements(Category.defense, mult(denseWall.requirements, 4));
 			size = 2;
 			health = 200 * 4 * 4;
+			heatConfig().heatLoss = 0f;
 			absorbLasers = true;
 		}};
 

@@ -9,6 +9,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import sw.SWVars;
 import sw.util.SWMath;
 import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
@@ -18,7 +19,7 @@ import sw.world.modules.HeatModule;
 import static sw.util.SWDraw.getRegions;
 
 public class HeatPipe extends Block implements HeatBlockI {
-  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
+  HeatConfig heatConfig = SWVars.baseConfig.copy();
   public TextureRegion[] regions, heatRegions, topRegions;
 
   public HeatPipe(String name) {

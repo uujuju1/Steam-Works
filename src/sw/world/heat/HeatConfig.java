@@ -1,6 +1,6 @@
 package sw.world.heat;
 
-public class HeatConfig {
+public class HeatConfig implements Cloneable {
   public float minHeat, maxHeat, heatEmissivity, heatLoss;
   public boolean acceptHeat, outputHeat;
 
@@ -12,6 +12,14 @@ public class HeatConfig {
     this.heatLoss = heatLoss;
     this.acceptHeat = acceptHeat;
     this.outputHeat = outputHeat;
+  }
+
+  public HeatConfig copy() {
+    try {
+      return (HeatConfig) clone();
+    } catch (CloneNotSupportedException a) {
+      throw new RuntimeException("no clones?", a);
+    }
   }
 
   public boolean connects() {return acceptHeat || outputHeat;}

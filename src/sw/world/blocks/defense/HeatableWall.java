@@ -8,6 +8,7 @@ import mindustry.gen.Bullet;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.Wall;
+import sw.SWVars;
 import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
@@ -16,7 +17,7 @@ import sw.world.modules.HeatModule;
 import static sw.util.SWMath.heatMap;
 
 public class HeatableWall extends Wall implements HeatBlockI {
-  HeatConfig heatConfig = new HeatConfig(-200f, 2000f, 0.4f, 0f, true, true);
+  HeatConfig heatConfig = SWVars.baseConfig.copy();
 
   public HeatableWall(String name) {
     super(name);
@@ -51,7 +52,7 @@ public class HeatableWall extends Wall implements HeatBlockI {
     @Override
     public boolean collision(Bullet bullet) {
       if (bullet.type instanceof BasicBulletType) {
-        Math.abs(bullet.damage /= 2 * fractionNeg());
+        bullet.damage /= Math.abs(2 * fractionNeg());
       } else {
         addHeat(bullet.damage * (1 - fraction()));
       }

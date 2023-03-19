@@ -18,6 +18,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import sw.SWVars;
 import sw.util.SWDraw;
 import sw.util.SWMath;
 import sw.world.heat.HasHeat;
@@ -29,7 +30,7 @@ import java.util.Objects;
 
 
 public class HeatBridge extends Block implements HeatBlockI {
-  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
+  HeatConfig heatConfig = SWVars.baseConfig.copy();
   public TextureRegion bridgeRegion, endRegion;
 
   public int range = 5;

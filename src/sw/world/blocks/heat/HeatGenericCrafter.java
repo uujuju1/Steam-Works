@@ -1,13 +1,14 @@
 package sw.world.blocks.heat;
 
 import arc.Core;
-import arc.math.Mathf;
+import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.GenericCrafter;
 import mindustry.world.meta.StatUnit;
+import sw.SWVars;
 import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
@@ -15,7 +16,7 @@ import sw.world.meta.SWStat;
 import sw.world.modules.HeatModule;
 
 public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
-  HeatConfig heatConfig = new HeatConfig(-200f, 500f, 0.4f, 0.1f, true, true);
+  HeatConfig heatConfig = SWVars.baseConfig.copy();
   public float outputHeat = -1f;
 
   public HeatGenericCrafter(String name) {
@@ -49,7 +50,7 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
     @Override
     public void updateTile() {
       super.updateTile();
-      if (efficiency > 0 && outputHeat >= 0) module().setHeat(Mathf.approachDelta(module().heat, outputHeat * efficiencyScale(), efficiencyScale()));
+      if (efficiency > 0 && outputHeat >= 0) module().addHeat(outputHeat * efficiencyScale() * Time.delta);
       updateHeat(this);
     }
 

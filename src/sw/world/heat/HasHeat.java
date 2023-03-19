@@ -5,6 +5,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.gen.Building;
+import sw.SWVars;
 import sw.util.SWMath;
 import sw.world.modules.HeatModule;
 
@@ -13,7 +14,10 @@ import static sw.util.SWDraw.heatPal;
 public interface HasHeat {
   HeatModule module();
   HeatBlockI type();
-  default HeatConfig heatC() {return type().heatConfig();}
+  default HeatConfig heatC() {
+    if (type().heatConfig() == SWVars.baseConfig) throw new IllegalArgumentException("use copy()");
+    return type().heatConfig();
+  }
 
   default float heat() {return module().heat;}
   default float fraction() {return Mathf.map(heat(), heatC().minHeat, heatC().maxHeat, 0, 1);}

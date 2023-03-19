@@ -9,6 +9,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
+import sw.SWVars;
 import sw.world.heat.HasHeat;
 import sw.world.heat.HeatBlockI;
 import sw.world.heat.HeatConfig;
@@ -17,14 +18,13 @@ import sw.world.modules.HeatModule;
 import static sw.util.SWMath.heatMap;
 
 public class HeatRadiator extends Block implements HeatBlockI {
-  HeatConfig heatConfig = new HeatConfig(-200f, 2000f, 0.4f, 0.2f, true, true);
+  HeatConfig heatConfig = SWVars.baseConfig.copy();
   public TextureRegion heatRegion, topRegion;
 
   public HeatRadiator(String name) {
     super(name);
     solid = destructible = true;
     update = sync = true;
-    rotate = true;
   }
 
   @Override public HeatConfig heatConfig() {return heatConfig;}
