@@ -12,6 +12,7 @@ public class SWStat {
   public static final Stat heatLoss = new Stat("sw-heat-loss", SWStatCat.heat);
 
   public static final Stat heatUse = new Stat("sw-heat-use", SWStatCat.heat);
+  public static final Stat heatUseOnce = new Stat("sw-heat-use-once", SWStatCat.heat);
   public static final Stat outputHeat = new Stat("sw-output-heat", SWStatCat.heat);
 
   public static final Stat acceptsHeat = new Stat("sw-accepts-heat", SWStatCat.heat);

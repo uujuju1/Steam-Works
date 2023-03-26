@@ -3,11 +3,11 @@ package sw.content;
 import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
@@ -31,8 +31,6 @@ public class SWBlocks {
 	  heatBridge,
 		heatRadiator,
 
-		hydraulicDrill,
-
 		burner,
 		boiler, thermalBoiler,
 		nickelForge,
@@ -54,25 +52,17 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
+			heatConfig().heatLoss = 0.1f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
+			heatConfig().heatLoss = 0.1f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
 			size = 2;
 			heatConfig().maxHeat = 2000;
-		}};
-
-//		production
-		hydraulicDrill = new Drill("hydraulic-drill") {{
-			requirements(Category.production, with(Items.silicon, 12, SWItems.nickel, 6));
-			size = 2;
-			health = 160;
-			tier = 3;
-			drillTime = 300f;
-			consumeLiquid(SWLiquids.steam, 0.02f);
-			consumeLiquid(Liquids.water, 0.05f).boost();
+			heatConfig().heatLoss = 1.06f;
 		}};
 
 //		crafting
@@ -118,7 +108,7 @@ public class SWBlocks {
 		}};
 
 		nickelForge = new GenericCrafter("nickel-forge") {{
-			requirements(Category.crafting, with(Items.silicon, 40, Items.graphite, 25));
+			requirements(Category.crafting, with(Items.copper, 40, Items.graphite, 25));
 			size = 2;
 			health = 160;
 			craftTime = 30f;
@@ -130,7 +120,13 @@ public class SWBlocks {
 			outputItems = with(SWItems.nickel, 1);
 		}};
 		batchPress = new StackCrafter("batch-press") {{
-			requirements(Category.crafting, with(Items.titanium, 120, Items.silicon, 50, Items.graphite, 75, SWItems.nickel, 150));
+			requirements(Category.crafting, with(
+				Items.titanium, 120,
+				Items.silicon, 50,
+				Items.graphite, 75,
+				Items.plastanium, 140,
+				SWItems.denseAlloy, 150
+			));
 			size = 3;
 			health = 200;
 			craftTime = 30f;
@@ -146,7 +142,7 @@ public class SWBlocks {
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
-				Items.graphite, 80,
+				Items.titanium, 80,
 				Items.copper, 60,
 				Items.lead, 75
 			));
@@ -166,7 +162,7 @@ public class SWBlocks {
 				}},
 				new GenericRecipe() {{
 					craftTime = 60f;
-					consumeItems = with(SWItems.nickel, 2, Items.graphite, 2);
+					consumeItems = with(SWItems.nickel, 2, Items.plastanium, 2);
 					consumeLiquids = LiquidStack.with(SWLiquids.steam, 0.3f);
 					outputItems = with(SWItems.denseAlloy, 1);
 					drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidRegion(SWLiquids.steam), new DrawDefault(), new DrawRegion("-top"));
@@ -179,8 +175,8 @@ public class SWBlocks {
 		stirlingGenerator = new ConsumeGenerator("stirling-generator") {{
       requirements(Category.power, with(
 				SWItems.denseAlloy, 120,
-							Items.silicon, 140,
-							Items.titanium, 100
+	      Items.silicon, 140,
+	      Items.titanium, 100
       ));
 			size = 3;
 			health = 160;
@@ -199,37 +195,37 @@ public class SWBlocks {
     }};
 
 //		turrets
-		bolt = new PowerTurret("bolt") {{
+		bolt = new HeatTurret("bolt") {{
 			requirements(Category.turret, with(
-							Items.silicon, 120,
-							Items.copper, 70,
-							SWItems.compound, 95
+				Items.silicon, 120,
+				Items.copper, 70,
+				SWItems.compound, 95
 			));
+			consumer = new ConsumeHeatTrigger(100, 250, false);
+			maxAmmo = 2;
 			size = 2;
 			health = 180 * 4;
 			reload = 30f;
-			range = 120f;
-			consumePower(4f);
+			range = 23f * 8f;
 			shootSound = Sounds.blaster;
-			shootType = new BasicBulletType(2.5f, 20, "circle-bullet") {{
-				lifetime = 48;
-				frontColor = Color.white;
-				backColor = Color.lightGray;
+			shootType = new LaserBulletType(60) {{
+				colors = new Color[]{Color.white, Color.lightGray};
 			}};
 		}};
-		light = new PowerTurret("light") {{
+		light = new HeatTurret("light") {{
 			requirements(Category.turret, with(
 							Items.titanium, 200,
 							Items.silicon, 200,
 							Items.graphite, 220,
 							SWItems.compound, 210
 			));
+			consumer = new ConsumeHeatTrigger(200, 1000, true);
 			size = 3;
 			health = 200 * 9;
 			reload = 60f;
 			range = 180f;
-			consumePower(6f);
 			shootSound = Sounds.shotgun;
+			shoot = new ShootSpread(3, 15);
 			shootType = new ShrapnelBulletType() {{
 				damage = 130;
 				length = 180f;
