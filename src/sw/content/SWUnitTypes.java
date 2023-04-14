@@ -1,33 +1,29 @@
 package sw.content;
 
-import mindustry.content.Blocks;
-import mindustry.content.Fx;
-import mindustry.content.Items;
-import mindustry.content.StatusEffects;
-import mindustry.entities.abilities.SpawnDeathAbility;
-import mindustry.entities.bullet.ArtilleryBulletType;
-import mindustry.entities.bullet.BasicBulletType;
-import mindustry.entities.bullet.SapBulletType;
-import mindustry.entities.bullet.ShrapnelBulletType;
-import mindustry.gen.Sounds;
-import mindustry.gen.UnitEntity;
-import mindustry.graphics.Pal;
-import mindustry.type.UnitType;
-import mindustry.type.Weapon;
-import mindustry.world.blocks.units.Reconstructor;
-import mindustry.world.blocks.units.UnitFactory;
-import sw.entities.comp.SubmarineUnit;
-import sw.entities.comp.CrafterUnit;
-import sw.type.SWUnitType;
-import sw.world.recipes.GenericRecipe;
+import arc.graphics.*;
+import arc.math.geom.*;
+import mindustry.content.*;
+import mindustry.entities.abilities.*;
+import mindustry.entities.bullet.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.type.ammo.*;
+import mindustry.type.unit.*;
+import mindustry.world.blocks.units.*;
+import sw.entities.bullet.*;
+import sw.entities.comp.*;
+import sw.type.*;
+import sw.world.recipes.*;
 
-import static mindustry.type.ItemStack.with;
-import static mindustry.world.blocks.units.UnitFactory.UnitPlan;
+import static mindustry.type.ItemStack.*;
+import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWUnitTypes {
   public static UnitType
   swarm, ambush, trap,
   recluse, retreat, evade,
+  sentry, tower, castle,
 
   bakler;
 
@@ -188,65 +184,165 @@ public class SWUnitTypes {
       constructor = SubmarineUnit::new;
 
       weapons.add(
-              new Weapon() {{
-                x = y = 0f;
-                reload = 240f;
-                rotateSpeed = 360f;
-                mirror = false;
-                rotate = true;
-                shootSound = Sounds.missileLaunch;
-                bullet = new BasicBulletType(4f, 200f) {{
-                  width = height = 15f;
-                  lifetime = 40f;
-                  drag = -0.01f;
-                  collideFloor = true;
-                  splashDamage = 120f;
-                  splashDamageRadius = 24f;
-                  frontColor = trailColor = hitColor = Pal.sapBullet;
-                  backColor = Pal.sapBulletBack;
-                  status = StatusEffects.sapped;
-                  statusDuration = 300f;
-                  trailLength = 80;
-                }};
-              }},
-              new Weapon("sw-evade-cannon") {{
-                x = 0f;
-                y = -7.25f;
-                reload = 120f;
-                targetAir = false;
-                mirror = false;
-                rotate = true;
-                shootSound = Sounds.artillery;
-                bullet = new ArtilleryBulletType(4f, 120) {{
-                  width = height = 12f;
-                  lifetime = 25f;
-                  range = 100f;
-                  collidesGround = true;
-                  splashDamage = 120f;
-                  splashDamageRadius = 24f;
-                  hitEffect = despawnEffect = Fx.hitBulletColor;
-                  frontColor = hitColor = trailColor = Pal.sapBullet;
-                  backColor = Pal.sapBulletBack;
-                  status = StatusEffects.sapped;
-                  statusDuration = 180f;
-                  trailLength = 40;
-                }};
-              }},
-              new Weapon("sw-evade-mount") {{
-                x = 8.75f;
-                y = 4f;
-                reload = 60f;
-                rotate = true;
-                shootSound = Sounds.shotgun;
-                bullet = new ShrapnelBulletType() {{
-                  damage = 80f;
-                  length = 12f;
-                  range = length;
-                  toColor = Pal.sapBullet;
-                  serrations = 4;
-                }};
-              }}
+        new Weapon() {{
+          x = y = 0f;
+          reload = 240f;
+          rotateSpeed = 360f;
+          mirror = false;
+          rotate = true;
+          shootSound = Sounds.missileLaunch;
+          bullet = new BasicBulletType(4f, 200f) {{
+            width = height = 15f;
+            lifetime = 40f;
+            drag = -0.01f;
+            collideFloor = true;
+            splashDamage = 120f;
+            splashDamageRadius = 24f;
+            frontColor = trailColor = hitColor = Pal.sapBullet;
+            backColor = Pal.sapBulletBack;
+            status = StatusEffects.sapped;
+            statusDuration = 300f;
+            trailLength = 80;
+          }};
+        }},
+        new Weapon("sw-evade-cannon") {{
+          x = 0f;
+          y = -7.25f;
+          reload = 120f;
+          targetAir = false;
+          mirror = false;
+          rotate = true;
+          shootSound = Sounds.artillery;
+          bullet = new ArtilleryBulletType(4f, 120) {{
+            width = height = 12f;
+            lifetime = 25f;
+            range = 100f;
+            collidesGround = true;
+            splashDamage = 120f;
+            splashDamageRadius = 24f;
+            hitEffect = despawnEffect = Fx.hitBulletColor;
+            frontColor = hitColor = trailColor = Pal.sapBullet;
+            backColor = Pal.sapBulletBack;
+            status = StatusEffects.sapped;
+            statusDuration = 180f;
+            trailLength = 40;
+          }};
+        }},
+        new Weapon("sw-evade-mount") {{
+          x = 8.75f;
+          y = 4f;
+          reload = 60f;
+          rotate = true;
+          shootSound = Sounds.shotgun;
+          bullet = new ShrapnelBulletType() {{
+            damage = 80f;
+            length = 12f;
+            range = length;
+            toColor = Pal.sapBullet;
+            serrations = 4;
+          }};
+        }}
       );
+    }};
+
+    sentry = new TankUnitType("sentry") {{
+      health = 320;
+      speed = 1f;
+      range = maxRange = 160f;
+      hitSize = 8f;
+      rotateSpeed = 4;
+      outlines = false;
+      treadRects = new Rect[]{new Rect(11f - 32f, 8f - 32f, 14, 53)};
+      ammoType = new ItemAmmoType(Items.copper);
+      constructor = TankUnit::create;
+
+      weapons.add(new Weapon("sw-sentry-fuse") {{
+        x = 0f;
+        y = 0.25f;
+        reload = 120f;
+        recoil = 0f;
+        rotate = true;
+        mirror = false;
+				shootY = 4;
+        shootSound = Sounds.pulseBlast;
+        bullet = new MultiBulletType() {{
+          shootEffect = hitEffect = smokeEffect = Fx.sparkShoot;
+          shake = 2f;
+          recoil = 2f;
+          range = 160f;
+          bullets.add(
+            new ShrapnelBulletType() {{
+              damage = 36;
+              length = 160f;
+              toColor = Pal.accent;
+            }},
+            new BasicBulletType(2f, 0, "circle-bullet") {{
+              lifetime = 80f;
+              width = height = 10f;
+              bulletInterval = 10;
+              intervalBullets = 10;
+              intervalBullet = new LightningBulletType() {{
+                damage = 1;
+                lightningColor = this.hitColor = Pal.accent;
+                lightningLength = 5;
+                lightningLengthRand = 3;
+                lightningType = new BulletType(1.0E-4f, 0.0f) {{
+                  lifetime = Fx.lightning.lifetime;
+                  despawnEffect = Fx.none;
+                  hittable = false;
+                }};
+              }};
+            }}
+          );
+        }};
+      }});
+    }};
+    tower = new TankUnitType("tower") {{
+      health = 650;
+      speed = 0.8f;
+      range = maxRange = 160f;
+      hitSize = 10f;
+      rotateSpeed = 3;
+      outlineColor = Pal.darkerMetal;
+      outlines = false;
+      treadRects = new Rect[]{new Rect(-25, -36, 13, 71)};
+      ammoType = new ItemAmmoType(Items.copper);
+      constructor = TankUnit::create;
+
+			weapons.add(new Weapon("sw-tower-shotgun") {{
+        x = 0f;
+        y = 0.5f;
+				reload = 60f;
+        mirror = false;
+        rotate = true;
+        shootSound = Sounds.shootAltLong;
+        bullet = new MultiBulletType() {{
+          shake = 3f;
+          shootEffect = Fx.shootBigColor;
+          smokeEffect = Fx.shootSmokeSquareSparse;
+          bullets.add(
+            new BasicBulletType(1f, 0) {{
+              lifetime = 1;
+              fragBullet = new BasicBulletType(4, 4) {{
+                lifetime = 20f;
+                knockback = 3f;
+                trailWidth = 6f;
+                trailLength = 3;
+                hitEffect = despawnEffect = Fx.hitSquaresColor;
+              }};
+              fragVelocityMax = fragVelocityMin = 1;
+              fragRandomSpread = 0;
+              fragSpread = 4f;
+              fragBullets = 15;
+            }},
+            new LaserBulletType(30) {{
+              length = 160;
+              width = 7.5f;
+              colors = new Color[]{Pal.accent, Color.white, Color.white};
+            }}
+          );
+        }};
+      }});
     }};
 
     bakler = new SWUnitType("bakler") {{
