@@ -34,7 +34,7 @@ public class SWTechTree {
       // crafting
       node(nickelForge, () -> {
         node(rebuilder, () -> node(burner));
-        node(boiler, with(new Research(burner)), () -> node(thermalBoiler));
+        node(boiler, with(new Research(burner), new SectorComplete(SectorPresets.extractionOutpost)), () -> node(thermalBoiler));
         nodeObj(batchPress, with(new Research(Blocks.multiPress)));
       });
 
@@ -63,6 +63,11 @@ public class SWTechTree {
       });
       node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
       node(swarm, with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
+        node(sentry, () -> {
+          node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
+            nodeObj(castle, with(new Research(Blocks.multiplicativeReconstructor)));
+          });
+        });
         node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
           nodeObj(trap, with(new Research(Blocks.multiplicativeReconstructor)));
         });

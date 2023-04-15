@@ -251,7 +251,7 @@ public class SWUnitTypes {
       range = maxRange = 160f;
       hitSize = 8f;
       rotateSpeed = 4;
-      outlines = false;
+      outlines = faceTarget = false;
       treadRects = new Rect[]{new Rect(11f - 32f, 8f - 32f, 14, 53)};
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
@@ -261,7 +261,9 @@ public class SWUnitTypes {
         y = 0.25f;
         reload = 120f;
         recoil = 0f;
+        range = 160f;
         rotate = true;
+        rotateSpeed = 7f;
         mirror = false;
 				shootY = 4;
         shootSound = Sounds.pulseBlast;
@@ -274,7 +276,8 @@ public class SWUnitTypes {
             new ShrapnelBulletType() {{
               damage = 36;
               length = 160f;
-              toColor = Pal.accent;
+              fromColor = Pal.accent;
+              toColor = Color.gray;
             }},
             new BasicBulletType(2f, 0, "circle-bullet") {{
               lifetime = 80f;
@@ -283,7 +286,7 @@ public class SWUnitTypes {
               intervalBullets = 10;
               intervalBullet = new LightningBulletType() {{
                 damage = 1;
-                lightningColor = this.hitColor = Pal.accent;
+                lightningColor = hitColor = Pal.accent;
                 lightningLength = 5;
                 lightningLengthRand = 3;
                 lightningType = new BulletType(1.0E-4f, 0.0f) {{
@@ -303,8 +306,7 @@ public class SWUnitTypes {
       range = maxRange = 160f;
       hitSize = 10f;
       rotateSpeed = 3;
-      outlineColor = Pal.darkerMetal;
-      outlines = false;
+      outlines = faceTarget = false;
       treadRects = new Rect[]{new Rect(-25, -36, 13, 71)};
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
@@ -313,10 +315,13 @@ public class SWUnitTypes {
         x = 0f;
         y = 0.5f;
 				reload = 60f;
+        range = 160f;
         mirror = false;
         rotate = true;
+        rotateSpeed = 5f;
         shootSound = Sounds.shootAltLong;
         bullet = new MultiBulletType() {{
+          range = 160f;
           shake = 3f;
           shootEffect = Fx.shootBigColor;
           smokeEffect = Fx.shootSmokeSquareSparse;
@@ -338,7 +343,59 @@ public class SWUnitTypes {
             new LaserBulletType(30) {{
               length = 160;
               width = 7.5f;
-              colors = new Color[]{Pal.accent, Color.white, Color.white};
+              colors = new Color[]{Pal.accent, Pal.accent, Color.white};
+            }}
+          );
+        }};
+      }});
+    }};
+    castle = new TankUnitType("castle") {{
+      health = 1400;
+      speed = 0.7f;
+      range = maxRange = 220f;
+      hitSize = 14f;
+      rotateSpeed = 2.5f;
+      outlines = false;
+      treadFrames = 20;
+      treadRects = new Rect[]{new Rect(-8f, -49, 16, 95), new Rect(-34, -40, 13, 88)};
+      ammoType = new ItemAmmoType(Items.copper);
+      constructor = TankUnit::create;
+
+      weapons.add(new Weapon("sw-castle-gun") {{
+        x = y = 0f;
+        reload = 120f;
+        range = 220f;
+        shake = 5f;
+        shootY = 8f;
+        mirror = false;
+        rotate = true;
+        rotateSpeed = 3f;
+        shootSound = Sounds.pulseBlast;
+        bullet = new MultiBulletType() {{
+          range = 220f;
+          shootEffect = smokeEffect = Fx.sparkShoot;
+          bullets.add(
+            new BulletType(10f, 0) {{
+              lifetime = 22f;
+              bulletInterval = 1;
+              intervalBullets = 10;
+              hitEffect = despawnEffect = Fx.none;
+              intervalBullet = new LightningBulletType() {{
+                damage = 5;
+                lightningColor = hitColor = Pal.accent;
+                lightningLength = 5;
+                lightningLengthRand = 3;
+                lightningType = new BulletType(1.0E-4f, 0.0f) {{
+                  lifetime = Fx.lightning.lifetime;
+                  despawnEffect = Fx.none;
+                  hittable = false;
+                }};
+              }};
+            }},
+            new LaserBulletType(300) {{
+              length = 220f;
+              lifetime = 22f;
+              colors = new Color[]{Pal.accent, Pal.accent, Color.white};
             }}
           );
         }};
@@ -368,8 +425,17 @@ public class SWUnitTypes {
       constructor = CrafterUnit::new;
     }};
 
+    ((UnitFactory) Blocks.groundFactory).plans.add(new UnitPlan(sentry, 60f * 40f, with(SWItems.compound, 16, Items.silicon, 7, Items.titanium, 7)));
     ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, with(SWItems.compound, 12, Items.silicon, 7)));
-    ((Reconstructor) Blocks.additiveReconstructor).upgrades.add(new UnitType[]{swarm, ambush}, new UnitType[]{recluse, retreat});
-    ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.add(new UnitType[]{ambush, trap}, new UnitType[]{retreat, evade});
+    ((Reconstructor) Blocks.additiveReconstructor).upgrades.addAll(
+      new UnitType[]{swarm, ambush},
+      new UnitType[]{recluse, retreat},
+      new UnitType[]{sentry, tower}
+    );
+    ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.addAll(
+      new UnitType[]{ambush, trap},
+      new UnitType[]{retreat, evade},
+      new UnitType[]{tower, castle}
+    );
   }
 }
