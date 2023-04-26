@@ -9,9 +9,9 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.Wall;
 import sw.SWVars;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
+import sw.world.interfaces.HasHeat;
+import sw.world.interfaces.HeatBlockI;
+import sw.world.meta.HeatConfig;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWMath.heatMap;

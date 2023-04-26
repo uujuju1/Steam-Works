@@ -42,4 +42,11 @@ public class SWDraw {
     Lines.stroke(oldStroke, color);
     Lines.lineAngle(x, y, angle, length);
   }
+  public static void linePoint(Color color, float x, float y, float x2, float y2) {
+    float oldStroke = Lines.getStroke();
+    Lines.stroke(Lines.getStroke() * 3f, Pal.gray);
+    Lines.line(x, y, x2, y2);
+    Lines.stroke(oldStroke, color);
+    Lines.line(x, y, x2, y2);
+  }
 }

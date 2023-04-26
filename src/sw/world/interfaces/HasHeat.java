@@ -1,4 +1,4 @@
-package sw.world.heat;
+package sw.world.interfaces;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -7,6 +7,7 @@ import arc.struct.Seq;
 import mindustry.gen.Building;
 import sw.SWVars;
 import sw.util.SWMath;
+import sw.world.meta.*;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWDraw.heatPal;

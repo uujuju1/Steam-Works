@@ -6,7 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.consumers.Consume;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
-import sw.world.heat.HasHeat;
+import sw.world.interfaces.HasHeat;
 import sw.world.meta.SWStat;
 
 public class ConsumeHeat extends Consume {

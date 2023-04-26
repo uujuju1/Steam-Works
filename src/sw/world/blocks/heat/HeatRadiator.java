@@ -8,7 +8,8 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import sw.*;
-import sw.world.heat.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
 import sw.world.modules.*;
 
 import static sw.util.SWMath.*;

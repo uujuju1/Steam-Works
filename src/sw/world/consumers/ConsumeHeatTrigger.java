@@ -4,7 +4,7 @@ import arc.math.*;
 import mindustry.gen.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import sw.world.heat.*;
+import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 public class ConsumeHeatTrigger extends Consume {

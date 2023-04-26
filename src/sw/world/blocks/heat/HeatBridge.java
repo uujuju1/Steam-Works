@@ -21,9 +21,9 @@ import mindustry.world.Block;
 import sw.SWVars;
 import sw.util.SWDraw;
 import sw.util.SWMath;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
+import sw.world.interfaces.HasHeat;
+import sw.world.interfaces.HeatBlockI;
+import sw.world.meta.HeatConfig;
 import sw.world.modules.HeatModule;
 
 import java.util.Objects;

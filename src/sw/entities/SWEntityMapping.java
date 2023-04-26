@@ -1,12 +1,10 @@
 package sw.entities;
 
-import arc.func.Prov;
-import arc.struct.ObjectIntMap;
-import arc.struct.ObjectMap.Entry;
-import mindustry.gen.EntityMapping;
-import mindustry.gen.Entityc;
-import sw.entities.comp.CrafterUnit;
-import sw.entities.comp.SubmarineUnit;
+import arc.func.*;
+import arc.struct.*;
+import arc.struct.ObjectMap.*;
+import mindustry.gen.*;
+import sw.entities.comp.*;
 
 
 public class SWEntityMapping {
@@ -14,7 +12,8 @@ public class SWEntityMapping {
   public static ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
   public static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] entities = new Entry[]{
     entry(SubmarineUnit.class, SubmarineUnit::new),
-    entry(CrafterUnit.class, CrafterUnit::new)
+    entry(CrafterUnit.class, CrafterUnit::new),
+    entry(ForceGraphUpdater.class, ForceGraphUpdater::new)
   };
 
   private static <T extends Entityc> Entry<Class<T>, Prov<T>> entry(Class<T> name, Prov<T> prov) {

@@ -91,3 +91,16 @@ task deploy(type: Jar){
         }
     }
 }
+
+task move doFirst {
+    exec {
+        workingDir = "$buildDir"
+        if(System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("windows")){
+            println "Move now"
+            commandLine("cmd", "/C", "move", "/Y", "libs\\${project.archivesBaseName}Desktop.jar", "%userprofile%\\AppData\\Roaming\\Mindustry\\mods")
+        }else{
+            println "do not the move on apples."
+        }
+    }
+}
+task moveJar dependsOn "jar", "move"

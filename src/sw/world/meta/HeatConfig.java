@@ -1,4 +1,4 @@
-package sw.world.heat;
+package sw.world.meta;
 
 public class HeatConfig implements Cloneable {
   public float minHeat, maxHeat, heatEmissivity, heatLoss;

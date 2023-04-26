@@ -14,11 +14,14 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.world.blocks.defense.*;
+import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
+import sw.world.meta.*;
 import sw.world.recipes.*;
 
 import static mindustry.type.ItemStack.*;
@@ -30,6 +33,9 @@ public class SWBlocks {
 		heatPipe,
 	  heatBridge,
 		heatRadiator,
+
+		beltNode, beltNodeLarge,
+		manualSpinner,
 
 		burner,
 		boiler, thermalBoiler,
@@ -63,6 +69,37 @@ public class SWBlocks {
 			size = 2;
 			heatConfig().maxHeat = 2000;
 			heatConfig().heatLoss = 1.06f;
+		}};
+
+		beltNode = new ForceNode("belt-node") {{
+			requirements(Category.power, with(Items.silicon, 20, SWItems.compound, 20));
+			health = 120;
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				resistanceScl = 2f;
+				range = 60f;
+			}};
+		}};
+		beltNodeLarge = new ForceNode("belt-node-large") {{
+			requirements(Category.power, with(Items.silicon, 60, Items.titanium, 40, SWItems.compound, 80));
+			size = 2;
+			health = 200;
+			forceConfig = new ForceConfig() {{
+				maxForce = 8f;
+				baseResistance = 1f;
+				range = 90f;
+				beltSizeIn = beltSizeOut = 4f;
+			}};
+		}};
+
+		manualSpinner = new ForceSpinner("manual-spinner") {{
+			buildVisibility = BuildVisibility.shown;
+			maxSpin = 2f;
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				baseResistance = 0.3f;
+				resistanceScl = 2f;
+			}};
 		}};
 
 //		crafting

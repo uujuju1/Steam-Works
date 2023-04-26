@@ -9,7 +9,8 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import sw.*;
 import sw.world.consumers.*;
-import sw.world.heat.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class HeatTurret extends Turret implements HeatBlockI {
