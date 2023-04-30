@@ -35,7 +35,7 @@ public class SWBlocks {
 		heatRadiator,
 
 		beltNode, beltNodeLarge,
-		manualSpinner,
+		manualSpinner, compoundMixer,
 
 		burner,
 		boiler, thermalBoiler,
@@ -45,7 +45,7 @@ public class SWBlocks {
 
 		stirlingGenerator,
 
-		bolt, light, /*thunder,*/
+		bolt, light,
 
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
@@ -83,26 +83,47 @@ public class SWBlocks {
 		beltNodeLarge = new ForceNode("belt-node-large") {{
 			requirements(Category.power, with(Items.silicon, 60, Items.titanium, 40, SWItems.compound, 80));
 			size = 2;
-			health = 200;
+			health = 120;
 			forceConfig = new ForceConfig() {{
 				maxForce = 8f;
-				baseResistance = 1f;
+				baseResistance = 0.1f;
 				range = 90f;
 				beltSizeIn = beltSizeOut = 4f;
 			}};
 		}};
 
-		manualSpinner = new ForceSpinner("manual-spinner") {{
+		manualSpinner = new ForceGenericCrafter("manual-spinner") {{
 			buildVisibility = BuildVisibility.shown;
-			maxSpin = 2f;
+			outputSpeed = 5f;
+			consumePower(1f);
+			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				baseResistance = 0.3f;
+				baseResistance = 0.03f;
 				resistanceScl = 2f;
 			}};
 		}};
 
 //		crafting
+		compoundMixer = new ForceGenericCrafter("compound-mixer") {{
+			requirements(Category.crafting, with(
+				Items.silicon, 150,
+				Items.graphite, 160,
+				Items.titanium, 80,
+				SWItems.compound, 200
+			));
+			forceConfig = new ForceConfig() {{
+				baseResistance = 0.05f;
+				beltSizeIn = 4f;
+			}};
+			size = 3;
+			health = 200;
+			craftTime = 60f;
+			drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rotator"){{spinSprite = true;}});
+			consume(new ConsumeSpeed(3f, 400f));
+			outputItem = new ItemStack(SWItems.compound, 2);
+		}};
+
 		burner = new HeatGenericCrafter("burner") {{
 			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
 			size = 2;
@@ -173,7 +194,6 @@ public class SWBlocks {
 			craftEffect = SWFx.graphiteCraft;
 			stackCraftEffect = SWFx.graphiteStackCraft;
 			updateEffect = Fx.smoke;
-      drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
 			outputItems = with(Items.graphite, 8);
 		}};
 		rebuilder = new MultiCrafter("rebuilder") {{

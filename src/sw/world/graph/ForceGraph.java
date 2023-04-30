@@ -8,9 +8,11 @@ import sw.entities.comp.*;
 import sw.world.interfaces.*;
 import sw.world.modules.*;
 
+// TODO save the graph's rotation and links
 public class ForceGraph {
 	public final Seq<Building> builds = new Seq<>(false, 16, Building.class);
 	public final Seq<ForceModule> modules = new Seq<>(false, 16, ForceModule.class);
+	public final Seq<Link> links = new Seq<>(false, 16, Link.class);
 
 	public final @Nullable ForceGraphUpdater entity;
 
@@ -82,22 +84,27 @@ public class ForceGraph {
 	}
 
 	public void update() {
-		rotation += Mathf.maxZero(getSpeed() - getResistance()) * Time.delta;
+		rotation += Mathf.maxZero(Math.abs(getSpeed()) - getResistance()) * Time.delta * (getSpeed() >= 0 ? 1 : -1);
+		for (Link link : links) {
+			float spd = (((HasForce) link.l1).speed() + ((HasForce) link.l2).speed())/2f;
+			((HasForce) link.l1).force().speed = spd;
+			((HasForce) link.l2).force().speed = spd;
+		}
+		for (HasForce build : builds.map(b -> (HasForce) b)) build.force().speed = Mathf.maxZero(
+			Math.abs(build.speed()) - build.forceConfig().baseResistance) * (build.speed() > 0 ? 1 : -1
+		);
 	}
 
 	public float getResistance() {
-		float resistance = 0f;
-    for (Building b : builds) {
-    	if (b instanceof HasForce a) {
-	 	  	resistance += a.forceConfig().baseResistance;
- 	    	resistance += a.forceConfig().resistanceScl/getSpeed();
- 	    }
-    }
-    return resistance;
+		float resistance = 0.0001f;
+		if (modules.isEmpty()) return resistance;
+    for (HasForce b : builds.map(b -> (HasForce) b)) if (b != null) resistance += b.forceConfig().baseResistance;
+    return resistance/modules.size;
 	}
 	public float getSpeed() {
 		float speed = 0.0001f;
+		if (modules.isEmpty()) return speed;
 		for (ForceModule b : modules) speed += b.speed;
-		return speed;
+		return speed/modules.size;
 	}
 }

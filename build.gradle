@@ -103,4 +103,5 @@ task move doFirst {
         }
     }
 }
+
 task moveJar dependsOn "jar", "move"

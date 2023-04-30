@@ -1,6 +1,7 @@
 package sw.entities.comp;
 
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import sw.entities.*;
@@ -53,10 +54,18 @@ public class ForceGraphUpdater implements Entityc {
 
 	@Override public void afterRead() {}
 	@Override public void read(Reads read) {
-		graph.rotation = read.f() % 8f;
+		graph.rotation = read.f() % 100;
+		short s = read.s();
+		for (int i = 0; i < s; i++) graph.links.addUnique(new Link(Vars.world.build(read.i()), Vars.world.build(read.i())).addS());
+//		links.remove(link -> link.l1 == null || link.l2 == null);
 	}
 	@Override public void write(Writes write) {
 		write.f(graph.rotation);
+		write.s(graph.links.size);
+		for (Link link : graph.links) {
+			write.i(link.l1.pos());
+			write.i(link.l2.pos());
+		}
 	}
 
 	@Override

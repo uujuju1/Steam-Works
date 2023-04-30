@@ -4,20 +4,19 @@ import arc.graphics.g2d.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.world.*;
+import mindustry.world.blocks.production.*;
 import sw.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class ForceNode extends Block {
+public class ForceGenericCrafter extends GenericCrafter {
+	public float outputSpeed, outputForce;
 	public ForceConfig forceConfig = new ForceConfig();
 
-	public ForceNode(String name) {
+	public ForceGenericCrafter(String name) {
 		super(name);
-		solid = destructible = true;
-		sync = update = true;
 		configurable = true;
 	}
 
@@ -31,13 +30,22 @@ public class ForceNode extends Block {
 		forceConfig.addStats(stats);
 	}
 
-	public class ForceNodeBuild extends Building implements HasForce {
+	public class ForceGenericCrafterBuild extends GenericCrafterBuild implements HasForce {
 		ForceModule force = new ForceModule();
 
-		public ForceModule force() {
+		@Override public ForceModule force() {
 			return force;
 		}
-		public ForceConfig forceConfig() {return forceConfig;}
+		@Override public ForceConfig forceConfig() {
+			return forceConfig;
+		}
+
+		@Override
+		public void craft() {
+			super.craft();
+			force().speed = outputSpeed;
+			force().strength = outputForce;
+		}
 
 		@Override
 		public void draw() {

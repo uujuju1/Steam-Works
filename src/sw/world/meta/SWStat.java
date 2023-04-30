@@ -23,5 +23,8 @@ public class SWStat {
     beltSizeIn = new Stat("sw-belt-in", SWStatCat.force),
     beltSizeOut = new Stat("sw-belt-out", SWStatCat.force),
     baseResistance = new Stat("sw-resistance", SWStatCat.force),
-    resistanceScl = new Stat("sw-resistance-scl", SWStatCat.force);
+    resistanceScl = new Stat("sw-resistance-scl", SWStatCat.force),
+    minSpeedConsume = new Stat("sw-speed-min", SWStatCat.force),
+    maxSpeedConsume = new Stat("sw-speed-max", SWStatCat.force),
+    strengthConsume = new Stat("sw-strength-cons", SWStatCat.force);
 }
