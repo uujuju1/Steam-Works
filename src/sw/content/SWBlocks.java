@@ -21,6 +21,7 @@ import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
+import sw.world.draw.*;
 import sw.world.meta.*;
 import sw.world.recipes.*;
 
@@ -35,7 +36,9 @@ public class SWBlocks {
 		heatRadiator,
 
 		beltNode, beltNodeLarge,
-		manualSpinner, compoundMixer,
+		manualSpinner,
+
+		compoundMixer, frictionHeater,
 
 		burner,
 		boiler, thermalBoiler,
@@ -138,6 +141,20 @@ public class SWBlocks {
 			craftTime = 120f;
 			outputHeat = 3f;
 			heatConfig().acceptHeat = false;
+		}};
+		frictionHeater = new SWGenericCrafter("friction-heater") {{
+			buildVisibility = BuildVisibility.shown;
+			size = 3;
+			health = 200;
+			craftTime = 7f;
+			craftEffect = SWFx.sparks;
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
+				sinScl = 1f;
+				sinMag = 6f;
+			}}, new DrawDefault());
+			consume(new ConsumeSpeed(3f, 9f));
+			heatConfig().acceptHeat = false;
+			outputHeat = 3f;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{

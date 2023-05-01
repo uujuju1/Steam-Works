@@ -29,7 +29,7 @@ public class HeatRadiator extends Block implements HeatBlockI {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.module().heat, 0f, heatConfig().maxHeat)));
+    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.heat().heat, 0f, heatConfig().maxHeat)));
   }
   @Override
   public void setStats() {
@@ -47,7 +47,7 @@ public class HeatRadiator extends Block implements HeatBlockI {
   public class HeatRadiatorBuild extends Building implements HasHeat {
     HeatModule module = new HeatModule();
 
-    @Override public HeatModule module() {
+    @Override public HeatModule heat() {
       return module;
     }
     @Override public HeatBlockI type() {return (HeatBlockI) block;}
@@ -65,12 +65,12 @@ public class HeatRadiator extends Block implements HeatBlockI {
     @Override
     public void read(Reads read, byte revision) {
       super.read(read, revision);
-      module().read(read);
+      heat().read(read);
     }
     @Override
     public void write(Writes write) {
       super.write(write);
-      module().write(write);
+      heat().write(write);
     }
   }
 }

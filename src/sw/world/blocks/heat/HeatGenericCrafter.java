@@ -40,7 +40,7 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
   public class HeatGenericCrafterBuild extends GenericCrafterBuild implements HasHeat {
     HeatModule module = new HeatModule();
 
-    @Override public HeatModule module() {
+    @Override public HeatModule heat() {
       return module;
     }
     @Override public HeatBlockI type() {
@@ -50,19 +50,19 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
     @Override
     public void updateTile() {
       super.updateTile();
-      if (efficiency > 0 && outputHeat >= 0) module().addHeat(outputHeat * efficiencyScale() * Time.delta);
+      if (efficiency > 0 && outputHeat >= 0) heat().addHeat(outputHeat * efficiencyScale() * Time.delta);
       updateHeat(this);
     }
 
     @Override
     public void write(Writes write) {
       super.write(write);
-      module().write(write);
+      heat().write(write);
     }
     @Override
     public void read(Reads read, byte revision) {
       super.read(read, revision);
-      module().read(read);
+      heat().read(read);
     }
   }
 }

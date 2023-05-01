@@ -42,7 +42,7 @@ public class HeatTurret extends Turret implements HeatBlockI {
 	public class HeatTurretBuild extends TurretBuild implements HasHeat {
 		HeatModule module = new HeatModule();
 
-		@Override public HeatModule module() {
+		@Override public HeatModule heat() {
 			return module;
 		}
 		@Override public HeatBlockI type() {
@@ -51,7 +51,7 @@ public class HeatTurret extends Turret implements HeatBlockI {
 
 		@Override
 		public void updateTile() {
-			unit.ammo(heat() - consumer.min - consumer.amount);
+			unit.ammo(temperature() - consumer.min - consumer.amount);
 			super.updateTile();
 			updateHeat(this);
 		}
