@@ -1,6 +1,8 @@
 package sw.world.blocks.force;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -11,11 +13,12 @@ import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class ForceGenericCrafter extends GenericCrafter {
+public class ForceSwayCrafter extends GenericCrafter {
 	public float outputSpeed, outputForce;
+	public float swayScl = 3f;
 	public ForceConfig forceConfig = new ForceConfig();
 
-	public ForceGenericCrafter(String name) {
+	public ForceSwayCrafter(String name) {
 		super(name);
 		configurable = true;
 	}
@@ -30,7 +33,8 @@ public class ForceGenericCrafter extends GenericCrafter {
 		forceConfig.addStats(stats);
 	}
 
-	public class ForceGenericCrafterBuild extends GenericCrafterBuild implements HasForce {
+	public class ForceSwayCrafterBuild extends GenericCrafterBuild implements HasForce {
+		public float rotation = 0;
 		ForceModule force = new ForceModule();
 
 		@Override public ForceModule force() {
@@ -43,7 +47,8 @@ public class ForceGenericCrafter extends GenericCrafter {
 		@Override
 		public void craft() {
 			super.craft();
-			force().speed = outputSpeed;
+			rotation += Time.delta;
+			force().speed = Mathf.sinDeg(rotation/swayScl) * outputSpeed;
 			force().strength = outputForce;
 		}
 
@@ -102,12 +107,14 @@ public class ForceGenericCrafter extends GenericCrafter {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
+			rotation = read.f();
 			graph().floodFill(this).each(b -> graph().add(b));
 		}
 		@Override
 		public void write(Writes write) {
 			super.write(write);
 			force.write(write);
+			write.f(rotation);
 		}
 	}
 }

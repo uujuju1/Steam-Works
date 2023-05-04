@@ -16,11 +16,15 @@ import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
+/**
+ * Works as a bridge between force and heat
+ */
 public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 	public ForceConfig forceConfig = new ForceConfig();
 	HeatConfig heatConfig = SWVars.baseConfig.copy();
 
 	public float outputSpeed = 0f, outputForce = 0f, outputHeat = -1f;
+	public boolean hasForce = true, hasHeat = true;
 
 /**
  * makes so that it can spin continuously for a certain amount before stopping
@@ -41,14 +45,22 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 	@Override
 	public void setStats() {
 		super.setStats();
-		heatStats(stats);
-		forceConfig.addStats(stats);
+		if (hasHeat) heatStats(stats);
+		if (hasForce) forceConfig.addStats(stats);
 		if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
 	}
 	@Override
 	public void setBars() {
 		super.setBars();
+		if (!hasHeat) return;
 		addBar("heat", (SWGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		if (!hasHeat) heatConfig().acceptHeat = heatConfig().outputHeat = false;
+		if (!hasForce) configurable = false;
 	}
 
 	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasHeat, HasForce {
@@ -74,7 +86,7 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 		public void updateTile() {
 			if (efficiency > 0 && outputHeat >= 0) heat().addHeat(outputHeat * efficiencyScale() * Time.delta);
 			rotation += speed() * Time.delta;
-			if (Math.abs(rotation) > maxRotation) {
+			if (Math.abs(rotation) > maxRotation && clampRotation) {
 				rotation = (maxRotation + 1f) * (rotation > 0 ? 1f : -1f);
 				efficiency = 0f;
 			}

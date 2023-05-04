@@ -8,7 +8,12 @@ import sw.entities.comp.*;
 import sw.world.interfaces.*;
 import sw.world.modules.*;
 
-// TODO save the graph's rotation and links
+/**
+ * TODO save the graph's rotation and links
+ * TODO strength propagation
+ * TODO speed based on size ratio
+ * TODO visual speed setting
+ */
 public class ForceGraph {
 	public final Seq<Building> builds = new Seq<>(false, 16, Building.class);
 	public final Seq<ForceModule> modules = new Seq<>(false, 16, ForceModule.class);
@@ -90,9 +95,10 @@ public class ForceGraph {
 			((HasForce) link.l1).force().speed = spd;
 			((HasForce) link.l2).force().speed = spd;
 		}
-		for (HasForce build : builds.map(b -> (HasForce) b)) build.force().speed = Mathf.maxZero(
-			Math.abs(build.speed()) - build.forceConfig().baseResistance) * (build.speed() > 0 ? 1 : -1
-		);
+		for (HasForce build : builds.map(b -> (HasForce) b)) {
+			build.force().speed = Math.min(Math.abs(build.speed()), build.forceConfig().maxForce) * (build.speed() > 0 ? 1 : -1);
+			build.force().speed = Mathf.maxZero(Math.abs(build.speed()) - build.forceConfig().baseResistance) * (build.speed() > 0 ? 1 : -1);
+		}
 	}
 
 	public float getResistance() {
