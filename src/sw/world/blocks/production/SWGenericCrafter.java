@@ -23,7 +23,7 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 	public ForceConfig forceConfig = new ForceConfig();
 	HeatConfig heatConfig = SWVars.baseConfig.copy();
 
-	public float outputSpeed = 0f, outputForce = 0f, outputHeat = -1f;
+	public float outputSpeed = -1f, outputTorque = -1f, outputHeat = -1f;
 	public boolean hasForce = true, hasHeat = true;
 
 /**
@@ -97,8 +97,8 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 		@Override
 		public void craft() {
 			super.craft();
-			force().speed = outputSpeed;
-			force().strength = outputForce;
+			if (outputSpeed >= 0) force().speed = outputSpeed;
+			if (outputTorque >= 0) force().torque = outputTorque;
 		}
 
 		@Override
@@ -129,22 +129,18 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 		public boolean onConfigureBuildTapped(Building other) {
 			if (other instanceof HasForce next && tile.dst(other) < forceConfig().range) {
 				if ((other == this || getLink() == other) && getLink() != null) {
-					graph().removeBuild(other);
-					graph().remove(other);
-					graph().links.remove(new Link(this, other).removeS());
+					new Link(this, next).removeS();
 					force().link = -1;
 					return false;
 				}
 
 				if (next.force().link == pos()) {
-					graph().links.remove(new Link(this, other).removeS());
+					new Link(this, next).removeS();
 					next.force().link = -1;
-					graph().removeBuild(other);
-					graph().remove(other);
 				}
 
 				force().link = other.pos();
-				graph().links.addUnique(new Link(this, other).addS());
+				new Link(this, next);
 				graph().addGraph(((HasForce) getLink()).graph());
 				graph().rotation = 0;
 				return false;

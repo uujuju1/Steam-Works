@@ -16,10 +16,10 @@ public class ConsumeSpeed extends Consume {
 	}
 
 	@Override public float efficiency(Building build) {
-		return build instanceof HasForce b && Math.abs(b.graph().getSpeed()) < max ? Mathf.clamp(Math.abs(b.graph().getSpeed()) - min) : 0f;
+		return build instanceof HasForce b && Math.abs(b.speed()) > min && Math.abs(b.speed()) < max ? 1f : 0f;
 	}
 	@Override public float efficiencyMultiplier(Building build) {
-		return build instanceof HasForce b ? 1f + Mathf.map(Math.abs(b.graph().getSpeed()), min, max, 0, 1) : 0f;
+		return build instanceof HasForce b ? 1f + Mathf.map(Math.abs(b.speed()), min, max, 0, 1) : 0f;
 	}
 
 	@Override

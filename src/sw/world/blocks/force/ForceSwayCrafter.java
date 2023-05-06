@@ -49,7 +49,7 @@ public class ForceSwayCrafter extends GenericCrafter {
 			super.craft();
 			rotation += Time.delta;
 			force().speed = Mathf.sinDeg(rotation/swayScl) * outputSpeed;
-			force().strength = outputForce;
+			force().torque = outputForce;
 		}
 
 		@Override
@@ -80,22 +80,18 @@ public class ForceSwayCrafter extends GenericCrafter {
 		public boolean onConfigureBuildTapped(Building other) {
 			if (other instanceof HasForce next && tile.dst(other) < forceConfig().range) {
 				if ((other == this || getLink() == other) && getLink() != null) {
-					graph().removeBuild(other);
-					graph().remove(other);
-					graph().links.remove(new Link(this, other).removeS());
+					new Link(this, next).removeS();
 					force().link = -1;
 					return false;
 				}
 
 				if (next.force().link == pos()) {
-					graph().links.remove(new Link(this, other).removeS());
+					new Link(this, next).removeS();
 					next.force().link = -1;
-					graph().removeBuild(other);
-					graph().remove(other);
 				}
 
 				force().link = other.pos();
-				graph().links.addUnique(new Link(this, other).addS());
+				new Link(this, next);
 				graph().addGraph(((HasForce) getLink()).graph());
 				graph().rotation = 0;
 				return false;

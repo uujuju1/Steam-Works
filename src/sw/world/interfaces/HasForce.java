@@ -24,17 +24,23 @@ public interface HasForce {
 		return force().graph;
 	}
 
-	default Seq<Building> getLinked() {
-		return force().links.map(link -> link.l2);
+	default Seq<HasForce> getLinked() {
+		return force().links.map(link -> link.other(this));
 	}
 
 	default float spin() {
 		return graph().rotation;
 	}
 	default float speed() {
-		return force().speed;
+		return force().speed * ratio();
 	}
-	default float strength() {return force().strength * graph().getSpeed();}
+	default float torque() {return force().speed / ratio();}
+	default float ratio() {
+		float mean = 0;
+		if (force().links.copy().removeAll(l -> l.l1 != this).isEmpty()) return 1f;
+		for(Link link : force().links.copy().removeAll(l -> l.l1 != this)) mean += link.ratio(this, true);
+		return mean / force().links.copy().removeAll(l -> l.l1 != this).size;
+	}
 
 	default void drawBelt(Building b) {
 		if (b instanceof HasForce a && a.getLink() != null) {

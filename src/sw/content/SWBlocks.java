@@ -111,7 +111,7 @@ public class SWBlocks {
 				maxForce = 5f;
 				baseResistance = 0.03f;
 				resistanceScl = 2f;
-				beltSizeOut = 2;
+				beltSizeOut = beltSizeIn = 4f;
 			}};
 			outputSpeed = 5f;
 		}};
@@ -138,7 +138,7 @@ public class SWBlocks {
 				maxForce = 5f;
 				baseResistance = 0.03f;
 				resistanceScl = 2f;
-				beltSizeOut = 2;
+				beltSizeOut = beltSizeIn = 4f;
 			}};
 			outputSpeed = 5f;
 		}};
@@ -154,7 +154,7 @@ public class SWBlocks {
 			hasHeat = false;
 			forceConfig = new ForceConfig() {{
 				baseResistance = 0.05f;
-				beltSizeIn = 4f;
+				beltSizeIn = beltSizeOut = 6f;
 			}};
 			size = 3;
 			health = 200;
@@ -195,7 +195,7 @@ public class SWBlocks {
 			craftTime = 5f;
 			craftEffect = SWFx.sparks;
 			forceConfig = new ForceConfig() {{
-				beltSizeIn = 3;
+				beltSizeIn = beltSizeOut = 6f;
 			}};
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
 				sinScl = 1f;

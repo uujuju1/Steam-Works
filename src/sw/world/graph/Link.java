@@ -1,34 +1,44 @@
 package sw.world.graph;
 
+import mindustry.*;
 import mindustry.gen.*;
 import sw.world.interfaces.*;
 
 public class Link {
-	public Building l1, l2;
+	public HasForce l1, l2;
 
-	public Link(Building l1, Building l2) {
+	public Link(HasForce l1, HasForce l2) {
 		this.l1 = l1;
 		this.l2 = l2;
+		l1.graph().addGraph(l2.graph());
+		l1.graph().links.addUnique(this);
+		l1.force().links.addUnique(this);
+		l2.force().links.addUnique(this);
+	}
+	public Link(int l1, int l2) {
+		this((HasForce) Vars.world.build(l1), (HasForce) Vars.world.build(l2));
 	}
 
-	public Building other(Building build) {
+	public HasForce other(HasForce build) {
 		return build == l1 ? l2 : l1;
 	}
-	public boolean has(Building build) {
+	public boolean has(HasForce build) {
 		return build == l1 || build == l2;
 	}
-
-	public Link addS() {
-		((HasForce) l1).force().links.addUnique(this);
-		((HasForce) l2).force().links.addUnique(this);
-		return this;
+	public float ratio(HasForce start, boolean reverse) {
+		return reverse ?
+			       start.forceConfig().beltSizeOut/other(start).forceConfig().beltSizeIn:
+			       start.forceConfig().beltSizeIn/other(start).forceConfig().beltSizeOut;
 	}
-	public Link removeS() {
-		((HasForce) l1).force().links.remove(this);
-		((HasForce) l2).force().links.remove(this);
-		((HasForce) l1).graph().floodFill(l1).each(b -> ((HasForce) l1).graph().add(b));
-		((HasForce) l2).graph().floodFill(l2).each(b -> ((HasForce) l2).graph().add(b));
-		return this;
+
+	public void removeS() {
+		l2.force().link = -1;
+		l1.force().links.remove(this);
+		l2.force().links.remove(this);
+		l1.graph().links.remove(this);
+		l1.graph().remove((Building) l2);
+		l1.graph().removeBuild((Building) l2);
+		l2.graph().floodFill((Building) l2).each(b -> l2.graph().add(b));
 	}
 
 	@Override public boolean equals(Object obj) {

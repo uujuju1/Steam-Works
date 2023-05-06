@@ -7,19 +7,19 @@ import mindustry.world.meta.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
-public class ConsumeStrength extends Consume {
+public class ConsumeTorque extends Consume {
 	public float amount, scl;
 
-	public ConsumeStrength(float amount, float scl) {
+	public ConsumeTorque(float amount, float scl) {
 		this.amount = amount;
 		this.scl = scl;
 	}
 
 	@Override public float efficiency(Building build) {
-		return build instanceof HasForce b ? Mathf.clamp(b.force().strength - amount) : 0f;
+		return build instanceof HasForce b ? Mathf.clamp(b.torque() - amount) : 0f;
 	}
 	@Override public float efficiencyMultiplier(Building build) {
-		return build instanceof HasForce b ? 1f + Mathf.map(b.graph().getSpeed(), amount, amount + scl, 0, 1) : 0f;
+		return build instanceof HasForce b ? 1f + Mathf.map(b.speed(), amount, amount + scl, 0, 1) : 0f;
 	}
 
 	@Override public void display(Stats stats) {
