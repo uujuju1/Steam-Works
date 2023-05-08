@@ -1,8 +1,10 @@
 package sw.content;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -48,6 +50,7 @@ public class SWBlocks {
 		stirlingGenerator,
 
 		bolt, light,
+		mortar,
 
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
@@ -355,6 +358,40 @@ public class SWBlocks {
 				serrations = 9;
 				fromColor = Color.white;
 				toColor = Color.lightGray;
+			}};
+		}};
+
+		mortar = new ForceTurret("mortar") {{
+			requirements(Category.turret, with(
+				Items.silicon, 120,
+				Items.graphite, 100,
+				SWItems.compound, 150
+			));
+			consume(new ConsumeSpeed(1, 5));
+			size = 3;
+			health = 200 * 9;
+			reload = 120f;
+			range = 180f;
+			recoil = -1f;
+			shootY = 2f;
+			shootSound = Sounds.mediumCannon;
+			shoot = new ShootPattern() {{
+				firstShotDelay = 30f;
+			}};
+			drawer = new DrawTurret() {{
+				parts.addAll(
+					new RegionPart("-launcher") {{
+						x = y = 0f;
+						moveY = -10;
+						progress = PartProgress.charge.mul(1.5f).curve(Interp.pow2Out);
+					}}
+				);
+			}};
+			shootType = new BasicBulletType(8f, 50) {{
+				width = height = 20f;
+				splashDamage = 50f;
+				splashDamageRadius = 40f;
+				lifetime = 25f;
 			}};
 		}};
 

@@ -271,7 +271,7 @@ public class SWUnitTypes {
           shootEffect = hitEffect = smokeEffect = Fx.sparkShoot;
           shake = 2f;
           recoil = 2f;
-          range = 160f;
+          range = rangeOverride = 160f;
           bullets.add(
             new ShrapnelBulletType() {{
               damage = 36;
@@ -321,7 +321,7 @@ public class SWUnitTypes {
         rotateSpeed = 5f;
         shootSound = Sounds.shootAltLong;
         bullet = new MultiBulletType() {{
-          range = 160f;
+          range = rangeOverride = 160f;
           shake = 3f;
           shootEffect = Fx.shootBigColor;
           smokeEffect = Fx.shootSmokeSquareSparse;
@@ -372,7 +372,7 @@ public class SWUnitTypes {
         rotateSpeed = 3f;
         shootSound = Sounds.pulseBlast;
         bullet = new MultiBulletType() {{
-          range = 220f;
+          range = rangeOverride = 220f;
           shootEffect = smokeEffect = Fx.sparkShoot;
           bullets.add(
             new BulletType(10f, 0) {{

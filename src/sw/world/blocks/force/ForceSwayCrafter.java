@@ -79,7 +79,7 @@ public class ForceSwayCrafter extends GenericCrafter {
 		@Override
 		public boolean onConfigureBuildTapped(Building other) {
 			if (other instanceof HasForce next && tile.dst(other) < forceConfig().range) {
-				if ((other == this || getLink() == other) && getLink() != null) {
+				if ((getLink() != null && getLink() == other) || other == this) {
 					new Link(this, next).removeS();
 					force().link = -1;
 					return false;
