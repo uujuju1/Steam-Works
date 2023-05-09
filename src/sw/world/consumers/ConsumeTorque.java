@@ -16,10 +16,10 @@ public class ConsumeTorque extends Consume {
 	}
 
 	@Override public float efficiency(Building build) {
-		return build instanceof HasForce b ? Mathf.clamp(b.torque() - amount) : 0f;
+		return build instanceof HasForce b ? Mathf.clamp(Math.abs(b.torque()) - amount) : 0f;
 	}
 	@Override public float efficiencyMultiplier(Building build) {
-		return build instanceof HasForce b ? 1f + Mathf.map(b.speed(), amount, amount + scl, 0, 1) : 0f;
+		return build instanceof HasForce b ? 1f + Mathf.map(Math.abs(b.torque()), amount, amount + scl, 0, 1) : 0f;
 	}
 
 	@Override public void display(Stats stats) {

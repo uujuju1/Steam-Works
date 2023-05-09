@@ -25,14 +25,14 @@ public class Link {
 	public boolean has(HasForce build) {
 		return build == l1 || build == l2;
 	}
-	public float ratio(HasForce start, boolean reverse) {
-		return reverse ?
-			       start.forceConfig().beltSizeOut/other(start).forceConfig().beltSizeIn:
-			       start.forceConfig().beltSizeIn/other(start).forceConfig().beltSizeOut;
+	public float ratio(HasForce from, boolean reverse) {
+		return !reverse ?
+			       from.forceConfig().beltSizeOut/other(from).forceConfig().beltSizeIn:
+			       other(from).forceConfig().beltSizeIn/from.forceConfig().beltSizeOut;
 	}
 
 	public void removeS() {
-		l2.force().link = -1;
+		l1.force().link = -1;
 		l1.force().links.remove(this);
 		l2.force().links.remove(this);
 		l1.graph().links.remove(this);

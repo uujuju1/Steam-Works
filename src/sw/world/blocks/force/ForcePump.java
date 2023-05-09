@@ -1,20 +1,15 @@
 package sw.world.blocks.force;
 
-import arc.struct.*;
 import arc.util.io.*;
-import mindustry.entities.bullet.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.meta.*;
-import sw.world.graph.*;
+import mindustry.world.blocks.production.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class ForceTurret extends Turret {
+public class ForcePump extends Pump {
 	public ForceConfig forceConfig = new ForceConfig();
-	public BulletType shootType;
 
-	public ForceTurret(String name) {
+	public ForcePump(String name) {
 		super(name);
 	}
 
@@ -22,32 +17,15 @@ public class ForceTurret extends Turret {
 	public void setStats() {
 		super.setStats();
 		forceConfig.addStats(stats);
-		stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
 	}
 
-	public class ForceTurretBuild extends TurretBuild implements HasForce {
+	public class ForcePumpBuild extends PumpBuild implements HasForce {
 		ForceModule force = new ForceModule();
 
 		public ForceModule force() {
 			return force;
 		}
 		public ForceConfig forceConfig() {return forceConfig;}
-
-		@Override
-		public void updateTile() {
-			unit.ammo(speed() * unit.type().ammoCapacity);
-			super.updateTile();
-		}
-
-		@Override public BulletType peekAmmo() {
-			return shootType;
-		}
-		@Override public BulletType useAmmo() {
-			return shootType;
-		}
-		@Override public boolean hasAmmo() {
-			return true;
-		}
 
 		@Override
 		public void onProximityAdded() {
@@ -57,8 +35,11 @@ public class ForceTurret extends Turret {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(Link::removeS);
+			force().links.each(l -> {
+				l.removeS();
+			});
 		}
+
 
 		@Override
 		public void read(Reads read, byte revision) {

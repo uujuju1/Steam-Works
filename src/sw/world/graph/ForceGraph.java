@@ -9,8 +9,7 @@ import sw.world.interfaces.*;
 import sw.world.modules.*;
 
 /**
- * TODO strength propagation
- * TODO speed based on size ratio
+ * TODO fix the damm linking
  * TODO visual speed setting
  */
 public class ForceGraph {

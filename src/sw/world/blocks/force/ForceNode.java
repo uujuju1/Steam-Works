@@ -42,7 +42,7 @@ public class ForceNode extends Block {
 		@Override
 		public void draw() {
 			super.draw();
-			drawBelt(this);
+			drawBelt();
 		}
 		@Override
 		public void drawConfigure() {
@@ -60,32 +60,11 @@ public class ForceNode extends Block {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(l -> {
-				l.removeS();
-			});
+			force().links.each(Link::removeS);
 		}
 
-		@Override
-		public boolean onConfigureBuildTapped(Building other) {
-			if (other instanceof HasForce next && tile.dst(other) < forceConfig().range) {
-				if ((getLink() != null && getLink() == other) || other == this) {
-					new Link(this, next).removeS();
-					force().link = -1;
-					return false;
-				}
-
-				if (next.force().link == pos()) {
-					new Link(this, next).removeS();
-					next.force().link = -1;
-				}
-
-				force().link = other.pos();
-				new Link(this, next);
-				graph().addGraph(((HasForce) getLink()).graph());
-				graph().rotation = 0;
-				return false;
-			}
-			return true;
+		@Override public boolean onConfigureBuildTapped(Building other) {
+			return configureBuildTap(other);
 		}
 
 		@Override
