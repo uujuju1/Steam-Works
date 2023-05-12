@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
@@ -24,22 +23,24 @@ public interface HasForce {
 		return force().graph;
 	}
 
-	default Seq<HasForce> getLinked() {
-		return force().links.map(link -> link.other(this));
-	}
-
 	default float spin() {
 		return graph().rotation;
 	}
 	default float speed() {
-		return force().speed * ratio();
+		return force().speed * force().torque;
 	}
-	default float torque() {return force().speed / ratio();}
-	default float ratio() {
+	default float torque() {return force().speed / force().torque;}
+	default void ratio() {
 		float mean = 0;
-		if (force().links.copy().removeAll(l -> l.l1 == this).isEmpty()) return 1f;
-		for(Link link : force().links.copy().removeAll(l -> l.l1 == this)) mean += link.ratio(this, true);
-		return mean / force().links.copy().removeAll(l -> l.l1 == this).size;
+		if (force().links.copy().removeAll(l -> l.l1() == this).isEmpty()) {
+			force().torque = 1f;
+			return;
+		}
+		for(Link link : force().links.copy().removeAll(l -> l.l1() == this)) {
+			if (link.l1() == null || link.l2() == null) continue;
+			mean += link.ratio(this, true);
+		}
+		force().torque = mean / force().links.copy().removeAll(l -> l.l1() == this).size;
 	}
 
 	default void drawBelt() {
@@ -72,22 +73,49 @@ public interface HasForce {
 		}
 	}
 
+	default void link(Building build) {
+		HasForce b = (HasForce) build;
+		force().link = build.pos();
+		Link link = new Link(this, b);
+
+		graph().addGraph(b.graph());
+		graph().links.addUnique(link);
+
+		force().links.addUnique(link);
+		b.force().links.addUnique(link);
+		graph().entity.remove();
+		graph().entity.add();
+		b.ratio();
+	}
+	default void unLink() {
+		if (getLink() instanceof HasForce b) {
+			Link link = new Link(this, b);
+			force().link = -1;
+
+			force().links.remove(link);
+			b.force().links.remove(link);
+			graph().links.remove(link);
+			unLinkGraph();
+			graph().floodFill((Building) this).each(build -> graph().add(build));
+		}
+	}
+	default void unLinkGraph() {
+		graph().remove((Building) this);
+		graph().removeBuild((Building) this);
+	}
+
 	default boolean configureBuildTap(Building other) {
 		Building from = (Building) this;
 		if (other instanceof HasForce next && from.tile().dst(other) < forceConfig().range) {
 			if ((getLink() != null && getLink() == other) || other == this) {
-				new Link(this, next).removeS();
-				force().link = -1;
+				unLink();
 				return false;
 			}
 
-			if (next.force().link == from.pos()) {
-				new Link(this, next).removeS();
-				next.force().link = -1;
-			}
+			if (next.getLink() == this) next.unLink();
+			if (getLink() != null) unLink();
 
-			force().link = other.pos();
-			new Link(this, next);
+			link(other);
 			graph().rotation = 0;
 			return false;
 		}

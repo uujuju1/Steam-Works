@@ -6,7 +6,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.util.*;
-import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -60,7 +59,8 @@ public class ForceNode extends Block {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(Link::removeS);
+			force().links.each(graph().links::remove);
+			unLinkGraph();
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {

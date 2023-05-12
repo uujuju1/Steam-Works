@@ -392,6 +392,7 @@ public class SWBlocks {
 				Items.graphite, 100,
 				SWItems.compound, 150
 			));
+			targetAir = false;
 			consume(new ConsumeSpeed(1f, 5f));
 			size = 3;
 			health = 200 * 9;
@@ -416,9 +417,9 @@ public class SWBlocks {
 					}}
 				);
 			}};
-			shootType = new ArtilleryBulletType(8f, 200) {{
+			shootType = new ArtilleryBulletType(8f, 120) {{
 				width = height = 20f;
-				splashDamage = 50f;
+				splashDamage = 120f;
 				splashDamageRadius = 40f;
 				lifetime = 25f;
 			}};

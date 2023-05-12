@@ -9,7 +9,6 @@ import sw.world.interfaces.*;
 import sw.world.modules.*;
 
 /**
- * TODO fix the damm linking
  * TODO visual speed setting
  */
 public class ForceGraph {
@@ -48,8 +47,8 @@ public class ForceGraph {
 			if (b instanceof HasForce add) {
 				out.addUnique(b);
 				add.force().links.each(i -> {
-					out.addUnique((Building) i.l1);
-					out.addUnique((Building) i.l2);
+					out.addUnique((Building) i.l1());
+					out.addUnique((Building) i.l2());
 				});
 			}
 		}
@@ -74,6 +73,7 @@ public class ForceGraph {
 		graph.entity.remove();
 
 		for (Building build : graph.builds) add(build);
+		for (Link link : graph.links) links.addUnique(link);
 		hasEntity();
 	}
 	public void removeBuild(Building build) {
@@ -89,15 +89,19 @@ public class ForceGraph {
 	public void update() {
 		rotation += Mathf.maxZero(Math.abs(getSpeed()) - getResistance()) * Time.delta * (getSpeed() >= 0 ? 1 : -1);
 		for (Link link : links) {
-			float spd = (link.l1.force().speed + link.l2.force().speed)/2f;
-			link.l1.force().speed = spd;
-			link.l2.force().speed = spd;
+			if (
+				link.l1() != null && link.l2() != null &&
+					builds.contains((Building) link.l1()) && builds.contains((Building) link.l2())
+			) {
+				float spd = (link.l1().force().speed + link.l2().force().speed)/2f;
+				link.l1().force().speed = spd;
+				link.l2().force().speed = spd;
+			}
 		}
 		for (Building b : builds) {
 			HasForce build = (HasForce) b;
-			build.force().torque = build.ratio();
 			build.force().speed = Math.min(Math.abs(build.force().speed), build.forceConfig().maxForce) * (build.speed() > 0 ? 1 : -1);
-			build.force().speed = Mathf.maxZero(Math.abs(build.force().speed) - build.forceConfig().baseResistance) * (build.speed() > 0 ? 1 : -1);
+			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
 		}
 	}
 

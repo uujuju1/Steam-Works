@@ -120,7 +120,8 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().graph.removeBuild(this);
+			force().links.each(graph().links::remove);
+			unLinkGraph();
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {

@@ -5,7 +5,6 @@ import arc.util.io.*;
 import mindustry.entities.bullet.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -57,7 +56,8 @@ public class ForceTurret extends Turret {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(Link::removeS);
+			force().links.each(graph().links::remove);
+			unLinkGraph();
 		}
 
 		@Override

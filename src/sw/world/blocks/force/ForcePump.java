@@ -35,9 +35,8 @@ public class ForcePump extends Pump {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(l -> {
-				l.removeS();
-			});
+			force().links.each(graph().links::remove);
+			unLinkGraph();
 		}
 
 

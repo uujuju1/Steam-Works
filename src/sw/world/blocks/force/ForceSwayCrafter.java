@@ -1,7 +1,6 @@
 package sw.world.blocks.force;
 
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -44,10 +43,12 @@ public class ForceSwayCrafter extends GenericCrafter {
 		}
 
 		@Override
-		public void craft() {
-			super.craft();
-			rotation += Time.delta;
-			force().speed = Mathf.sinDeg(rotation/swayScl) * outputSpeed;
+		public void updateTile() {
+			super.updateTile();
+			if (efficiency > 0) {
+				rotation += Time.delta;
+				force().speed = Tmp.v1.trns(rotation / swayScl, outputSpeed).x;
+			}
 		}
 
 		@Override
@@ -71,7 +72,8 @@ public class ForceSwayCrafter extends GenericCrafter {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().graph.removeBuild(this);
+			force().links.each(graph().links::remove);
+			unLinkGraph();
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
