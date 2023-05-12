@@ -5,18 +5,26 @@ import mindustry.world.meta.Stat;
 public class SWStat {
   public static final Stat recipes = new Stat("sw-recipes");
 
-  public static final Stat maxHeat = new Stat("sw-max-heat", SWStatCat.heat);
-  public static final Stat minHeat = new Stat("sw-min-heat", SWStatCat.heat);
+//  heat
+  public static final
+    Stat maxHeat = new Stat("sw-max-heat", SWStatCat.heat),
+    minHeat = new Stat("sw-min-heat", SWStatCat.heat),
+    heatEmissivity = new Stat("sw-heat-emissivity", SWStatCat.heat),
+    heatLoss = new Stat("sw-heat-loss", SWStatCat.heat),
+    heatUse = new Stat("sw-heat-use", SWStatCat.heat),
+    heatUseOnce = new Stat("sw-heat-use-once", SWStatCat.heat),
+    outputHeat = new Stat("sw-output-heat", SWStatCat.heat),
+    acceptsHeat = new Stat("sw-accepts-heat", SWStatCat.heat),
+    outputsHeat = new Stat("sw-outputs-heat", SWStatCat.heat),
+    heatTresh = new Stat("sw-heat-tresh", SWStatCat.heat),
 
-  public static final Stat heatEmissivity = new Stat("sw-heat-emissivity", SWStatCat.heat);
-  public static final Stat heatLoss = new Stat("sw-heat-loss", SWStatCat.heat);
-
-  public static final Stat heatUse = new Stat("sw-heat-use", SWStatCat.heat);
-  public static final Stat heatUseOnce = new Stat("sw-heat-use-once", SWStatCat.heat);
-  public static final Stat outputHeat = new Stat("sw-output-heat", SWStatCat.heat);
-
-  public static final Stat acceptsHeat = new Stat("sw-accepts-heat", SWStatCat.heat);
-  public static final Stat outputsHeat = new Stat("sw-outputs-heat", SWStatCat.heat);
-
-  public static final Stat heatTresh = new Stat("sw-heat-tresh", SWStatCat.heat);
+//  force
+    maxForce = new Stat("sw-max-force", SWStatCat.force),
+    beltSizeIn = new Stat("sw-belt-in", SWStatCat.force),
+    beltSizeOut = new Stat("sw-belt-out", SWStatCat.force),
+    baseResistance = new Stat("sw-resistance", SWStatCat.force),
+    resistanceScl = new Stat("sw-resistance-scl", SWStatCat.force),
+    minSpeedConsume = new Stat("sw-speed-min", SWStatCat.force),
+    maxSpeedConsume = new Stat("sw-speed-max", SWStatCat.force),
+    strengthConsume = new Stat("sw-strength-cons", SWStatCat.force);
 }

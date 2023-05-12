@@ -19,7 +19,7 @@ public class SWTechTree {
     return node(content, objectives, () -> {});
   }
   public static TechNode nodeProduceObj(UnlockableContent content) {
-    return node(content, () -> {});
+    return nodeProduce(content, () -> {});
   }
 
   public static void load() {
@@ -32,17 +32,30 @@ public class SWTechTree {
       });
 
       // crafting
-      node(nickelForge, () -> {
-        node(rebuilder, () -> node(burner));
-        node(boiler, with(new Research(burner), new SectorComplete(SectorPresets.extractionOutpost)), () -> node(thermalBoiler));
+      node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
+        node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
+          node(electricSpinner);
+          node(burner);
+        });
+        node(compoundMixer, with(
+          new Research(electricSpinner),
+          new OnSector(SectorPresets.windsweptIslands)
+        ), () -> {});
+
+        node(boiler, with(
+          new Research(burner),
+          new SectorComplete(SectorPresets.extractionOutpost)
+        ), () -> node(thermalBoiler));
+
         nodeObj(batchPress, with(new Research(Blocks.multiPress)));
       });
 
       // distribution
-      node(heatPipe, with(new Produce(nickel), new Research(burner)), () -> {
+      node(heatPipe, with(new Research(burner)), () -> {
         node(heatBridge);
         node(heatRadiator);
       });
+      node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
 
       // defense
       node(compoundWall, with(new Produce(compound)), () -> {

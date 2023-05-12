@@ -11,9 +11,9 @@ import mindustry.ui.Bar;
 import mindustry.world.Block;
 import sw.SWVars;
 import sw.util.SWMath;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
+import sw.world.interfaces.HasHeat;
+import sw.world.interfaces.HeatBlockI;
+import sw.world.meta.HeatConfig;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWDraw.getRegions;
@@ -36,7 +36,7 @@ public class HeatPipe extends Block implements HeatBlockI {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
+    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.heat().heat, heatConfig().minHeat, heatConfig().maxHeat)));
   }
   @Override
   public void setStats() {
@@ -61,7 +61,7 @@ public class HeatPipe extends Block implements HeatBlockI {
       return regions[index];
     }
 
-    @Override public HeatModule module() {
+    @Override public HeatModule heat() {
       return module;
     }
     @Override public HeatBlockI type() {

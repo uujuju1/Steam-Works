@@ -1,4 +1,4 @@
-package sw.world.heat;
+package sw.world.interfaces;
 
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -7,32 +7,36 @@ import arc.struct.Seq;
 import mindustry.gen.Building;
 import sw.SWVars;
 import sw.util.SWMath;
+import sw.world.meta.*;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWDraw.heatPal;
 
 public interface HasHeat {
-  HeatModule module();
+  HeatModule heat();
   HeatBlockI type();
   default HeatConfig heatC() {
     if (type().heatConfig() == SWVars.baseConfig) throw new IllegalArgumentException("use copy()");
     return type().heatConfig();
   }
 
-  default float heat() {return module().heat;}
-  default float fraction() {return Mathf.map(heat(), heatC().minHeat, heatC().maxHeat, 0, 1);}
-  default float fractionNeg() {return Mathf.map(heat(), 0, heatC().maxHeat, 0, 1);}
+  default float temperature() {return heat().heat;}
+  default float fraction() {return Mathf.map(temperature(), heatC().minHeat, heatC().maxHeat, 0, 1);}
+  default float fractionNeg() {return Mathf.map(temperature(), 0, heatC().maxHeat, 0, 1);}
 
-  default void addHeat(float amount) {module().addHeat(amount);}
-  default void subHeat(float amount) {module().subHeat(amount);}
-  default void setHeat(float amount) {module().setHeat(amount);}
+  default void addHeat(float amount) {
+    heat().addHeat(amount);}
+  default void subHeat(float amount) {
+    heat().subHeat(amount);}
+  default void setHeat(float amount) {
+    heat().setHeat(amount);}
   default void transferHeat(HasHeat to, float amount) {subHeat(amount); to.addHeat(amount);}
-  default void transferHeat(HasHeat to) {transferHeat(to, SWMath.heatTransferDelta(heatC().heatEmissivity, heat(), to.heat(), true));}
+  default void transferHeat(HasHeat to) {transferHeat(to, SWMath.heatTransferDelta(heatC().heatEmissivity, temperature(), to.temperature(), true));}
 
   default void updateHeat(Building to) {
     if (overflows()) to.kill();
-    if (heat() < heatC().minHeat) setHeat(heatC().minHeat);
-    heatProximity(to).map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.heat() >= heat()).each(this::transferHeat);
+    if (temperature() < heatC().minHeat) setHeat(heatC().minHeat);
+    heatProximity(to).map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.temperature() >= temperature()).each(this::transferHeat);
     subHeat(heatC().heatLoss * (fractionNeg() * 4));
   }
 
@@ -56,6 +60,6 @@ public interface HasHeat {
 
   default boolean acceptsHeat(HasHeat from, float amount) {return heatC().acceptHeat;}
   default boolean outputsHeat(HasHeat from, float amount) {return heatC().outputHeat;}
-  default boolean overflows(float amount) {return heat() + amount > heatC().maxHeat;}
+  default boolean overflows(float amount) {return temperature() + amount > heatC().maxHeat;}
   default boolean overflows() {return overflows(0);}
 }

@@ -9,9 +9,9 @@ import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.Wall;
 import sw.SWVars;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
+import sw.world.interfaces.HasHeat;
+import sw.world.interfaces.HeatBlockI;
+import sw.world.meta.HeatConfig;
 import sw.world.modules.HeatModule;
 
 import static sw.util.SWMath.heatMap;
@@ -31,7 +31,7 @@ public class HeatableWall extends Wall implements HeatBlockI {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatableWallBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.module().heat, 0f, heatConfig().maxHeat)));
+    addBar("heat", (HeatableWallBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.heat().heat, 0f, heatConfig().maxHeat)));
   }
   @Override
   public void setStats() {
@@ -42,7 +42,7 @@ public class HeatableWall extends Wall implements HeatBlockI {
   public class HeatableWallBuild extends WallBuild implements HasHeat {
     HeatModule module = new HeatModule();
 
-    @Override public HeatModule module() {
+    @Override public HeatModule heat() {
       return module;
     }
     @Override public HeatBlockI type() {

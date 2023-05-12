@@ -1,8 +1,8 @@
-package sw.world.heat;
+package sw.world.interfaces;
 
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
-import sw.world.meta.SWStat;
+import sw.world.meta.*;
 
 public interface HeatBlockI {
   HeatConfig heatConfig();

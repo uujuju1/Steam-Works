@@ -1,8 +1,10 @@
 package sw.content;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -15,10 +17,13 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import sw.world.blocks.defense.*;
+import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
+import sw.world.draw.*;
+import sw.world.meta.*;
 import sw.world.recipes.*;
 
 import static mindustry.type.ItemStack.*;
@@ -27,19 +32,23 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 public class SWBlocks {
 	public static Block
 
-		heatPipe,
-	  heatBridge,
-		heatRadiator,
+		beltNode, beltNodeLarge,
+		torquePump,
+		electricSpinner, turbineSwing,
+		compoundMixer, frictionHeater,
 
+		heatPipe, heatBridge, heatRadiator,
 		burner,
 		boiler, thermalBoiler,
+
 		nickelForge,
     batchPress,
 		rebuilder,
 
 		stirlingGenerator,
 
-		bolt, light, /*thunder,*/
+		bolt, light,
+		mortar,
 
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
@@ -65,7 +74,125 @@ public class SWBlocks {
 			heatConfig().heatLoss = 1.06f;
 		}};
 
+		beltNode = new ForceNode("belt-node") {{
+			requirements(Category.power, with(
+				Items.silicon, 20,
+				SWItems.compound, 20
+			));
+			health = 120;
+			forceConfig = new ForceConfig() {{
+				maxForce = 12f;
+				range = 60f;
+			}};
+		}};
+		beltNodeLarge = new ForceNode("belt-node-large") {{
+			requirements(Category.power, with(Items.silicon, 60, Items.titanium, 40, SWItems.compound, 80));
+			size = 2;
+			health = 120;
+			forceConfig = new ForceConfig() {{
+				maxForce = 12f;
+				range = 90f;
+				beltSizeIn = beltSizeOut = 4f;
+			}};
+		}};
+
 //		crafting
+		torquePump = new ForcePump("torque-pump") {{
+			requirements(Category.liquid, with(
+				Items.metaglass, 40,
+				Items.silicon, 50,
+				Items.lead, 30,
+				SWItems.compound, 40
+			));
+			size = 2;
+			health = 160;
+			pumpAmount = 0.375f;
+			consume(new ConsumeSpeed(3, 9));
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawPumpLiquid(),
+				new DrawDefault()
+			);
+			forceConfig = new ForceConfig() {{
+				maxForce = 18f;
+				beltSizeIn = beltSizeOut = 4f;
+			}};
+		}};
+
+		electricSpinner = new SWGenericCrafter("electric-spinner") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				Items.graphite, 80,
+				SWItems.compound, 60
+			));
+			size = 2;
+			health = 160;
+			consumePower(1f);
+			hasHeat = false;
+			craftTime = 1f;
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				baseResistance = 0.03f;
+				resistanceScl = 2f;
+				beltSizeOut = beltSizeIn = 4f;
+			}};
+			outputSpeed = 5f;
+		}};
+		turbineSwing = new ForceSwayCrafter("turbine-swing") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				Items.graphite, 80,
+				SWItems.compound, 60
+			));
+			size = 2;
+			health = 160;
+			swayScl = 0.7f;
+			craftTime = 1f;
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-rotator") {{
+					spinSprite = true;
+					rotateSpeed = 16f;
+				}},
+				new DrawDefault()
+			);
+			consumeLiquid(SWLiquids.steam, 0.2f);
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				baseResistance = 0.03f;
+				resistanceScl = 2f;
+				beltSizeOut = beltSizeIn = 4f;
+			}};
+			outputSpeed = 5f;
+		}};
+
+		compoundMixer = new SWGenericCrafter("compound-mixer") {{
+			requirements(Category.crafting, with(
+				Items.silicon, 150,
+				Items.graphite, 160,
+				Items.titanium, 80,
+				SWItems.compound, 200
+			));
+			hasHeat = false;
+			forceConfig = new ForceConfig() {{
+				maxForce = 14f;
+				beltSizeIn = beltSizeOut = 6f;
+			}};
+			size = 3;
+			health = 200;
+			craftTime = 45f;
+			drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rotator"){{
+				spinSprite = true;
+				rotateSpeed = 2f;
+			}});
+			consume(new ConsumeSpeed(3f, 7f));
+			consumeItems(with(
+				Items.copper, 2,
+				SWItems.nickel, 1
+			));
+			outputItem = new ItemStack(SWItems.compound, 2);
+		}};
+
 		burner = new HeatGenericCrafter("burner") {{
 			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
 			size = 2;
@@ -80,6 +207,31 @@ public class SWBlocks {
 			craftTime = 120f;
 			outputHeat = 3f;
 			heatConfig().acceptHeat = false;
+		}};
+		frictionHeater = new SWGenericCrafter("friction-heater") {{
+			requirements(Category.power, with(
+				Items.silicon, 150,
+				SWItems.denseAlloy, 160,
+				Items.titanium, 80,
+				SWItems.compound, 200
+			));
+			clampRotation = true;
+			size = 3;
+			health = 200;
+			craftTime = 5f;
+			craftEffect = SWFx.sparks;
+			forceConfig = new ForceConfig() {{
+				maxForce = 18f;
+				beltSizeIn = beltSizeOut = 6f;
+			}};
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
+				sinScl = 1f;
+				sinMag = 6.25f;
+			}}, new DrawDefault());
+			consume(new ConsumeSpeed(0.6f, 6f));
+			consume(new ConsumeTorque(5.4f, 18f));
+			heatConfig().acceptHeat = false;
+			outputHeat = 3f;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{
@@ -136,13 +288,12 @@ public class SWBlocks {
 			craftEffect = SWFx.graphiteCraft;
 			stackCraftEffect = SWFx.graphiteStackCraft;
 			updateEffect = Fx.smoke;
-      drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
 			outputItems = with(Items.graphite, 8);
 		}};
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
-				Items.titanium, 80,
+				Items.silicon, 80,
 				Items.copper, 60,
 				Items.lead, 75
 			));
@@ -232,6 +383,45 @@ public class SWBlocks {
 				serrations = 9;
 				fromColor = Color.white;
 				toColor = Color.lightGray;
+			}};
+		}};
+
+		mortar = new ForceTurret("mortar") {{
+			requirements(Category.turret, with(
+				Items.silicon, 120,
+				Items.graphite, 100,
+				SWItems.compound, 150
+			));
+			targetAir = false;
+			consume(new ConsumeSpeed(1f, 5f));
+			size = 3;
+			health = 200 * 9;
+			reload = 120f;
+			range = 180f;
+			recoil = -1f;
+			shootY = 2f;
+			shootSound = Sounds.mediumCannon;
+			shoot = new ShootPattern() {{
+				firstShotDelay = 30f;
+			}};
+			forceConfig = new ForceConfig() {{
+				maxForce = 10f;
+				beltSizeIn = beltSizeOut = 6f;
+			}};
+			drawer = new DrawTurret() {{
+				parts.addAll(
+					new RegionPart("-launcher") {{
+						x = y = 0f;
+						moveY = -10;
+						progress = PartProgress.charge.mul(1.5f).curve(Interp.pow2Out);
+					}}
+				);
+			}};
+			shootType = new ArtilleryBulletType(8f, 120) {{
+				width = height = 20f;
+				splashDamage = 120f;
+				splashDamageRadius = 40f;
+				lifetime = 25f;
 			}};
 		}};
 

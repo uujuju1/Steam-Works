@@ -6,7 +6,7 @@ import mindustry.gen.Building;
 import mindustry.world.consumers.Consume;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.Stats;
-import sw.world.heat.HasHeat;
+import sw.world.interfaces.HasHeat;
 import sw.world.meta.SWStat;
 
 public class ConsumeHeat extends Consume {
@@ -21,15 +21,15 @@ public class ConsumeHeat extends Consume {
   }
 
   @Override public void update(Building build) {
-    if (build instanceof HasHeat next) next.module().subHeat(amount * efficiencyMultiplier(build) * Time.delta);
+    if (build instanceof HasHeat next) next.heat().subHeat(amount * efficiencyMultiplier(build) * Time.delta);
   }
 
   @Override public float efficiency(Building build) {
-    return build instanceof HasHeat next && next.module().heat >= min ? 1f : 0f;
+    return build instanceof HasHeat next && next.heat().heat >= min ? 1f : 0f;
   }
   @Override public float efficiencyMultiplier(Building build) {
     if (!scales) return 1f;
-    return build instanceof HasHeat next ? Mathf.map(next.module().heat, 0, min, 0, 1) : 0f;
+    return build instanceof HasHeat next ? Mathf.map(next.heat().heat, 0, min, 0, 1) : 0f;
   }
 
   @Override public void display(Stats stats) {

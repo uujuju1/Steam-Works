@@ -5,7 +5,7 @@ import mindustry.ctype.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.ui.*;
-import sw.world.heat.*;
+import sw.world.meta.*;
 
 public class SWVars {
     public static final float maxHeatGlow = 100;

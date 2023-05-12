@@ -21,9 +21,9 @@ import mindustry.world.Block;
 import sw.SWVars;
 import sw.util.SWDraw;
 import sw.util.SWMath;
-import sw.world.heat.HasHeat;
-import sw.world.heat.HeatBlockI;
-import sw.world.heat.HeatConfig;
+import sw.world.interfaces.HasHeat;
+import sw.world.interfaces.HeatBlockI;
+import sw.world.meta.HeatConfig;
 import sw.world.modules.HeatModule;
 
 import java.util.Objects;
@@ -59,7 +59,7 @@ public class HeatBridge extends Block implements HeatBlockI {
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.module().heat, heatConfig().minHeat, heatConfig().maxHeat)));
+    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.heat().heat, heatConfig().minHeat, heatConfig().maxHeat)));
   }
   @Override
   public void setStats() {
@@ -119,7 +119,7 @@ public class HeatBridge extends Block implements HeatBlockI {
       Draw.reset();
     }
 
-    @Override public HeatModule module() {
+    @Override public HeatModule heat() {
       return module;
     }
     @Override public HeatBlockI type() {

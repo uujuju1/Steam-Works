@@ -9,7 +9,8 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import sw.*;
 import sw.world.consumers.*;
-import sw.world.heat.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class HeatTurret extends Turret implements HeatBlockI {
@@ -41,7 +42,7 @@ public class HeatTurret extends Turret implements HeatBlockI {
 	public class HeatTurretBuild extends TurretBuild implements HasHeat {
 		HeatModule module = new HeatModule();
 
-		@Override public HeatModule module() {
+		@Override public HeatModule heat() {
 			return module;
 		}
 		@Override public HeatBlockI type() {
@@ -50,7 +51,7 @@ public class HeatTurret extends Turret implements HeatBlockI {
 
 		@Override
 		public void updateTile() {
-			unit.ammo(heat() - consumer.min - consumer.amount);
+			unit.ammo(temperature() - consumer.min - consumer.amount);
 			super.updateTile();
 			updateHeat(this);
 		}
