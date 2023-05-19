@@ -10,7 +10,7 @@ public class ForceGraphUpdater implements Entityc {
 	public transient boolean added;
 	public transient int id = EntityGroup.nextId();
 	public transient ForceGraph graph;
-	public transient int id_all;
+	public transient int id_all = -1;
 
 	@Override public <T extends Entityc> T self() {
 		return (T)this;

@@ -435,17 +435,15 @@ public class SWBlocks {
 			size = 2;
 			health = 120 * 4 * 4;
 		}};
-		denseWall = new HeatableWall("dense-wall") {{
+		denseWall = new Wall("dense-wall") {{
 			requirements(Category.defense, with(SWItems.denseAlloy, 6));
 			health = 200 * 4;
-			heatConfig().heatLoss = 0f;
 			absorbLasers = true;
 		}};
-		denseWallLarge = new HeatableWall("dense-wall-large") {{
+		denseWallLarge = new Wall("dense-wall-large") {{
 			requirements(Category.defense, mult(denseWall.requirements, 4));
 			size = 2;
 			health = 200 * 4 * 4;
-			heatConfig().heatLoss = 0f;
 			absorbLasers = true;
 		}};
 

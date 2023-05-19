@@ -1,8 +1,6 @@
 package sw.content;
 
-import arc.struct.*;
 import mindustry.content.*;
-import mindustry.ctype.*;
 import mindustry.game.Objectives.*;
 
 import static arc.struct.Seq.*;
@@ -10,31 +8,25 @@ import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
+import static sw.content.SWSectorPresets.*;
 import static sw.content.SWUnitTypes.*;
 
 public class SWTechTree {
   public static TechNode root;
 
-  public static TechNode nodeObj(UnlockableContent content, Seq<Objective> objectives) {
-    return node(content, objectives, () -> {});
-  }
-  public static TechNode nodeProduceObj(UnlockableContent content) {
-    return nodeProduce(content, () -> {});
-  }
-
   public static void load() {
     root = nodeRoot("Steam Works", coreScaffold, () -> {
       // items
       nodeProduce(nickel, () -> {
-        nodeProduceObj(steam);
-        nodeProduceObj(compound);
-        nodeProduceObj(denseAlloy);
+        nodeProduce(steam, () -> {});
+        nodeProduce(compound, () -> {});
+        nodeProduce(denseAlloy, () -> {});
       });
 
       // crafting
       node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
-          node(electricSpinner);
+          node(electricSpinner, with(new SectorComplete(frozenHotspot)), () -> {});
           node(burner);
         });
         node(compoundMixer, with(
@@ -44,10 +36,10 @@ public class SWTechTree {
 
         node(boiler, with(
           new Research(burner),
-          new SectorComplete(SectorPresets.extractionOutpost)
+          new OnSector(SectorPresets.extractionOutpost)
         ), () -> node(thermalBoiler));
 
-        nodeObj(batchPress, with(new Research(Blocks.multiPress)));
+        node(batchPress, with(new Research(Blocks.multiPress)), () -> {});
       });
 
       // distribution
@@ -70,7 +62,7 @@ public class SWTechTree {
       node(subFactory, () -> {
         node(recluse, () -> {
           node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
-            nodeObj(evade, with(new Research(Blocks.multiplicativeReconstructor)));
+            node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
           });
         });
       });
@@ -78,13 +70,16 @@ public class SWTechTree {
       node(swarm, with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
         node(sentry, () -> {
           node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
-            nodeObj(castle, with(new Research(Blocks.multiplicativeReconstructor)));
+            node(castle, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
           });
         });
         node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
-          nodeObj(trap, with(new Research(Blocks.multiplicativeReconstructor)));
+          node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
         });
       });
+
+      // maps
+      node(frozenHotspot, with(new SectorComplete(SectorPresets.craters), new Produce(compound)), () -> {});
     });
   }
 }

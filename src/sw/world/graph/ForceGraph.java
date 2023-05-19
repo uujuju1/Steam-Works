@@ -20,11 +20,9 @@ public class ForceGraph {
 
 	public float rotation = 0;
 
-	private final int id;
-	private static int lastId;
+	private WindowedMean mean;
 
 	public ForceGraph() {
-		id = lastId++;
 		entity = new ForceGraphUpdater();
 		entity.graph = this;
 		hasEntity();
@@ -32,10 +30,6 @@ public class ForceGraph {
 
 	public void hasEntity() {
 		if (entity != null) entity.add();
-	}
-
-	public int getId() {
-		return id;
 	}
 
 	public Seq<Building> floodFill(Building build) {
@@ -88,20 +82,23 @@ public class ForceGraph {
 
 	public void update() {
 		rotation += Mathf.maxZero(Math.abs(getSpeed()) - getResistance()) * Time.delta * (getSpeed() >= 0 ? 1 : -1);
-		for (Link link : links) {
-			if (
-				link.l1() != null && link.l2() != null &&
-					builds.contains((Building) link.l1()) && builds.contains((Building) link.l2())
-			) {
-				float spd = (link.l1().force().speed + link.l2().force().speed)/2f;
-				link.l1().force().speed = spd;
-				link.l2().force().speed = spd;
-			}
-		}
+//		for (Link link : links) {
+//			if (
+//				link.l1() != null && link.l2() != null &&
+//					builds.contains((Building) link.l1()) && builds.contains((Building) link.l2())
+//			) {
+//				float spd = (link.l1().force().speed + link.l2().force().speed)/2f;
+//				link.l1().force().speed = spd;
+//				link.l2().force().speed = spd;
+//			}
+//		}
+		if (mean == null || mean.getWindowSize() != builds.size) mean = new WindowedMean(builds.size);
 		for (Building b : builds) {
 			HasForce build = (HasForce) b;
+			mean.add(build.force().speed);
+			if (mean.hasEnoughData()) build.force().speed = mean.mean();
 			build.force().speed = Math.min(Math.abs(build.force().speed), build.forceConfig().maxForce) * (build.speed() > 0 ? 1 : -1);
-			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
+//			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
 		}
 	}
 
