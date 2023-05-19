@@ -1,34 +1,28 @@
 package sw.world.blocks.heat;
 
-import arc.Core;
-import arc.util.Time;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.blocks.production.GenericCrafter;
-import mindustry.world.meta.StatUnit;
-import sw.SWVars;
-import sw.world.interfaces.HasHeat;
-import sw.world.interfaces.HeatBlockI;
-import sw.world.meta.HeatConfig;
-import sw.world.meta.SWStat;
-import sw.world.modules.HeatModule;
+import arc.*;
+import arc.util.*;
+import arc.util.io.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
+import mindustry.world.blocks.production.*;
+import mindustry.world.meta.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
+import sw.world.modules.*;
 
-public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
-  HeatConfig heatConfig = SWVars.baseConfig.copy();
+public class HeatGenericCrafter extends GenericCrafter {
+  public HeatConfig heatConfig = new HeatConfig();
   public float outputHeat = -1f;
 
   public HeatGenericCrafter(String name) {
     super(name);
   }
 
-  @Override public HeatConfig heatConfig() {return heatConfig;}
-
   @Override
   public void setStats() {
     super.setStats();
-    heatStats(stats);
+    heatConfig.heatStats(stats);
     if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
   }
   @Override
@@ -43,8 +37,8 @@ public class HeatGenericCrafter extends GenericCrafter implements HeatBlockI {
     @Override public HeatModule heat() {
       return module;
     }
-    @Override public HeatBlockI type() {
-      return (HeatBlockI) block;
+    @Override public HeatConfig heatC() {
+      return heatConfig;
     }
 
     @Override

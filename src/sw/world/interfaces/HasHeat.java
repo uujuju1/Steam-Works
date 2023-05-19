@@ -1,24 +1,18 @@
 package sw.world.interfaces;
 
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.struct.Seq;
-import mindustry.gen.Building;
-import sw.SWVars;
-import sw.util.SWMath;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.struct.*;
+import mindustry.gen.*;
+import sw.util.*;
 import sw.world.meta.*;
-import sw.world.modules.HeatModule;
+import sw.world.modules.*;
 
-import static sw.util.SWDraw.heatPal;
+import static sw.util.SWDraw.*;
 
 public interface HasHeat {
   HeatModule heat();
-  HeatBlockI type();
-  default HeatConfig heatC() {
-    if (type().heatConfig() == SWVars.baseConfig) throw new IllegalArgumentException("use copy()");
-    return type().heatConfig();
-  }
+  HeatConfig heatC();
 
   default float temperature() {return heat().heat;}
   default float fraction() {return Mathf.map(temperature(), heatC().minHeat, heatC().maxHeat, 0, 1);}

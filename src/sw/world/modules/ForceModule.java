@@ -9,8 +9,7 @@ public class ForceModule extends BlockModule {
 	public ForceGraph graph = new ForceGraph();
 
 	public float speed;
-	public float resistance;
-	public float torque;
+	public float ratio = 1;
 
 	public final Seq<Link> links = new Seq<>();
 	public int link = -1;
@@ -19,8 +18,7 @@ public class ForceModule extends BlockModule {
 	public void write(Writes write) {
 		links.remove(link -> link.l1() == null || link.l2() == null);
 		write.f(speed);
-		write.f(resistance);
-		write.f(torque);
+		write.f(ratio);
 		write.i(link);
 		write.s(links.size);
 		for (Link link: links) {
@@ -31,8 +29,7 @@ public class ForceModule extends BlockModule {
 	@Override
 	public void read(Reads read) {
 		speed = read.f();
-		resistance = read.f();
-		torque = read.f();
+		ratio = read.f();
 		link = read.i();
 		short size = read.s();
 		for (int i = 0; i < size; i++) {

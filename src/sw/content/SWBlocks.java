@@ -61,17 +61,17 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
-			heatConfig().heatLoss = 0.1f;
+			heatConfig.heatLoss = 0.1f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
-			heatConfig().heatLoss = 0.1f;
+			heatConfig.heatLoss = 0.1f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
 			size = 2;
-			heatConfig().maxHeat = 2000;
-			heatConfig().heatLoss = 1.06f;
+			heatConfig.maxHeat = 2000;
+			heatConfig.heatLoss = 1.06f;
 		}};
 
 		beltNode = new ForceNode("belt-node") {{
@@ -206,7 +206,7 @@ public class SWBlocks {
 			updateEffect = Fx.coalSmeltsmoke;
 			craftTime = 120f;
 			outputHeat = 3f;
-			heatConfig().acceptHeat = false;
+			heatConfig.acceptHeat = false;
 		}};
 		frictionHeater = new SWGenericCrafter("friction-heater") {{
 			requirements(Category.power, with(
@@ -230,14 +230,14 @@ public class SWBlocks {
 			}}, new DrawDefault());
 			consume(new ConsumeSpeed(0.6f, 6f));
 			consume(new ConsumeTorque(5.4f, 18f));
-			heatConfig().acceptHeat = false;
+			heatConfig.acceptHeat = false;
 			outputHeat = 3f;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{
 			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
-			heatConfig().maxHeat = 2000f;
-			heatConfig().outputHeat = false;
+			heatConfig.maxHeat = 2000f;
+			heatConfig.outputHeat = false;
 			size = 2;
 			health = 160;
 			hasLiquids = true;

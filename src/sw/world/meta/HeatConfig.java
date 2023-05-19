@@ -1,25 +1,22 @@
 package sw.world.meta;
 
-public class HeatConfig implements Cloneable {
-  public float minHeat, maxHeat, heatEmissivity, heatLoss;
-  public boolean acceptHeat, outputHeat;
+import mindustry.world.meta.*;
 
-  public HeatConfig(float minHeat, float maxHeat, float heatEmissivity, float heatLoss, boolean acceptHeat, boolean outputHeat) {
+public class HeatConfig {
+  public float minHeat = -200f, maxHeat = 2200f, heatEmissivity =  0.4f, heatLoss = 0f;
+  public boolean acceptHeat = true, outputHeat = true;
+
+  public HeatConfig() {
     if (minHeat > maxHeat) throw new IllegalArgumentException("Min heat cannot be higher than max heat");
-    this.minHeat = minHeat;
-    this.maxHeat = maxHeat;
-    this.heatEmissivity = heatEmissivity;
-    this.heatLoss = heatLoss;
-    this.acceptHeat = acceptHeat;
-    this.outputHeat = outputHeat;
   }
 
-  public HeatConfig copy() {
-    try {
-      return (HeatConfig) clone();
-    } catch (CloneNotSupportedException a) {
-      throw new RuntimeException("no clones?", a);
-    }
+  public void heatStats(Stats stats) {
+    stats.add(SWStat.maxHeat, maxHeat, StatUnit.degrees);
+    stats.add(SWStat.minHeat, minHeat, StatUnit.degrees);
+    stats.add(SWStat.heatEmissivity, heatEmissivity, StatUnit.degrees);
+    stats.add(SWStat.heatLoss, heatEmissivity, StatUnit.degrees);
+    stats.add(SWStat.acceptsHeat, acceptHeat);
+    stats.add(SWStat.outputsHeat, outputHeat);
   }
 
   public boolean connects() {return acceptHeat || outputHeat;}

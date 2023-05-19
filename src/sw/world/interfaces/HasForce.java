@@ -27,20 +27,20 @@ public interface HasForce {
 		return graph().rotation;
 	}
 	default float speed() {
-		return force().speed * force().torque;
+		return force().speed * force().ratio;
 	}
-	default float torque() {return force().speed / force().torque;}
+	default float torque() {return force().speed / force().ratio;}
 	default void ratio() {
 		float mean = 0;
 		if (force().links.copy().removeAll(l -> l.l1() == this).isEmpty()) {
-			force().torque = 1f;
+			force().ratio = 1f;
 			return;
 		}
 		for(Link link : force().links.copy().removeAll(l -> l.l1() == this)) {
 			if (link.l1() == null || link.l2() == null) continue;
 			mean += link.ratio(this, true);
 		}
-		force().torque = mean / force().links.copy().removeAll(l -> l.l1() == this).size;
+		force().ratio = mean / force().links.copy().removeAll(l -> l.l1() == this).size;
 	}
 
 	default void drawBelt() {
@@ -83,8 +83,6 @@ public interface HasForce {
 
 		force().links.addUnique(link);
 		b.force().links.addUnique(link);
-		graph().entity.remove();
-		graph().entity.add();
 		b.ratio();
 	}
 	default void unLink() {

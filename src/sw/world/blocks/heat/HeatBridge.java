@@ -1,36 +1,27 @@
 package sw.world.blocks.heat;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Angles;
-import arc.math.Mathf;
-import arc.math.geom.Point2;
-import arc.struct.Seq;
-import arc.util.Nullable;
-import arc.util.Tmp;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.Vars;
-import mindustry.gen.Building;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.Block;
-import sw.SWVars;
-import sw.util.SWDraw;
-import sw.util.SWMath;
-import sw.world.interfaces.HasHeat;
-import sw.world.interfaces.HeatBlockI;
-import sw.world.meta.HeatConfig;
-import sw.world.modules.HeatModule;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
+import mindustry.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import sw.util.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
+import sw.world.modules.*;
 
-import java.util.Objects;
+import java.util.*;
 
 
-public class HeatBridge extends Block implements HeatBlockI {
-  HeatConfig heatConfig = SWVars.baseConfig.copy();
+public class HeatBridge extends Block {
+  public HeatConfig heatConfig = new HeatConfig();
   public TextureRegion bridgeRegion, endRegion;
 
   public int range = 5;
@@ -54,17 +45,15 @@ public class HeatBridge extends Block implements HeatBlockI {
     return false;
   }
 
-  @Override public HeatConfig heatConfig() {return heatConfig;}
-
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.heat().heat, heatConfig().minHeat, heatConfig().maxHeat)));
+    addBar("heat", (HeatBridgeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
   }
   @Override
   public void setStats() {
     super.setStats();
-    heatStats(stats);
+    heatConfig.heatStats(stats);
   }
 
   @Override
@@ -122,8 +111,8 @@ public class HeatBridge extends Block implements HeatBlockI {
     @Override public HeatModule heat() {
       return module;
     }
-    @Override public HeatBlockI type() {
-      return (HeatBlockI) block;
+    @Override public HeatConfig heatC() {
+      return heatConfig;
     }
 
     @Override public Seq<Building> heatProximity(Building build) {

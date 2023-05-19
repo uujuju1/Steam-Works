@@ -7,14 +7,13 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
-import sw.*;
 import sw.world.consumers.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class HeatTurret extends Turret implements HeatBlockI {
-	public HeatConfig heatConfig = SWVars.baseConfig.copy();
+public class HeatTurret extends Turret {
+	public HeatConfig heatConfig = new HeatConfig();
 	public ConsumeHeatTrigger consumer = new ConsumeHeatTrigger(0, 0, true);
 	public BulletType shootType;
 
@@ -22,14 +21,10 @@ public class HeatTurret extends Turret implements HeatBlockI {
 		super(name);
 	}
 
-	@Override public HeatConfig heatConfig() {
-		return heatConfig;
-	}
-
 	@Override
 	public void setStats() {
 		super.setStats();
-		heatStats(stats);
+		heatConfig.heatStats(stats);
 		consumer.display(stats);
 		stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
 	}
@@ -45,8 +40,8 @@ public class HeatTurret extends Turret implements HeatBlockI {
 		@Override public HeatModule heat() {
 			return module;
 		}
-		@Override public HeatBlockI type() {
-			return (HeatBlockI) block;
+		@Override public HeatConfig heatC() {
+			return heatConfig;
 		}
 
 		@Override

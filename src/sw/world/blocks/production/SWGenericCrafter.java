@@ -9,7 +9,6 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
-import sw.*;
 import sw.util.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -18,9 +17,9 @@ import sw.world.modules.*;
 /**
  * Works as a bridge between force and heat
  */
-public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
+public class SWGenericCrafter extends GenericCrafter {
 	public ForceConfig forceConfig = new ForceConfig();
-	HeatConfig heatConfig = SWVars.baseConfig.copy();
+	public HeatConfig heatConfig = new HeatConfig();
 
 	public float outputSpeed = -1f, outputHeat = -1f;
 	public boolean hasForce = true, hasHeat = true;
@@ -39,12 +38,11 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 	@Override public void drawOverlay(float x, float y, int rotation) {
 		Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
-	@Override public HeatConfig heatConfig() {return heatConfig;}
 
 	@Override
 	public void setStats() {
 		super.setStats();
-		if (hasHeat) heatStats(stats);
+		if (hasHeat) heatConfig.heatStats(stats);
 		if (hasForce) forceConfig.addStats(stats);
 		if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
 	}
@@ -58,7 +56,7 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 	@Override
 	public void init() {
 		super.init();
-		if (!hasHeat) heatConfig().acceptHeat = heatConfig().outputHeat = false;
+		if (!hasHeat) heatConfig.acceptHeat = heatConfig.outputHeat = false;
 		if (!hasForce) configurable = false;
 	}
 
@@ -70,8 +68,8 @@ public class SWGenericCrafter extends GenericCrafter implements HeatBlockI {
 		@Override public HeatModule heat() {
 			return heat;
 		}
-		@Override public HeatBlockI type() {
-			return (HeatBlockI) block;
+		@Override public HeatConfig heatC() {
+			return heatConfig;
 		}
 
 		@Override public ForceModule force() {

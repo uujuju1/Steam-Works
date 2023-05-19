@@ -7,15 +7,12 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import sw.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-import static sw.util.SWMath.*;
-
-public class HeatRadiator extends Block implements HeatBlockI {
-  HeatConfig heatConfig = SWVars.baseConfig.copy();
+public class HeatRadiator extends Block {
+  public HeatConfig heatConfig = new HeatConfig();
   public TextureRegion heatRegion, topRegion;
 
   public HeatRadiator(String name) {
@@ -24,17 +21,15 @@ public class HeatRadiator extends Block implements HeatBlockI {
     update = sync = true;
   }
 
-  @Override public HeatConfig heatConfig() {return heatConfig;}
-
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> heatMap(entity.heat().heat, 0f, heatConfig().maxHeat)));
+    addBar("heat", (HeatRadiatorBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
   }
   @Override
   public void setStats() {
     super.setStats();
-    heatStats(stats);
+    heatConfig.heatStats(stats);
   }
 
   @Override
@@ -50,7 +45,9 @@ public class HeatRadiator extends Block implements HeatBlockI {
     @Override public HeatModule heat() {
       return module;
     }
-    @Override public HeatBlockI type() {return (HeatBlockI) block;}
+    @Override public HeatConfig heatC() {
+      return heatConfig;
+    }
 
     @Override public void updateTile() {
       updateHeat(this);

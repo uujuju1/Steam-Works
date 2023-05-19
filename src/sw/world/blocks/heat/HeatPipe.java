@@ -1,25 +1,20 @@
 package sw.world.blocks.heat;
 
-import arc.Core;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.gen.Building;
-import mindustry.graphics.Pal;
-import mindustry.ui.Bar;
-import mindustry.world.Block;
-import sw.SWVars;
-import sw.util.SWMath;
-import sw.world.interfaces.HasHeat;
-import sw.world.interfaces.HeatBlockI;
-import sw.world.meta.HeatConfig;
-import sw.world.modules.HeatModule;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.util.io.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
+import sw.world.modules.*;
 
-import static sw.util.SWDraw.getRegions;
+import static sw.util.SWDraw.*;
 
-public class HeatPipe extends Block implements HeatBlockI {
-  HeatConfig heatConfig = SWVars.baseConfig.copy();
+public class HeatPipe extends Block {
+  public HeatConfig heatConfig = new HeatConfig();
   public TextureRegion[] regions, heatRegions, topRegions;
 
   public HeatPipe(String name) {
@@ -29,19 +24,15 @@ public class HeatPipe extends Block implements HeatBlockI {
     underBullets = true;
   }
 
-  @Override public HeatConfig heatConfig() {
-    return heatConfig;
-  }
-
   @Override
   public void setBars() {
     super.setBars();
-    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, () -> SWMath.heatMap(entity.heat().heat, heatConfig().minHeat, heatConfig().maxHeat)));
+    addBar("heat", (HeatPipeBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
   }
   @Override
   public void setStats() {
     super.setStats();
-    heatStats(stats);
+    heatConfig.heatStats(stats);
   }
 
   @Override
@@ -57,15 +48,15 @@ public class HeatPipe extends Block implements HeatBlockI {
 
     public TextureRegion getRegion(TextureRegion[] regions) {
       int index = 0;
-      for (int i = 0; i < 4; i++) if (nearby(i) instanceof HasHeat next && next.type().heatConfig().connects()) index += 1 << i;
+      for (int i = 0; i < 4; i++) if (nearby(i) instanceof HasHeat next && next.heatC().connects()) index += 1 << i;
       return regions[index];
     }
 
     @Override public HeatModule heat() {
       return module;
     }
-    @Override public HeatBlockI type() {
-      return (HeatBlockI) block;
+    @Override public HeatConfig heatC() {
+      return heatConfig;
     }
 
     @Override public void updateTile() {

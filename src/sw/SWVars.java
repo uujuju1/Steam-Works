@@ -5,11 +5,9 @@ import mindustry.ctype.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.ui.*;
-import sw.world.meta.*;
 
 public class SWVars {
     public static final float maxHeatGlow = 100;
-    public static final HeatConfig baseConfig = new HeatConfig(-200, 2200, 0.4f, 0f, true, true);
     public static ModSettings settings = new ModSettings();
 //    public static ModNetClient netClient;
 //    public static ModNetServer netServer;
