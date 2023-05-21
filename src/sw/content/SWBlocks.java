@@ -41,7 +41,7 @@ public class SWBlocks {
 		burner,
 		boiler, thermalBoiler,
 
-		nickelForge,
+		nickelForge, oilDistiller,
     batchPress,
 		rebuilder,
 
@@ -275,6 +275,21 @@ public class SWBlocks {
 			consumeItems(with(Items.scrap, 2, Items.lead, 1));
 			consumePower(1f);
 			outputItems = with(SWItems.nickel, 1);
+		}};
+		oilDistiller = new GenericCrafter("oil-distiller") {{
+			requirements(Category.crafting, with(
+				Items.graphite, 70,
+				Items.titanium, 50,
+				Items.copper, 120,
+				SWItems.nickel, 60
+			));
+			size = 2;
+			health = 160;
+			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
+			updateEffect = Fx.smeltsmoke;
+			consumeLiquid(Liquids.oil, 0.2f);
+			consumePower(2f);
+			outputLiquid = new LiquidStack(SWLiquids.butane, 0.1f);
 		}};
 		batchPress = new StackCrafter("batch-press") {{
 			requirements(Category.crafting, with(

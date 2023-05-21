@@ -25,6 +25,7 @@ public class SWTechTree {
 
       // crafting
       node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
+        node(oilDistiller, with(new SectorComplete(SectorPresets.tarFields)), () -> {});
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
           node(electricSpinner, with(new SectorComplete(frozenHotspot)), () -> {});
           node(burner);
@@ -57,7 +58,7 @@ public class SWTechTree {
 
       // turrets
       node(bolt, () -> node(light));
-      node(mortar, () -> node(incend));
+      node(mortar, () -> node(incend, with(new Research(oilDistiller)), () -> {}));
 
       // units
       node(subFactory, () -> {
