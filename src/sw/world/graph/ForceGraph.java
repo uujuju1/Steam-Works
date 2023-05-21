@@ -82,16 +82,6 @@ public class ForceGraph {
 
 	public void update() {
 		rotation += Mathf.maxZero(Math.abs(getSpeed()) - getResistance()) * Time.delta * (getSpeed() >= 0 ? 1 : -1);
-//		for (Link link : links) {
-//			if (
-//				link.l1() != null && link.l2() != null &&
-//					builds.contains((Building) link.l1()) && builds.contains((Building) link.l2())
-//			) {
-//				float spd = (link.l1().force().speed + link.l2().force().speed)/2f;
-//				link.l1().force().speed = spd;
-//				link.l2().force().speed = spd;
-//			}
-//		}
 		if (mean == null || mean.getWindowSize() != builds.size) mean = new WindowedMean(builds.size);
 		for (Building b : builds) {
 			HasForce build = (HasForce) b;

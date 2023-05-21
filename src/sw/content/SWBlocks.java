@@ -447,7 +447,7 @@ public class SWBlocks {
 			targetAir = false;
 			shootSound = Sounds.flame;
 			consume(new ConsumeSpeed(1f, 6f));
-			consumeItem(Items.coal, 2);
+			consumeLiquid(SWLiquids.butane, 0.2f);
 
 			forceConfig = new ForceConfig() {{
 				maxForce = 10f;

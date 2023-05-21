@@ -20,7 +20,11 @@ public class ForceGraphUpdater implements Entityc {
 	}
 
 	@Override public boolean isAdded() {
-		return added;
+		try {
+			return Groups.all.index(id_all) == this;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	@Override public boolean isLocal() {
 		return true;
@@ -37,7 +41,7 @@ public class ForceGraphUpdater implements Entityc {
 
 	@Override
 	public void add() {
-		if (!added) {
+		if (!isAdded()) {
 			id_all = Groups.all.addIndex(this);
 			added = true;
 		}
