@@ -35,10 +35,6 @@ public class SWGenericCrafter extends GenericCrafter {
 		configurable = true;
 	}
 
-	@Override public void drawOverlay(float x, float y, int rotation) {
-		Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
-	}
-
 	@Override
 	public void setStats() {
 		super.setStats();
@@ -53,9 +49,14 @@ public class SWGenericCrafter extends GenericCrafter {
 		addBar("heat", (SWGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
 	}
 
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+	}
+
 	@Override
 	public void init() {
 		super.init();
+		configurable = forceConfig.outputsForce && hasForce;
 		if (!hasHeat) heatConfig.acceptHeat = heatConfig.outputHeat = false;
 		if (!hasForce) configurable = false;
 	}

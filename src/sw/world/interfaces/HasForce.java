@@ -104,7 +104,7 @@ public interface HasForce {
 
 	default boolean configureBuildTap(Building other) {
 		Building from = (Building) this;
-		if (other instanceof HasForce next && from.tile().dst(other) < forceConfig().range) {
+		if (other instanceof HasForce next && from.tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce) {
 			if ((getLink() != null && getLink() == other) || other == this) {
 				unLink();
 				return false;

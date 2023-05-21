@@ -18,17 +18,22 @@ public class ForceSwayCrafter extends GenericCrafter {
 
 	public ForceSwayCrafter(String name) {
 		super(name);
-		configurable = true;
-	}
-
-	@Override public void drawOverlay(float x, float y, int rotation) {
-		Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
 		forceConfig.addStats(stats);
+	}
+
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		configurable = forceConfig.outputsForce;
 	}
 
 	public class ForceSwayCrafterBuild extends GenericCrafterBuild implements HasForce {

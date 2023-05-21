@@ -57,6 +57,7 @@ public class SWTechTree {
 
       // turrets
       node(bolt, () -> node(light));
+      node(mortar, () -> node(incend));
 
       // units
       node(subFactory, () -> {

@@ -10,6 +10,7 @@ public class ForceConfig {
 		baseResistance = 0.5f,
 		resistanceScl = 1f,
 		range = 80f;
+	public boolean acceptsForce = true, outputsForce = true;
 
 	public void addStats(Stats stats) {
 		stats.add(SWStat.maxForce, maxForce, StatUnit.perMinute);

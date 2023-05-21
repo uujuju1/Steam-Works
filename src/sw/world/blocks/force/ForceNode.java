@@ -17,17 +17,22 @@ public class ForceNode extends Block {
 		super(name);
 		solid = destructible = true;
 		sync = update = true;
-		configurable = true;
-	}
-
-	@Override public void drawOverlay(float x, float y, int rotation) {
-		Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
 		forceConfig.addStats(stats);
+	}
+
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		configurable = forceConfig.outputsForce;
 	}
 
 	public class ForceNodeBuild extends Building implements HasForce {

@@ -48,7 +48,7 @@ public class SWBlocks {
 		stirlingGenerator,
 
 		bolt, light,
-		mortar,
+		mortar, incend,
 
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
@@ -116,6 +116,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 18f;
 				beltSizeIn = beltSizeOut = 4f;
+				outputsForce = false;
 			}};
 		}};
 
@@ -135,6 +136,7 @@ public class SWBlocks {
 				baseResistance = 0.03f;
 				resistanceScl = 2f;
 				beltSizeOut = beltSizeIn = 4f;
+				acceptsForce = false;
 			}};
 			outputSpeed = 5f;
 		}};
@@ -162,6 +164,7 @@ public class SWBlocks {
 				baseResistance = 0.03f;
 				resistanceScl = 2f;
 				beltSizeOut = beltSizeIn = 4f;
+				acceptsForce = false;
 			}};
 			outputSpeed = 5f;
 		}};
@@ -185,6 +188,7 @@ public class SWBlocks {
 				spinSprite = true;
 				rotateSpeed = 2f;
 			}});
+			forceConfig.outputsForce = false;
 			consume(new ConsumeSpeed(3f, 7f));
 			consumeItems(with(
 				Items.copper, 2,
@@ -223,6 +227,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 18f;
 				beltSizeIn = beltSizeOut = 6f;
+				outputsForce = false;
 			}};
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
 				sinScl = 1f;
@@ -393,7 +398,8 @@ public class SWBlocks {
 				SWItems.compound, 150
 			));
 			targetAir = false;
-			consume(new ConsumeSpeed(1f, 5f));
+			consume(new ConsumeSpeed(1f, 6f));
+			consumeItem(Items.graphite, 2);
 			size = 3;
 			health = 200 * 9;
 			reload = 120f;
@@ -407,6 +413,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 10f;
 				beltSizeIn = beltSizeOut = 6f;
+				outputsForce = false;
 			}};
 			drawer = new DrawTurret() {{
 				parts.addAll(
@@ -417,11 +424,58 @@ public class SWBlocks {
 					}}
 				);
 			}};
-			shootType = new ArtilleryBulletType(8f, 120) {{
+			shootType = new ArtilleryBulletType(4f, 120) {{
 				width = height = 20f;
 				splashDamage = 120f;
 				splashDamageRadius = 40f;
-				lifetime = 25f;
+				lifetime = 50f;
+			}};
+		}};
+		incend = new ForceTurret("incend") {{
+			requirements(Category.turret, with(
+				Items.silicon, 50,
+				SWItems.compound, 40,
+				Items.graphite, 50,
+				Items.titanium, 80
+			));
+			size = 2;
+			health = 890;
+			reload = 3f;
+			recoil = 0.5f;
+			range = 92f;
+			shootY = 6f;
+			targetAir = false;
+			shootSound = Sounds.flame;
+			consume(new ConsumeSpeed(1f, 6f));
+			consumeItem(Items.coal, 2);
+
+			forceConfig = new ForceConfig() {{
+				maxForce = 10f;
+				beltSizeIn = beltSizeOut = 4f;
+				outputsForce = false;
+			}};
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-barrel") {{
+						moveY = -1f;
+						under = true;
+					}}
+				);
+			}};
+
+			shootType = new BulletType(4f, 25) {{
+				hitSize = 8f;
+				lifetime = 23f;
+				status = StatusEffects.burning;
+				despawnEffect = Fx.none;
+				shootEffect = SWFx.longShootFlame;
+				hitEffect = Fx.hitFlameSmall;
+				statusDuration = 60 * 4f;
+				pierce = true;
+				collidesAir = false;
+				keepVelocity = false;
+				hittable = false;
 			}};
 		}};
 

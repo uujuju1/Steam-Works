@@ -3,6 +3,7 @@ package sw.world.blocks.force;
 import arc.struct.*;
 import arc.util.io.*;
 import mindustry.entities.bullet.*;
+import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.meta.*;
 import sw.world.interfaces.*;
@@ -24,6 +25,16 @@ public class ForceTurret extends Turret {
 		stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
 	}
 
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		configurable = forceConfig.outputsForce;
+	}
+
 	public class ForceTurretBuild extends TurretBuild implements HasForce {
 		ForceModule force = new ForceModule();
 
@@ -34,7 +45,7 @@ public class ForceTurret extends Turret {
 
 		@Override
 		public void updateTile() {
-			unit.ammo(speed() * unit.type().ammoCapacity);
+			unit.ammo(speed() * unit.type().ammoCapacity * efficiency);
 			super.updateTile();
 		}
 

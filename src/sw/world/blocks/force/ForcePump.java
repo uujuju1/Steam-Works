@@ -1,6 +1,7 @@
 package sw.world.blocks.force;
 
 import arc.util.io.*;
+import mindustry.graphics.*;
 import mindustry.world.blocks.production.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -17,6 +18,16 @@ public class ForcePump extends Pump {
 	public void setStats() {
 		super.setStats();
 		forceConfig.addStats(stats);
+	}
+
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+		configurable = forceConfig.outputsForce;
 	}
 
 	public class ForcePumpBuild extends PumpBuild implements HasForce {

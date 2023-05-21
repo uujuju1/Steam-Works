@@ -23,6 +23,14 @@ public class SWFx {
         });
       }
     }),
+    longShootFlame = new Effect(30f, e -> {
+      for (int i = 0; i < 4; i++) {
+        Draw.color(Pal.lightFlame, Pal.darkFlame, Color.gray, Math.max(i/4f, e.fin()));
+        Angles.randLenVectors(e.id + i, 10, 92f * e.finpow(), e.rotation, 10f, (x, y) -> {
+          Fill.circle(e.x + x, e.y + y, 1f + 1.5f * e.fout());
+        });
+      }
+    }),
     compoundCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
       Draw.color(Pal.accent);
       Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10 * e.foutpow());
