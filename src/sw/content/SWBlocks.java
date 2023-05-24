@@ -10,7 +10,6 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
-import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
@@ -343,7 +342,7 @@ public class SWBlocks {
 		}};
 
 //		power
-		stirlingGenerator = new ConsumeGenerator("stirling-generator") {{
+		stirlingGenerator = new HeatConsumeGenerator("stirling-generator") {{
       requirements(Category.power, with(
 				SWItems.denseAlloy, 120,
 	      Items.silicon, 140,
@@ -352,11 +351,10 @@ public class SWBlocks {
 			size = 3;
 			health = 160;
 			powerProduction = 7f;
-			hasLiquids = true;
 			generateEffect = Fx.smoke;
 			generateEffectRange = 12f;
 			effectChance = 0.1f;
-			consumeLiquid(SWLiquids.steam, 0.03f);
+			consume(new ConsumeHeat(1f, 200, false));
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPistons() {{
 				sides = 8;
 				sideOffset = 10f;
