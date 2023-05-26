@@ -19,6 +19,7 @@ import sw.world.blocks.defense.*;
 import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
+import sw.world.blocks.sandbox.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -54,7 +55,9 @@ public class SWBlocks {
     subFactory,
 		crafterFactory,
 
-		coreScaffold;
+		coreScaffold,
+
+		allSource;
 
 	public static void load() {
 //		distribution
@@ -332,7 +335,7 @@ public class SWBlocks {
 				}},
 				new GenericRecipe() {{
 					craftTime = 60f;
-					consumeItems = with(SWItems.nickel, 2, Items.plastanium, 2);
+					consumeItems = with(SWItems.nickel, 2, Items.silicon, 2);
 					consumeLiquids = LiquidStack.with(SWLiquids.steam, 0.3f);
 					outputItems = with(SWItems.denseAlloy, 1);
 					drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidRegion(SWLiquids.steam), new DrawDefault(), new DrawRegion("-top"));
@@ -553,6 +556,11 @@ public class SWBlocks {
 			unitType = UnitTypes.nova;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
+		}};
+
+//		sandbox
+		allSource = new ResourceSource("all-source") {{
+			health = 2147483647;
 		}};
 	}
 }

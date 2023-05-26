@@ -15,7 +15,7 @@ import static sw.util.SWDraw.*;
 
 public class HeatPipe extends Block {
   public HeatConfig heatConfig = new HeatConfig();
-  public TextureRegion[] regions, heatRegions, topRegions;
+  public TextureRegion[] regions, heatRegions;
 
   public HeatPipe(String name) {
     super(name);
@@ -40,7 +40,6 @@ public class HeatPipe extends Block {
     super.load();
     regions = getRegions(Core.atlas.find(name + "-tiles"), 8, 2, 32);
     heatRegions = getRegions(Core.atlas.find(name + "-heat"), 8, 2, 32);
-    topRegions = getRegions(Core.atlas.find(name + "-top"), 8, 2, 32);
   }
 
   public class HeatPipeBuild extends Building implements HasHeat {
@@ -66,7 +65,6 @@ public class HeatPipe extends Block {
     public void draw() {
       Draw.rect(getRegion(regions), x, y, 0);
       drawHeat(getRegion(heatRegions), this);
-      Draw.rect(getRegion(topRegions), x, y, 0);
     }
 
     @Override
