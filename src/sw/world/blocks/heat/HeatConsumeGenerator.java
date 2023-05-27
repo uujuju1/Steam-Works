@@ -47,6 +47,24 @@ public class HeatConsumeGenerator extends ConsumeGenerator {
 		}
 
 		@Override
+		public void onProximityAdded() {
+			super.onProximityAdded();
+			hGraph().builds.addUnique(this);
+			hGraph().reloadConnections();
+		}
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			hGraph().builds.remove(this);
+			hGraph().links.removeAll(b -> b.has(this));
+		}
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+			hGraph().reloadConnections();
+		}
+
+		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			module.read(read);

@@ -3,7 +3,7 @@ package sw.world.meta;
 import mindustry.world.meta.*;
 
 public class HeatConfig {
-  public float minHeat = -200f, maxHeat = 2200f, heatEmissivity =  0.4f, heatLoss = 0f;
+  public float minHeat = -200f, maxHeat = 600f, heatEmissivity =  0.01f, heatLoss = 0f;
   public boolean acceptHeat = true, outputHeat = true;
 
   public HeatConfig() {

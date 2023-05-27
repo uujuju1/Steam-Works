@@ -83,7 +83,7 @@ public interface HasForce {
 
 		force().links.addUnique(link);
 		b.force().links.addUnique(link);
-		b.graph().hasEntity();
+		b.graph().checkEntity();
 		b.ratio();
 	}
 	default void unLink() {

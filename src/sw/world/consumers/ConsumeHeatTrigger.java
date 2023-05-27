@@ -19,7 +19,7 @@ public class ConsumeHeatTrigger extends Consume {
 	}
 
 	@Override public void trigger(Building build) {
-		if (build instanceof HasHeat next) next.heat().subHeat(amount);
+		if (build instanceof HasHeat next) next.addHeat(-amount);
 	}
 
 	@Override public float efficiency(Building build) {

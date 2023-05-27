@@ -52,6 +52,25 @@ public class HeatRadiator extends Block {
     @Override public void updateTile() {
       updateHeat(this);
     }
+
+    @Override
+    public void onProximityAdded() {
+      super.onProximityAdded();
+      hGraph().builds.addUnique(this);
+      hGraph().reloadConnections();
+    }
+    @Override
+    public void onProximityRemoved() {
+      super.onProximityRemoved();
+      hGraph().builds.remove(this);
+      hGraph().links.removeAll(b -> b.has(this));
+    }
+    @Override
+    public void onProximityUpdate() {
+      super.onProximityUpdate();
+      hGraph().reloadConnections();
+    }
+
     @Override
     public void draw() {
       super.draw();

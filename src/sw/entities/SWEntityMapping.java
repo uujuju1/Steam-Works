@@ -13,7 +13,7 @@ public class SWEntityMapping {
   public static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] entities = new Entry[]{
     entry(SubmarineUnit.class, SubmarineUnit::new),
     entry(CrafterUnit.class, CrafterUnit::new),
-    entry(ForceGraphUpdater.class, ForceGraphUpdater::new)
+    entry(GraphUpdater.class, GraphUpdater::new)
   };
 
   private static <T extends Entityc> Entry<Class<T>, Prov<T>> entry(Class<T> name, Prov<T> prov) {

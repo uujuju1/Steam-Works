@@ -37,6 +37,6 @@ public class ForceModule extends BlockModule {
 			links.add(link);
 			graph.links.add(link);
 		}
-		graph.hasEntity();
+		graph.checkEntity();
 	}
 }

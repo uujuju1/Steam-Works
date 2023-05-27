@@ -4,32 +4,24 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
-import sw.entities.comp.*;
 import sw.world.interfaces.*;
 import sw.world.modules.*;
 
 /**
  * TODO visual speed setting
  */
-public class ForceGraph {
+public class ForceGraph extends Graph {
 	public final Seq<Building> builds = new Seq<>(false, 16, Building.class);
 	public final Seq<ForceModule> modules = new Seq<>(false, 16, ForceModule.class);
 	public final Seq<Link> links = new Seq<>(false, 16, Link.class);
-
-	public final @Nullable ForceGraphUpdater entity;
 
 	public float rotation = 0;
 
 	private WindowedMean mean;
 
 	public ForceGraph() {
-		entity = new ForceGraphUpdater();
-		entity.graph = this;
-		hasEntity();
-	}
-
-	public void hasEntity() {
-		if (entity != null) entity.add();
+		super();
+		checkEntity();
 	}
 
 	public Seq<Building> floodFill(Building build) {
@@ -68,14 +60,14 @@ public class ForceGraph {
 
 		for (Building build : graph.builds) add(build);
 		for (Link link : graph.links) links.addUnique(link);
-		hasEntity();
+		checkEntity();
 	}
 	public void removeBuild(Building build) {
 		if (builds.remove(build)) modules.remove(((HasForce) build).force());
 	}
 	public void remove(Building build) {
 		ForceGraph graph = new ForceGraph();
-		graph.hasEntity();
+		graph.checkEntity();
 		graph.add(build);
 		graph.entity.update();
 	}
@@ -88,7 +80,7 @@ public class ForceGraph {
 			mean.add(build.force().speed);
 			if (mean.hasEnoughData()) build.force().speed = mean.mean();
 			build.force().speed = Math.min(Math.abs(build.force().speed), build.forceConfig().maxForce) * (build.speed() > 0 ? 1 : -1);
-//			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
+			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
 		}
 	}
 

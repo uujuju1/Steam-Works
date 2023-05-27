@@ -4,7 +4,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import mindustry.gen.*;
-import sw.util.*;
+import sw.world.graph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
@@ -13,25 +13,33 @@ import static sw.util.SWDraw.*;
 public interface HasHeat {
   HeatModule heat();
   HeatConfig heatC();
+  default HeatGraph hGraph() {
+    return heat().graph;
+  }
+  default Building asBuild() {
+    return (Building) this;
+  }
 
   default float temperature() {return heat().heat;}
   default float fraction() {return Mathf.map(temperature(), heatC().minHeat, heatC().maxHeat, 0, 1);}
   default float fractionNeg() {return Mathf.map(temperature(), 0, heatC().maxHeat, 0, 1);}
 
   default void addHeat(float amount) {
-    heat().addHeat(amount);}
-  default void subHeat(float amount) {
-    heat().subHeat(amount);}
+    heat().addHeat(amount);
+  }
   default void setHeat(float amount) {
-    heat().setHeat(amount);}
-  default void transferHeat(HasHeat to, float amount) {subHeat(amount); to.addHeat(amount);}
-  default void transferHeat(HasHeat to) {transferHeat(to, SWMath.heatTransferDelta(heatC().heatEmissivity, temperature(), to.temperature(), true));}
+    heat().setHeat(amount);
+  }
+  default void transferHeat(HasHeat to, float amount) {
+    addHeat(-amount);
+    to.addHeat(amount);
+  }
 
   default void updateHeat(Building to) {
-    if (overflows()) to.kill();
-    if (temperature() < heatC().minHeat) setHeat(heatC().minHeat);
-    heatProximity(to).map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.temperature() >= temperature()).each(this::transferHeat);
-    subHeat(heatC().heatLoss * (fractionNeg() * 4));
+//    if (overflows()) to.kill();
+//    if (temperature() < heatC().minHeat) setHeat(heatC().minHeat);
+//    heatProximity().map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.temperature() >= temperature()).each(this::transferHeat);
+//    addHeat(heatC().heatLoss * -(fractionNeg() * 4));
   }
 
   default void drawHeat(TextureRegion region, Building build) {
@@ -41,14 +49,9 @@ public interface HasHeat {
     Draw.color();
   }
 
-  default Seq<Building> connections(Building build) {
+  default Seq<Building> heatProximity() {
     Seq<Building> out = new Seq<>();
-    for (int i = 0; i < 4; i++) if (build.nearby(i) instanceof HasHeat) out.add(build.nearby(i));
-    return out;
-  }
-  default Seq<Building> heatProximity(Building build) {
-    Seq<Building> out = new Seq<>();
-    for (Building next : build.proximity) if (next instanceof HasHeat) out.add(next);
+    for (Building next : ((Building) this).proximity) if (next instanceof HasHeat) out.add(next);
     return out;
   }
 
