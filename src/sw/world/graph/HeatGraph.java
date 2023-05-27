@@ -27,7 +27,10 @@ public class HeatGraph extends Graph {
 			}
 		});
 		builds.each(b -> {
-			if (b.overflows()) b.asBuild().kill();
+			if (b.overflows()) {
+				builds.remove(b);
+				b.asBuild().kill();
+			}
 			if (b.temperature() < b.heatC().minHeat) b.setHeat(b.heatC().minHeat);
 			b.addHeat(-b.temperature() * b.heatC().heatLoss);
 		});

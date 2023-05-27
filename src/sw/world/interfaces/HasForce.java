@@ -10,6 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.util.*;
 import sw.world.graph.*;
+import sw.world.graph.ForceGraph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
@@ -36,9 +37,9 @@ public interface HasForce {
 			force().ratio = 1f;
 			return;
 		}
-		for(Link link : force().links.copy().removeAll(l -> l.l1() == this)) {
-			if (link.l1() == null || link.l2() == null) continue;
-			mean += link.ratio(this, true);
+		for(ForceLink forceLink : force().links.copy().removeAll(l -> l.l1() == this)) {
+			if (forceLink.l1() == null || forceLink.l2() == null) continue;
+			mean += forceLink.ratio(this, true);
 		}
 		force().ratio = mean / force().links.copy().removeAll(l -> l.l1() == this).size;
 	}
@@ -76,24 +77,24 @@ public interface HasForce {
 	default void link(Building build) {
 		HasForce b = (HasForce) build;
 		force().link = build.pos();
-		Link link = new Link(this, b);
+		ForceLink forceLink = new ForceLink(this, b);
 
 		graph().addGraph(b.graph());
-		graph().links.addUnique(link);
+		graph().links.addUnique(forceLink);
 
-		force().links.addUnique(link);
-		b.force().links.addUnique(link);
+		force().links.addUnique(forceLink);
+		b.force().links.addUnique(forceLink);
 		b.graph().checkEntity();
 		b.ratio();
 	}
 	default void unLink() {
 		if (getLink() instanceof HasForce b) {
-			Link link = new Link(this, b);
+			ForceLink forceLink = new ForceLink(this, b);
 			force().link = -1;
 
-			force().links.remove(link);
-			b.force().links.remove(link);
-			graph().links.remove(link);
+			force().links.remove(forceLink);
+			b.force().links.remove(forceLink);
+			graph().links.remove(forceLink);
 			unLinkGraph();
 			graph().floodFill((Building) this).each(build -> graph().add(build));
 		}

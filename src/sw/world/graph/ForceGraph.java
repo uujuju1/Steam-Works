@@ -3,6 +3,7 @@ package sw.world.graph;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 import sw.world.interfaces.*;
 import sw.world.modules.*;
@@ -13,7 +14,7 @@ import sw.world.modules.*;
 public class ForceGraph extends Graph {
 	public final Seq<Building> builds = new Seq<>(false, 16, Building.class);
 	public final Seq<ForceModule> modules = new Seq<>(false, 16, ForceModule.class);
-	public final Seq<Link> links = new Seq<>(false, 16, Link.class);
+	public final Seq<ForceLink> links = new Seq<>(false, 16, ForceLink.class);
 
 	public float rotation = 0;
 
@@ -59,7 +60,7 @@ public class ForceGraph extends Graph {
 		graph.entity.remove();
 
 		for (Building build : graph.builds) add(build);
-		for (Link link : graph.links) links.addUnique(link);
+		for (ForceLink forceLink : graph.links) links.addUnique(forceLink);
 		checkEntity();
 	}
 	public void removeBuild(Building build) {
@@ -95,5 +96,43 @@ public class ForceGraph extends Graph {
 		if (modules.isEmpty()) return speed;
 		for (ForceModule b : modules) speed += b.speed;
 		return speed/modules.size;
+	}
+
+	public static class ForceLink {
+		public int l1, l2;
+
+		public ForceLink(HasForce l1, HasForce l2) {
+			this(((Building) l1).pos(), ((Building) l2).pos());
+		}
+		public ForceLink(int l1, int l2) {
+			this.l1 = l1;
+			this.l2 = l2;
+		}
+
+		public HasForce l1() {
+			return (HasForce) Vars.world.build(l1);
+		}
+		public HasForce l2() {
+			return (HasForce) Vars.world.build(l2);
+		}
+
+		public HasForce other(HasForce build) {
+			return build == l1() ? l2() : l1();
+		}
+		public boolean has(HasForce build) {
+			return build == l1() || build == l2();
+		}
+		public float ratio(HasForce from, boolean reverse) {
+			return !reverse ?
+				       from.forceConfig().beltSizeOut/other(from).forceConfig().beltSizeIn:
+				       other(from).forceConfig().beltSizeIn/from.forceConfig().beltSizeOut;
+		}
+
+		@Override public boolean equals(Object obj) {
+			return obj instanceof ForceLink forceLink && (forceLink.l1 == l1 || forceLink.l1 == l2) && (forceLink.l2 == l2 || forceLink.l2 == l1);
+		}
+		@Override public String toString() {
+			return "link1: " + l1 + "; link2: " + l2;
+		}
 	}
 }
