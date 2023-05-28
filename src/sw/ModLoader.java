@@ -7,9 +7,7 @@ import sw.ui.*;
 
 public class ModLoader extends Mod {
   public ModLoader() {
-    Events.on(EventType.ClientLoadEvent.class, e -> {
-      ModSettings.load();
-    });
+    Events.on(EventType.ClientLoadEvent.class, e -> ModSettings.load());
   }
 
   @Override

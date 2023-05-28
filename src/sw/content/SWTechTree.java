@@ -25,15 +25,22 @@ public class SWTechTree {
 
       // crafting
       node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
-        node(oilDistiller, with(new SectorComplete(SectorPresets.tarFields)), () -> {});
+        node(oilDistiller, with(
+          new SectorComplete(SectorPresets.tarFields),
+          new Produce(steam)
+        ), () -> {});
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
-          node(electricSpinner, with(new SectorComplete(frozenHotspot)), () -> {});
+          node(torquePump);
+          node(electricSpinner, with(new SectorComplete(frozenHotspot)), () -> {
+            node(turbineSwing, () -> node(frictionHeater));
+            node(compoundMixer, with(
+              new Research(electricSpinner),
+              new OnSector(SectorPresets.windsweptIslands)
+            ), () -> {});
+          });
           node(burner);
         });
-        node(compoundMixer, with(
-          new Research(electricSpinner),
-          new OnSector(SectorPresets.windsweptIslands)
-        ), () -> {});
+
 
         node(boiler, with(
           new Research(burner),
@@ -49,6 +56,7 @@ public class SWTechTree {
         node(heatRadiator);
       });
       node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
+      node(stirlingGenerator);
 
       // defense
       node(compoundWall, with(new Produce(compound)), () -> {
@@ -57,8 +65,10 @@ public class SWTechTree {
       });
 
       // turrets
-      node(bolt, () -> node(light));
-      node(mortar, () -> node(incend, with(new Research(oilDistiller)), () -> {}));
+      node(bolt, () -> {
+        node(light);
+        node(mortar, () -> node(incend, with(new Research(oilDistiller)), () -> {}));
+      });
 
       // units
       node(subFactory, () -> {

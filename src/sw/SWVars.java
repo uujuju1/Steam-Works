@@ -6,6 +6,8 @@ import mindustry.ctype.*;
 import sw.content.*;
 import sw.entities.*;
 
+import java.util.*;
+
 public class SWVars implements Loadable {
 	public static final float maxHeatGlow = 100;
 //  public static ModUI modUI;
@@ -38,7 +40,7 @@ public class SWVars implements Loadable {
 		public static void clearUnlockModContent() {
 				Vars.content.each(content -> {
 						if (content instanceof UnlockableContent c && content.minfo.mod != null) {
-								if (c.minfo.mod.name == Vars.mods.getMod("sw").name) c.clearUnlock();
+								if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
 						}
 				});
 		}

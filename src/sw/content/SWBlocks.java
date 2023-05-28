@@ -200,7 +200,12 @@ public class SWBlocks {
 		}};
 
 		burner = new HeatGenericCrafter("burner") {{
-			requirements(Category.power, with(Items.silicon, 20, Items.graphite, 30, Items.lead, 25));
+			requirements(Category.power, with(
+				Items.silicon, 20,
+				Items.graphite, 30,
+				SWItems.nickel, 50,
+				Items.lead, 25)
+			);
 			size = 2;
 			health = 160;
 			consume(new ConsumeItemFlammable());
@@ -218,6 +223,7 @@ public class SWBlocks {
 			requirements(Category.power, with(
 				Items.silicon, 150,
 				SWItems.denseAlloy, 160,
+				SWItems.nickel, 100,
 				Items.titanium, 80,
 				SWItems.compound, 200
 			));
@@ -243,7 +249,6 @@ public class SWBlocks {
 
 		boiler = new HeatGenericCrafter("boiler") {{
 			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
-			heatConfig.maxHeat = 2000f;
 			heatConfig.outputHeat = false;
 			size = 2;
 			health = 160;
@@ -254,7 +259,7 @@ public class SWBlocks {
 			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
 		}};
 		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
-			requirements(Category.production, with(SWItems.compound, 40, Items.metaglass, 35, Items.titanium, 30));
+			requirements(Category.production, with(SWItems.nickel, 40, Items.titanium, 50, Items.metaglass, 35, Items.titanium, 30));
 			size = 2;
 			health = 160;
 			baseEfficiency = 0f;
@@ -274,7 +279,7 @@ public class SWBlocks {
 			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
 			craftEffect = SWFx.nickelCraft;
       updateEffect = Fx.smeltsmoke;
-			consumeItems(with(Items.scrap, 2, Items.lead, 1));
+			consumeItems(with(Items.copper, 2, Items.lead, 1));
 			consumePower(1f);
 			outputItems = with(SWItems.nickel, 1);
 		}};
@@ -299,7 +304,7 @@ public class SWBlocks {
 				Items.silicon, 50,
 				Items.graphite, 75,
 				Items.plastanium, 140,
-				SWItems.denseAlloy, 150
+				Items.thorium, 80
 			));
 			size = 3;
 			health = 200;
@@ -348,6 +353,7 @@ public class SWBlocks {
 		stirlingGenerator = new HeatConsumeGenerator("stirling-generator") {{
       requirements(Category.power, with(
 				SWItems.denseAlloy, 120,
+				SWItems.nickel, 110,
 	      Items.silicon, 140,
 	      Items.titanium, 100
       ));
@@ -371,7 +377,7 @@ public class SWBlocks {
 			requirements(Category.turret, with(
 				Items.silicon, 120,
 				Items.copper, 70,
-				SWItems.compound, 95
+				SWItems.nickel, 95
 			));
 			consumer = new ConsumeHeatTrigger(100, 250, false);
 			maxAmmo = 2;
@@ -389,7 +395,7 @@ public class SWBlocks {
 							Items.titanium, 200,
 							Items.silicon, 200,
 							Items.graphite, 220,
-							SWItems.compound, 210
+							SWItems.nickel, 210
 			));
 			consumer = new ConsumeHeatTrigger(200, 1000, true);
 			size = 3;
