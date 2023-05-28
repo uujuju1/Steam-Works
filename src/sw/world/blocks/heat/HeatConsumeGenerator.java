@@ -41,12 +41,6 @@ public class HeatConsumeGenerator extends ConsumeGenerator {
 		}
 
 		@Override
-		public void updateTile() {
-			super.updateTile();
-			updateHeat(this);
-		}
-
-		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
 			hGraph().builds.addUnique(this);

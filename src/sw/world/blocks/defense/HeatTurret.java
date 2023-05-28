@@ -48,7 +48,6 @@ public class HeatTurret extends Turret {
 		public void updateTile() {
 			unit.ammo(temperature() - consumer.min - consumer.amount);
 			super.updateTile();
-			updateHeat(this);
 		}
 
 		@Override

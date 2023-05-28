@@ -158,10 +158,6 @@ public class HeatBridge extends Block {
       return false;
     }
 
-    @Override public void updateTile() {
-      updateHeat(this);
-    }
-
     @Override
     public void draw() {
       super.draw();

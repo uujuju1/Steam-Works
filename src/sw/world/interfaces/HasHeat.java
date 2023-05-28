@@ -35,23 +35,16 @@ public interface HasHeat {
     to.addHeat(amount);
   }
 
-  default void updateHeat(Building to) {
-//    if (overflows()) to.kill();
-//    if (temperature() < heatC().minHeat) setHeat(heatC().minHeat);
-//    heatProximity().map(build -> (HasHeat) build).removeAll(build -> !build.acceptsHeat(this, 0)||build.temperature() >= temperature()).each(this::transferHeat);
-//    addHeat(heatC().heatLoss * -(fractionNeg() * 4));
-  }
-
-  default void drawHeat(TextureRegion region, Building build) {
+  default void drawHeat(TextureRegion region) {
     Draw.color(heatPal);
     Draw.alpha(fractionNeg());
-    Draw.rect(region, build.x, build.y, 0);
+    Draw.rect(region, asBuild().x, asBuild().y, 0);
     Draw.color();
   }
 
   default Seq<Building> heatProximity() {
     Seq<Building> out = new Seq<>();
-    for (Building next : ((Building) this).proximity) if (next instanceof HasHeat) out.add(next);
+    for (Building next : asBuild().proximity) if (next instanceof HasHeat) out.add(next);
     return out;
   }
 

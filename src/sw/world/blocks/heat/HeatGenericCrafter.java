@@ -45,7 +45,6 @@ public class HeatGenericCrafter extends GenericCrafter {
     public void updateTile() {
       super.updateTile();
       if (efficiency > 0 && outputHeat >= 0) heat().addHeat(outputHeat * efficiencyScale() * Time.delta);
-      updateHeat(this);
     }
 
     @Override

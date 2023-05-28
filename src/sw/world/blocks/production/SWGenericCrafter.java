@@ -89,7 +89,6 @@ public class SWGenericCrafter extends GenericCrafter {
 				efficiency = 0f;
 			}
 			super.updateTile();
-			updateHeat(this);
 		}
 
 		@Override

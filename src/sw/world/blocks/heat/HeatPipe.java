@@ -58,10 +58,6 @@ public class HeatPipe extends Block {
       return heatConfig;
     }
 
-    @Override public void updateTile() {
-      updateHeat(this);
-    }
-
     @Override
     public void onProximityAdded() {
       super.onProximityAdded();
@@ -84,7 +80,7 @@ public class HeatPipe extends Block {
     @Override
     public void draw() {
       Draw.rect(getRegion(regions), x, y, 0);
-      drawHeat(getRegion(heatRegions), this);
+      drawHeat(getRegion(heatRegions));
     }
 
     @Override

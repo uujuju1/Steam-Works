@@ -49,10 +49,6 @@ public class HeatRadiator extends Block {
       return heatConfig;
     }
 
-    @Override public void updateTile() {
-      updateHeat(this);
-    }
-
     @Override
     public void onProximityAdded() {
       super.onProximityAdded();
@@ -74,7 +70,7 @@ public class HeatRadiator extends Block {
     @Override
     public void draw() {
       super.draw();
-      drawHeat(heatRegion, this);
+      drawHeat(heatRegion);
       Draw.rect(topRegion, x, y, 0);
     }
 
