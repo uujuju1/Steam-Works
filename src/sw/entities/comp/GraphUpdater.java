@@ -6,10 +6,10 @@ import mindustry.gen.*;
 import sw.entities.*;
 import sw.world.graph.*;
 
-public class ForceGraphUpdater implements Entityc {
+public class GraphUpdater implements Entityc {
 	public transient boolean added;
 	public transient int id = EntityGroup.nextId();
-	public transient ForceGraph graph;
+	public transient Graph graph;
 	public transient int id_all = -1;
 
 	@Override public <T extends Entityc> T self() {
@@ -73,7 +73,7 @@ public class ForceGraphUpdater implements Entityc {
 		id = i;
 	}
 	@Override public int classId() {
-		return SWEntityMapping.idMap.get(ForceGraphUpdater.class);
+		return SWEntityMapping.idMap.get(GraphUpdater.class);
 	}
 
 	@Override

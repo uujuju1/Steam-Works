@@ -4,6 +4,8 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.io.*;
+import mindustry.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
@@ -55,30 +57,44 @@ public class ResourceSource extends PowerNode {
 
 		@Override
 		public float getPowerProduction(){
-			return enabled ? 35791393 : 0f;
+			return enabled ? 1000000 : 0f;
 		}
 
 		@Override
 		public void buildConfiguration(Table table) {
 			table.table(Styles.black5, t -> {
-				t.table(Styles.black5, items -> content.items().each(c -> {
-					Button button = items.button(b -> b.image(c.uiIcon), Styles.clearTogglei, () -> {}).pad(2.5f).get();
-					button.changed(() -> {
-						itemBits.flip(c.id);
-						configure(new Config2(itemBits, liquidBits));
-					});
-					button.update(() -> button.setChecked(itemBits.get(c.id)));
-					if (c.id % 4 == 3) items.row();
-				})).pad(5f);
-				t.table(Styles.black5, liquids ->  content.liquids().each(c -> {
-					Button button = liquids.button(b -> b.image(c.uiIcon), Styles.clearTogglei, () -> {}).pad(2.5f).get();
-					button.changed(() -> {
-						liquidBits.flip(c.id);
-						configure(new Config2(itemBits, liquidBits));
-					});
-					button.update(() -> button.setChecked(liquidBits.get(c.id)));
-					if (c.id % 4 == 3) liquids.row();
-				})).pad(5f);
+				Table items = new Table(ti -> {
+					for(int i = 0; i < Vars.content.items().size; i++) {
+						Item item = Vars.content.item(i);
+						int finalI = i;
+						Button button = ti.button(b -> b.image(item.uiIcon), Styles.clearNoneTogglei, () -> itemBits.flip(finalI)).size(40f).get();
+						button.update(() -> {
+							button.setChecked(itemBits.get(finalI));
+						});
+						if (i%4 == 3) ti.row();
+					}
+				});
+				Table liquids = new Table(tl -> {
+					for(int i = 0; i < Vars.content.liquids().size; i++) {
+						Liquid liquid = Vars.content.liquid(i);
+						int finalI = i;
+						Button button = tl.button(b -> b.image(liquid.uiIcon), Styles.clearNoneTogglei, () -> liquidBits.flip(finalI)).size(40f).get();
+						button.update(() -> {
+							button.setChecked(liquidBits.get(finalI));
+						});
+						if (i%4 == 3) tl.row();
+					}
+				});
+
+				ScrollPane
+					pane1 = new ScrollPane(items, Styles.smallPane),
+					pane2 = new ScrollPane(liquids, Styles.smallPane);
+
+				pane1.setScrollingDisabled(true, false);
+				pane2.setScrollingDisabled(true, false);
+
+				t.add(pane1).maxHeight(40f * 4f);
+				t.add(pane2).maxHeight(40f * 4f);
 			});
 		}
 

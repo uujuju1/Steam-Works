@@ -63,17 +63,17 @@ public class SWBlocks {
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
-			heatConfig.heatLoss = 0.1f;
+			heatConfig.heatLoss = 0.01f;
 		}};
 		heatBridge = new HeatBridge("heat-bridge") {{
 			requirements(Category.power, with(Items.silicon, 5, SWItems.nickel, 8));
-			heatConfig.heatLoss = 0.1f;
+			heatConfig.heatLoss = 0.01f;
 		}};
 		heatRadiator = new HeatRadiator("heat-radiator") {{
 			requirements(Category.power, with(Items.silicon, 3, SWItems.nickel, 2, Items.graphite, 1));
 			size = 2;
 			heatConfig.maxHeat = 2000;
-			heatConfig.heatLoss = 1.06f;
+			heatConfig.heatLoss = 0.02f;
 		}};
 
 		beltNode = new ForceNode("belt-node") {{

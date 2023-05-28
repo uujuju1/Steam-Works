@@ -21,7 +21,7 @@ public class ConsumeHeat extends Consume {
   }
 
   @Override public void update(Building build) {
-    if (build instanceof HasHeat next) next.heat().subHeat(amount * efficiencyMultiplier(build) * Time.delta);
+    if (build instanceof HasHeat next) next.addHeat(amount * -efficiencyMultiplier(build) * Time.delta);
   }
 
   @Override public float efficiency(Building build) {
