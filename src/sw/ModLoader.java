@@ -13,6 +13,12 @@ public class ModLoader extends Mod {
   }
 
   @Override
+  public void init() {
+    super.init();
+    SWVars.init();
+  }
+
+  @Override
   public void loadContent() {
     SWVars.loadContent();
   }
