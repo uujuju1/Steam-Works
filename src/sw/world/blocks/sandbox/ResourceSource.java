@@ -17,7 +17,8 @@ public class ResourceSource extends PowerNode {
 		super(name);
 		hasItems = hasLiquids = hasPower = true;
 		outputsPower = outputsLiquid = true;
-		update = sync = true;
+		clearOnDoubleTap = true;
+		update = true;
 		saveConfig = true;
 		displayFlow = false;
 		itemCapacity = maxNodes = 100;
@@ -28,6 +29,10 @@ public class ResourceSource extends PowerNode {
 		config(Config2.class, (ResourceSourceBuild tile, Config2 entry) -> {
 			tile.itemBits.set(entry.bits);
 			tile.liquidBits.set(entry.bits2);
+		});
+		configClear((ResourceSourceBuild tile) -> {
+			tile.itemBits.set(new Bits());
+			tile.liquidBits.set(new Bits());
 		});
 	}
 
@@ -67,10 +72,11 @@ public class ResourceSource extends PowerNode {
 					for(int i = 0; i < Vars.content.items().size; i++) {
 						Item item = Vars.content.item(i);
 						int finalI = i;
-						Button button = ti.button(b -> b.image(item.uiIcon), Styles.clearNoneTogglei, () -> itemBits.flip(finalI)).size(40f).get();
-						button.update(() -> {
-							button.setChecked(itemBits.get(finalI));
-						});
+						Button button = ti.button(b -> b.image(item.uiIcon), Styles.clearNoneTogglei, () -> {
+							itemBits.flip(finalI);
+							configure(new Config2(itemBits, liquidBits));
+						}).size(40f).get();
+						button.update(() -> button.setChecked(itemBits.get(finalI)));
 						if (i%4 == 3) ti.row();
 					}
 				});
@@ -78,10 +84,11 @@ public class ResourceSource extends PowerNode {
 					for(int i = 0; i < Vars.content.liquids().size; i++) {
 						Liquid liquid = Vars.content.liquid(i);
 						int finalI = i;
-						Button button = tl.button(b -> b.image(liquid.uiIcon), Styles.clearNoneTogglei, () -> liquidBits.flip(finalI)).size(40f).get();
-						button.update(() -> {
-							button.setChecked(liquidBits.get(finalI));
-						});
+						Button button = tl.button(b -> b.image(liquid.uiIcon), Styles.clearNoneTogglei, () -> {
+							liquidBits.flip(finalI);
+							configure(new Config2(itemBits, liquidBits));
+						}).size(40f).get();
+						button.update(() -> button.setChecked(liquidBits.get(finalI)));
 						if (i%4 == 3) tl.row();
 					}
 				});

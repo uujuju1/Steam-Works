@@ -81,14 +81,14 @@ public class ForceGraph extends Graph {
 			mean.add(build.force().speed);
 			if (mean.hasEnoughData()) build.force().speed = mean.mean();
 			build.force().speed = Math.min(Math.abs(build.force().speed), build.forceConfig().maxForce) * (build.speed() > 0 ? 1 : -1);
-			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().baseResistance);
+			build.force().speed = Mathf.approachDelta(build.force().speed, 0, build.forceConfig().friction);
 		}
 	}
 
 	public float getResistance() {
 		float resistance = 0.0001f;
 		if (modules.isEmpty()) return resistance;
-    for (HasForce b : builds.map(b -> (HasForce) b)) if (b != null) resistance += b.forceConfig().baseResistance;
+    for (HasForce b : builds.map(b -> (HasForce) b)) if (b != null) resistance += b.forceConfig().friction;
     return resistance/modules.size;
 	}
 	public float getSpeed() {

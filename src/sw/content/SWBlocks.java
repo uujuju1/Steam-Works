@@ -15,7 +15,6 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
-import sw.world.blocks.defense.*;
 import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
@@ -34,7 +33,7 @@ public class SWBlocks {
 
 		beltNode, beltNodeLarge,
 		torquePump,
-		electricSpinner, turbineSwing,
+		electricSpinner, turbineSwing, waterWheel,
 		compoundMixer, frictionHeater,
 
 		heatPipe, heatBridge, heatRadiator,
@@ -83,6 +82,7 @@ public class SWBlocks {
 			));
 			health = 120;
 			forceConfig = new ForceConfig() {{
+				friction = 0.03f;
 				maxForce = 12f;
 				range = 60f;
 			}};
@@ -92,6 +92,7 @@ public class SWBlocks {
 			size = 2;
 			health = 120;
 			forceConfig = new ForceConfig() {{
+				friction = 0.06f;
 				maxForce = 12f;
 				range = 90f;
 				beltSizeIn = beltSizeOut = 4f;
@@ -135,12 +136,41 @@ public class SWBlocks {
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				baseResistance = 0.03f;
-				resistanceScl = 2f;
+				friction = 0.06f;
 				beltSizeOut = beltSizeIn = 4f;
 				acceptsForce = false;
 			}};
 			outputSpeed = 5f;
+		}};
+		waterWheel = new SWGenericCrafter("water-wheel") {{
+			requirements(Category.power, with(
+				Items.silicon, 80,
+				Items.lead, 120,
+				Items.metaglass, 70,
+				SWItems.compound, 100
+			));
+			size = 3;
+			health = 200;
+			consumeLiquid(Liquids.water, 0.2f);
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water, 1f),
+				new DrawRegion("-wheel") {{
+					spinSprite = true;
+					rotateSpeed = -1f;
+				}},
+				new DrawRegion("-top")
+			);
+			hasHeat = false;
+			hasLiquids = true;
+			craftTime = 1f;
+			forceConfig = new ForceConfig() {{
+				maxForce = 3f;
+				friction = 0.09f;
+				beltSizeOut = beltSizeIn = 6f;
+				acceptsForce = false;
+			}};
+			outputSpeed = 3f;
 		}};
 		turbineSwing = new ForceSwayCrafter("turbine-swing") {{
 			requirements(Category.power, with(
@@ -163,8 +193,7 @@ public class SWBlocks {
 			consumeLiquid(SWLiquids.steam, 0.2f);
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				baseResistance = 0.03f;
-				resistanceScl = 2f;
+				friction = 0.06f;
 				beltSizeOut = beltSizeIn = 4f;
 				acceptsForce = false;
 			}};
@@ -180,6 +209,7 @@ public class SWBlocks {
 			));
 			hasHeat = false;
 			forceConfig = new ForceConfig() {{
+				friction = 0.09f;
 				maxForce = 14f;
 				beltSizeIn = beltSizeOut = 6f;
 			}};
@@ -191,7 +221,7 @@ public class SWBlocks {
 				rotateSpeed = 2f;
 			}});
 			forceConfig.outputsForce = false;
-			consume(new ConsumeSpeed(3f, 7f));
+			consume(new ConsumeSpeed(1.5f, 15f));
 			consumeItems(with(
 				Items.copper, 2,
 				SWItems.nickel, 1
@@ -233,6 +263,7 @@ public class SWBlocks {
 			craftTime = 5f;
 			craftEffect = SWFx.sparks;
 			forceConfig = new ForceConfig() {{
+				friction = 0.18f;
 				maxForce = 18f;
 				beltSizeIn = beltSizeOut = 6f;
 				outputsForce = false;
@@ -433,6 +464,7 @@ public class SWBlocks {
 				firstShotDelay = 30f;
 			}};
 			forceConfig = new ForceConfig() {{
+				friction = 0.09f;
 				maxForce = 10f;
 				beltSizeIn = beltSizeOut = 6f;
 				outputsForce = false;
@@ -472,6 +504,7 @@ public class SWBlocks {
 			consumeLiquid(SWLiquids.butane, 0.2f);
 
 			forceConfig = new ForceConfig() {{
+				friction = 0.18f;
 				maxForce = 10f;
 				beltSizeIn = beltSizeOut = 4f;
 				outputsForce = false;

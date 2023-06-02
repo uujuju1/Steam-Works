@@ -8,9 +8,7 @@ import sw.*;
 
 public class ModSettings {
   public static void load() {
-    Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.pref(new ButtonSetting("Erase Mod progress", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), () -> SWVars.clearUnlockModContent())));
-    });
+    Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> table.pref(new ButtonSetting("Erase Mod progress", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), () -> SWVars.clearUnlockModContent()))));
   }
 
   static class ButtonSetting extends Setting {

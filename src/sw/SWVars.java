@@ -10,8 +10,6 @@ import java.util.*;
 
 public class SWVars implements Loadable {
 	public static final float maxHeatGlow = 100;
-//  public static ModUI modUI;
-//  public static ModLogic logic;
 
   public static void init() {
     // glenn stuff
@@ -34,16 +32,24 @@ public class SWVars implements Loadable {
     );
     Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
-		}
-
-		/** code to erase unlocked progress on this content */
-		public static void clearUnlockModContent() {
-				Vars.content.each(content -> {
-						if (content instanceof UnlockableContent c && content.minfo.mod != null) {
-								if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
-						}
-				});
-		}
+    Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
+	}
+	/** code to erase unlocked progress on this mod */
+	public static void clearUnlockModContent() {
+		Vars.content.each(content -> {
+			if (content instanceof UnlockableContent c && content.minfo.mod != null) {
+				if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
+			}
+		});
+	}
+	/**cheating privileges*/
+	public static void unlockModContent() {
+		Vars.content.each(content -> {
+			if (content instanceof UnlockableContent c && content.minfo.mod != null) {
+				if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.unlock();
+			}
+		});
+	}
 
 		/**This is where you initialize your content lists. But do not forget about correct order.
 		 *  correct order:
@@ -58,12 +64,12 @@ public class SWVars implements Loadable {
 		 *  ModTechTree.load()
 		 * */
 		public static void loadContent() {
-				SWItems.load();
-				SWLiquids.load();
-				SWEntityMapping.load();
-				SWUnitTypes.load();
-				SWBlocks.load();
-				SWSectorPresets.load();
-				SWTechTree.load();
+			SWItems.load();
+			SWLiquids.load();
+			SWEntityMapping.load();
+			SWUnitTypes.load();
+			SWBlocks.load();
+			SWSectorPresets.load();
+			SWTechTree.load();
 		}
 }
