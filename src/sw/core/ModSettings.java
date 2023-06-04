@@ -1,4 +1,4 @@
-package sw.ui;
+package sw.core;
 
 import arc.*;
 import mindustry.*;

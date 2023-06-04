@@ -1,13 +1,11 @@
 package sw;
 
-import arc.*;
-import mindustry.game.*;
-import mindustry.mod.Mod;
-import sw.ui.*;
+import mindustry.mod.*;
+import sw.core.*;
 
 public class ModLoader extends Mod {
   public ModLoader() {
-    Events.on(EventType.ClientLoadEvent.class, e -> ModSettings.load());
+    ModEventHandler.init();
   }
 
   @Override

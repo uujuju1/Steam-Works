@@ -31,7 +31,7 @@ public class SWTechTree {
         ), () -> {});
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
           node(torquePump);
-          node(electricSpinner, with(new SectorComplete(frozenHotspot)), () -> {
+          node(electricSpinner, with(new SectorComplete(hotspot)), () -> {
             node(turbineSwing, () -> node(frictionHeater));
             node(compoundMixer, with(
               new Research(electricSpinner),
@@ -91,7 +91,7 @@ public class SWTechTree {
       });
 
       // maps
-      node(frozenHotspot, with(new SectorComplete(SectorPresets.craters), new Produce(compound)), () -> {});
+      node(hotspot, with(new SectorComplete(SectorPresets.craters), new Produce(compound)), () -> {});
     });
   }
 }

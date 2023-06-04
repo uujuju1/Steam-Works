@@ -4,10 +4,10 @@ import mindustry.content.*;
 import mindustry.type.*;
 
 public class SWSectorPresets {
-	public static SectorPreset frozenHotspot;
+	public static SectorPreset hotspot;
 
 	public static void load() {
-		frozenHotspot = new SectorPreset("frozen-hotspot", Planets.serpulo, 175) {{
+		hotspot = new SectorPreset("hotspot", Planets.serpulo, 175) {{
 			captureWave = 36;
 			difficulty = 3;
 		}};
