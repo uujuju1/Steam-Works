@@ -56,7 +56,7 @@ public class SWTechTree {
         node(heatRadiator);
       });
       node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
-      node(stirlingGenerator);
+      node(waterWheel, with(new Research(beltNode), new SectorComplete(hotspot)), () -> node(stirlingGenerator));
 
       // defense
       node(compoundWall, with(new Produce(compound)), () -> {

@@ -31,6 +31,8 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 public class SWBlocks {
 	public static Block
 
+		excavator,
+
 		beltNode, beltNodeLarge,
 		torquePump,
 		electricSpinner, turbineSwing, waterWheel,
@@ -59,6 +61,23 @@ public class SWBlocks {
 		allSource;
 
 	public static void load() {
+		excavator = new ForceDrill("excavator") {{
+			requirements(Category.production, with(
+				SWItems.compound, 45,
+				Items.graphite, 35,
+				Items.silicon, 25,
+				Items.titanium, 30)
+			);
+			size = 3;
+			health = 200;
+			drillTime = 320f;
+			rotatorOffset = 4f;
+			tier = 4;
+			updateEffect = Fx.pulverizeMedium;
+			drillEffect = Fx.mineBig;
+			consume(new ConsumeSpeed(1f, 8f));
+		}};
+
 //		distribution
 		heatPipe = new HeatPipe("heat-pipe") {{
 			requirements(Category.power, with(Items.silicon, 1, Items.metaglass, 1, SWItems.nickel, 3));
@@ -494,7 +513,7 @@ public class SWBlocks {
 			));
 			size = 2;
 			health = 890;
-			reload = 3f;
+			reload = 6f;
 			recoil = 0.5f;
 			range = 92f;
 			shootY = 6f;
