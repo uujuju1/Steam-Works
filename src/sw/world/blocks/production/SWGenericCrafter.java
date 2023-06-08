@@ -2,6 +2,7 @@ package sw.world.blocks.production;
 
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -21,7 +22,7 @@ public class SWGenericCrafter extends GenericCrafter {
 	public ForceConfig forceConfig = new ForceConfig();
 	public HeatConfig heatConfig = new HeatConfig();
 
-	public float outputSpeed = -1f, outputHeat = -1f;
+	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f;
 	public boolean hasForce = true, hasHeat = true;
 
 /**
@@ -82,7 +83,7 @@ public class SWGenericCrafter extends GenericCrafter {
 
 		@Override
 		public void updateTile() {
-			if (efficiency > 0 && outputHeat >= 0) heat().addHeat(outputHeat * efficiencyScale() * Time.delta);
+			if (efficiency > 0 && outputHeat >= 0) setHeat(Mathf.approach(temperature(), outputHeat * efficiency, outputHeatSpeed * edelta()));
 			rotation += speed() * Time.delta;
 			if (Math.abs(rotation) > maxRotation && clampRotation) {
 				rotation = (maxRotation + 1f) * (rotation > 0 ? 1f : -1f);
