@@ -27,6 +27,9 @@ public class SWDraw {
     }
     return out;
   }
+  public static TextureRegion getRegion(TextureRegion base, int width, int height, int size, int index) {
+    return getRegions(base, width, height, size)[index];
+  }
 
   public static void square(Color color, float x, float y, float rad, float rot) {
     float oldStroke = Lines.getStroke();

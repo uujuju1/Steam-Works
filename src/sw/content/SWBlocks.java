@@ -16,6 +16,7 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+import sw.world.blocks.distribution.*;
 import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
@@ -42,6 +43,8 @@ public class SWBlocks {
 		heatPipe, heatBridge, heatRadiator,
 		burner, resistance,
 		boiler, thermalBoiler,
+
+		resistantConveyor,
 
 		nickelForge, oilDistiller,
     batchPress,
@@ -119,6 +122,16 @@ public class SWBlocks {
 				range = 90f;
 				beltSizeIn = beltSizeOut = 4f;
 			}};
+		}};
+
+		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 2,
+				Items.graphite, 2
+			));
+			health = 125;
+			speed = 0.08f;
+			displayedSpeed = 11f;
 		}};
 
 //		crafting

@@ -38,7 +38,7 @@ public class SWTechTree {
               new OnSector(SectorPresets.windsweptIslands)
             ), () -> {});
           });
-          node(burner);
+          node(burner, () -> node(resistance, with(new Research(stirlingGenerator)), () -> {}));
         });
 
 
@@ -51,11 +51,13 @@ public class SWTechTree {
       });
 
       // distribution
-      node(heatPipe, with(new Research(burner)), () -> {
-        node(heatBridge);
-        node(heatRadiator);
+      node(resistantConveyor, () -> {
+        node(heatPipe, with(new Research(burner)), () -> {
+          node(heatBridge);
+          node(heatRadiator);
+        });
+        node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
       });
-      node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
       node(waterWheel, with(new Research(beltNode), new SectorComplete(hotspot)), () -> node(stirlingGenerator));
 
       // defense
