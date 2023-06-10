@@ -3,6 +3,6 @@ name: "sw"
 author: "Uujuju"
 main: "sw.ModLoader"
 description: "A heat and steam based mod."
-version: 1.0.6
+version: 1.0.7
 minGameVersion: 142
 java: true
