@@ -11,6 +11,7 @@ import mindustry.type.*;
 import mindustry.type.ammo.*;
 import mindustry.type.unit.*;
 import mindustry.world.blocks.units.*;
+import sw.ai.*;
 import sw.entities.bullet.*;
 import sw.entities.comp.*;
 import sw.type.*;
@@ -21,13 +22,27 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWUnitTypes {
   public static UnitType
-  swarm, ambush, trap,
-  recluse, retreat, evade,
-  sentry, tower, castle,
+    terra,
+    swarm, ambush, trap,
+    recluse, retreat, evade,
+    sentry, tower, castle,
 
   bakler;
 
   public static void load() {
+    terra = new UnitType("terra") {{
+      health = 250;
+      speed = 3f;
+      flying = lowAltitude = true;
+      playerControllable = false;
+      rotateSpeed = 10f;
+      engineOffset = 6.5f;
+      range = maxRange = 120f;
+
+      constructor = BuildingTetherUnit::new;
+      controller = u -> new FillerAI();
+    }};
+
     swarm = new UnitType("swarm") {{
       health = 250;
       speed = 3f;

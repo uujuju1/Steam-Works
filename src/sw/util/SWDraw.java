@@ -38,6 +38,21 @@ public class SWDraw {
     Lines.stroke(oldStroke, color);
     Lines.square(x, y, rad, rot);
   }
+  public static void square(Color color, float sx, float sy, float rad) {
+    float oldStroke = Lines.getStroke();
+    float x = sx - rad, y = sy - rad;
+    Lines.stroke(oldStroke * 3f, Pal.gray);
+    Lines.line(x, y, x + rad*2f, y);
+    Lines.line(x + rad*2f, y, x + rad*2f, y +  rad*2f);
+    Lines.line(x + rad*2f, y +  rad*2f, x, y +  rad*2f);
+    Lines.line(x, y +  rad*2f, x, y);
+
+    Lines.stroke(oldStroke, color);
+    Lines.line(x, y, x + rad*2f, y);
+    Lines.line(x + rad*2f, y, x + rad*2f, y +  rad*2f);
+    Lines.line(x + rad*2f, y +  rad*2f, x, y +  rad*2f);
+    Lines.line(x, y +  rad*2f, x, y);
+  }
   public static void line(Color color, float x, float y, float angle, float length) {
     float oldStroke = Lines.getStroke();
     Lines.stroke(Lines.getStroke() * 3f, Pal.gray);

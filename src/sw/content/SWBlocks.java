@@ -17,6 +17,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import sw.world.blocks.distribution.*;
+import sw.world.blocks.environment.*;
 import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
@@ -27,6 +28,7 @@ import sw.world.draw.*;
 import sw.world.meta.*;
 import sw.world.recipes.*;
 
+import static arc.struct.ObjectMap.*;
 import static mindustry.type.ItemStack.*;
 import static mindustry.world.blocks.units.UnitFactory.*;
 
@@ -61,6 +63,7 @@ public class SWBlocks {
 		crafterFactory,
 
 		coreScaffold,
+		filler,
 
 		allSource;
 
@@ -670,6 +673,21 @@ public class SWBlocks {
 			unitType = UnitTypes.nova;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
+		}};
+		filler = new Filler("filler") {{
+			requirements(Category.effect, with(
+				Items.plastanium, 340,
+				Items.silicon, 270,
+				SWItems.compound, 200
+			));
+			passes = new Entry[]{
+				new Entry(){{key=Blocks.deepwater; value = Blocks.water;}},
+				new Entry(){{key=Blocks.water; value = Blocks.metalFloor;}}
+			};
+			consumeItem(SWItems.compound, 20);
+			consumePower(4f);
+			itemCapacity = 200;
+			size = 2;
 		}};
 
 //		sandbox

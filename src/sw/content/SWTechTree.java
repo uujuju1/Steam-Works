@@ -1,5 +1,6 @@
 package sw.content;
 
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.game.Objectives.*;
 
@@ -24,7 +25,9 @@ public class SWTechTree {
       });
 
       // crafting
-      node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
+      node(nickelForge, with(
+        new SectorComplete(SectorPresets.craters)
+      ), () -> {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields),
           new Produce(steam)
@@ -52,36 +55,57 @@ public class SWTechTree {
 
       // distribution
       node(resistantConveyor, () -> {
-        node(heatPipe, with(new Research(burner)), () -> {
+        node(heatPipe, with(
+          new Research(burner)
+        ), () -> {
           node(heatBridge);
           node(heatRadiator);
         });
-        node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
+        node(beltNode, with(
+          new Research(electricSpinner)
+        ), () -> node(beltNodeLarge));
       });
-      node(waterWheel, with(new Research(beltNode), new SectorComplete(hotspot)), () -> node(stirlingGenerator));
+      node(waterWheel, with(
+        new Research(beltNode),
+        new SectorComplete(hotspot)
+      ), () -> node(stirlingGenerator));
 
       // defense
-      node(compoundWall, with(new Produce(compound)), () -> {
+      node(compoundWall, with(
+        new Produce(compound)
+      ), () -> {
         node(compoundWallLarge);
-        node(denseWall, with(new Produce(denseAlloy)), () -> node(denseWallLarge));
+        node(denseWall, with(
+          new Produce(denseAlloy)
+        ), () -> node(denseWallLarge));
       });
 
       // turrets
       node(bolt, () -> {
         node(light);
-        node(mortar, () -> node(incend, with(new Research(oilDistiller)), () -> {}));
+        node(mortar, () -> node(incend, with(
+          new Research(oilDistiller)
+        ), () -> {}));
       });
 
+      // misc
+      node(filler, Seq.with(
+        new OnSector(greatLake)
+      ), () -> node(terra));
+
       // units
-      node(subFactory, () -> {
-        node(recluse, () -> {
-          node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
-            node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+      node(swarm, with(
+        new Produce(compound),
+        new Research(Blocks.airFactory)
+      ), () -> {
+        node(subFactory, () -> {
+          node(recluse, () -> {
+            node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
+              node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+            });
           });
         });
-      });
-      node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
-      node(swarm, with(new Produce(compound), new Research(Blocks.airFactory)), () -> {
+        node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
         node(sentry, () -> {
           node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
             node(castle, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
@@ -93,7 +117,12 @@ public class SWTechTree {
       });
 
       // maps
-      node(hotspot, with(new SectorComplete(SectorPresets.craters), new Produce(compound)), () -> {});
+      node(hotspot, with(
+        new SectorComplete(SectorPresets.craters),
+        new Produce(compound)
+      ), () -> node(greatLake, with(
+        new SectorComplete(hotspot)
+      ), () -> {}));
     });
   }
 }
