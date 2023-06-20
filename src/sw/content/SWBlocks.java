@@ -676,18 +676,18 @@ public class SWBlocks {
 		}};
 		filler = new Filler("filler") {{
 			requirements(Category.effect, with(
-				Items.plastanium, 340,
+				Items.titanium, 340,
 				Items.silicon, 270,
 				SWItems.compound, 200
 			));
+			size = 2;
+			itemCapacity = 200;
 			passes = new Entry[]{
 				new Entry(){{key=Blocks.deepwater; value = Blocks.water;}},
 				new Entry(){{key=Blocks.water; value = Blocks.metalFloor;}}
 			};
 			consumeItem(SWItems.compound, 20);
 			consumePower(4f);
-			itemCapacity = 200;
-			size = 2;
 		}};
 
 //		sandbox
