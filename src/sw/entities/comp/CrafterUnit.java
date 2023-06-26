@@ -1,11 +1,10 @@
 package sw.entities.comp;
 
 import arc.math.Mathf;
-import arc.util.Time;
+import arc.util.*;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.gen.Building;
-import mindustry.gen.PayloadUnit;
+import mindustry.gen.*;
 import mindustry.type.ItemStack;
 import mindustry.world.blocks.payloads.BuildPayload;
 import sw.entities.SWEntityMapping;
@@ -16,7 +15,7 @@ import sw.type.SWUnitType;
  * A unit fused with a genericCrafter.
  * Can't use liquids or power.
  */
-public class CrafterUnit extends PayloadUnit {
+public class CrafterUnit extends BuildingTetherPayloadUnit {
   public float progress, totalProgress, warmup;
 
   @Override public String toString() {

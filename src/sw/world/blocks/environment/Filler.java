@@ -1,5 +1,6 @@
 package sw.world.blocks.environment;
 
+import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -89,6 +90,7 @@ public class Filler extends Block {
 
 			if(unit == null) {
 				time+=edelta()/buildTime;
+				totalTime += Time.delta;
 				if(time >= 1f && !net.client()) {
 					unit = unitType.create(team);
 					if(unit instanceof BuildingTetherc u) u.building(this);
@@ -100,13 +102,16 @@ public class Filler extends Block {
 			} else time += edelta() / constructTime;
 		}
 
+		@Override
+		public void draw() {
+			super.draw();
+			if (unit == null) Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unitType, 0, time, efficiency * Vars.state.rules.unitBuildSpeedMultiplier, totalTime));
+		}
+
 		@Override public float progress() {
 			return time;
 		}
-
-		@Override
-		public float totalProgress() {
-			totalTime += Time.delta;
+		@Override public float totalProgress() {
 			return totalTime;
 		}
 	}

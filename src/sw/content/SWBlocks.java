@@ -60,7 +60,7 @@ public class SWBlocks {
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
     subFactory,
-		crafterFactory,
+		crafterFactory, structuraFactory,
 
 		coreScaffold,
 		filler,
@@ -659,6 +659,20 @@ public class SWBlocks {
 			unitPlan = new UnitPlan(SWUnitTypes.bakler, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
 			consumeItems(unitPlan.requirements);
 		}};
+		structuraFactory = new SingleUnitFactory("structura-factory") {{
+			requirements(Category.units, with(
+				SWItems.compound, 150,
+				Items.graphite, 100,
+				Items.silicon, 120,
+				Items.copper, 100
+			));
+			size = 3;
+			health = 160;
+			consumePower(2f);
+			itemCapacity = 40;
+			unitPlan = new UnitPlan(SWUnitTypes.structura, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
+			consumeItems(unitPlan.requirements);
+		}};
 
 //		storage
 		coreScaffold = new CoreBlock("core-scaffold") {{
@@ -683,8 +697,8 @@ public class SWBlocks {
 			size = 2;
 			itemCapacity = 200;
 			passes = new Entry[]{
-				new Entry(){{key=Blocks.deepwater; value = Blocks.water;}},
-				new Entry(){{key=Blocks.water; value = Blocks.metalFloor;}}
+				new Entry<>(){{key=Blocks.deepwater; value = Blocks.water;}},
+				new Entry<>(){{key=Blocks.water; value = Blocks.metalFloor;}}
 			};
 			consumeItem(SWItems.compound, 20);
 			consumePower(4f);

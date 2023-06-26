@@ -27,14 +27,14 @@ public class SWUnitTypes {
     recluse, retreat, evade,
     sentry, tower, castle,
 
-  bakler;
+  bakler, structura;
 
   public static void load() {
     terra = new UnitType("terra") {{
       health = 250;
       speed = 3f;
       flying = lowAltitude = true;
-      playerControllable = false;
+      playerControllable = useUnitCap = false;
       rotateSpeed = 10f;
       engineOffset = 6.5f;
       range = maxRange = 120f;
@@ -433,6 +433,28 @@ public class SWUnitTypes {
         consumeItems = with(Items.coal, 6, Items.sand, 10);
         craftTime = 60f;
         outputItems = with(Items.silicon, 10);
+        craftEffect = SWFx.baklerSiliconCraft;
+        updateEffect = Fx.smoke;
+      }};
+
+      constructor = CrafterUnit::new;
+    }};
+    structura = new SWUnitType("structura") {{
+      health = 1500;
+      speed = 2f;
+      hitSize = 12f;
+      payloadCapacity = 256f;
+      useUnitCap = false;
+      flying = true;
+
+      engineOffset = 9f;
+      engineSize = 3f;
+      setEnginesMirror(new UnitEngine(7, -2, 3, -45));
+
+      recipe = new GenericRecipe() {{
+        consumeItems = with(SWItems.nickel, 5, Items.copper, 10);
+        craftTime = 60f;
+        outputItems = with(SWItems.compound, 7);
         craftEffect = SWFx.baklerSiliconCraft;
         updateEffect = Fx.smoke;
       }};

@@ -1,25 +1,21 @@
 package sw.world.blocks.units;
 
-import arc.Core;
-import arc.Events;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.struct.Seq;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.Vars;
-import mindustry.content.UnitTypes;
-import mindustry.game.EventType.UnitCreateEvent;
-import mindustry.gen.Building;
-import mindustry.gen.Unit;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.type.ItemStack;
-import mindustry.ui.ItemImage;
-import mindustry.world.Block;
-import mindustry.world.blocks.units.UnitFactory.UnitPlan;
-import mindustry.world.meta.Stat;
+import arc.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.io.*;
+import mindustry.*;
+import mindustry.content.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import mindustry.world.blocks.units.UnitFactory.*;
+import mindustry.world.meta.*;
+import sw.entities.comp.*;
+
+import static mindustry.Vars.*;
 
 public class SingleUnitFactory extends Block {
   public TextureRegion topRegion;
@@ -51,14 +47,18 @@ public class SingleUnitFactory extends Block {
 
   public class SingleUnitFactoryBuild extends Building {
     public float progress, totalProgress, warmup;
-    public boolean canCreate() {
-      Seq<Building> otherFactories = team.data().getBuildings(block);
-      return unitPlan.unit.useUnitCap ? team.data().countType(unitPlan.unit) < team.data().unitCap : team.data().countType(unitPlan.unit) < otherFactories.size * unitCapacity;
-    }
+    public Unit unit;
+		public int unitId = -1;
 
     @Override
     public void updateTile() {
-      if (efficiency > 0 && canCreate()) {
+	    if(unit != null && (unit.dead || !unit.isAdded())) unit = null;
+	    if(unitId != -1) {
+		    unit = Groups.unit.getByID(unitId);
+		    if(unit == null || !net.client()) unitId = -1;
+	    }
+
+      if (efficiency > 0 && unit == null) {
         progress += getProgressIncrease(unitPlan.time) * warmup * Vars.state.rules.unitBuildSpeedMultiplier;
         totalProgress += edelta() * Vars.state.rules.unitBuildSpeedMultiplier;
         warmup = Mathf.approachDelta(warmup, 1, 0.014f * Vars.state.rules.unitBuildSpeedMultiplier);
@@ -66,8 +66,12 @@ public class SingleUnitFactory extends Block {
         if (progress >= 1f) {
           progress %= 1f;
 
-          Unit unit = unitPlan.unit.spawn(team, this);
-          Events.fire(new UnitCreateEvent(unit, this));
+          unit = unitPlan.unit.create(team);
+          if(unit instanceof CrafterUnit u) u.building(this);
+          unit.set(x, y);
+          unit.rotation = 90f;
+          unit.add();
+          Call.unitTetherBlockSpawned(tile, unit.id);
         }
       } else {
         warmup = Mathf.approachDelta(warmup, 0, 0.014f);
@@ -90,7 +94,6 @@ public class SingleUnitFactory extends Block {
       write.f(totalProgress);
       write.f(warmup);
     }
-
     @Override
     public void read(Reads read, byte revision) {
       super.read(read, revision);
