@@ -8,6 +8,7 @@ import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import sw.content.*;
@@ -38,6 +39,11 @@ public class Filler extends Block {
 	public void setStats() {
 		super.setStats();
 		stats.add(Stat.range, targetArea, StatUnit.blocksSquared);
+	}
+	@Override
+	public void setBars() {
+		super.setBars();
+		addBar("progress", (FillerBuild e) -> new Bar("bar.progress", Pal.ammo, e::progress));
 	}
 
 	public class FillerBuild extends Building {

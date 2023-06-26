@@ -20,7 +20,6 @@ import static mindustry.Vars.*;
 public class SingleUnitFactory extends Block {
   public TextureRegion topRegion;
   public UnitPlan unitPlan = new UnitPlan(UnitTypes.flare, 60f, ItemStack.empty);
-  public int unitCapacity = 1;
 
   public SingleUnitFactory(String name) {
     super(name);
@@ -32,6 +31,12 @@ public class SingleUnitFactory extends Block {
     super.setStats();
     stats.add(Stat.input, t -> {for (ItemStack stack : unitPlan.requirements) t.add(new ItemImage(stack)).pad(3f);});
     stats.add(Stat.output, t -> t.image(unitPlan.unit.fullIcon).size(32f).pad(5));
+  }
+
+  @Override
+  public void setBars() {
+    super.setBars();
+    addBar("progress", (SingleUnitFactoryBuild e) -> new Bar("bar.progress", Pal.ammo, e::fraction));
   }
 
   @Override
@@ -49,6 +54,10 @@ public class SingleUnitFactory extends Block {
     public float progress, totalProgress, warmup;
     public Unit unit;
 		public int unitId = -1;
+
+    public float fraction() {
+      return progress;
+    }
 
     @Override
     public void updateTile() {
