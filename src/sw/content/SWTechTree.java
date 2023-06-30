@@ -24,6 +24,9 @@ public class SWTechTree {
         nodeProduce(denseAlloy, () -> {});
       });
 
+      // production
+      node(excavator, with(new Research(waterWheel)), () -> {});
+
       // crafting
       node(nickelForge, with(
         new SectorComplete(SectorPresets.craters)
@@ -55,15 +58,11 @@ public class SWTechTree {
 
       // distribution
       node(resistantConveyor, () -> {
-        node(heatPipe, with(
-          new Research(burner)
-        ), () -> {
+        node(heatPipe, with(new Research(burner)), () -> {
           node(heatBridge);
           node(heatRadiator);
         });
-        node(beltNode, with(
-          new Research(electricSpinner)
-        ), () -> node(beltNodeLarge));
+        node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
       });
       node(waterWheel, with(
         new Research(beltNode),
@@ -71,46 +70,44 @@ public class SWTechTree {
       ), () -> node(stirlingGenerator));
 
       // defense
-      node(compoundWall, with(
-        new Produce(compound)
-      ), () -> {
+      node(compoundWall, with(new Produce(compound)), () -> {
         node(compoundWallLarge);
-        node(denseWall, with(
-          new Produce(denseAlloy)
-        ), () -> node(denseWallLarge));
+        node(denseWall, with(new Produce(denseAlloy)), () -> node(denseWallLarge));
       });
 
       // turrets
       node(bolt, () -> {
         node(light);
-        node(mortar, () -> node(incend, with(
-          new Research(oilDistiller)
-        ), () -> {}));
+        node(mortar, () -> {
+          node(incend, with(new Research(oilDistiller)), () -> {});
+        });
       });
 
       // misc
-      node(filler, Seq.with(
-        new OnSector(greatLake)
-      ), () -> node(terra));
+      node(filler, Seq.with(new OnSector(greatLake)), () -> node(terra));
 
       // units
       node(swarm, with(
         new Produce(compound),
         new Research(Blocks.airFactory)
       ), () -> {
-        node(subFactory, () -> {
-          node(recluse, () -> {
-            node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
-              node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
-            });
+        node(subFactory, () -> node(recluse, () -> {
+          node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
+            node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
           });
-        });
+        }));
+
         node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
-        node(sentry, () -> {
-          node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
-            node(castle, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+        node(structuraFactory, with(
+          new Research(compoundMixer),
+          new Research(filler)
+        ), () -> node(structura));
+
+        node(sentry, () -> node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
+          node(castle, with(new Research(Blocks.multiplicativeReconstructor)), () -> {
+            node(stronghold, with(new Research(Blocks.exponentialReconstructor)), () -> {});
           });
-        });
+        }));
         node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
           node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
         });

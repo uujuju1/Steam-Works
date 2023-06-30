@@ -5,6 +5,7 @@ import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -23,9 +24,9 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 public class SWUnitTypes {
   public static UnitType
     terra,
-    swarm, ambush, trap,
+    swarm, ambush, trap, misleading,
     recluse, retreat, evade,
-    sentry, tower, castle,
+    sentry, tower, castle, stronghold,
 
   bakler, structura;
 
@@ -45,11 +46,11 @@ public class SWUnitTypes {
 
     swarm = new UnitType("swarm") {{
       health = 250;
-      speed = 3f;
-      flying = lowAltitude = true;
-      rotateSpeed = 10f;
-      engineOffset = 6.5f;
+      speed = 2f;
+      rotateSpeed = 8f;
       range = maxRange = 120f;
+
+      flying = lowAltitude = true;
 
       constructor = UnitEntity::create;
 
@@ -68,13 +69,15 @@ public class SWUnitTypes {
     }};
     ambush = new UnitType("ambush") {{
       health = 560;
-      speed = 2.5f;
-      flying = lowAltitude = true;
       hitSize = 10f;
-      rotateSpeed = 8f;
+      speed = 2f;
+      rotateSpeed = 4f;
+      range = maxRange = 120f;
+
       engineSize = 3f;
       engineOffset = 9f;
-      range = maxRange = 120f;
+
+      flying = lowAltitude = true;
 
       constructor = UnitEntity::create;
 
@@ -95,14 +98,17 @@ public class SWUnitTypes {
     }};
     trap = new UnitType("trap") {{
       health = 1300;
-      speed = 2f;
-      flying = lowAltitude = true;
       hitSize = 14f;
-      engineSize = 5.25f;
-      engineOffset = 12.5f;
+      speed = 1.5f;
+      rotateSpeed = 2f;
       range = maxRange = 144f;
 
-      constructor = UnitEntity::create;
+      engineSize = 5.25f;
+      engineOffset = 12.5f;
+
+      flying = lowAltitude = true;
+
+	    constructor = UnitEntity::create;
 
       weapons.add(
         new Weapon("sw-trap-cannon") {{
@@ -124,6 +130,56 @@ public class SWUnitTypes {
 
       abilities.addAll(new SpawnDeathAbility(ambush, 1, 0));
     }};
+		misleading = new UnitType("misleading") {{
+      health = 8500;
+      hitSize = 16f;
+      speed = 1.5f;
+      rotateSpeed = 3f;
+      range = maxRange = 160f;
+
+      engineSize = 5f;
+      engineOffset = 13f;
+      setEnginesMirror(
+        new UnitEngine(12f, -8f, 3f, -45f),
+        new UnitEngine(6f, -13f, 3f, -80f)
+      );
+
+      flying = lowAltitude = true;
+
+      constructor = UnitEntity::create;
+
+      weapons.add(
+        new Weapon("sw-misleading-cannon") {{
+          x = 7f;
+          y = 1.5f;
+          reload = 45f;
+          recoil = 3f;
+          inaccuracy = 2f;
+
+          shootSound = Sounds.mediumCannon;
+
+          bullet = new BasicBulletType(4f, 100, "missile-large") {{
+            lifetime = 40f;
+            width = height = 15f;
+            splashDamage = 60f;
+            splashDamageRadius = 40f;
+
+            hitColor = backColor;
+
+            shootEffect = Fx.shootTitan;
+            smokeEffect = Fx.shootSmokeTitan;
+            despawnEffect = new ExplosionEffect() {{
+              smokeColor = Color.gray;
+              waveColor = sparkColor = frontColor;
+              waveStroke = 4f;
+              waveRad = 40f;
+            }};
+          }};
+        }}
+      );
+
+      abilities.add(new SpawnDeathAbility(trap, 1, 0));
+		}};
 
     recluse = new SWUnitType("recluse") {{
       speed = 1;
@@ -267,6 +323,7 @@ public class SWUnitTypes {
       hitSize = 8f;
       rotateSpeed = 4;
       outlines = faceTarget = false;
+      treadFrames = 14;
       treadRects = new Rect[]{new Rect(11f - 32f, 8f - 32f, 14, 53)};
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
@@ -322,7 +379,8 @@ public class SWUnitTypes {
       hitSize = 10f;
       rotateSpeed = 3;
       outlines = faceTarget = false;
-      treadRects = new Rect[]{new Rect(-25, -36, 13, 71)};
+      treadFrames = 16;
+      treadRects = new Rect[]{new Rect(-25f, -36f, 13, 71)};
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
 
@@ -371,9 +429,8 @@ public class SWUnitTypes {
       hitSize = 14f;
       rotateSpeed = 2.5f;
       outlines = false;
-      treadFrames = 20;
-      treadRects = new Rect[]{new Rect(-8f, -49, 16, 95), new Rect(-34, -40, 13, 88)};
-      ammoType = new ItemAmmoType(Items.copper);
+      treadFrames = 22;
+      treadRects = new Rect[]{new Rect(-8f, -49f, 16, 95), new Rect(-34, -40, 13, 88)};
       constructor = TankUnit::create;
 
       weapons.add(new Weapon("sw-castle-gun") {{
@@ -416,11 +473,86 @@ public class SWUnitTypes {
         }};
       }});
     }};
+    stronghold = new TankUnitType("stronghold") {{
+      health = 9500;
+      hitSize = 16f;
+      speed = 0.6f;
+      rotateSpeed = 1.5f;
+      range = maxRange = 240f;
+
+      treadFrames = 12;
+      treadRects = new Rect[]{new Rect(-50f, -26f, 17, 53)};
+
+      outlines = false;
+
+      constructor = TankUnit::create;
+
+      weapons.add(
+        new Weapon("sw-stronghold-cannon") {{
+          x = 0f;
+          y = -4f;
+          reload = 120f;
+          recoil = 4f;
+          rotateSpeed = 1f;
+          inaccuracy = 3f;
+
+          rotate = true;
+          mirror = false;
+
+          shootSound = Sounds.mediumCannon;
+
+          bullet = new MultiBulletType() {{
+            range = rangeOverride = 240f;
+            shootEffect = Fx.shootTitan;
+            smokeEffect = Fx.shootSmokeTitan;
+
+            bullets.add(
+              new BasicBulletType(4, 100) {{
+                lifetime = 60f;
+                width = height = 15f;
+                splashDamage = 60f;
+                splashDamageRadius = 40f;
+
+                trailWidth = 4f;
+                trailLength = 8;
+
+                hitColor = backColor;
+                despawnEffect = new ExplosionEffect() {{
+                  smokeColor = Color.gray;
+                  waveColor = sparkColor = frontColor;
+                  waveStroke = 4f;
+                  waveRad = 40f;
+                }};
+              }},
+              new LaserBulletType(100) {{
+                length = 220f;
+                colors = new Color[]{Pal.accent, Pal.accent, Color.white};
+              }}
+            );
+          }};
+        }},
+        new Weapon("missiles-mount") {{
+          x = 9.5f;
+          y = 8.5f;
+          reload = 60;
+          inaccuracy = 2f;
+
+          rotate = true;
+
+          shootSound = Sounds.missile;
+
+          bullet = new MissileBulletType(2f, 30) {{
+            lifetime = 60f;
+            width = height = 8f;
+          }};
+        }}
+      );
+    }};
 
     bakler = new SWUnitType("bakler") {{
       health = 1500;
       speed = 2f;
-      hitSize = 12f;
+      hitSize = 8f;
       payloadCapacity = 256f;
       useUnitCap = false;
       flying = true;
@@ -442,7 +574,7 @@ public class SWUnitTypes {
     structura = new SWUnitType("structura") {{
       health = 1500;
       speed = 2f;
-      hitSize = 12f;
+      hitSize = 8f;
       payloadCapacity = 256f;
       useUnitCap = false;
       flying = true;
@@ -473,6 +605,10 @@ public class SWUnitTypes {
       new UnitType[]{ambush, trap},
       new UnitType[]{retreat, evade},
       new UnitType[]{tower, castle}
+    );
+		((Reconstructor) Blocks.exponentialReconstructor).upgrades.addAll(
+      new UnitType[]{trap, misleading},
+      new UnitType[]{castle, stronghold}
     );
   }
 }
