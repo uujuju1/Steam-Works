@@ -1,13 +1,15 @@
 package sw.world.meta;
 
-import mindustry.world.meta.Stat;
+import mindustry.world.meta.*;
 
 public class SWStat {
   public static final Stat recipes = new Stat("sw-recipes");
 
 //  heat
-  public static final
-    Stat maxHeat = new Stat("sw-max-heat", SWStatCat.heat),
+  public static final Stat
+    shield = new Stat("sw-shield", StatCat.general),
+
+    maxHeat = new Stat("sw-max-heat", SWStatCat.heat),
     minHeat = new Stat("sw-min-heat", SWStatCat.heat),
     heatEmissivity = new Stat("sw-heat-emissivity", SWStatCat.heat),
     heatLoss = new Stat("sw-heat-loss", SWStatCat.heat),

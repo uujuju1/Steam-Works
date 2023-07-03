@@ -1,8 +1,10 @@
 package sw.world.blocks.units;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -29,14 +31,45 @@ public class SingleUnitFactory extends Block {
   @Override
   public void setStats() {
     super.setStats();
-    stats.add(Stat.input, t -> {for (ItemStack stack : unitPlan.requirements) t.add(new ItemImage(stack)).pad(3f);});
-    stats.add(Stat.output, t -> t.image(unitPlan.unit.fullIcon).size(32f).pad(5));
+    stats.add(Stat.output, table -> {
+      table.row();
+      table.table(Styles.grayPanel, t -> {
+        if(unitPlan.unit.isBanned()){
+          t.image(Icon.cancel).color(Pal.remove).size(40);
+          return;
+        }
+
+        if(unitPlan.unit.unlockedNow()){
+          t.image(unitPlan.unit.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
+          t.table(info -> {
+            info.add(unitPlan.unit.localizedName).left();
+            info.row();
+            info.add(Strings.autoFixed(unitPlan.time / 60f, 1) + " " + Core.bundle.get("unit.seconds")).color(Color.lightGray);
+          }).left();
+
+          t.table(req -> {
+            req.right();
+            for(int i = 0; i < unitPlan.requirements.length; i++){
+              if(i % 6 == 0){
+                req.row();
+              }
+
+              ItemStack stack = unitPlan.requirements[i];
+              req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5);
+            }
+          }).right().grow().pad(10f);
+        }else{
+          t.image(Icon.lock).color(Pal.darkerGray).size(40);
+        }
+      }).growX().pad(5);
+      table.row();
+    });
   }
 
   @Override
   public void setBars() {
     super.setBars();
-    addBar("progress", (SingleUnitFactoryBuild e) -> new Bar("bar.progress", Pal.ammo, e::fraction));
+    addBar("progress", (SingleUnitFactoryBuild e) -> new Bar("bar.progress", Pal.ammo, e::progress));
   }
 
   @Override
@@ -55,8 +88,26 @@ public class SingleUnitFactory extends Block {
     public Unit unit;
 		public int unitId = -1;
 
-    public float fraction() {
+    public boolean canBuild() {
+      return efficiency > 0 && !(unit instanceof BuildingTetherc);
+    }
+
+    @Override public float progress() {
       return progress;
+    }
+    @Override public float totalProgress() {
+      return totalProgress;
+    }
+    @Override public float warmup() {
+      return warmup;
+    }
+
+    @Override
+    public int getMaximumAccepted(Item item) {
+      for (ItemStack stack : unitPlan.requirements) {
+        if (stack.item == item) return stack.amount * 2;
+      }
+      return 0;
     }
 
     @Override
@@ -67,7 +118,7 @@ public class SingleUnitFactory extends Block {
 		    if(unit == null || !net.client()) unitId = -1;
 	    }
 
-      if (efficiency > 0 && unit == null) {
+      if (canBuild()) {
         progress += getProgressIncrease(unitPlan.time) * warmup * Vars.state.rules.unitBuildSpeedMultiplier;
         totalProgress += edelta() * Vars.state.rules.unitBuildSpeedMultiplier;
         warmup = Mathf.approachDelta(warmup, 1, 0.014f * Vars.state.rules.unitBuildSpeedMultiplier);

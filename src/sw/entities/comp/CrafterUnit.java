@@ -1,14 +1,14 @@
 package sw.entities.comp;
 
-import arc.math.Mathf;
+import arc.math.*;
 import arc.util.*;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
+import arc.util.io.*;
 import mindustry.gen.*;
-import mindustry.type.ItemStack;
-import mindustry.world.blocks.payloads.BuildPayload;
-import sw.entities.SWEntityMapping;
-import sw.type.SWUnitType;
+import mindustry.type.*;
+import mindustry.world.blocks.payloads.*;
+import mindustry.world.blocks.storage.*;
+import sw.entities.*;
+import sw.type.*;
 
 /**
  * @author Uujuju
@@ -28,38 +28,46 @@ public class CrafterUnit extends BuildingTetherPayloadUnit {
     return SWEntityMapping.idMap.get(getClass());
   }
 
+  public boolean canCraft() {
+    boolean crafting = true;
+    if (!payloads.isEmpty() || !(payloads.first() instanceof BuildPayload b)) return false;
+    for (ItemStack stack : type().recipe.consumeItems) {
+      if (b.build.items().get(stack.item) < stack.amount) crafting = false;
+    }
+    for (ItemStack stack : type().recipe.outputItems) {
+      if (b.build.items().get(stack.item) > b.build.block.itemCapacity - stack.amount) crafting = false;
+    }
+    return crafting;
+  }
+  public void craft() {
+    if (payloads.isEmpty()) return;
+    if (payloads.first() instanceof BuildPayload payload) {
+      progress %= 1f;
+      for (ItemStack stack : type().recipe.consumeItems) payload.build.items().remove(stack);
+      for (ItemStack stack : type().recipe.outputItems) payload.build.items().add(stack.item, stack.amount);
+      type().recipe.craftEffect.at(this);
+    }
+  }
+
   @Override
   public void update() {
     super.update();
-    boolean crafting = true;
     if (payloads.isEmpty()) return;
     if (payloads.first() instanceof BuildPayload payload && type().recipe != null && payload.build.items != null) {
-      for (ItemStack stack : type().recipe.consumeItems) {
-        if (payload.build.items().get(stack.item) < stack.amount) crafting = false;
-      }
-      for (ItemStack stack : type().recipe.outputItems) {
-        if (payload.build.items().get(stack.item) > payload.build.block.itemCapacity - stack.amount) crafting = false;
-      }
-
-      if (crafting) {
+      if (canCraft()) {
         progress += Time.delta;
         totalProgress += Time.delta;
         warmup = Mathf.approachDelta(warmup, 1, type().recipe.warmupSpeed);
 
         if (Mathf.chance(type().recipe.updateEffectChance)) type().recipe.updateEffect.at(this);
 
-        if (progress >= type().recipe.craftTime) {
-          progress %= 1f;
-          for (ItemStack stack : type().recipe.consumeItems) payload.build.items().remove(stack);
-          for (ItemStack stack : type().recipe.outputItems) payload.build.items().add(stack.item, stack.amount);
-          type().recipe.craftEffect.at(this);
-        }
+        if (progress > 1f) craft();
       }
     }
   }
 
   @Override public boolean canPickup(Building build) {
-    return build.block.size == 2 && super.canPickup(build);
+    return build.block.size == 2 && build.block instanceof StorageBlock && super.canPickup(build);
   }
 
   @Override

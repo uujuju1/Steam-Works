@@ -27,8 +27,8 @@ public class SWUnitTypes {
     swarm, ambush, trap, misleading,
     recluse, retreat, evade,
     sentry, tower, castle, stronghold,
-
-  bakler, structura;
+    prot, protMask,
+    bakler, structura;
 
   public static void load() {
     terra = new UnitType("terra") {{
@@ -547,6 +547,62 @@ public class SWUnitTypes {
           }};
         }}
       );
+    }};
+
+    protMask = new SWUnitType("prot-mask") {{
+      health = 2300;
+      speed = 2f;
+      rotateSpeed = 3f;
+      range = maxRange = 0f;
+
+      engineOffset = 2f;
+
+      flying = lowAltitude = true;
+      playerControllable = hidden = false;
+
+      controller = u -> new ShieldAI();
+      constructor = UnitTetherUnit::new;
+    }};
+    prot = new SWUnitType("prot") {{
+      health = 2300;
+      hitSize = 16f;
+      speed = 1f;
+      rotateSpeed = 1f;
+      range = maxRange = 160f;
+
+      shieldSeparateRadius = 24f;
+      shieldStartAng = -90f;
+      shieldEndAng = 288f;
+      shieldShootingStartAng = 40f;
+      shieldShootingEndAng = 100f;
+
+      shieldUnit = protMask;
+
+      legCount = 6;
+      legGroupSize = 3;
+      legLength = 30f;
+      legBaseOffset = 10f;
+			legExtension = 15f;
+
+      constructor = ShieldedUnit::new;
+
+      weapons.add(new Weapon("sw-prot-weapon") {{
+				x = 12.75f;
+				y = 0;
+				shootY = 11f;
+				reload = 60f;
+				recoil = 2f;
+
+				top = false;
+
+				shootSound = Sounds.artillery;
+
+				bullet = new LaserBulletType(250) {{
+					length = 160f;
+					shootEffect = Fx.shockwave;
+					colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
+				}};
+			}});
     }};
 
     bakler = new SWUnitType("bakler") {{

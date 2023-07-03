@@ -2,6 +2,7 @@ package sw.content;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
@@ -61,6 +62,7 @@ public class SWBlocks {
 
     subFactory,
 		crafterFactory, structuraFactory,
+		protFactory,
 
 		coreScaffold,
 		filler,
@@ -655,7 +657,6 @@ public class SWBlocks {
 			size = 2;
 			health = 160;
 			consumePower(2f);
-			itemCapacity = 40;
 			unitPlan = new UnitPlan(SWUnitTypes.bakler, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
 			consumeItems(unitPlan.requirements);
 		}};
@@ -669,8 +670,29 @@ public class SWBlocks {
 			size = 3;
 			health = 160;
 			consumePower(2f);
-			itemCapacity = 40;
 			unitPlan = new UnitPlan(SWUnitTypes.structura, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
+			consumeItems(unitPlan.requirements);
+		}};
+		protFactory = new SingleUnitFactory("prot-factory") {{
+			requirements(Category.units, with(
+				SWItems.compound, 800,
+				Items.lead, 2300,
+				Items.silicon, 800,
+				Items.titanium, 1900,
+				Items.thorium, 1000,
+				Items.plastanium, 1200
+			));
+			size = 5;
+			health = 300;
+			liquidCapacity = 100f;
+			consumePower(10f);
+
+			unitPlan = new UnitPlan(SWUnitTypes.prot, 1.5f * Time.toMinutes, with(
+				SWItems.compound, 500,
+				Items.silicon, 1000,
+				Items.titanium, 500,
+				Items.plastanium, 750
+			));
 			consumeItems(unitPlan.requirements);
 		}};
 
