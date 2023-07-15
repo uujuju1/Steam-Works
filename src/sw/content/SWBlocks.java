@@ -23,6 +23,7 @@ import sw.world.blocks.force.*;
 import sw.world.blocks.heat.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.sandbox.*;
+import sw.world.blocks.sound.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -46,6 +47,8 @@ public class SWBlocks {
 		heatPipe, heatBridge, heatRadiator,
 		burner, resistance,
 		boiler, thermalBoiler,
+
+		soundBar, soundRouter,
 
 		resistantConveyor,
 
@@ -118,7 +121,11 @@ public class SWBlocks {
 			}};
 		}};
 		beltNodeLarge = new ForceNode("belt-node-large") {{
-			requirements(Category.power, with(Items.silicon, 60, Items.titanium, 40, SWItems.compound, 80));
+			requirements(Category.power, with(
+				Items.silicon, 60,
+				Items.titanium, 40,
+				SWItems.compound, 80
+			));
 			size = 2;
 			health = 120;
 			forceConfig = new ForceConfig() {{
@@ -127,6 +134,19 @@ public class SWBlocks {
 				range = 90f;
 				beltSizeIn = beltSizeOut = 4f;
 			}};
+		}};
+
+		soundBar = new SoundBar("sound-bar") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				SWItems.denseAlloy, 70
+			));
+		}};
+		soundRouter = new SoundRouter("sound-router") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				SWItems.denseAlloy, 70
+			));
 		}};
 
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{

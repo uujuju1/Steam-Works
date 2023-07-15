@@ -14,7 +14,7 @@ import sw.world.graph.ForceGraph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public interface HasForce {
+public interface HasForce extends Buildingc, Posc{
 	ForceModule force();
 	ForceConfig forceConfig();
 	default @Nullable Building getLink() {
@@ -45,11 +45,10 @@ public interface HasForce {
 	}
 
 	default void drawBelt() {
-		Building b = (Building) this;
 		if (getLink() != null) {
 			Draw.z(Layer.block - 1f);
 			for (int i : Mathf.signs) {
-				Vec2 p1 = new Vec2(b.x, b.y), p2 = new Vec2(getLink().x, getLink().y);
+				Vec2 p1 = new Vec2(x(), y()), p2 = new Vec2(getLink().x, getLink().y);
 				int serrations = Mathf.ceil(p1.dst(p2) / 8f);
 				float time = serrations * 20f;
 				float rot = spin() * i;
@@ -84,7 +83,7 @@ public interface HasForce {
 
 		force().links.addUnique(forceLink);
 		b.force().links.addUnique(forceLink);
-		b.graph().checkEntity();
+		b.graph().addGraph();
 		b.ratio();
 	}
 	default void unLink() {
@@ -105,8 +104,7 @@ public interface HasForce {
 	}
 
 	default boolean configureBuildTap(Building other) {
-		Building from = (Building) this;
-		if (other instanceof HasForce next && from.tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce) {
+		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce) {
 			if ((getLink() != null && getLink() == other) || other == this) {
 				unLink();
 				return false;

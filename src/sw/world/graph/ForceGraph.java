@@ -22,7 +22,7 @@ public class ForceGraph extends Graph {
 
 	public ForceGraph() {
 		super();
-		checkEntity();
+		addGraph();
 	}
 
 	public Seq<Building> floodFill(Building build) {
@@ -61,14 +61,14 @@ public class ForceGraph extends Graph {
 
 		for (Building build : graph.builds) add(build);
 		for (ForceLink forceLink : graph.links) links.addUnique(forceLink);
-		checkEntity();
+		addGraph();
 	}
 	public void removeBuild(Building build) {
 		if (builds.remove(build)) modules.remove(((HasForce) build).force());
 	}
 	public void remove(Building build) {
 		ForceGraph graph = new ForceGraph();
-		graph.checkEntity();
+		graph.addGraph();
 		graph.add(build);
 		graph.entity.update();
 	}

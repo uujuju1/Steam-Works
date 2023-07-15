@@ -10,7 +10,7 @@ import sw.world.modules.*;
 
 import static sw.util.SWDraw.*;
 
-public interface HasHeat {
+public interface HasHeat extends Buildingc{
   HeatModule heat();
   HeatConfig heatC();
   default HeatGraph hGraph() {
@@ -38,13 +38,13 @@ public interface HasHeat {
   default void drawHeat(TextureRegion region) {
     Draw.color(heatPal);
     Draw.alpha(fractionNeg());
-    Draw.rect(region, asBuild().x, asBuild().y, 0);
+    Draw.rect(region, x(), y(), 0);
     Draw.color();
   }
 
   default Seq<Building> heatProximity() {
     Seq<Building> out = new Seq<>();
-    for (Building next : asBuild().proximity) if (next instanceof HasHeat) out.add(next);
+    for (Building next : proximity()) if (next instanceof HasHeat) out.add(next);
     return out;
   }
 

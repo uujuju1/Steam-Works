@@ -11,8 +11,11 @@ public abstract class Graph {
 		entity.graph = this;
 	}
 
-	public void checkEntity() {
-		if (entity != null) entity.add();
+	public void addGraph() {
+		entity.add();
+	}
+	public void removeGraph() {
+		entity.remove();
 	}
 
 	public abstract void update();

@@ -38,6 +38,6 @@ public class ForceModule extends BlockModule {
 			links.add(forceLink);
 			graph.links.add(forceLink);
 		}
-		graph.checkEntity();
+		graph.addGraph();
 	}
 }

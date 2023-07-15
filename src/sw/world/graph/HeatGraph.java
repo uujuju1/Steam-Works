@@ -13,7 +13,7 @@ public class HeatGraph extends Graph {
 
 	public HeatGraph() {
 		super();
-		checkEntity();
+		addGraph();
 	}
 
 	@Override

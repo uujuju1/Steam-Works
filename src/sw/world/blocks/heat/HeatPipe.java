@@ -63,7 +63,7 @@ public class HeatPipe extends Block {
       super.onProximityAdded();
       hGraph().builds.addUnique(this);
       hGraph().reloadConnections();
-      hGraph().checkEntity();
+      hGraph().addGraph();
     }
     @Override
     public void onProximityRemoved() {
