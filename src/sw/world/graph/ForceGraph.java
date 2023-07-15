@@ -116,7 +116,7 @@ public class ForceGraph extends Graph {
 			return (HasForce) Vars.world.build(l2);
 		}
 
-		public HasForce other(HasForce build) {
+		public HasForce getAnotherForceLink(HasForce build) {
 			return build == l1() ? l2() : l1();
 		}
 		public boolean has(HasForce build) {
@@ -124,8 +124,8 @@ public class ForceGraph extends Graph {
 		}
 		public float ratio(HasForce from, boolean reverse) {
 			return !reverse ?
-				       from.forceConfig().beltSizeOut/other(from).forceConfig().beltSizeIn:
-				       other(from).forceConfig().beltSizeIn/from.forceConfig().beltSizeOut;
+				       from.forceConfig().beltSizeOut/ getAnotherForceLink(from).forceConfig().beltSizeIn:
+				       getAnotherForceLink(from).forceConfig().beltSizeIn/from.forceConfig().beltSizeOut;
 		}
 
 		@Override public boolean equals(Object obj) {
