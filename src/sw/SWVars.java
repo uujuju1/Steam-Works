@@ -70,6 +70,7 @@ public class SWVars implements Loadable {
 			SWEntityMapping.load();
 			SWUnitTypes.load();
 			SWBlocks.load();
+			SWPlanets.load();
 			SWSectorPresets.load();
 			SWTechTree.load();
 		}
