@@ -7,12 +7,13 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
 import mindustry.maps.generators.*;
+import mindustry.type.*;
 
 public class ModularPlanetGenerator extends PlanetGenerator {
 	public float minHeight = 0f;
+	public Color defaultColor = Color.pink;
 	public Seq<Noise3DSettings> heights = new Seq<>();
 	public Seq<ColorPatch> colors = new Seq<>();
-	public Color defaultColor = Color.pink;
 
 	public class Noise3DSettings {
 		public Vec3 offset = Vec3.Zero.cpy();
@@ -24,7 +25,6 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 			return Mathf.clamp(Simplex.noise3d(seed, oct, per, scl, Tmp.v31.x, Tmp.v31.y, Tmp.v31.z) * mag + heightOffset, min, max);
 		}
 	}
-
 	public class ColorPatch {
 		public Color color = Color.white;
 		public Noise3DSettings noise;
@@ -32,18 +32,16 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 
 		public boolean canColor(Vec3 pos, float height) {
 			float noise1 = noise.noise(pos);
-			return noise1 > minT && noise1 < maxT && noise1 >= height;
+			return noise1 >= minT && noise1 <= maxT && noise1 >= height;
 		}
 	}
 
 	float height(Vec3 pos) {
 		return heights.sumf(s -> s.noise(pos))/heights.size;
 	}
-	@Override
-	public float getHeight(Vec3 p) {
+	@Override public float getHeight(Vec3 p) {
 		return Math.max(minHeight, height(p));
 	}
-
 
 	@Override
 	public Color getColor(Vec3 p) {
@@ -52,5 +50,10 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 			if (color.canColor(p, getHeight(p))) finalCol = color.color;
 		}
 		return finalCol;
+	}
+
+	@Override
+	public void generateSector(Sector sector) {
+		sector.generateEnemyBase = false;
 	}
 }

@@ -557,8 +557,8 @@ public class SWUnitTypes {
 
       engineOffset = 2f;
 
-      flying = lowAltitude = true;
-      playerControllable = hidden = false;
+      flying = lowAltitude = hidden = true;
+      playerControllable = false;
 
       controller = u -> new ShieldAI();
       constructor = UnitTetherUnit::new;

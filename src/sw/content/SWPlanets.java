@@ -12,6 +12,23 @@ public class SWPlanets {
 
 	public static void load() {
 		aboba = new Planet("aboba", Planets.sun, 1f, 2) {{
+			meshLoader = () -> new HexMesh(this, 6);
+
+			sectorSeed = 2;
+			allowWaves = true;
+
+			ruleSetter = r -> {
+				r.waveTeam = Team.crux;
+				r.placeRangeCheck = false;
+				r.showSpawns = false;
+			};
+			hasAtmosphere = true;
+			iconColor = atmosphereColor = Color.valueOf("469662");
+			atmosphereRadIn = -0.1f;
+			atmosphereRadOut = 0.25f;
+			startSector = 1;
+			alwaysUnlocked = true;
+
 			generator = new ModularPlanetGenerator() {{
 				minHeight = -5f;
 				heights.add(
@@ -33,43 +50,44 @@ public class SWPlanets {
 				);
 				colors.add(
 					new ColorPatch() {{
-						color = Color.white;
+						color = Blocks.snow.mapColor;
 						noise = new Noise3DSettings() {{
-							offset.set(389, 583, -745);
-							min = max = -0.5f;
-							mag = 8f;
-							scl = 1.2f;
-							heightOffset = -3f;
+							min = max = 1;
 						}};
-						minT = -5;
-						maxT = 0;
+					}},
+					new ColorPatch() {{
+						color = Blocks.basalt.mapColor;
+						noise = new Noise3DSettings() {{
+							min = max = 0;
+						}};
+					}},
+					new ColorPatch() {{
+						color = Blocks.sand.mapColor;
+						noise = new Noise3DSettings() {{
+							offset.set(453, 259, -345);
+							max = 0f;
+							min = -0.5f;
+							mag = 3f;
+							scl = 2f;
+							heightOffset = -1.75f;
+						}};
+						maxT = 1f;
+						minT = -10f;
 					}},
 					new ColorPatch() {{
 						color = Blocks.water.mapColor;
 						noise = new Noise3DSettings() {{
-							offset.set(389, 583, -745);
-							min = max = 0f;
+							min = max = -0.5f;
 						}};
+						maxT = minT = -0.5f;
 					}}
 				);
-			}};
-			meshLoader = () -> new HexMesh(this, 6);
-
-			sectorSeed = 2;
-			allowWaves = true;
-			hasAtmosphere = false;
-
-			ruleSetter = r -> {
-				r.waveTeam = Team.crux;
-				r.placeRangeCheck = false;
-				r.showSpawns = false;
+			}
+				@Override
+				protected void generate() {
+					Schematics.placeLaunchLoadout(50, 50);
+				}
 			};
-			iconColor = Color.valueOf("7d4dff");
-//			atmosphereColor = Color.valueOf("3c1b8f");
-//			atmosphereRadIn = 0.02f;
-//			atmosphereRadOut = 0.3f;
-			startSector = 0;
-			alwaysUnlocked = true;
 		}};
 	}
 }
