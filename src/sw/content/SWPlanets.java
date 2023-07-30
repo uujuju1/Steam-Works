@@ -8,26 +8,28 @@ import mindustry.type.*;
 import sw.maps.generators.*;
 
 public class SWPlanets {
-	public static Planet aboba;
+	public static Planet wendi;
 
 	public static void load() {
-		aboba = new Planet("aboba", Planets.sun, 1f, 2) {{
+		wendi = new Planet("wendi", Planets.sun, 1f, 2) {{
 			meshLoader = () -> new HexMesh(this, 6);
 
 			sectorSeed = 2;
 			allowWaves = true;
+			hasAtmosphere = true;
+			allowLaunchToNumbered = false;
+			alwaysUnlocked = true;
 
 			ruleSetter = r -> {
 				r.waveTeam = Team.crux;
 				r.placeRangeCheck = false;
 				r.showSpawns = false;
 			};
-			hasAtmosphere = true;
+
 			iconColor = atmosphereColor = Color.valueOf("469662");
 			atmosphereRadIn = -0.1f;
 			atmosphereRadOut = 0.25f;
 			startSector = 1;
-			alwaysUnlocked = true;
 
 			generator = new ModularPlanetGenerator() {{
 				minHeight = -5f;
@@ -50,19 +52,19 @@ public class SWPlanets {
 				);
 				colors.add(
 					new ColorPatch() {{
-						color = Blocks.snow.mapColor;
+						block = Blocks.snow;
 						noise = new Noise3DSettings() {{
 							min = max = 1;
 						}};
 					}},
 					new ColorPatch() {{
-						color = Blocks.basalt.mapColor;
+						block = Blocks.basalt;
 						noise = new Noise3DSettings() {{
 							min = max = 0;
 						}};
 					}},
 					new ColorPatch() {{
-						color = Blocks.sand.mapColor;
+						block = Blocks.sand;
 						noise = new Noise3DSettings() {{
 							offset.set(453, 259, -345);
 							max = 0f;
@@ -75,19 +77,14 @@ public class SWPlanets {
 						minT = -10f;
 					}},
 					new ColorPatch() {{
-						color = Blocks.water.mapColor;
+						block = Blocks.water;
 						noise = new Noise3DSettings() {{
 							min = max = -0.5f;
 						}};
 						maxT = minT = -0.5f;
 					}}
 				);
-			}
-				@Override
-				protected void generate() {
-					Schematics.placeLaunchLoadout(50, 50);
-				}
-			};
+			}};
 		}};
 	}
 }

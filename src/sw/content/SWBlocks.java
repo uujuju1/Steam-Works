@@ -710,7 +710,7 @@ public class SWBlocks {
 			size = 3;
 			health = 2000;
 			alwaysUnlocked = true;
-			unitType = UnitTypes.nova;
+			unitType = SWUnitTypes.delta;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
 		}};

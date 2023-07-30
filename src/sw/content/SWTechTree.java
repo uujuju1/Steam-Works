@@ -117,9 +117,12 @@ public class SWTechTree {
       node(hotspot, with(
         new SectorComplete(SectorPresets.craters),
         new Produce(compound)
-      ), () -> node(greatLake, with(
-        new SectorComplete(hotspot)
-      ), () -> {}));
+      ), () -> {
+        node(greatLake, with(new SectorComplete(hotspot)), () -> {
+          node(erosion, with(new SectorComplete(greatLake)), () -> {});
+          node(aurora, with(new SectorComplete(greatLake)), () -> {});
+        });
+      });
     });
   }
 }

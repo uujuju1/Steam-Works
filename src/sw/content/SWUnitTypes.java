@@ -6,6 +6,7 @@ import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -28,6 +29,7 @@ public class SWUnitTypes {
     recluse, retreat, evade,
     sentry, tower, castle, stronghold,
     prot, protMask,
+    delta, deltaShield,
     bakler, structura;
 
   public static void load() {
@@ -571,7 +573,7 @@ public class SWUnitTypes {
       range = maxRange = 160f;
 
       shieldSeparateRadius = 24f;
-      shieldStartAng = -90f;
+      shieldStartAng = -54f;
       shieldEndAng = 288f;
       shieldShootingStartAng = 40f;
       shieldShootingEndAng = 100f;
@@ -603,6 +605,82 @@ public class SWUnitTypes {
 					colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
 				}};
 			}});
+    }};
+
+    deltaShield = new SWUnitType("delta-shield") {{
+      health = 500;
+      speed = 2f;
+      rotateSpeed = 3f;
+      range = maxRange = 0f;
+
+      engineOffset = 2f;
+
+      flying = lowAltitude = hidden = true;
+      playerControllable = drawCell = false;
+
+      controller = u -> new ShieldAI();
+      constructor = UnitTetherUnit::new;
+    }};
+    delta = new SWUnitType("delta") {{
+      health = 650f;
+      hitSize = 8f;
+      speed = 1f;
+      rotateSpeed = 2f;
+      range = maxRange = 80f;
+
+      shields = 4;
+      shieldSeparateRadius = 24f;
+      shieldStartAng = -45f;
+      shieldEndAng = 270f;
+      shieldShootingStartAng = 40f;
+      shieldShootingEndAng = 100f;
+
+      shieldUnit = deltaShield;
+
+      legCount = 4;
+      legGroupSize = 2;
+      legLength = 18f;
+      legBaseOffset = 2f;
+      legExtension = 2f;
+      lockLegBase = true;
+      legContinuousMove = true;
+
+      canBoost = true;
+      boostMultiplier = 5f;
+
+      constructor = ShieldedUnit::new;
+
+			parts.add(
+				new RegionPart("-spine") {{
+          x = 4.5f;
+          y = -2.5f;
+          moveRot = -22.5f;
+          mirror = under = true;
+          layerOffset = -0.01f;
+          moves.add(new PartMove(PartProgress.reload, 0, 0, -22.5f));
+        }},
+        new RegionPart("-weapon") {{
+          x = y = 0;
+          moveY = -1f;
+          progress = PartProgress.reload;
+        }}
+			);
+
+			weapons.add(
+				new Weapon() {{
+					x = y = 0f;
+					reload = 60f;
+					shootY = 8f;
+
+					mirror = false;
+
+					bullet = new LaserBulletType() {{
+						length = 80f;
+						shootEffect = Fx.shockwave;
+						colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
+					}};
+				}}
+			);
     }};
 
     bakler = new SWUnitType("bakler") {{

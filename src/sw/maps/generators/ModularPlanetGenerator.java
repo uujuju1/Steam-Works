@@ -6,12 +6,15 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
+import mindustry.content.*;
 import mindustry.maps.generators.*;
 import mindustry.type.*;
+import mindustry.ui.dialogs.*;
+import mindustry.world.*;
 
 public class ModularPlanetGenerator extends PlanetGenerator {
 	public float minHeight = 0f;
-	public Color defaultColor = Color.pink;
+	public Block defaultBlock = Blocks.grass;
 	public Seq<Noise3DSettings> heights = new Seq<>();
 	public Seq<ColorPatch> colors = new Seq<>();
 
@@ -26,7 +29,7 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 		}
 	}
 	public class ColorPatch {
-		public Color color = Color.white;
+		public Block block = Blocks.grass;
 		public Noise3DSettings noise;
 		public float minT = 0f, maxT = 1f;
 
@@ -45,15 +48,21 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 
 	@Override
 	public Color getColor(Vec3 p) {
-		Color finalCol = defaultColor;
+		return getBlock(p).mapColor;
+	}
+	
+	public Block getBlock(Vec3 p) {
+		Block out = defaultBlock;
 		for (ColorPatch color : colors) {
-			if (color.canColor(p, getHeight(p))) finalCol = color.color;
+			if (color.canColor(p, getHeight(p))) out = color.block;
 		}
-		return finalCol;
+		return out;
 	}
 
 	@Override
 	public void generateSector(Sector sector) {
+//		TODO remove this before release
+		PlanetDialog.debugSelect = true;
 		sector.generateEnemyBase = false;
 	}
 }
