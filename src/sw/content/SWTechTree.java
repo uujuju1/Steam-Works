@@ -124,5 +124,6 @@ public class SWTechTree {
         });
       });
     });
+    SWPlanets.wendi.techTree = root;
   }
 }

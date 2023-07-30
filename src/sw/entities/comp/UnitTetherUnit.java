@@ -36,6 +36,8 @@ public class UnitTetherUnit extends UnitEntity {
 			unit(Groups.unit.getByID(unitID));
 			if(unit == null || !net.client()) unitID = -1;
 		}
+
+		if (unit != null && unit.team != team) team(unit.team);
 		if (unit() == null || !unit().isValid() || unit().dead()) Call.unitDespawn(this);
 	}
 

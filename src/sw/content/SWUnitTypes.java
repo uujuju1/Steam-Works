@@ -560,7 +560,7 @@ public class SWUnitTypes {
       engineOffset = 2f;
 
       flying = lowAltitude = hidden = true;
-      playerControllable = false;
+      playerControllable = targetable = false;
 
       controller = u -> new ShieldAI();
       constructor = UnitTetherUnit::new;
@@ -616,7 +616,7 @@ public class SWUnitTypes {
       engineOffset = 2f;
 
       flying = lowAltitude = hidden = true;
-      playerControllable = drawCell = false;
+      playerControllable = drawCell = targetable = false;
 
       controller = u -> new ShieldAI();
       constructor = UnitTetherUnit::new;
@@ -647,6 +647,7 @@ public class SWUnitTypes {
 
       canBoost = true;
       boostMultiplier = 5f;
+      engineSize = 0f;
 
       constructor = ShieldedUnit::new;
 
@@ -674,7 +675,8 @@ public class SWUnitTypes {
 
 					mirror = false;
 
-					bullet = new LaserBulletType() {{
+          shootSound = Sounds.bolt;
+					bullet = new LaserBulletType(20) {{
 						length = 80f;
 						shootEffect = Fx.shockwave;
 						colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
