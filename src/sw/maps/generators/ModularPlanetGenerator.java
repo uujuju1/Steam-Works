@@ -9,7 +9,6 @@ import arc.util.noise.*;
 import mindustry.content.*;
 import mindustry.maps.generators.*;
 import mindustry.type.*;
-import mindustry.ui.dialogs.*;
 import mindustry.world.*;
 
 public class ModularPlanetGenerator extends PlanetGenerator {
@@ -61,8 +60,6 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 
 	@Override
 	public void generateSector(Sector sector) {
-//		TODO remove this before release
-		PlanetDialog.debugSelect = true;
 		sector.generateEnemyBase = false;
 	}
 }
