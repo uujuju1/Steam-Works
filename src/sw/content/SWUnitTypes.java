@@ -7,6 +7,7 @@ import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -28,6 +29,7 @@ public class SWUnitTypes {
     swarm, ambush, trap, misleading,
     recluse, retreat, evade,
     sentry, tower, castle, stronghold,
+		existence, remembered, presence,
     prot, protMask,
     delta, deltaShield,
     bakler, structura;
@@ -551,6 +553,102 @@ public class SWUnitTypes {
       );
     }};
 
+    existence = new SWUnitType("existence") {{
+      health = 250;
+  		speed = 1.2f;
+	  	rotateSpeed = 3f;
+		  range = maxRange = 24f;
+
+	  	constructor = MechUnit::create;
+
+      weapons.add(new Weapon() {{
+        bullet = new ExplosionBulletType(150, 80);
+      }});
+    }};
+    remembered = new SWUnitType("remembered") {{
+      health = 600;
+	  	hitSize = 9f;
+	  	speed = 0.7f;
+	  	rotateSpeed = 3f;
+	  	range = maxRange = 80f;
+
+	  	constructor = LegsUnit::create;
+
+			weapons.add(
+				new Weapon("sw-bottom-gun") {{
+          x = 0f;
+          y = 5.75f;
+          reload = 120f;
+          mirror = false;
+          layerOffset = -0.01f;
+
+          bullet = new LaserBulletType(25) {{
+            length = 100f;
+          }};
+        }},
+				new Weapon("sw-top-gun") {{
+          x = 4.75f;
+          y = 2.25f;
+          reload = 60f;
+
+          bullet = new MissileBulletType(2, 14) {{
+            frontColor = Color.white;
+            backColor = hitColor = trailColor = Pal.lancerLaser;
+            lifetime = 40f;
+            width = height = 10f;
+          }};
+        }}
+			);
+    }};
+    presence = new SWUnitType("presence") {{
+      health = 1230;
+	  	hitSize = 11f;
+	  	speed = 0.7f;
+	  	rotateSpeed = 3f;
+	  	range = maxRange = 120f;
+
+			legCount = 6;
+			legLength = 16f;
+			legExtension = 2f;
+
+	  	constructor = LegsUnit::create;
+
+      weapons.add(
+	      new Weapon("sw-presence-cannon") {{
+		      x = 7.25f;
+		      y = 4f;
+		      range = 100f;
+		      reload = 60f;
+		      rotate = false;
+		      layerOffset = -0.01f;
+
+		      shootSound = Sounds.artillery;
+          shoot = new ShootBarrel() {{
+						shots = 2;
+            barrels = new float[] {
+              -1.5f, 1.5f, 0f,
+              2.5f, -2.5f, 0f
+            };
+          }};
+		      bullet = new BasicBulletType(4, 20) {{
+			      lifetime = 25f;
+			      width = height = 12f;
+		      }};
+	      }},
+        new Weapon("sw-laser-gun") {{
+          x = 7.5f;
+          y = -4.25f;
+          reload = 120f;
+          rotate = true;
+          alternate = false;
+
+          shootSound = Sounds.laser;
+          bullet = new LaserBulletType(20) {{
+            length = 120f;
+          }};
+        }}
+      );
+    }};
     protMask = new SWUnitType("prot-mask") {{
       health = 2300;
       speed = 2f;
@@ -649,6 +747,8 @@ public class SWUnitTypes {
       boostMultiplier = 5f;
       engineSize = 0f;
 
+      buildSpeed = 0.75f;
+
       constructor = ShieldedUnit::new;
 
 			parts.add(
@@ -730,21 +830,27 @@ public class SWUnitTypes {
       constructor = CrafterUnit::new;
     }};
 
-    ((UnitFactory) Blocks.groundFactory).plans.add(new UnitPlan(sentry, 60f * 40f, with(SWItems.compound, 16, Items.silicon, 7, Items.titanium, 7)));
+    ((UnitFactory) Blocks.groundFactory).plans.add(
+      new UnitPlan(sentry, 60f * 40f, with(SWItems.compound, 16, Items.silicon, 7, Items.titanium, 7)),
+      new UnitPlan(existence, 60f * 45f, with(SWItems.denseAlloy, 20, Items.silicon, 8, Items.pyratite, 7))
+    );
     ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, with(SWItems.compound, 12, Items.silicon, 7)));
     ((Reconstructor) Blocks.additiveReconstructor).upgrades.addAll(
       new UnitType[]{swarm, ambush},
       new UnitType[]{recluse, retreat},
-      new UnitType[]{sentry, tower}
+      new UnitType[]{sentry, tower},
+      new UnitType[]{existence, remembered}
     );
     ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.addAll(
       new UnitType[]{ambush, trap},
       new UnitType[]{retreat, evade},
-      new UnitType[]{tower, castle}
+      new UnitType[]{tower, castle},
+      new UnitType[]{remembered, presence}
     );
 		((Reconstructor) Blocks.exponentialReconstructor).upgrades.addAll(
       new UnitType[]{trap, misleading},
-      new UnitType[]{castle, stronghold}
+      new UnitType[]{castle, stronghold},
+      new UnitType[]{presence, prot}
     );
   }
 }
