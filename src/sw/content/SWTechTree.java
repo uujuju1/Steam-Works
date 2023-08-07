@@ -38,7 +38,7 @@ public class SWTechTree {
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
           node(torquePump);
           node(electricSpinner, with(new SectorComplete(hotspot)), () -> {
-            node(turbineSwing, () -> node(frictionHeater));
+            node(pressureSpinner, () -> node(frictionHeater));
             node(compoundMixer, with(
               new Research(electricSpinner),
               new OnSector(SectorPresets.windsweptIslands)

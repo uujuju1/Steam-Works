@@ -39,7 +39,7 @@ public class SWBlocks {
 
 		beltNode, beltNodeLarge,
 		torquePump,
-		electricSpinner, turbineSwing, waterWheel,
+		electricSpinner, pressureSpinner, waterWheel,
 		compoundMixer, frictionHeater,
 
 		heatPipe, heatBridge, heatRadiator,
@@ -213,33 +213,6 @@ public class SWBlocks {
 				acceptsForce = false;
 			}};
 			outputSpeed = 3f;
-		}};
-		turbineSwing = new ForceSwayCrafter("turbine-swing") {{
-			requirements(Category.power, with(
-				Items.silicon, 50,
-				Items.graphite, 80,
-				SWItems.compound, 60
-			));
-			size = 2;
-			health = 160;
-			swayScl = 0.7f;
-			craftTime = 1f;
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawRegion("-rotator") {{
-					spinSprite = true;
-					rotateSpeed = 16f;
-				}},
-				new DrawDefault()
-			);
-			consumeLiquid(SWLiquids.steam, 0.2f);
-			forceConfig = new ForceConfig() {{
-				maxForce = 5f;
-				friction = 0.06f;
-				beltSizeOut = beltSizeIn = 4f;
-				acceptsForce = false;
-			}};
-			outputSpeed = 5f;
 		}};
 
 		compoundMixer = new SWGenericCrafter("compound-mixer") {{
@@ -449,7 +422,7 @@ public class SWBlocks {
 		}};
 
 //		power
-		stirlingGenerator = new HeatConsumeGenerator("stirling-generator") {{
+		stirlingGenerator = new SWGenericCrafter("stirling-generator") {{
       requirements(Category.power, with(
 				SWItems.denseAlloy, 120,
 				SWItems.nickel, 110,
@@ -458,22 +431,52 @@ public class SWBlocks {
       ));
 			size = 3;
 			health = 160;
-			powerProduction = 7f;
-			generateEffect = Fx.smoke;
-			generateEffectRange = 12f;
-			effectChance = 0.1f;
-			consume(new ConsumeHeat(1f, 200, false));
+			consume(new ConsumeHeat(0.5f, 100f, false));
+			craftTime = 1f;
+			outputSpeed = 5f;
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawPistons() {{
 					sides = 8;
 					sideOffset = 10f;
-					sinScl = -2.5f;
+					sinScl = 2.5f;
 					sinMag = 2f;
 				}},
 				new DrawDefault()
 			);
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				friction = 0.06f;
+				beltSizeOut = beltSizeIn = 6f;
+				acceptsForce = false;
+			}};
     }};
+		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				Items.graphite, 80,
+				SWItems.compound, 60
+			));
+			size = 3;
+			health = 160;
+			swayScl = 0.7f;
+			craftTime = 1f;
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawRegion("-rotator") {{
+					spinSprite = true;
+					rotateSpeed = 16f;
+				}}
+			);
+			consumeLiquid(SWLiquids.steam, 0.2f);
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				friction = 0.06f;
+				beltSizeOut = beltSizeIn = 6f;
+				acceptsForce = false;
+			}};
+			outputSpeed = 5f;
+		}};
 
 //		turrets
 		Color col = Pal.accent.cpy().a(0.3f);
