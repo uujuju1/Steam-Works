@@ -419,7 +419,7 @@ public class SWUnitTypes {
             }},
             new LaserBulletType(30) {{
               length = 160;
-              width = 7.5f;
+              width = 16f;
               colors = new Color[]{Pal.accent, Pal.accent, Color.white};
             }}
           );
