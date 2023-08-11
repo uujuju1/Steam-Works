@@ -165,55 +165,7 @@ public class SWBlocks {
 			}};
 		}};
 
-		electricSpinner = new SWGenericCrafter("electric-spinner") {{
-			requirements(Category.power, with(
-				Items.silicon, 50,
-				Items.graphite, 80,
-				SWItems.compound, 60
-			));
-			size = 2;
-			health = 160;
-			consumePower(1f);
-			hasHeat = false;
-			craftTime = 1f;
-			forceConfig = new ForceConfig() {{
-				maxForce = 5f;
-				friction = 0.06f;
-				beltSizeOut = beltSizeIn = 4f;
-				acceptsForce = false;
-			}};
-			outputSpeed = 5f;
-		}};
-		waterWheel = new SWGenericCrafter("water-wheel") {{
-			requirements(Category.power, with(
-				Items.silicon, 80,
-				Items.lead, 120,
-				Items.metaglass, 70,
-				SWItems.compound, 100
-			));
-			size = 3;
-			health = 200;
-			consumeLiquid(Liquids.water, 0.2f);
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawLiquidTile(Liquids.water, 1f),
-				new DrawRegion("-wheel") {{
-					spinSprite = true;
-					rotateSpeed = -1f;
-				}},
-				new DrawRegion("-top")
-			);
-			hasHeat = false;
-			hasLiquids = true;
-			craftTime = 1f;
-			forceConfig = new ForceConfig() {{
-				maxForce = 3f;
-				friction = 0.09f;
-				beltSizeOut = beltSizeIn = 6f;
-				acceptsForce = false;
-			}};
-			outputSpeed = 3f;
-		}};
+
 
 		compoundMixer = new SWGenericCrafter("compound-mixer") {{
 			requirements(Category.crafting, with(
@@ -442,7 +394,7 @@ public class SWBlocks {
 					sinScl = 2.5f;
 					sinMag = 2f;
 				}},
-				new DrawDefault()
+				new DrawRegion("-top")
 			);
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
@@ -476,6 +428,55 @@ public class SWBlocks {
 				acceptsForce = false;
 			}};
 			outputSpeed = 5f;
+		}};
+		electricSpinner = new SWGenericCrafter("electric-spinner") {{
+			requirements(Category.power, with(
+				Items.silicon, 50,
+				Items.graphite, 80,
+				SWItems.compound, 60
+			));
+			size = 2;
+			health = 160;
+			consumePower(1f);
+			hasHeat = false;
+			craftTime = 1f;
+			forceConfig = new ForceConfig() {{
+				maxForce = 5f;
+				friction = 0.06f;
+				beltSizeOut = beltSizeIn = 4f;
+				acceptsForce = false;
+			}};
+			outputSpeed = 5f;
+		}};
+		waterWheel = new SWGenericCrafter("water-wheel") {{
+			requirements(Category.power, with(
+				Items.silicon, 80,
+				Items.lead, 120,
+				Items.metaglass, 70,
+				SWItems.compound, 100
+			));
+			size = 3;
+			health = 200;
+			consumeLiquid(Liquids.water, 0.2f);
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water, 1f),
+				new DrawRegion("-wheel") {{
+					spinSprite = true;
+					rotateSpeed = -1f;
+				}},
+				new DrawRegion("-top")
+			);
+			hasHeat = false;
+			hasLiquids = true;
+			craftTime = 1f;
+			forceConfig = new ForceConfig() {{
+				maxForce = 3f;
+				friction = 0.09f;
+				beltSizeOut = beltSizeIn = 6f;
+				acceptsForce = false;
+			}};
+			outputSpeed = 3f;
 		}};
 
 //		turrets
