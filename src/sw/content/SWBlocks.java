@@ -39,7 +39,7 @@ public class SWBlocks {
 
 		beltNode, beltNodeLarge,
 		torquePump,
-		electricSpinner, pressureSpinner, waterWheel,
+	  stirlingGenerator, electricSpinner, pressureSpinner, waterWheel,
 		compoundMixer, frictionHeater,
 
 		heatPipe, heatBridge, heatRadiator,
@@ -50,9 +50,7 @@ public class SWBlocks {
 
 		nickelForge, oilDistiller,
     batchPress,
-		rebuilder,
-
-		stirlingGenerator,
+		rebuilder, impactBuilder,
 
 		bolt, light,
 		mortar, incend,
@@ -73,8 +71,8 @@ public class SWBlocks {
 				SWItems.compound, 45,
 				Items.graphite, 35,
 				Items.silicon, 25,
-				Items.titanium, 30)
-			);
+				Items.titanium, 30
+			));
 			size = 3;
 			health = 200;
 			drillTime = 320f;
@@ -164,8 +162,6 @@ public class SWBlocks {
 				outputsForce = false;
 			}};
 		}};
-
-
 
 		compoundMixer = new SWGenericCrafter("compound-mixer") {{
 			requirements(Category.crafting, with(
@@ -341,6 +337,7 @@ public class SWBlocks {
 			updateEffect = Fx.smoke;
 			outputItems = with(Items.graphite, 8);
 		}};
+
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
@@ -371,6 +368,47 @@ public class SWBlocks {
 					updateEffect = Fx.smoke;
 				}}
  			);
+		}};
+		impactBuilder = new MultiCrafter("impact-builder") {{
+			requirements(Category.crafting, with(
+				SWItems.nickel, 65,
+				Items.silicon, 80,
+				Items.copper, 60,
+				Items.lead, 75
+			));
+			size = 3;
+			health = 200;
+			hasLiquids = true;
+			recipes.add(
+				new GenericRecipe() {{
+					craftTime = 45f;
+					consumeItems = with(SWItems.compound, 1, Items.titanium, 2);
+					outputItems = with(SWItems.neodymium, 1);
+					drawer = new DrawMulti(
+						new DrawRegion("-bottom"),
+						new DrawWeave(),
+						new DrawDefault(),
+						new DrawRegion("-cap")
+					);
+					craftEffect = SWFx.neodymiumCraft;
+				}},
+				new GenericRecipe() {{
+					craftTime = 60f;
+					consumeItems = with(SWItems.denseAlloy, 2);
+					consumeLiquids = LiquidStack.with(Liquids.cryofluid, 0.3f);
+					outputItems = with(SWItems.frozenMatter, 1);
+					drawer = new DrawMulti(
+						new DrawRegion("-bottom"),
+						new DrawDefault(),
+						new DrawRegion("-cover"),
+						new DrawGlowRegion() {{
+							color = Pal.lancerLaser;
+						}}
+					);
+					craftEffect = SWFx.frozenMatterCraft;
+					updateEffect = 	Fx.smeltsmoke;
+				}}
+			);
 		}};
 
 //		power

@@ -31,15 +31,52 @@ public class SWFx {
         });
       }
     }),
+    nickelCraft = new Effect(30f, e -> {
+      Draw.color(Pal.accent);
+      Angles.randLenVectors(e.id + 1, 10, e.finpow() * 30f, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+    }),
     compoundCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
       Draw.color(Pal.accent);
       Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10 * e.foutpow());
       Draw.color(Color.darkGray);
       Fill.circle(e.x - x, e.y - y, 2 * e.fout());
     })),
-    nickelCraft = new Effect(30f, e -> {
-      Draw.color(Pal.accent);
-      Angles.randLenVectors(e.id + 1, 10, e.finpow() * 30f, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
+    neodymiumCraft = new Effect(60f, e -> {
+      Draw.color(Pal.accentBack);
+      Angles.randLenVectors(e.id, 10, 12f * e.finpow(), (x, y) -> {
+        Fill.rect(e.x + x, e.y + y, 5f * e.fout(), 5f * e.fout(), 45f);
+      });
+    }),
+    frozenMatterCraft = new Effect(60f, e -> {
+      for (int i = 0; i < 4; i++) {
+        Draw.color(Pal.lancerLaser);
+        float angle = i * 90f;
+        Angles.randLenVectors(e.id + i, 10, 20 * e.finpow(), i * 90 + 45, 25, (x, y) -> {
+          Fill.rect(
+            e.x + x + Angles.trnsx(angle, 4, 4),
+            e.y + y + Angles.trnsy(angle, 4, 4),
+            5 * e.fout(),
+            5 * e.fout(),
+            45
+          );
+        });
+
+        Drawf.tri(
+          e.x + Angles.trnsx(angle, 3, 3),
+          e.y + Angles.trnsy(angle, 3, 3),
+          8 * e.foutpow(),
+          16 * e.finpow(),
+          i * 90 + 45
+        );
+        Draw.color(Color.white);
+        Drawf.tri(
+          e.x + Angles.trnsx(angle, 3, 3),
+          e.y + Angles.trnsy(angle, 3, 3),
+          8 * e.foutpow(),
+          16 * e.finpow(),
+          i * 90 + 45
+        );
+      }
     }),
     graphiteCraft = new Effect(30f, e -> {
       Draw.color(Pal.accent, Color.gray, e.fin());
