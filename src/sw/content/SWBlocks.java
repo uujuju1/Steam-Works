@@ -423,7 +423,7 @@ public class SWBlocks {
 			health = 160;
 			consume(new ConsumeHeat(0.5f, 100f, false));
 			craftTime = 1f;
-			outputSpeed = 5f;
+			outputSpeed = 1f;
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawPistons() {{
@@ -465,7 +465,7 @@ public class SWBlocks {
 				beltSizeOut = beltSizeIn = 6f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 5f;
+			outputSpeed = 1f;
 		}};
 		electricSpinner = new SWGenericCrafter("electric-spinner") {{
 			requirements(Category.power, with(
@@ -484,7 +484,7 @@ public class SWBlocks {
 				beltSizeOut = beltSizeIn = 4f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 5f;
+			outputSpeed = 1f;
 		}};
 		waterWheel = new SWGenericCrafter("water-wheel") {{
 			requirements(Category.power, with(
@@ -509,12 +509,12 @@ public class SWBlocks {
 			hasLiquids = true;
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
-				maxForce = 3f;
+				maxForce = 1f;
 				friction = 0.09f;
 				beltSizeOut = beltSizeIn = 6f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 3f;
+			outputSpeed = 1f;
 		}};
 
 //		turrets
