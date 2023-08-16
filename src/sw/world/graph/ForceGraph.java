@@ -102,7 +102,7 @@ public class ForceGraph extends Graph {
 		public int l1, l2;
 
 		public ForceLink(HasForce l1, HasForce l2) {
-			this(((Building) l1).pos(), ((Building) l2).pos());
+			this(l1.pos(), l2.pos());
 		}
 		public ForceLink(int l1, int l2) {
 			this.l1 = l1;
@@ -124,8 +124,8 @@ public class ForceGraph extends Graph {
 		}
 		public float ratio(HasForce from, boolean reverse) {
 			return !reverse ?
-				       from.forceConfig().beltSizeOut/other(from).forceConfig().beltSizeIn:
-				       other(from).forceConfig().beltSizeIn/from.forceConfig().beltSizeOut;
+				       from.beltSize()/other(from).beltSize():
+				       other(from).beltSize()/from.beltSize();
 		}
 
 		@Override public boolean equals(Object obj) {

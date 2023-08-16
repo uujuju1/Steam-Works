@@ -24,6 +24,10 @@ public interface HasForce extends Buildingc, Posc{
 		return force().graph;
 	}
 
+	default float beltSize() {
+		return forceConfig().beltSize;
+	}
+
 	default float spin() {
 		return graph().rotation;
 	}
@@ -55,8 +59,8 @@ public interface HasForce extends Buildingc, Posc{
 				rot += rot > 0 ? time : -time;
 
 				float angle = Tmp.v1.set(p1).sub(p2).angle();
-				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), forceConfig().beltSizeOut));
-				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getLink()).forceConfig().beltSizeIn));
+				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), beltSize()));
+				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getLink()).beltSize()));
 				angle = Tmp.v1.set(p1).sub(p2).angle();
 
 				SWDraw.linePoint(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), p1.x, p1.y, p2.x, p2.y);

@@ -37,7 +37,7 @@ public class SWBlocks {
 
 		excavator,
 
-		beltNode, beltNodeLarge,
+		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
 	  stirlingGenerator, electricSpinner, pressureSpinner, waterWheel,
 		compoundMixer, frictionHeater,
@@ -109,7 +109,7 @@ public class SWBlocks {
 			health = 120;
 			forceConfig = new ForceConfig() {{
 				friction = 0.03f;
-				maxForce = 12f;
+				maxForce = 1f;
 				range = 60f;
 			}};
 		}};
@@ -123,9 +123,23 @@ public class SWBlocks {
 			health = 120;
 			forceConfig = new ForceConfig() {{
 				friction = 0.06f;
-				maxForce = 12f;
+				maxForce = 2f;
 				range = 90f;
-				beltSizeIn = beltSizeOut = 4f;
+				beltSize = 4f;
+			}};
+		}};
+		omniBelt = new OmniForceNode("omni-belt") {{
+			requirements(Category.power, with(
+				Items.silicon, 60,
+				Items.titanium, 40,
+				SWItems.neodymium, 80
+			));
+			size = 3;
+			health = 120;
+			forceConfig = new ForceConfig() {{
+				friction = 0.06f;
+				maxForce = 3f;
+				range = 120f;
 			}};
 		}};
 
@@ -158,7 +172,7 @@ public class SWBlocks {
 			);
 			forceConfig = new ForceConfig() {{
 				maxForce = 18f;
-				beltSizeIn = beltSizeOut = 4f;
+				beltSize = 4f;
 				outputsForce = false;
 			}};
 		}};
@@ -174,7 +188,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				friction = 0.09f;
 				maxForce = 14f;
-				beltSizeIn = beltSizeOut = 6f;
+				beltSize = 6f;
 			}};
 			size = 3;
 			health = 200;
@@ -254,7 +268,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				friction = 0.18f;
 				maxForce = 18f;
-				beltSizeIn = beltSizeOut = 6f;
+				beltSize = 6f;
 				outputsForce = false;
 			}};
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
@@ -437,7 +451,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
 				friction = 0.06f;
-				beltSizeOut = beltSizeIn = 6f;
+				beltSize = 6f;
 				acceptsForce = false;
 			}};
     }};
@@ -462,10 +476,10 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
 				friction = 0.06f;
-				beltSizeOut = beltSizeIn = 6f;
+				beltSize = 6f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 1f;
+			outputSpeed = 3f;
 		}};
 		electricSpinner = new SWGenericCrafter("electric-spinner") {{
 			requirements(Category.power, with(
@@ -481,7 +495,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
 				friction = 0.06f;
-				beltSizeOut = beltSizeIn = 4f;
+				beltSize = 4f;
 				acceptsForce = false;
 			}};
 			outputSpeed = 1f;
@@ -511,7 +525,7 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				maxForce = 1f;
 				friction = 0.09f;
-				beltSizeOut = beltSizeIn = 6f;
+				beltSize = 6f;
 				acceptsForce = false;
 			}};
 			outputSpeed = 1f;
@@ -590,7 +604,6 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				friction = 0.09f;
 				maxForce = 10f;
-				beltSizeIn = beltSizeOut = 6f;
 				outputsForce = false;
 			}};
 			drawer = new DrawTurret() {{
@@ -630,7 +643,6 @@ public class SWBlocks {
 			forceConfig = new ForceConfig() {{
 				friction = 0.18f;
 				maxForce = 10f;
-				beltSizeIn = beltSizeOut = 4f;
 				outputsForce = false;
 			}};
 
