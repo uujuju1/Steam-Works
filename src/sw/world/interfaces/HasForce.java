@@ -32,20 +32,30 @@ public interface HasForce extends Buildingc, Posc{
 		return graph().rotation;
 	}
 	default float speed() {
-		return force().speed * force().ratio;
+		return force().speed * ratioScl();
 	}
-	default float torque() {return force().speed / force().ratio;}
-	default void ratio() {
-		float mean = 0;
-		if (force().links.copy().removeAll(l -> l.l1() == this).isEmpty()) {
-			force().ratio = 1f;
-			return;
+	default float torque() {return force().speed / ratioScl();}
+	default float ratioScl() {
+		switch (getRatio()) {
+			case equal : return 1f;
+			case normal : return 2f;
+			case extreme : return 3f;
 		}
-		for(ForceLink forceLink : force().links.copy().removeAll(l -> l.l1() == this)) {
-			if (forceLink.l1() == null || forceLink.l2() == null) continue;
-			mean += forceLink.ratio(this, true);
-		}
-		force().ratio = mean / force().links.copy().removeAll(l -> l.l1() == this).size;
+		return 1f;
+	}
+	default float ratioNumber() {
+		if (force().links.copy().removeAll(l -> l.l1() == this).isEmpty()) return 1f;
+		return beltSize() / force().links.copy().removeAll(
+			l -> l.l1() == this || l.l1() == null
+		).max(l -> l.l1().beltSize()).l1().beltSize();
+	}
+	default ForceRatio getRatio() {
+		float ratio = ratioNumber();
+		if (Math.abs(ratio - 1/ratio) > 1.5) {
+			return ForceRatio.extreme;
+		} else if (Math.abs(ratio - 1/ratio) > 1) {
+			return ForceRatio.normal;
+		} else return ForceRatio.equal;
 	}
 
 	default void drawBelt() {
@@ -61,17 +71,18 @@ public interface HasForce extends Buildingc, Posc{
 				float angle = Tmp.v1.set(p1).sub(p2).angle();
 				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), beltSize()));
 				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getLink()).beltSize()));
-				angle = Tmp.v1.set(p1).sub(p2).angle();
+//				angle = Tmp.v1.set(p1).sub(p2).angle();
 
-				SWDraw.linePoint(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), p1.x, p1.y, p2.x, p2.y);
-				Draw.color(Color.valueOf("BEADA7"));
-
-				for (int j = 0; j < serrations; j++) {
-					float progress = ((rot + time/serrations * j) %time / time) + (rot > 0 ? 0f : 1f);
-
-					Tmp.v1.set(p1).lerp(p2, progress);
-					Fill.rect(Tmp.v1.x, Tmp.v1.y, 2, 1, angle);
-				}
+				SWDraw.beltLine(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), Color.valueOf("BEADA7"), p1.x, p1.y, p2.x, p2.y, rot);
+//				SWDraw.linePoint(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), p1.x, p1.y, p2.x, p2.y);
+//				Draw.color(Color.valueOf("BEADA7"));
+//
+//				for (int j = 0; j < serrations; j++) {
+//					float progress = ((rot + time/serrations * j) %time / time) + (rot > 0 ? 0f : 1f);
+//
+//					Tmp.v1.set(p1).lerp(p2, progress);
+//					Fill.rect(Tmp.v1.x, Tmp.v1.y, 2, 1, angle);
+//				}
 			}
 			Draw.reset();
 		}
@@ -88,7 +99,6 @@ public interface HasForce extends Buildingc, Posc{
 		force().links.addUnique(forceLink);
 		b.force().links.addUnique(forceLink);
 		b.graph().addGraph();
-		b.ratio();
 	}
 	default void unLink() {
 		if (getLink() instanceof HasForce b) {

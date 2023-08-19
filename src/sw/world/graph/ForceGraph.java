@@ -135,4 +135,15 @@ public class ForceGraph extends Graph {
 			return "link1: " + l1 + "; link2: " + l2;
 		}
 	}
+
+	public enum ForceRatio {
+		extreme("ratio.extreme"),
+		normal("ratio.normal"),
+		equal("ratio.equal");
+
+		String name;
+		ForceRatio(String name) {
+			this.name = name;
+		}
+	}
 }

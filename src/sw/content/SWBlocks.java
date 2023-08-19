@@ -25,6 +25,7 @@ import sw.world.blocks.sandbox.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
+import sw.world.graph.*;
 import sw.world.meta.*;
 import sw.world.recipes.*;
 
@@ -276,7 +277,7 @@ public class SWBlocks {
 				sinMag = 6.25f;
 			}}, new DrawDefault());
 			consume(new ConsumeSpeed(0.6f, 6f));
-			consume(new ConsumeTorque(5.4f, 18f));
+			consume(new ConsumeRatio(ForceGraph.ForceRatio.extreme));
 			heatConfig.acceptHeat = false;
 			outputHeat = 550f;
 		}};

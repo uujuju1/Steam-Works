@@ -1,10 +1,11 @@
 package sw.util;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import mindustry.graphics.Pal;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
+import mindustry.graphics.*;
 
 public class SWDraw {
   public static final Color heatPal = Pal.accent.cpy();
@@ -66,5 +67,21 @@ public class SWDraw {
     Lines.line(x, y, x2, y2);
     Lines.stroke(oldStroke, middle);
     Lines.line(x, y, x2, y2);
+  }
+  public static void beltLine(Color middle, Color base, Color serration, float x, float y, float x2, float y2, float rot) {
+    Vec2 p1 = new Vec2(x, y), p2 = new Vec2(x2, y2);
+    int serrations = Mathf.ceil(p1.dst(p2) / 8f);
+    float time = serrations * 20f;
+    rot += rot > 0 ? time : -time;
+
+    linePoint(middle, base, x, y, x2, y2);
+    Draw.color(serration);
+
+    for (int j = 0; j < serrations; j++) {
+      float progress = ((rot + time/serrations * j) %time / time) + (rot > 0 ? 0f : 1f);
+
+      Tmp.v1.set(p1).lerp(p2, progress);
+      Fill.rect(Tmp.v1.x, Tmp.v1.y, 2, 1, Tmp.v1.set(p1).sub(p2).angle());
+    }
   }
 }
