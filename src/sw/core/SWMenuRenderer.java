@@ -43,8 +43,8 @@ public class SWMenuRenderer extends MenuRenderer {
 				Block wall = Blocks.air;
 
 				int s = Mathf.random(100000);
-				if (x%4 == 0 || (y - 1)%4 == 0 && y - 1 > 0) floor = Blocks.metalFloor2;
-				if (x%4 == 0 && (y - 1)%4 == 0 && y - 1 > 0) floor = Blocks.metalFloor3;
+				if (x%4 == 0 || (y + 1)%4 == 0 && y + 1 < w) floor = Blocks.metalFloor2;
+				if (x%4 == 0 && (y + 1)%4 == 0 && y + 1 < w) floor = Blocks.metalFloor3;
 				if (Simplex.noise2d(
 					s,
 					3,
@@ -154,8 +154,9 @@ public class SWMenuRenderer extends MenuRenderer {
 			float y1 = vector.y;
 
 			vector.set(48f, 0f).rotate(360f / 40f * (i + 1) + 90f - Time.time);
-
-			Lines.line(x1 + x, y1 + y, vector.x + x, vector.y + y);
+			Tmp.v2.set(x1 + x, y1 + y).add(vector.x + x, vector.y + y).scl(0.5f);
+			Fill.rect(Tmp.v2.x, Tmp.v2.y, Lines.getStroke(), Lines.getStroke() * 3f, 360f / 40f * (i + 1) + 90f - Time.time);
+			Fill.rect(Tmp.v2.x, Tmp.v2.y, Lines.getStroke() * 3f, Lines.getStroke(), 360f / 40f * (i + 1) + 90f - Time.time);
 		}
 
 		Draw.proj(mat);

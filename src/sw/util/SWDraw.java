@@ -68,7 +68,7 @@ public class SWDraw {
     Lines.stroke(oldStroke, middle);
     Lines.line(x, y, x2, y2);
   }
-  public static void beltLine(Color middle, Color base, Color serration, float x, float y, float x2, float y2, float rot) {
+  public static void beltLine(Color middle, Color serration, Color base, float x, float y, float x2, float y2, float rot) {
     Vec2 p1 = new Vec2(x, y), p2 = new Vec2(x2, y2);
     int serrations = Mathf.ceil(p1.dst(p2) / 8f);
     float time = serrations * 20f;
@@ -80,8 +80,9 @@ public class SWDraw {
     for (int j = 0; j < serrations; j++) {
       float progress = ((rot + time/serrations * j) %time / time) + (rot > 0 ? 0f : 1f);
 
-      Tmp.v1.set(p1).lerp(p2, progress);
-      Fill.rect(Tmp.v1.x, Tmp.v1.y, 2, 1, Tmp.v1.set(p1).sub(p2).angle());
+      Tmp.v2.set(p1).lerp(p2, progress);
+      Fill.rect(Tmp.v2.x, Tmp.v2.y, 1, 3, Tmp.v1.set(p1).sub(p2).angle());
+      Fill.rect(Tmp.v2.x, Tmp.v2.y, 3, 1, Tmp.v1.angle());
     }
   }
 }
