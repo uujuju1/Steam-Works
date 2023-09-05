@@ -5,6 +5,7 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
+import sw.content.blocks.*;
 import sw.maps.generators.*;
 
 public class SWPlanets {
@@ -52,19 +53,19 @@ public class SWPlanets {
 				);
 				colors.add(
 					new ColorPatch() {{
-						block = Blocks.snow;
+						block = SWEnvironment.heavySnow;
 						noise = new Noise3DSettings() {{
 							min = max = 1;
 						}};
 					}},
 					new ColorPatch() {{
-						block = Blocks.basalt;
+						block = SWEnvironment.charoite;
 						noise = new Noise3DSettings() {{
 							min = max = 0;
 						}};
 					}},
 					new ColorPatch() {{
-						block = Blocks.sand;
+						block = SWEnvironment.purpleSand;
 						noise = new Noise3DSettings() {{
 							offset.set(453, 259, -345);
 							max = 0f;
@@ -77,7 +78,7 @@ public class SWPlanets {
 						minT = -10f;
 					}},
 					new ColorPatch() {{
-						block = Blocks.water;
+						block = SWEnvironment.heavyWater;
 						noise = new Noise3DSettings() {{
 							min = max = -0.5f;
 						}};

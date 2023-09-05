@@ -16,6 +16,7 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+import sw.content.blocks.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.environment.*;
 import sw.world.blocks.force.*;
@@ -67,6 +68,7 @@ public class SWBlocks {
 		allSource;
 
 	public static void load() {
+		SWEnvironment.load();
 		excavator = new ForceDrill("excavator") {{
 			requirements(Category.production, with(
 				SWItems.compound, 45,
@@ -272,11 +274,16 @@ public class SWBlocks {
 				beltSize = 6f;
 				outputsForce = false;
 			}};
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawRegion("-bar"), new DrawSinSpin() {{
-				sinScl = 1f;
-				sinMag = 6.25f;
-			}}, new DrawDefault());
-			consume(new ConsumeSpeed(0.6f, 6f));
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-bar"),
+				new DrawSinSpin() {{
+					sinScl = 1f;
+					sinMag = 6.25f;
+				}},
+				new DrawDefault()
+			);
+			consume(new ConsumeSpeed(1f, 3f));
 			consume(new ConsumeRatio(ForceGraph.ForceRatio.extreme));
 			heatConfig.acceptHeat = false;
 			outputHeat = 550f;
@@ -345,6 +352,16 @@ public class SWBlocks {
 			health = 200;
 			craftTime = 30f;
 			stacks = 6;
+			drawer = new DrawMulti(
+				new DrawRegion("-base"),
+				new DrawPistons() {{
+					sides = 4;
+					sideOffset = 10f;
+					sinScl = 2.5f;
+					sinMag = 2f;
+				}},
+				new DrawDefault()
+			);
 			consumeItem(Items.coal, 1);
 			consumeLiquid(SWLiquids.steam, 0.02f);
 			craftEffect = SWFx.graphiteCraft;
@@ -426,7 +443,6 @@ public class SWBlocks {
 			);
 		}};
 
-//		power
 		stirlingGenerator = new SWGenericCrafter("stirling-generator") {{
       requirements(Category.power, with(
 				SWItems.denseAlloy, 120,
@@ -438,7 +454,7 @@ public class SWBlocks {
 			health = 160;
 			consume(new ConsumeHeat(0.5f, 100f, false));
 			craftTime = 1f;
-			outputSpeed = 1f;
+			outputSpeed = 3f;
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawPistons() {{
@@ -480,7 +496,7 @@ public class SWBlocks {
 				beltSize = 6f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 3f;
+			outputSpeed = 2f;
 		}};
 		electricSpinner = new SWGenericCrafter("electric-spinner") {{
 			requirements(Category.power, with(
