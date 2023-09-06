@@ -7,6 +7,8 @@ import mindustry.game.Objectives.*;
 import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
+import static sw.content.blocks.SWForce.*;
+import static sw.content.blocks.SWHeat.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
@@ -20,17 +22,15 @@ public class SWTechTree {
       // items
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> nodeProduce(butane, () -> {}));
-        nodeProduce(compound, () -> {});
-        nodeProduce(denseAlloy, () -> {});
+        nodeProduce(compound, () -> nodeProduce(neodymium, () -> {}));
+        nodeProduce(denseAlloy, () -> nodeProduce(frozenMatter, () -> {}));
       });
 
       // production
       node(excavator, with(new Research(waterWheel)), () -> {});
 
       // crafting
-      node(nickelForge, with(
-        new SectorComplete(SectorPresets.craters)
-      ), () -> {
+      node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields),
           new Produce(steam)
@@ -62,7 +62,10 @@ public class SWTechTree {
           node(heatBridge);
           node(heatRadiator);
         });
-        node(beltNode, with(new Research(electricSpinner)), () -> node(beltNodeLarge));
+        node(beltNode, with(new Research(electricSpinner)), () -> {
+          node(beltNodeLarge);
+          node(omniBelt, with(new Research(neodymium)), () -> {});
+        });
       });
       node(waterWheel, with(
         new Research(beltNode),

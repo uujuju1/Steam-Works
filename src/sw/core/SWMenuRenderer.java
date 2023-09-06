@@ -13,7 +13,7 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import sw.content.*;
+import sw.content.blocks.*;
 
 import static mindustry.Vars.*;
 
@@ -70,7 +70,7 @@ public class SWMenuRenderer extends MenuRenderer {
 			}
 		}
 
-		world.tile(w/2, h/2).setBlock(SWBlocks.omniBelt, Team.sharded);
+		world.tile(w/2, h/2).setBlock(SWForce.omniBelt, Team.sharded);
 
 		world.setGenerating(false);
 	}
@@ -137,7 +137,7 @@ public class SWMenuRenderer extends MenuRenderer {
 
 		float x = w/2 * 8f, y = h/2 * 8f;
 
-		Draw.rect(SWBlocks.omniBelt.region, x, y);
+		Draw.rect(SWForce.omniBelt.region, x, y);
 
 		Lines.stroke(6, Color.valueOf("6B5A55"));
 		Lines.poly(x, y, 32, 48f);
