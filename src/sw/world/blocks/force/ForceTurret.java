@@ -62,20 +62,19 @@ public class ForceTurret extends Turret {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			force.graph.floodFill(this).each(b -> graph().add(b));
+			force.graph.flood(this).each(b -> graph().add(b));
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(graph().links::remove);
-			unLinkGraph();
+			unLink();
+			graph().remove(this);
 		}
 
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			graph().floodFill(this).each(b -> graph().add(b));
 		}
 		@Override
 		public void write(Writes write) {

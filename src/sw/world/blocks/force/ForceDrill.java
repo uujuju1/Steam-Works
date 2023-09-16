@@ -86,20 +86,20 @@ public class ForceDrill extends Drill {
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			if (getLink() != null) SWDraw.square(Pal.place, getLink().x, getLink().y, getLink().block.size * 6f, 0f);
+			if (getLink() != null) SWDraw.square(Pal.place, getLink().x(), getLink().y(), getLink().block().size * 6f, 0f);
 			Draw.reset();
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			force.graph.floodFill(this).each(b -> graph().add(b));
+			force.graph.flood(this).each(b -> graph().add(b));
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			force().links.each(graph().links::remove);
-			unLinkGraph();
+			unLink();
+			graph().remove(this);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
@@ -110,7 +110,6 @@ public class ForceDrill extends Drill {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			graph().floodFill(this).each(b -> graph().add(b));
 		}
 		@Override
 		public void write(Writes write) {

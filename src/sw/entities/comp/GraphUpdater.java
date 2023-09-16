@@ -1,5 +1,6 @@
 package sw.entities.comp;
 
+import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -49,7 +50,11 @@ public class GraphUpdater implements Entityc {
 	@Override
 	public void remove() {
 		if (added) {
-			Groups.all.removeIndex(this, id_all);
+			try {
+				if (Groups.all.index(id_all) == this) Groups.all.removeIndex(this, id_all);
+			} catch (Exception e) {
+				Log.err(e);
+			}
 			id_all = -1;
 			added = false;
 		}

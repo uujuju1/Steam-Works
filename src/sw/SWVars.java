@@ -32,6 +32,7 @@ public class SWVars implements Loadable {
     );
     Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
+	  Vars.mods.getScripts().runConsole("importModClass(\"sw.content.blocks\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.world.graph\")");
 	}
