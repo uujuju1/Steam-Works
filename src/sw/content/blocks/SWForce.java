@@ -54,7 +54,7 @@ public class SWForce {
 			));
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.03f;
+				friction = 0.001f;
 				maxForce = 1f;
 				range = 60f;
 			}};
@@ -68,7 +68,7 @@ public class SWForce {
 			size = 2;
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.06f;
+				friction = 0.002f;
 				maxForce = 2f;
 				range = 90f;
 				beltSize = 4f;
@@ -83,7 +83,7 @@ public class SWForce {
 			size = 3;
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.06f;
+				friction = 0.003f;
 				maxForce = 3f;
 				range = 120f;
 			}};
@@ -136,7 +136,7 @@ public class SWForce {
 			);
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				friction = 0.06f;
+				friction = 0.002f;
 				beltSize = 6f;
 				acceptsForce = false;
 			}};
@@ -161,7 +161,7 @@ public class SWForce {
 			consumeLiquid(SWLiquids.steam, 0.2f);
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				friction = 0.06f;
+				friction = 0.002f;
 				beltSize = 6f;
 				acceptsForce = false;
 			}};
@@ -180,7 +180,7 @@ public class SWForce {
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				friction = 0.06f;
+				friction = 0.001f;
 				beltSize = 4f;
 				acceptsForce = false;
 			}};
@@ -210,7 +210,7 @@ public class SWForce {
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
 				maxForce = 1f;
-				friction = 0.09f;
+				friction = 0.003f;
 				beltSize = 6f;
 				acceptsForce = false;
 			}};

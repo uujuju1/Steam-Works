@@ -47,20 +47,18 @@ public class ForceGraph extends Graph {
 			graph.softRemove(b);
 			add(b);
 		});
+		graph.links.each(links::addUnique);
 	}
 	public void updateGraph() {
 		Seq<HasForce> build = builds.copy();
 		Seq<ForceLink> link = links.copy();
 
-		build.each(b -> {
-			remove(b);
-//			link.each(l -> {
-//				if (l.has(b)) b.graph().links.addUnique(l);
-//			});
-		});
+		build.each(this::remove);
 		links.each(l -> {
-			l.l1().graph().merge(l.l2().graph());
-			l.l1().graph().links.addUnique(l);
+			if (l.l1() != null && l.l2() != null) {
+				l.l1().graph().merge(l.l2().graph());
+				l.l1().graph().links.addUnique(l);
+			}
 		});
 	}
 
@@ -68,12 +66,14 @@ public class ForceGraph extends Graph {
 		Seq<HasForce> out = Seq.with(start);
 		Seq<HasForce> temp = Seq.with(start);
 
-		HasForce init = temp.pop();
 		while (!temp.isEmpty()) {
-			if (init.getLink() != null) {
-				out.add(init.getLink());
-				temp.add(init.getLink());
-			}
+			HasForce init = temp.pop();
+			init.force().links.each(c -> {
+				if (c.other(init) != null && !out.contains(c.other(init))) {
+					out.add(c.other(init));
+					temp.add(c.other(init));
+				}
+			});
 		}
 
 		return out;
@@ -109,11 +109,6 @@ public class ForceGraph extends Graph {
 		}
 		public boolean has(HasForce build) {
 			return build == l1() || build == l2();
-		}
-		public float ratio(HasForce from, boolean reverse) {
-			return !reverse ?
-				       from.beltSize()/other(from).beltSize():
-				       other(from).beltSize()/from.beltSize();
 		}
 
 		@Override public boolean equals(Object obj) {

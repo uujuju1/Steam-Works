@@ -47,7 +47,8 @@ public class ForcePump extends Pump {
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 			unLink();
-			graph().remove(this);
+			graph().softRemove(this);
+			graph().links.removeAll(force().links);
 		}
 
 
@@ -55,7 +56,9 @@ public class ForcePump extends Pump {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			graph().flood(this).each(b -> graph().add(b));
+			graph().flood(this).each(build -> {
+				graph().merge(build.graph());
+			});
 		}
 		@Override
 		public void write(Writes write) {

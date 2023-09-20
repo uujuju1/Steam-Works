@@ -66,6 +66,7 @@ public class ForceNode extends Block {
 			super.onProximityRemoved();
 			unLink();
 			graph().softRemove(this);
+			graph().links.removeAll(force().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
@@ -76,6 +77,9 @@ public class ForceNode extends Block {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
+			graph().flood(this).each(build -> {
+				graph().merge(build.graph());
+			});
 		}
 		@Override
 		public void write(Writes write) {

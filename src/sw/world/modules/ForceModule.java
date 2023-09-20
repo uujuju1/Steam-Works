@@ -8,11 +8,11 @@ import sw.world.graph.ForceGraph.*;
 
 public class ForceModule extends BlockModule {
 	public ForceGraph graph = new ForceGraph();
+	public final Seq<ForceLink> links = new Seq<>();
 
 	public float speed;
 	public float ratio = 1;
 
-	public final Seq<ForceLink> links = new Seq<>();
 	public int link = -1;
 
 	@Override
@@ -36,7 +36,7 @@ public class ForceModule extends BlockModule {
 		for (int i = 0; i < size; i++) {
 			ForceLink forceLink = new ForceLink(read.i(), read.i());
 			links.add(forceLink);
-			graph.links.add(forceLink);
+			graph.links.addUnique(forceLink);
 		}
 		graph.addGraph();
 	}

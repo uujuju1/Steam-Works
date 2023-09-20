@@ -82,10 +82,15 @@ public interface HasForce extends Buildingc, Posc{
 
 		graph().merge(b.graph());
 		graph().links.addUnique(new ForceLink(this, b));
+		force().links.addUnique(new ForceLink(this, b));
+		b.force().links.addUnique(new ForceLink(this, b));
+		graph().updateGraph();
 	}
 	default void unLink() {
 		if (getLink() != null) {
 			graph().links.remove(new ForceLink(this, getLink()));
+			force().links.remove(new ForceLink(this, getLink()));
+			getLink().force().links.remove(new ForceLink(this, getLink()));
 			force().link = -1;
 			graph().updateGraph();
 		}

@@ -78,7 +78,8 @@ public class ForceSwayCrafter extends GenericCrafter {
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 			unLink();
-			graph().remove(this);
+			graph().softRemove(this);
+			graph().links.removeAll(force().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
@@ -89,7 +90,9 @@ public class ForceSwayCrafter extends GenericCrafter {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			rotation = read.f();
+			graph().flood(this).each(build -> {
+				graph().merge(build.graph());
+			});
 		}
 		@Override
 		public void write(Writes write) {
