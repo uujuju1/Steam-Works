@@ -7,12 +7,11 @@ import mindustry.game.Objectives.*;
 import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
-import static sw.content.blocks.SWForce.*;
-import static sw.content.blocks.SWHeat.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.SWUnitTypes.*;
+import static sw.content.blocks.SWForce.*;
 
 public class SWTechTree {
   public static TechNode root;
@@ -32,36 +31,35 @@ public class SWTechTree {
       // crafting
       node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
         node(oilDistiller, with(
-          new SectorComplete(SectorPresets.tarFields),
-          new Produce(steam)
+          new SectorComplete(SectorPresets.tarFields)
         ), () -> {});
         node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
           node(torquePump);
           node(electricSpinner, with(new SectorComplete(hotspot)), () -> {
-            node(pressureSpinner, () -> node(frictionHeater));
+            node(pressureSpinner);
             node(compoundMixer, with(
               new Research(electricSpinner),
               new OnSector(SectorPresets.windsweptIslands)
             ), () -> {});
           });
-          node(burner, () -> node(resistance, with(new Research(stirlingGenerator)), () -> {}));
+//          node(burner, () -> node(resistance, with(new Research(stirlingGenerator)), () -> {}));
         });
 
 
-        node(boiler, with(
-          new Research(burner),
-          new OnSector(SectorPresets.extractionOutpost)
-        ), () -> node(thermalBoiler));
+//        node(boiler, with(
+//          new Research(burner),
+//          new OnSector(SectorPresets.extractionOutpost)
+//        ), () -> node(thermalBoiler));
 
         node(batchPress, with(new Research(Blocks.multiPress)), () -> {});
       });
 
       // distribution
       node(resistantConveyor, () -> {
-        node(heatPipe, with(new Research(burner)), () -> {
-          node(heatBridge);
-          node(heatRadiator);
-        });
+//        node(heatPipe, with(new Research(burner)), () -> {
+//          node(heatBridge);
+//          node(heatRadiator);
+//        });
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
           node(omniBelt, with(new Research(neodymium)), () -> {});
@@ -79,12 +77,12 @@ public class SWTechTree {
       });
 
       // turrets
-      node(bolt, () -> {
-        node(light);
+//      node(bolt, () -> {
+//        node(light);
         node(mortar, () -> {
           node(incend, with(new Research(oilDistiller)), () -> {});
         });
-      });
+//      });
 
       // misc
       node(filler, Seq.with(new OnSector(greatLake)), () -> node(terra));

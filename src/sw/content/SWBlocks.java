@@ -44,6 +44,7 @@ public class SWBlocks {
 		SWEnvironment.load();
 		SWForce.load();
 		SWHeat.load();
+		SWVibration.load();
 
 //		distribution
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{

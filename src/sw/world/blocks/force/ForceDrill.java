@@ -98,13 +98,13 @@ public class ForceDrill extends Drill {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			unLink();
+			forceUnLink();
 			graph().softRemove(this);
 			graph().links.removeAll(force().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureBuildTap(other);
+			return configureForceLink(other);
 		}
 
 		@Override

@@ -77,7 +77,7 @@ public interface HasForce extends Buildingc, Posc{
 		}
 	}
 
-	default void link(HasForce b) {
+	default void forceLink(HasForce b) {
 		force().link = b.pos();
 
 		graph().merge(b.graph());
@@ -86,7 +86,7 @@ public interface HasForce extends Buildingc, Posc{
 		b.force().links.addUnique(new ForceLink(this, b));
 		graph().updateGraph();
 	}
-	default void unLink() {
+	default void forceUnLink() {
 		if (getLink() != null) {
 			graph().links.remove(new ForceLink(this, getLink()));
 			force().links.remove(new ForceLink(this, getLink()));
@@ -96,17 +96,17 @@ public interface HasForce extends Buildingc, Posc{
 		}
 	}
 
-	default boolean configureBuildTap(Building other) {
-		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce) {
+	default boolean configureForceLink(Building other) {
+		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce && forceConfig().outputsForce) {
 			if ((getLink() != null && getLink() == other) || other == this) {
-				unLink();
+				forceUnLink();
 				return false;
 			}
 
-			if (next.getLink() == this) next.unLink();
-			if (getLink() != null) unLink();
+			if (next.getLink() == this) next.forceUnLink();
+			if (getLink() != null) forceUnLink();
 
-			link(next);
+			forceLink(next);
 			graph().rotation = 0;
 			return false;
 		}
