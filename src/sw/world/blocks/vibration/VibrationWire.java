@@ -36,6 +36,7 @@ public class VibrationWire extends Block {
 		public void onProximityAdded() {
 			super.onProximityAdded();
 			vGraph().add(this);
+			vGraph().updateBuilds();
 		}
 		@Override
 		public void onProximityRemoved() {

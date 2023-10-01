@@ -8,7 +8,14 @@ import arc.util.*;
 import mindustry.graphics.*;
 
 public class SWDraw {
-  public static final Color heatPal = Pal.accent.cpy();
+  public static final Color
+    heatPal = Pal.accent.cpy(),
+    denseAlloyBase = Color.valueOf("565666"),
+    denseAlloyMiddle = Color.valueOf("989AA4"),
+    denseAlloySerration = Color.valueOf("6E7080"),
+    compoundBase = Color.valueOf("81726D"),
+    compoundMiddle = Color.valueOf("BEB5B2"),
+    compoundSerration = Color.valueOf("A69A96");
 
   public static TextureRegion[] getRegions(TextureRegion base, int width, int height, int size) {
     int arraySize = width * height;

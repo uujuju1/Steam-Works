@@ -1,15 +1,11 @@
 package sw.content;
 
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
-import arc.math.Angles;
-import arc.math.Mathf;
-import arc.util.Tmp;
-import mindustry.entities.Effect;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.util.*;
+import mindustry.entities.*;
+import mindustry.graphics.*;
 
 public class SWFx {
   public static Effect
@@ -97,6 +93,59 @@ public class SWFx {
       Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10 * e.foutpow());
       Draw.color(Color.darkGray);
       Fill.circle(e.x - x, e.y - y, 2 * e.fout());
-    }));
+    })),
+    shootFirery = new Effect(30, e -> {
+      for (int i = 0; i < 3; i++) {
+        e.scaled((10 * i), b -> {
+          Draw.blend(Blending.additive);
+          float fin = Interp.pow2.apply(b.fin());
+
+          Draw.color(Color.gray);
+          Draw.alpha(0.8f);
+          Angles.randLenVectors(e.id, 5, 50 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
+          });
+          Draw.color(Pal.turretHeat);
+          Draw.alpha(0.7f);
+          Angles.randLenVectors(e.id + 1, 7, 40 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
+          });
+          Draw.color(Pal.accent);
+          Draw.alpha(0.6f);
+          Angles.randLenVectors(e.id + 2, 10, 30 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
+          });
+          Draw.blend();
+        });
+      }
+    }),
+    chargeFiery = new Effect(60, e -> {
+      for (int i = 0; i < 6; i++) {
+        int in = i;
+        e.scaled((10 * i), b -> {
+          Draw.blend(Blending.additive);
+          float
+            fin = Interp.pow2.apply(b.fin()),
+            fout = Interp.sine.apply(fin * 2);
+
+          Draw.color(Color.gray);
+          Draw.alpha(0.8f);
+          Angles.randLenVectors(e.id + in, 5, 50 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * fout);
+          });
+          Draw.color(Pal.turretHeat);
+          Draw.alpha(0.7f);
+          Angles.randLenVectors(e.id + 1 + in, 7, 40 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * fout);
+          });
+          Draw.color(Pal.accent);
+          Draw.alpha(0.6f);
+          Angles.randLenVectors(e.id + 2 + in, 10, 30 * fin, e.rotation, 20, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, 3 * fout);
+          });
+          Draw.blend();
+        });
+      }
+    });
 
 }

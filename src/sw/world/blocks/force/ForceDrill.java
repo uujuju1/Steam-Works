@@ -86,7 +86,7 @@ public class ForceDrill extends Drill {
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			if (getLink() != null) SWDraw.square(Pal.place, getLink().x(), getLink().y(), getLink().block().size * 6f, 0f);
+			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
 			Draw.reset();
 		}
 
