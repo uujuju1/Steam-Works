@@ -5,6 +5,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
@@ -25,6 +26,8 @@ public class SWBlocks {
 	public static Block
 
 		resistantConveyor,
+		mechanicalDistributor, mechanicalBridge,
+		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
 		nickelForge, oilDistiller,
     batchPress,
@@ -55,6 +58,51 @@ public class SWBlocks {
 			health = 125;
 			speed = 0.08f;
 			displayedSpeed = 11f;
+		}};
+		mechanicalDistributor = new DuctRouter("mechanical-distributor") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 5,
+				Items.graphite, 3
+			));
+			health = 40;
+			speed = 2f;
+			solid = false;
+		}};
+		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 50;
+			speed = 2f;
+		}};
+		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+		}};
+		mechanicalUnderflowGate = new OverflowDuct("mechanical-underflow-gate") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+			invert = true;
+		}};
+		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 50;
+			speed = 2f;
+			solid = false;
+			underBullets = true;
+			regionRotated1 = 1;
 		}};
 
 //		crafting
