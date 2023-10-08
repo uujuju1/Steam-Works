@@ -32,6 +32,10 @@ public class SWPlanets {
 			atmosphereRadOut = 0.25f;
 			startSector = 1;
 
+			itemWhitelist.addAll(
+				SWItems.nickel, SWItems.compound, SWItems.denseAlloy, SWItems.neodymium, SWItems.frozenMatter, Items.graphite, Items.titanium, Items.silicon
+			);
+
 			generator = new ModularPlanetGenerator() {{
 				minHeight = -5f;
 				heights.add(

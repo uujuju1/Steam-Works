@@ -26,7 +26,8 @@ public class SWHeat {
 	public static Block
 		heatPipe, heatBridge, heatRadiator,
 
-		burner, resistance, frictionHeater,
+//		burner,
+			resistance, frictionHeater,
 
 		boiler, thermalBoiler,
 
@@ -50,28 +51,28 @@ public class SWHeat {
 			}};
 		}};
 
-		burner = new SWGenericCrafter("burner") {{
-			requirements(Category.power, with(
-				Items.silicon, 20,
-				Items.graphite, 30,
-				SWItems.denseAlloy, 50,
-				Items.lead, 25)
-			);
-			size = 2;
-			health = 160;
-			consume(new ConsumeItemFlammable());
-			drawer = new DrawMulti(new DrawDefault(), new DrawFlame() {{
-				flameRadius = 1.5f;
-				flameRadiusIn = 0.75f;
-				flameRadiusMag = 1f;
-			}});
-			hasForce = false;
-			updateEffect = Fx.coalSmeltsmoke;
-			craftTime = 120f;
-			outputHeat = 500f;
-			outputHeatSpeed = 3f;
-			heatConfig.acceptHeat = false;
-		}};
+//		burner = new SWGenericCrafter("burner") {{
+//			requirements(Category.power, with(
+//				Items.silicon, 20,
+//				Items.graphite, 30,
+//				SWItems.denseAlloy, 50,
+//				Items.lead, 25)
+//			);
+//			size = 2;
+//			health = 160;
+//			consume(new ConsumeItemFlammable());
+//			drawer = new DrawMulti(new DrawDefault(), new DrawFlame() {{
+//				flameRadius = 1.5f;
+//				flameRadiusIn = 0.75f;
+//				flameRadiusMag = 1f;
+//			}});
+//			hasForce = false;
+//			updateEffect = Fx.coalSmeltsmoke;
+//			craftTime = 120f;
+//			outputHeat = 500f;
+//			outputHeatSpeed = 3f;
+//			heatConfig.acceptHeat = false;
+//		}};
 		resistance = new SWGenericCrafter("resistance") {{
 			requirements(Category.power, with(
 				Items.silicon, 100,

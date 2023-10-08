@@ -11,7 +11,9 @@ public class SWItems {
     public static void load() {
         nickel = new Item("nickel", Color.valueOf("CCD4D9"));
         compound = new Item("compound", Color.valueOf("515151"));
-        neodymium = new Item("neodymium", Color.valueOf("6B7580"));
+        neodymium = new Item("neodymium", Color.valueOf("6B7580")) {{
+            flammability = explosiveness = 0.8f;
+        }};
         denseAlloy = new Item("dense-alloy", Color.valueOf("6E7080")) {{
             cost = 1f;
         }};

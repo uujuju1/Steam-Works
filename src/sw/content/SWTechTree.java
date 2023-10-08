@@ -12,6 +12,7 @@ import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.SWUnitTypes.*;
 import static sw.content.blocks.SWForce.*;
+import static sw.content.blocks.SWVibration.*;
 
 public class SWTechTree {
   public static TechNode root;
@@ -26,7 +27,10 @@ public class SWTechTree {
       });
 
       // production
-      node(excavator, with(new Research(waterWheel)), () -> {});
+      node(mechanicalBore, () -> {
+        node(hydraulicDrill);
+        node(excavator, with(new Research(waterWheel)), () -> {});
+      });
 
       // crafting
       node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
@@ -56,10 +60,12 @@ public class SWTechTree {
 
       // distribution
       node(resistantConveyor, () -> {
-//        node(heatPipe, with(new Research(burner)), () -> {
-//          node(heatBridge);
-//          node(heatRadiator);
-//        });
+        node(mechanicalBridge);
+        node(mechanicalDistributor, () -> {
+          node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
+          node(mechanicalUnloader);
+        });
+        node(vibrationWire);
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
           node(omniBelt, with(new Research(neodymium)), () -> {});

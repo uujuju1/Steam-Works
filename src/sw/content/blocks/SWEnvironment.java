@@ -4,6 +4,7 @@ import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 
 public class SWEnvironment {
@@ -18,7 +19,9 @@ public class SWEnvironment {
 	heavyWater, deepHeavyWater, purpleSandHeavyWater, charoiteHeavyWater;
 
 	public static void load() {
-		charoiteWall = new StaticWall("charoite-wall");
+		charoiteWall = new StaticWall("charoite-wall") {{
+			attributes.set(Attribute.sand, 2f);
+		}};
 		charoiteBoulder = new Prop("charoite-boulder") {{
 			variants = 2;
 		}};
@@ -34,7 +37,9 @@ public class SWEnvironment {
 			blendGroup = charoite;
 		}};
 
-		purpleSandWall = new StaticWall("purple-sand-wall");
+		purpleSandWall = new StaticWall("purple-sand-wall") {{
+			attributes.set(Attribute.sand, 1);
+		}};
 		purpleSandBoulder = new Prop("purple-sand-boulder") {{
 			variants = 2;
 		}};
@@ -55,7 +60,9 @@ public class SWEnvironment {
 			decoration = heavySnowBoulder;
 		}};
 
-		purpleIceWall = new StaticWall("purple-ice-wall");
+		purpleIceWall = new StaticWall("purple-ice-wall") {{
+			attributes.set(Attribute.sand, 1.5f);
+		}};
 		purpleIceBoulder = new Prop("purple-ice-boulder") {{
 			variants = 2;
 		}};

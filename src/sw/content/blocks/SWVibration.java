@@ -3,15 +3,10 @@ package sw.content.blocks;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
-import mindustry.entities.bullet.*;
-import mindustry.entities.part.*;
-import mindustry.entities.pattern.*;
-import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.world.blocks.defense.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.vibration.*;
 import sw.world.consumers.*;
@@ -24,8 +19,7 @@ public class SWVibration {
 	public static Block
 		vibrationWire,
 		thermiteMixer,
-		springHammer,
-		thermikos;
+		springHammer;
 
 	public static void load() {
 		vibrationWire = new VibrationWire("vibration-wire") {{
@@ -122,49 +116,5 @@ public class SWVibration {
 			}};
 		}};
 
-		thermikos = new SWConsumeTurret("thermikos") {{
-			requirements(Category.turret, with(
-				Items.silicon, 200,
-				Items.titanium, 150,
-				SWItems.denseAlloy, 220,
-				Items.lead, 250
-			));
-			size = 3;
-			scaledHealth = 220f;
-			range = 240f;
-			reload = 120f;
-
-			shootY = 8f;
-			shoot = new ShootPattern() {{
-				firstShotDelay = 30f;
-			}};
-
-			shootSound = Sounds.cannon;
-			chargeSound = Sounds.lasercharge2;
-
-			consumeItems(with(Items.graphite, 2, SWItems.neodymium, 3));
-
-			drawer = new DrawTurret() {{
-				parts.add(
-					new RegionPart("-cannon") {{
-						under = true;
-						moveY = -4f;
-						progress = PartProgress.heat.curve(Interp.bounceIn);
-					}}
-				);
-			}};
-
-			shootType = new ArtilleryBulletType(4f, 200f) {{
-				splashDamage = 200f;
-				splashDamageRadius = 16f;
-				lifetime = 40f;
-				width = height = 20f;
-
-				collides = collidesAir = collidesGround = true;
-
-				shootEffect = SWFx.shootFirery;
-				chargeEffect = SWFx.chargeFiery;
-			}};
-		}};
 	}
 }

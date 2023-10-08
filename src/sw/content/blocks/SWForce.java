@@ -175,7 +175,7 @@ public class SWForce {
 			));
 			size = 2;
 			health = 160;
-			consumePower(1f);
+			consumePower(1f/60f);
 			hasHeat = false;
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
