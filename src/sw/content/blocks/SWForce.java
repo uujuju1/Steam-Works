@@ -24,7 +24,7 @@ public class SWForce {
 
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
-		stirlingGenerator, electricSpinner, pressureSpinner, waterWheel,
+		electricSpinner, pressureSpinner, waterWheel,
 		compoundMixer, freezingSpinner,
 
 		mortar, incend;
@@ -112,35 +112,6 @@ public class SWForce {
 			}};
 		}};
 
-		stirlingGenerator = new SWGenericCrafter("stirling-generator") {{
-			requirements(Category.power, with(
-				SWItems.denseAlloy, 120,
-				SWItems.nickel, 110,
-				Items.silicon, 140,
-				Items.titanium, 100
-			));
-			size = 3;
-			health = 160;
-			consume(new ConsumeHeat(0.5f, 100f, false));
-			craftTime = 1f;
-			outputSpeed = 3f;
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawPistons() {{
-					sides = 8;
-					sideOffset = 10f;
-					sinScl = 2.5f;
-					sinMag = 2f;
-				}},
-				new DrawRegion("-top")
-			);
-			forceConfig = new ForceConfig() {{
-				maxForce = 5f;
-				friction = 0.002f;
-				beltSize = 6f;
-				acceptsForce = false;
-			}};
-		}};
 		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
 			requirements(Category.power, with(
 				Items.silicon, 50,

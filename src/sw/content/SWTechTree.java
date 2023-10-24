@@ -46,14 +46,7 @@ public class SWTechTree {
               new OnSector(SectorPresets.windsweptIslands)
             ), () -> {});
           });
-//          node(burner, () -> node(resistance, with(new Research(stirlingGenerator)), () -> {}));
         });
-
-
-//        node(boiler, with(
-//          new Research(burner),
-//          new OnSector(SectorPresets.extractionOutpost)
-//        ), () -> node(thermalBoiler));
 
         node(batchPress, with(new Research(Blocks.multiPress)), () -> {});
       });
@@ -74,7 +67,7 @@ public class SWTechTree {
       node(waterWheel, with(
         new Research(beltNode),
         new SectorComplete(hotspot)
-      ), () -> node(stirlingGenerator));
+      ), () -> {});
 
       // defense
       node(compoundWall, with(new Produce(compound)), () -> {

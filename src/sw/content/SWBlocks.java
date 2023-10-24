@@ -7,7 +7,6 @@ import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
@@ -19,12 +18,14 @@ import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import sw.content.blocks.*;
+import sw.util.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.environment.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.sandbox.*;
 import sw.world.blocks.units.*;
+import sw.world.draw.*;
 import sw.world.recipes.*;
 
 import static arc.struct.ObjectMap.*;
@@ -44,6 +45,7 @@ public class SWBlocks {
 		nickelForge, oilDistiller,
     batchPress,
 		rebuilder, impactBuilder,
+		pressModule, smelterModule, arcSmelterModule, impactPressModule, mixerModule, crystalizerModule,
 
 		powerWire,
 		burner,
@@ -247,85 +249,111 @@ public class SWBlocks {
 			size = 3;
 			health = 200;
 			hasLiquids = true;
-			recipes.add(
-				new GenericRecipe() {{
-					craftTime = 45f;
-
-					consumeItems = with(SWItems.nickel, 1, Items.titanium, 2);
-					consumePower = 10f/60f;
-
-					outputItems = with(SWItems.compound, 1);
-
-					drawer = new DrawMulti(
-						new DrawRegion("-bottom"),
-						new DrawBlurSpin("-rotator", 2) {{
-						blurThresh = 12331;
-						}},
-						new DrawDefault(),
-						new DrawRegion("-cap")
-					);
-
-					craftEffect = SWFx.compoundCraft;
-					updateEffect = 	Fx.smeltsmoke;
-				}},
-				new GenericRecipe() {{
-					craftTime = 60f;
-
-					consumeItems = with(Items.titanium, 2, Items.silicon, 2);
-					consumePower = 20f/60f;
-
-					outputItems = with(SWItems.denseAlloy, 1);
-
-					drawer = new DrawMulti(
-						new DrawRegion("-bottom"),
-						new DrawLiquidRegion(SWLiquids.steam),
-						new DrawDefault(), new DrawRegion("-top")
-					);
-
-					updateEffect = Fx.smoke;
-				}}
- 			);
+			baseDrawer = new DrawMulti(new DrawRegion("-bottom"), new DrawDefault());
 		}};
-		impactBuilder = new MultiCrafter("impact-builder") {{
-			requirements(Category.crafting, with(
-				SWItems.nickel, 65,
-				Items.silicon, 80,
-				Items.copper, 60,
-				Items.lead, 75
-			));
-			size = 3;
-			health = 200;
-			hasLiquids = true;
-			recipes.add(
-				new GenericRecipe() {{
-					craftTime = 45f;
-					consumeItems = with(SWItems.compound, 1, Items.titanium, 2);
-					outputItems = with(SWItems.thermite, 1);
-					drawer = new DrawMulti(
-						new DrawRegion("-bottom"),
-						new DrawWeave(),
-						new DrawDefault(),
-						new DrawRegion("-cap")
-					);
-					craftEffect = SWFx.neodymiumCraft;
-				}},
-				new GenericRecipe() {{
-					craftTime = 60f;
-					consumeItems = with(SWItems.denseAlloy, 2);
-					consumeLiquids = LiquidStack.with(Liquids.cryofluid, 0.3f);
-					outputItems = with(SWItems.frozenMatter, 1);
-					drawer = new DrawMulti(
-						new DrawRegion("-bottom"),
-						new DrawDefault(),
-						new DrawRegion("-cover"),
-						new DrawGlowRegion() {{
-							color = Pal.lancerLaser;
-						}}
-					);
-					craftEffect = SWFx.frozenMatterCraft;
-					updateEffect = 	Fx.smeltsmoke;
-				}}
-			);
+
+		pressModule = new MultiCrafterRecipe("press-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(Items.graphite, 4, Items.silicon, 2);
+				outputItems = with(SWItems.frozenMatter, 3);
+				craftEffect = SWFx.grapheneCraft;
+				drawer = new DrawMulti(
+					new DrawDefault(),
+					new DrawRegion("-cap"),
+					new DrawRegion("-overlay-graphene")
+				);
+			}};
+		}};
+		impactPressModule = new MultiCrafterRecipe("impact-press-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(SWItems.nickel, 6, Items.titanium, 3);
+				outputItems = with(SWItems.denseAlloy, 4);
+				craftEffect = SWFx.denseAlloyCraft;
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawDefault(),
+					new DrawRegion("-cap-batch"),
+					new DrawRegion("-overlay-dense-alloy")
+				);
+			}};
+		}};
+		smelterModule = new MultiCrafterRecipe("smelter-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(Items.graphite, 4, Items.titanium, 2);
+				outputItems = with(SWItems.compound, 2);
+				craftEffect = SWFx.compoundCraft;
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawDefault(),
+					new DrawFlame(SWDraw.compoundBase) {{
+						flameRadius = 5.5f;
+						flameRadiusIn = 3f;
+					}},
+					new DrawRegion("-overlay-compound")
+				);
+			}};
+		}};
+		arcSmelterModule = new MultiCrafterRecipe("arc-smelter-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(SWItems.thermite, 2, Items.graphite, 2);
+				outputItems = with(SWItems.scorch, 2);
+				craftEffect = SWFx.scorchCraft;
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawFire(),
+					new DrawDefault(),
+					new DrawRegion("-cap-kiln"),
+					new DrawRegion("-overlay-scorch")
+				);
+			}};
+
+		}};
+		mixerModule = new MultiCrafterRecipe("mixer-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(Items.graphite, 2, SWItems.compound, 2);
+				outputItems = with(SWItems.thermite, 4);
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawMixing() {{
+						circleRad = 10f;
+						particleRad = 10f;
+						alpha = 0.5f;
+						particleColor = circleColor = Color.valueOf("6D6F7F");
+					}},
+					new DrawMixing() {{
+						circleRad = 1f;
+						particleRad = 10f;
+						idOffset = 1;
+						alpha = 0.5f;
+						particleColor = circleColor = Color.valueOf("6C5252");
+					}},
+					new DrawBlurSpin("-rotator", 5) {{
+						blurThresh = 12331;
+					}},
+					new DrawDefault(),
+					new DrawRegion("-motor"),
+					new DrawRegion("-overlay-thermite")
+				);
+			}};
+		}};
+		crystalizerModule = new MultiCrafterRecipe("crystalizer-module", rebuilder) {{
+			recipe = new GenericRecipe() {{
+				consumeItems = with(Items.sand, 2, Items.graphite, 2);
+				consumeLiquids = LiquidStack.with(Liquids.water, 0.1f);
+				outputItems = with(SWItems.bismuth, 4);
+				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
+					new DrawLiquidTile(Liquids.water, 4),
+					new DrawCultivator() {{
+						plantColorLight = Color.valueOf("C7D4CF");
+						plantColor = Color.valueOf("97ABA4");
+						bottomColor = Color.valueOf("97ABA4");
+					}},
+					new DrawDefault(),
+					new DrawRegion("-cap-crystalizer"),
+					new DrawRegion("-overlay-bismuth")
+				);
+			}};
 		}};
 
 		artyleriya = new ItemTurret("artyleriya") {{

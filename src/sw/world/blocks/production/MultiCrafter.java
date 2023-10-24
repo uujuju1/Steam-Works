@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.world.blocks.production.MultiCrafterRecipe.*;
@@ -28,15 +29,15 @@ import static sw.world.meta.TableSelection.*;
 
 public class MultiCrafter extends Block {
   public Seq<GenericRecipe> recipes = new Seq<>();
+  public DrawBlock baseDrawer = new DrawDefault();
 
   public MultiCrafter(String name) {
     super(name);
-    configurable = true;
     hasItems = true;
     solid = update = sync = destructible = true;
     saveConfig = copyConfig = true;
 
-    consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.currentPlan != -1 ? e.getRecipe().consumeItems : ItemStack.empty));
+    consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.getRecipe() != null ? e.getRecipe().consumeItems : ItemStack.empty));
     consume(new ConsumeLiquidDynamic<>(MultiCrafterBuild::getLiquidCons));
     consume(new ConsumePowerDynamic(e -> ((MultiCrafterBuild) e).getPowerCons()));
 
@@ -102,7 +103,7 @@ public class MultiCrafter extends Block {
     super.setBars();
 
     removeBar("liquid");
-    recipes.each(this::addRecipeBars);
+//    recipes.each(this::addRecipeBars);
   }
 
   public void addRecipeBars(GenericRecipe recipe) {
@@ -110,13 +111,20 @@ public class MultiCrafter extends Block {
     for (LiquidStack stack : recipe.outputLiquids) if (!barMap.containsKey("liquid-" + stack.liquid.name)) addLiquidBar(stack.liquid);
   }
 
-  @Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {recipes.get(0).drawer.drawPlan(this, plan, list);}
-  @Override public TextureRegion[] icons() {return recipes.get(0).drawer.finalIcons(this);}
-  @Override public void getRegionsToOutline(Seq<TextureRegion> out) {recipes.get(0).drawer.getRegionsToOutline(this, out);}
+  @Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+    baseDrawer.drawPlan(this, plan, list);
+  }
+  @Override public TextureRegion[] icons() {
+    return baseDrawer.finalIcons(this);
+  }
+  @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
+    baseDrawer.getRegionsToOutline(this, out);
+  }
 
   @Override
   public void load() {
     super.load();
+    baseDrawer.load(this);
     for (GenericRecipe recipe : recipes) recipe.drawer.load(this);
   }
 
@@ -128,7 +136,7 @@ public class MultiCrafter extends Block {
     public GenericRecipe currentRecipe;
 
     public @Nullable GenericRecipe getRecipe() {
-      return currentPlan == -1 ? null : recipes.get(currentPlan);
+      return currentRecipe;
     }
     public float getPowerCons() {
       return getRecipe() != null ? getRecipe().consumePower : 0f;
@@ -138,8 +146,8 @@ public class MultiCrafter extends Block {
     }
 
     public void changeRecipe(GenericRecipe recipe) {
-      currentPlan = recipes.indexOf(recipe);
       progress = totalProgress = warmup = 0f;
+      currentRecipe = recipe;
       SWFx.changeEffect.at(x, y, rotdeg(), block);
     }
 
@@ -160,11 +168,16 @@ public class MultiCrafter extends Block {
     public void onProximityUpdate() {
       super.onProximityUpdate();
       for (Building build : proximity) {
-        if (build instanceof MultiCrafterRecipeBuild recipe && recipe.front() == this && recipe.block().parent == block) {
-          currentRecipe = recipe.recipe();
-          break;
+        if (
+					build instanceof MultiCrafterRecipeBuild recipe &&
+					recipe.front() == this &&
+					recipe.block().parent == block
+        ) {
+          if (recipe.block().recipe != currentRecipe) changeRecipe(recipe.block().recipe);
+          return;
         }
       }
+      if (currentRecipe != null) changeRecipe(null);
     }
 
     @Override
@@ -217,7 +230,7 @@ public class MultiCrafter extends Block {
       if (getRecipe() != null) {
         getRecipe().drawer.draw(this);
       } else {
-        recipes.get(0).drawer.draw(this);
+        baseDrawer.draw(this);
       }
     }
     @Override
