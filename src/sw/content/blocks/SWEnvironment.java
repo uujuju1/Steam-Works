@@ -47,7 +47,6 @@ public class SWEnvironment {
 			variants = 4;
 			wall = purpleSandWall;
 			decoration = purpleSandBoulder;
-			itemDrop = Items.sand;
 		}};
 
 		heavySnowWall = new StaticWall("heavy-snow-wall");

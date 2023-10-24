@@ -1,5 +1,6 @@
 package sw.maps.generators;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -16,6 +17,7 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 	public Block defaultBlock = Blocks.grass;
 	public Seq<Noise3DSettings> heights = new Seq<>();
 	public Seq<ColorPatch> colors = new Seq<>();
+	public Cons<ModularPlanetGenerator> gen = g -> {};
 
 	public class Noise3DSettings {
 		public Vec3 offset = Vec3.Zero.cpy();
@@ -35,6 +37,23 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 		public boolean canColor(Vec3 pos, float height) {
 			float noise1 = noise.noise(pos);
 			return noise1 >= minT && noise1 <= maxT && noise1 >= height;
+		}
+	}
+
+	public class Room {
+		public int x, y;
+		public float rad;
+		public @Nullable Room child;
+
+		public Room(int x, int y, float rad, Room child) {
+			this(x, y, rad);
+			this.child = child;
+		}
+
+		public Room(int x, int y, float rad) {
+			this.x = x;
+			this.y = y;
+			this.rad = rad;
 		}
 	}
 
@@ -61,5 +80,69 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 	@Override
 	public void generateSector(Sector sector) {
 		sector.generateEnemyBase = false;
+	}
+
+	@Override
+	protected void generate() {
+		gen.get(this);
+	}
+
+	@Override
+	protected float noise(float x, float y, double octaves, double falloff, double scl, double mag){
+		Vec3 v = sector.rect.project(x, y).scl(5f);
+		return Simplex.noise3d(seed, octaves, falloff, 1f / scl, v.x, v.y, v.z) * (float)mag;
+	}
+
+	public Seq<Room> rooms(int rooms, float angle, float randomAngle, float distance, float randomDistance, float minRadius, float randomRadius, int x, int y) {
+		Seq<Room> output = new Seq<>();
+		Room lastRoom = null;
+		for (int i = 0; i < rooms; i++) {
+			lastRoom = new Room(x, y, minRadius + rand.range(randomRadius), lastRoom);
+			output.add(lastRoom);
+			int newx = -1, newy = -1;
+
+			try {
+				while (!tiles.in(newx, newy)) {
+					float newAngle = angle + rand.range(randomAngle);
+					Tmp.v1.trns(newAngle, distance + rand.range(randomDistance));
+					newx = x + Math.round(Tmp.v1.x);
+					newy = y + Math.round(Tmp.v1.y);
+				}
+			} catch(Exception e) {
+				Log.err("no it won't go back", e);
+				break;
+			}
+			x = newx;
+			y = newy;
+		}
+		return output;
+	}
+	public boolean nearFloor(int cx, int cy, int rad, Block block){
+		for(int x = -rad; x <= rad; x++){
+			for(int y = -rad; y <= rad; y++){
+				int wx = cx + x, wy = cy + y;
+				if(Structs.inBounds(wx, wy, width, height) && Mathf.within(x, y, rad)){
+					Tile other = tiles.getn(wx, wy);
+					if(other.floor() == block){
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	public void replace(int cx, int cy, int rad, Block floor, Block overlay, Block block){
+		for(int x = -rad; x <= rad; x++){
+			for(int y = -rad; y <= rad; y++){
+				int wx = cx + x, wy = cy + y;
+				if(Structs.inBounds(wx, wy, width, height) && Mathf.within(x, y, rad)){
+					Tile other = tiles.getn(wx, wy);
+					if (floor != null) other.setFloor(floor.asFloor());
+					if (overlay != null) other.setOverlay(overlay);
+					if (block != null) other.setBlock(block);
+				}
+			}
+		}
 	}
 }

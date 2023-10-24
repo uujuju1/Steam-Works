@@ -26,7 +26,10 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 public class SWUnitTypes {
   public static UnitType
     terra,
+
     swarm, ambush, trap, misleading,
+		focus, precision, target,
+
     recluse, retreat, evade,
     sentry, tower, castle, stronghold,
 		existence, remembered, presence,
@@ -48,6 +51,7 @@ public class SWUnitTypes {
       controller = u -> new FillerAI();
     }};
 
+    //region attack
     swarm = new UnitType("swarm") {{
       health = 250;
       speed = 2f;
@@ -185,6 +189,131 @@ public class SWUnitTypes {
       abilities.add(new SpawnDeathAbility(trap, 1, 0));
 		}};
 
+		focus = new UnitType("focus") {{
+			health = 200;
+			speed = 0.5f;
+      range = maxRange = 104f;
+
+      constructor = MechUnit::create;
+
+			weapons.add(new Weapon("sw-mine-cannon") {{
+				x = y = 0f;
+				reload = 30f;
+        layerOffset = -0.01f;
+				mirror = false;
+        shootSound = Sounds.artillery;
+
+				bullet = new BasicBulletType(5.5f, 0, "large-bomb") {{
+          width = height = 16f;
+          shrinkY = 0f;
+          spin = 5f;
+          trailWidth = 2f;
+          trailLength = 10;
+
+          hitSound = Sounds.plasmaboom;
+
+					splashDamage = 16;
+          splashDamageRadius = 40f;
+          drag = 0.05f;
+          lifetime = 60;
+          collidesAir = false;
+				}};
+			}});
+		}};
+    precision = new UnitType("precision") {{
+      health = 600;
+      speed = 0.5f;
+      hitSize = 8f;
+      armor = 3;
+      range = maxRange = 240f;
+
+      constructor = MechUnit::create;
+
+      weapons.add(new Weapon("artillery") {{
+        x = 5.25f;
+        y = -0.25f;
+        reload = 60f;
+        shake = 2f;
+        ejectEffect = Fx.casing2;
+        shootSound = Sounds.artillery;
+
+				bullet = new ArtilleryBulletType(4, 40, "shell") {{
+          hitEffect = Fx.blastExplosion;
+          knockback = 0.8f;
+          lifetime = 60f;
+          width = height = 14f;
+          collides = collidesGround = collidesAir = collidesTiles = true;
+          splashDamageRadius = 35f;
+          splashDamage = 40f;
+          backColor = Pal.bulletYellowBack;
+          frontColor = Pal.bulletYellow;
+        }};
+      }});
+    }};
+    target = new UnitType("target") {{
+      health = 1000;
+      speed = 0.45f;
+      rotateSpeed = 2.5f;
+      armor = 9;
+      range = maxRange = 160f;
+
+      constructor = MechUnit::create;
+
+      weapons.add(
+        new Weapon("sw-frag-cannon") {{
+          x = 8f;
+          y = 0.75f;
+          reload = 60f;
+          layerOffset = -0.01f;
+          shootSound = Sounds.artillery;
+
+          bullet = new BasicBulletType(5.5f, 0, "large-bomb") {{
+            width = height = 16f;
+            shrinkY = 0f;
+            spin = 5f;
+            trailWidth = 2f;
+            trailLength = 10;
+
+            hitSound = Sounds.plasmaboom;
+
+            splashDamage = 16;
+            splashDamageRadius = 40f;
+            drag = 0.05f;
+            lifetime = 60;
+            collidesAir = false;
+
+            fragBullets = 9;
+            fragBullet = new BasicBulletType(2f, 5) {{
+              lifetime = 20f;
+              width = height = 4f;
+              frontColor = backColor = Color.white;
+            }};
+          }};
+        }},
+        new Weapon("sw-frag-cannon") {{
+          x = 5.75f;
+          y = 0.25f;
+          reload = 45f;
+          shootSound = Sounds.missile;
+
+          bullet = new MissileBulletType(4f, 40) {{
+            lifetime = 40f;
+            width = height = 12f;
+
+            fragBullets = 2;
+            fragRandomSpread = 0f;
+            fragVelocityMin = 1f;
+            fragBullet = new MissileBulletType(2f, 10) {{
+              lifetime = 20f;
+              width = height = 8f;
+            }};
+          }};
+        }}
+      );
+    }};
+
+    //endregion
+    //region specialist
     recluse = new SWUnitType("recluse") {{
       speed = 1;
       health = 250;
@@ -319,6 +448,8 @@ public class SWUnitTypes {
         }}
       );
     }};
+
+    //endregion
 
     sentry = new TankUnitType("sentry") {{
       health = 320;
@@ -746,6 +877,8 @@ public class SWUnitTypes {
       canBoost = true;
       boostMultiplier = 5f;
       engineSize = 0f;
+      mineTier = 2;
+      mineSpeed = 10f;
 
       buildSpeed = 0.75f;
 

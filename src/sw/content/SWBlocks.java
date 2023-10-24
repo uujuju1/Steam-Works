@@ -300,7 +300,7 @@ public class SWBlocks {
 				new GenericRecipe() {{
 					craftTime = 45f;
 					consumeItems = with(SWItems.compound, 1, Items.titanium, 2);
-					outputItems = with(SWItems.neodymium, 1);
+					outputItems = with(SWItems.thermite, 1);
 					drawer = new DrawMulti(
 						new DrawRegion("-bottom"),
 						new DrawWeave(),
@@ -373,7 +373,7 @@ public class SWBlocks {
 			shootSound = Sounds.cannon;
 			chargeSound = Sounds.lasercharge2;
 
-			consumeItems(with(Items.graphite, 2, SWItems.neodymium, 3));
+			consumeItems(with(Items.graphite, 2, SWItems.thermite, 3));
 
 			drawer = new DrawTurret() {{
 				parts.add(
@@ -457,7 +457,7 @@ public class SWBlocks {
 			consumePower(1.5f);
 			plans.add(new UnitPlan(SWUnitTypes.recluse, 60f * 50f, with(Items.silicon, 15, Items.metaglass, 25, SWItems.compound, 20)));
 		}};
-		crafterFactory = new SingleUnitFactory("crafter-factory") {{
+		crafterFactory = new CrafterUnitBlock("crafter-factory") {{
 			requirements(Category.units, with(
 							SWItems.compound, 130,
 							Items.titanium, 120,
@@ -486,11 +486,12 @@ public class SWBlocks {
 //		storage
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
-							Items.graphite, 1000,
-							Items.lead, 1500,
-							Items.silicon, 1200
+				SWItems.nickel, 2000,
+				Items.graphite, 1000,
+				Items.titanium, 1500,
+				Items.silicon, 1200
 			));
-			size = 3;
+			size = 4;
 			health = 2000;
 			alwaysUnlocked = true;
 			unitType = SWUnitTypes.delta;

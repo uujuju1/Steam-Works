@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
+import mindustry.world.*;
 
 public class SWFx {
   public static Effect
@@ -94,7 +95,7 @@ public class SWFx {
       Draw.color(Color.darkGray);
       Fill.circle(e.x - x, e.y - y, 2 * e.fout());
     })),
-    shootFirery = new Effect(30, e -> {
+    shootFirery = new Effect(30f, e -> {
       for (int i = 0; i < 3; i++) {
         e.scaled((10 * i), b -> {
           Draw.blend(Blending.additive);
@@ -119,7 +120,7 @@ public class SWFx {
         });
       }
     }),
-    chargeFiery = new Effect(60, e -> {
+    chargeFiery = new Effect(60f, e -> {
       for (int i = 0; i < 6; i++) {
         int in = i;
         e.scaled((10 * i), b -> {
@@ -146,6 +147,29 @@ public class SWFx {
           Draw.blend();
         });
       }
-    });
+    }),
+    soundDecay = new Effect(60f, e -> {
+      Draw.mixcol(Color.black, e.finpow());
+      Tmp.v1.trns(e.rotation, 40f * e.finpow());
+      Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
+    }),
+    soundImpact = new Effect(60f, e -> {
+      for (int i = 1; i < 5; i++) {
+        final int index = i;
+        e.scaled(15f * i, b -> {
+          Lines.stroke(3 * b.foutpow());
+          Lines.circle(e.x, e.y, 30 * index * b.finpow());
+        });
+      }
+    }),
+    changeEffect = new Effect(30f, e -> {
+      if (!(e.data instanceof Block block)) return;
 
+      Draw.mixcol(Pal.accent, 1);
+      Draw.alpha(e.fout());
+      Draw.rect(block.fullIcon, e.x, e.y, e.rotation);
+      Draw.alpha(1f);
+      Lines.stroke(4f * e.fout());
+      Lines.square(e.x, e.y, block.size * 4f);
+    });
 }

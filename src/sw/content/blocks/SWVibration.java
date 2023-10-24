@@ -3,10 +3,15 @@ package sw.content.blocks;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.world.blocks.defense.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.vibration.*;
 import sw.world.consumers.*;
@@ -19,7 +24,9 @@ public class SWVibration {
 	public static Block
 		vibrationWire,
 		thermiteMixer,
-		springHammer;
+		springHammer,
+
+		sonus, impacto;
 
 	public static void load() {
 		vibrationWire = new VibrationWire("vibration-wire") {{
@@ -71,7 +78,7 @@ public class SWVibration {
 				new DrawDefault()
 			);
 
-			outputItems = with(SWItems.neodymium, 2);
+			outputItems = with(SWItems.thermite, 2);
 
 			vibrationConfig = new VibrationConfig() {{
 				resistance = 0.2f;
@@ -113,6 +120,86 @@ public class SWVibration {
 				beltSize = 4f;
 				outputsForce = false;
 				maxForce = 1f;
+			}};
+		}};
+
+		sonus = new SWConsumeTurret("sonus") {{
+			requirements(Category.turret, with(
+				SWItems.scorch, 120,
+				Items.silicon, 150,
+				Items.titanium, 200
+			));
+			size = 3;
+			scaledHealth = 220f;
+			reload = 60f;
+			range = 240f;
+			cooldownTime = 5f;
+			hasVibration = true;
+			targetGround = false;
+			shootSound = Sounds.shootSmite;
+//			consume(new ConsumeVibration(0, 10000));
+
+			drawer = new DrawTurret() {{
+				parts.add(new RegionPart("-speaker") {{
+					under = true;
+					moveY = -0.5f;
+					progress = PartProgress.heat;
+				}});
+			}};
+
+			vibrationConfig = new VibrationConfig() {{
+				outputsVibration = true;
+			}};
+
+			shootType = new BasicBulletType(6f, 60, "sw-sound-wave") {{
+				width = height = 16f;
+				lifetime = 40f;
+				trailInterval = 10f;
+				trailEffect = despawnEffect = SWFx.soundDecay;
+				trailRotation = true;
+				pierce = true;
+				collidesGround = false;
+				keepVelocity = false;
+				hittable = false;
+			}};
+		}};
+		impacto = new SWConsumeTurret("impacto") {{
+			requirements(Category.turret, with(
+				SWItems.denseAlloy, 100,
+				Items.silicon, 120,
+				Items.graphite, 150
+			));
+			size = 2;
+			scaledHealth = 220f;
+			rotateSpeed = 360f;
+			reload = 60f;
+			range = 120f;
+			recoil = shootY = 0f;
+			outlineRadius = 0;
+			hasVibration = true;
+			targetAir = false;
+			shootSound = Sounds.titanExplosion;
+
+			drawer = new DrawTurret() {{
+				parts.add(new RegionPart("-hammer") {{
+					growX = growY = 1f;
+					outline = false;
+					growProgress = PartProgress.charge.curve(Interp.circleOut);
+				}});
+			}};
+
+			vibrationConfig = new VibrationConfig() {{
+				outputsVibration = true;
+			}};
+
+			shoot = new ShootPattern() {{
+				firstShotDelay = 30f;
+			}};
+
+			shootType = new ExplosionBulletType(150, 120) {{
+				killShooter = false;
+				collidesAir = false;
+				shootEffect = SWFx.soundImpact;
 			}};
 		}};
 

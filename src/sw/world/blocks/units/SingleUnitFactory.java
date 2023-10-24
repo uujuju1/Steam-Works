@@ -89,7 +89,7 @@ public class SingleUnitFactory extends Block {
 		public int unitId = -1;
 
     public boolean canBuild() {
-      return efficiency > 0 && !(unit instanceof BuildingTetherc);
+      return efficiency > 0;
     }
 
     @Override public float progress() {
@@ -153,6 +153,7 @@ public class SingleUnitFactory extends Block {
       write.f(progress);
       write.f(totalProgress);
       write.f(warmup);
+      write.i(unit.id);
     }
     @Override
     public void read(Reads read, byte revision) {
@@ -160,6 +161,7 @@ public class SingleUnitFactory extends Block {
       progress = read.f();
       totalProgress = read.f();
       warmup = read.f();
+      unitId = read.i();
     }
   }
 }

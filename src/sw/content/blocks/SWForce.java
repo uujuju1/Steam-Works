@@ -78,7 +78,7 @@ public class SWForce {
 			requirements(Category.power, with(
 				Items.silicon, 60,
 				Items.titanium, 40,
-				SWItems.neodymium, 80
+				SWItems.frozenMatter, 80
 			));
 			size = 3;
 			health = 120;

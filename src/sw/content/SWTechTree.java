@@ -22,8 +22,8 @@ public class SWTechTree {
       // items
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> nodeProduce(butane, () -> {}));
-        nodeProduce(compound, () -> nodeProduce(neodymium, () -> {}));
-        nodeProduce(denseAlloy, () -> nodeProduce(frozenMatter, () -> {}));
+        nodeProduce(compound, () -> nodeProduce(frozenMatter, () -> {}));
+        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
       });
 
       // production
@@ -68,7 +68,7 @@ public class SWTechTree {
         node(vibrationWire);
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
-          node(omniBelt, with(new Research(neodymium)), () -> {});
+          node(omniBelt, with(new Research(frozenMatter)), () -> {});
         });
       });
       node(waterWheel, with(
