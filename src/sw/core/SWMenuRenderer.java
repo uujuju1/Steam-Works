@@ -14,6 +14,7 @@ import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.content.blocks.*;
+import sw.util.*;
 
 import static mindustry.Vars.*;
 
@@ -139,12 +140,11 @@ public class SWMenuRenderer extends MenuRenderer {
 
 		Draw.rect(SWForce.omniBelt.region, x, y);
 
-		Lines.stroke(6, Color.valueOf("6B5A55"));
+		Lines.stroke(6, SWDraw.compoundBase);
 		Lines.poly(x, y, 32, 48f);
-		Lines.stroke(Lines.getStroke() / 3, Color.valueOf("BEADA7"));
+		Lines.stroke(Lines.getStroke() / 3, SWDraw.compoundMiddle);
 		Lines.poly(x, y, 32, 48f);
-		Draw.color(Color.valueOf("A6918A"));
-
+		Draw.color(SWDraw.compoundSerration);
 
 		Vec2 vector = Tmp.v1.set(0, 0);
 

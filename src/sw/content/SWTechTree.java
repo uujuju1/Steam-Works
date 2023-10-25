@@ -22,7 +22,7 @@ public class SWTechTree {
       // items
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> nodeProduce(butane, () -> {}));
-        nodeProduce(compound, () -> nodeProduce(frozenMatter, () -> {}));
+        nodeProduce(compound, () -> nodeProduce(graphene, () -> {}));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
       });
 
@@ -33,7 +33,7 @@ public class SWTechTree {
       });
 
       // crafting
-      node(nickelForge, with(new SectorComplete(SectorPresets.craters)), () -> {
+      node(siliconBoiler, with(new SectorComplete(SectorPresets.craters)), () -> {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields)
         ), () -> {});
@@ -53,6 +53,7 @@ public class SWTechTree {
 
       // distribution
       node(resistantConveyor, () -> {
+        node(suspensionConveyor);
         node(mechanicalBridge);
         node(mechanicalDistributor, () -> {
           node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
@@ -61,7 +62,7 @@ public class SWTechTree {
         node(vibrationWire);
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
-          node(omniBelt, with(new Research(frozenMatter)), () -> {});
+          node(omniBelt, with(new Research(graphene)), () -> {});
         });
       });
       node(waterWheel, with(

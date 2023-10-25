@@ -129,7 +129,6 @@ public class MultiCrafter extends Block {
   }
 
   public class MultiCrafterBuild extends Building {
-    public int currentPlan = -1;
     public float progress;
     public float totalProgress;
     public float warmup;
@@ -248,7 +247,6 @@ public class MultiCrafter extends Block {
       w.f(warmup);
       w.f(progress);
       w.f(totalProgress);
-      w.i(currentPlan);
     }
     @Override
     public void read(Reads r, byte revision) {
@@ -256,7 +254,6 @@ public class MultiCrafter extends Block {
       warmup = r.f();
       progress = r.f();
       totalProgress = r.f();
-      currentPlan = r.i();
     }
   }
 }

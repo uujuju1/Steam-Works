@@ -37,14 +37,14 @@ public class SWBlocks {
 
 		mechanicalBore, mechanicalCrusher, hydraulicDrill,
 
-		resistantConveyor,
+		resistantConveyor, suspensionConveyor,
 		mechanicalDistributor, mechanicalBridge,
 		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
 		siliconBoiler,
 		nickelForge, oilDistiller,
     batchPress,
-		rebuilder, impactBuilder,
+		rebuilder,
 		pressModule, smelterModule, arcSmelterModule, impactPressModule, mixerModule, crystalizerModule,
 
 		powerWire,
@@ -112,6 +112,15 @@ public class SWBlocks {
 			health = 125;
 			speed = 0.08f;
 			displayedSpeed = 11f;
+		}};
+		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
+			requirements(Category.distribution, with(
+				SWItems.denseAlloy, 2
+			));
+			health = 125;
+			speed = 0.08f;
+			displayedSpeed = 11f;
+			armored = true;
 		}};
 		mechanicalDistributor = new DuctRouter("mechanical-distributor") {{
 			requirements(Category.distribution, with(
@@ -253,9 +262,13 @@ public class SWBlocks {
 		}};
 
 		pressModule = new MultiCrafterRecipe("press-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.graphene, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(Items.graphite, 4, Items.silicon, 2);
-				outputItems = with(SWItems.frozenMatter, 3);
+				outputItems = with(SWItems.graphene, 3);
 				craftEffect = SWFx.grapheneCraft;
 				drawer = new DrawMulti(
 					new DrawDefault(),
@@ -265,6 +278,10 @@ public class SWBlocks {
 			}};
 		}};
 		impactPressModule = new MultiCrafterRecipe("impact-press-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.denseAlloy, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(SWItems.nickel, 6, Items.titanium, 3);
 				outputItems = with(SWItems.denseAlloy, 4);
@@ -278,6 +295,10 @@ public class SWBlocks {
 			}};
 		}};
 		smelterModule = new MultiCrafterRecipe("smelter-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.compound, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(Items.graphite, 4, Items.titanium, 2);
 				outputItems = with(SWItems.compound, 2);
@@ -294,6 +315,10 @@ public class SWBlocks {
 			}};
 		}};
 		arcSmelterModule = new MultiCrafterRecipe("arc-smelter-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.scorch, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(SWItems.thermite, 2, Items.graphite, 2);
 				outputItems = with(SWItems.scorch, 2);
@@ -309,6 +334,10 @@ public class SWBlocks {
 
 		}};
 		mixerModule = new MultiCrafterRecipe("mixer-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.thermite, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(Items.graphite, 2, SWItems.compound, 2);
 				outputItems = with(SWItems.thermite, 4);
@@ -337,6 +366,10 @@ public class SWBlocks {
 			}};
 		}};
 		crystalizerModule = new MultiCrafterRecipe("crystalizer-module", rebuilder) {{
+			requirements(Category.crafting, with(
+				SWItems.bismuth, 50,
+				Items.silicon, 50
+			));
 			recipe = new GenericRecipe() {{
 				consumeItems = with(Items.sand, 2, Items.graphite, 2);
 				consumeLiquids = LiquidStack.with(Liquids.water, 0.1f);

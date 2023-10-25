@@ -3,6 +3,7 @@ package sw.world.interfaces;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
@@ -20,6 +21,9 @@ public interface HasVibration extends Buildingc {
 	}
 	default @Nullable HasVibration getVibrationLink() {
 		return Vars.world.build(vibration().link) instanceof HasVibration b ? b : null;
+	}
+	default Seq<HasVibration> getVibrationLinks() {
+		return getVibrationLink() == null ? Seq.with() : Seq.with(getVibrationLink());
 	}
 
 	default void drawLink() {

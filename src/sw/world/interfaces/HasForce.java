@@ -1,6 +1,5 @@
 package sw.world.interfaces;
 
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -71,7 +70,7 @@ public interface HasForce extends Buildingc, Posc{
 				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), beltSize()));
 				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getForceLink()).beltSize()));
 
-				SWDraw.beltLine(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), Color.valueOf("BEADA7"), p1.x, p1.y, p2.x, p2.y, rot);
+				SWDraw.beltLine(SWDraw.compoundSerration, SWDraw.compoundBase, SWDraw.compoundMiddle, p1.x, p1.y, p2.x, p2.y, rot);
 			}
 			Draw.reset();
 		}

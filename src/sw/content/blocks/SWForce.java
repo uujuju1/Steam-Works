@@ -78,7 +78,7 @@ public class SWForce {
 			requirements(Category.power, with(
 				Items.silicon, 60,
 				Items.titanium, 40,
-				SWItems.frozenMatter, 80
+				SWItems.graphene, 80
 			));
 			size = 3;
 			health = 120;
@@ -205,10 +205,6 @@ public class SWForce {
 			size = 3;
 			health = 200;
 			craftTime = 45f;
-			drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rotator"){{
-				spinSprite = true;
-				rotateSpeed = 2f;
-			}});
 			consume(new ConsumeSpeed(1.5f, 15f));
 			consume(new ConsumeRatio(ForceGraph.ForceRatio.normal));
 			consumeItems(with(
@@ -222,7 +218,7 @@ public class SWForce {
 				Items.silicon, 150,
 				Items.graphite, 160,
 				Items.thorium, 80,
-				SWItems.frozenMatter, 200
+				SWItems.graphene, 200
 			));
 			size = 2;
 			health = 160;
@@ -234,7 +230,7 @@ public class SWForce {
 				SWItems.denseAlloy, 3
 			));
 			consumeLiquid(Liquids.cryofluid, 0.6f);
-			outputItem = new ItemStack(SWItems.frozenMatter, 2);
+			outputItem = new ItemStack(SWItems.graphene, 2);
 		}};
 
 		mortar = new ForceTurret("mortar") {{

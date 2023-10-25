@@ -40,7 +40,7 @@ public class SWPlanets {
 			startSector = 1;
 
 			itemWhitelist.addAll(
-				SWItems.nickel, SWItems.compound, SWItems.denseAlloy, SWItems.thermite, SWItems.frozenMatter, Items.graphite, Items.titanium, Items.silicon
+				SWItems.nickel, SWItems.compound, SWItems.denseAlloy, SWItems.thermite, SWItems.graphene, Items.graphite, Items.titanium, Items.silicon
 			);
 
 			defaultCore = SWBlocks.coreScaffold;
