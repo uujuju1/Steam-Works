@@ -24,7 +24,7 @@ public class SWForce {
 
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
-		stirlingGenerator, electricSpinner, pressureSpinner, waterWheel,
+		electricSpinner, pressureSpinner, waterWheel,
 		compoundMixer, freezingSpinner,
 
 		mortar, incend;
@@ -78,7 +78,7 @@ public class SWForce {
 			requirements(Category.power, with(
 				Items.silicon, 60,
 				Items.titanium, 40,
-				SWItems.neodymium, 80
+				SWItems.graphene, 80
 			));
 			size = 3;
 			health = 120;
@@ -112,35 +112,6 @@ public class SWForce {
 			}};
 		}};
 
-		stirlingGenerator = new SWGenericCrafter("stirling-generator") {{
-			requirements(Category.power, with(
-				SWItems.denseAlloy, 120,
-				SWItems.nickel, 110,
-				Items.silicon, 140,
-				Items.titanium, 100
-			));
-			size = 3;
-			health = 160;
-			consume(new ConsumeHeat(0.5f, 100f, false));
-			craftTime = 1f;
-			outputSpeed = 3f;
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawPistons() {{
-					sides = 8;
-					sideOffset = 10f;
-					sinScl = 2.5f;
-					sinMag = 2f;
-				}},
-				new DrawRegion("-top")
-			);
-			forceConfig = new ForceConfig() {{
-				maxForce = 5f;
-				friction = 0.002f;
-				beltSize = 6f;
-				acceptsForce = false;
-			}};
-		}};
 		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
 			requirements(Category.power, with(
 				Items.silicon, 50,
@@ -175,7 +146,7 @@ public class SWForce {
 			));
 			size = 2;
 			health = 160;
-			consumePower(1f);
+			consumePower(1f/60f);
 			hasHeat = false;
 			craftTime = 1f;
 			forceConfig = new ForceConfig() {{
@@ -234,10 +205,6 @@ public class SWForce {
 			size = 3;
 			health = 200;
 			craftTime = 45f;
-			drawer = new DrawMulti(new DrawDefault(), new DrawRegion("-rotator"){{
-				spinSprite = true;
-				rotateSpeed = 2f;
-			}});
 			consume(new ConsumeSpeed(1.5f, 15f));
 			consume(new ConsumeRatio(ForceGraph.ForceRatio.normal));
 			consumeItems(with(
@@ -251,7 +218,7 @@ public class SWForce {
 				Items.silicon, 150,
 				Items.graphite, 160,
 				Items.thorium, 80,
-				SWItems.frozenMatter, 200
+				SWItems.graphene, 200
 			));
 			size = 2;
 			health = 160;
@@ -263,7 +230,7 @@ public class SWForce {
 				SWItems.denseAlloy, 3
 			));
 			consumeLiquid(Liquids.cryofluid, 0.6f);
-			outputItem = new ItemStack(SWItems.frozenMatter, 2);
+			outputItem = new ItemStack(SWItems.graphene, 2);
 		}};
 
 		mortar = new ForceTurret("mortar") {{

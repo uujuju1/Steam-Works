@@ -46,7 +46,7 @@ public class ForcePump extends Pump {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			unLink();
+			forceUnLink();
 			graph().softRemove(this);
 			graph().links.removeAll(force().links);
 		}

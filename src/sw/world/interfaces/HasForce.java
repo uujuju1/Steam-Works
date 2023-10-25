@@ -1,6 +1,5 @@
 package sw.world.interfaces;
 
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -17,7 +16,7 @@ import sw.world.modules.*;
 public interface HasForce extends Buildingc, Posc{
 	ForceModule force();
 	ForceConfig forceConfig();
-	default @Nullable HasForce getLink() {
+	default @Nullable HasForce getForceLink() {
 		return (HasForce) Vars.world.build(force().link);
 	}
 	default ForceGraph graph() {
@@ -58,10 +57,10 @@ public interface HasForce extends Buildingc, Posc{
 	}
 
 	default void drawBelt() {
-		if (getLink() != null) {
+		if (getForceLink() != null) {
 			Draw.z(Layer.block - 1f);
 			for (int i : Mathf.signs) {
-				Vec2 p1 = new Vec2(x(), y()), p2 = new Vec2(getLink().x(), getLink().y());
+				Vec2 p1 = new Vec2(x(), y()), p2 = new Vec2(getForceLink().x(), getForceLink().y());
 				int serrations = Mathf.ceil(p1.dst(p2) / 8f);
 				float time = serrations * 20f;
 				float rot = spin() * i;
@@ -69,15 +68,15 @@ public interface HasForce extends Buildingc, Posc{
 
 				float angle = Tmp.v1.set(p1).sub(p2).angle();
 				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), beltSize()));
-				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getLink()).beltSize()));
+				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getForceLink()).beltSize()));
 
-				SWDraw.beltLine(Color.valueOf("A6918A"), Color.valueOf("6B5A55"), Color.valueOf("BEADA7"), p1.x, p1.y, p2.x, p2.y, rot);
+				SWDraw.beltLine(SWDraw.compoundSerration, SWDraw.compoundBase, SWDraw.compoundMiddle, p1.x, p1.y, p2.x, p2.y, rot);
 			}
 			Draw.reset();
 		}
 	}
 
-	default void link(HasForce b) {
+	default void forceLink(HasForce b) {
 		force().link = b.pos();
 
 		graph().merge(b.graph());
@@ -86,27 +85,27 @@ public interface HasForce extends Buildingc, Posc{
 		b.force().links.addUnique(new ForceLink(this, b));
 		graph().updateGraph();
 	}
-	default void unLink() {
-		if (getLink() != null) {
-			graph().links.remove(new ForceLink(this, getLink()));
-			force().links.remove(new ForceLink(this, getLink()));
-			getLink().force().links.remove(new ForceLink(this, getLink()));
+	default void forceUnLink() {
+		if (getForceLink() != null) {
+			graph().links.remove(new ForceLink(this, getForceLink()));
+			force().links.remove(new ForceLink(this, getForceLink()));
+			getForceLink().force().links.remove(new ForceLink(this, getForceLink()));
 			force().link = -1;
 			graph().updateGraph();
 		}
 	}
 
-	default boolean configureBuildTap(Building other) {
-		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce) {
-			if ((getLink() != null && getLink() == other) || other == this) {
-				unLink();
+	default boolean configureForceLink(Building other) {
+		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce && forceConfig().outputsForce) {
+			if ((getForceLink() != null && getForceLink() == other) || other == this) {
+				forceUnLink();
 				return false;
 			}
 
-			if (next.getLink() == this) next.unLink();
-			if (getLink() != null) unLink();
+			if (next.getForceLink() == this) next.forceUnLink();
+			if (getForceLink() != null) forceUnLink();
 
-			link(next);
+			forceLink(next);
 			graph().rotation = 0;
 			return false;
 		}

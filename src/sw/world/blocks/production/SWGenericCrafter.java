@@ -21,9 +21,10 @@ import sw.world.modules.*;
 public class SWGenericCrafter extends GenericCrafter {
 	public ForceConfig forceConfig = new ForceConfig();
 	public HeatConfig heatConfig = new HeatConfig();
+	public VibrationConfig vibrationConfig = new VibrationConfig();
 
-	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f;
-	public boolean hasForce = true, hasHeat = true;
+	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f, outputVibration = -1f;
+	public boolean hasForce = true, hasHeat = true, hasVibration = false;
 
 /**
  * makes so that it can spin continuously for a certain amount before stopping
@@ -52,20 +53,23 @@ public class SWGenericCrafter extends GenericCrafter {
 
 	@Override public void drawOverlay(float x, float y, int rotation) {
 		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
+		if (vibrationConfig.outputsVibration) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		configurable = forceConfig.outputsForce && hasForce;
 		if (!hasHeat) heatConfig.acceptHeat = heatConfig.outputHeat = false;
-		if (!hasForce) configurable = false;
+		if (!hasForce) forceConfig.acceptsForce = forceConfig.outputsForce = false;
+		if (!hasVibration) vibrationConfig.acceptsVibration = vibrationConfig.outputsVibration = false;
+		configurable = forceConfig.outputsForce || vibrationConfig.outputsVibration;
 	}
 
-	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasHeat, HasForce {
+	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasHeat, HasForce, HasVibration{
 		public float rotation = 0;
 		HeatModule heat = new HeatModule();
 		ForceModule force = new ForceModule();
+		VibrationModule vibration = new VibrationModule();
 
 		@Override public HeatModule heat() {
 			return heat;
@@ -79,6 +83,13 @@ public class SWGenericCrafter extends GenericCrafter {
 		}
 		@Override public ForceConfig forceConfig() {
 			return forceConfig;
+		}
+
+		@Override public VibrationModule vibration() {
+			return vibration;
+		}
+		@Override public VibrationConfig vConfig() {
+			return vibrationConfig;
 		}
 
 		@Override
@@ -96,35 +107,42 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			if (outputSpeed >= 0) force().speed = outputSpeed;
+			if (outputVibration >= 0) vGraph().frequencies.add(outputVibration);
 		}
 
 		@Override
 		public void draw() {
 			super.draw();
 			drawBelt();
+			drawLink();
 		}
 		@Override
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			if (getLink() != null) SWDraw.square(Pal.place, getLink().x(), getLink().y(), getLink().block().size * 6f, 0f);
+			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
+			if (getVibrationLink() != null) SWDraw.square(Pal.place, getVibrationLink().x(), getVibrationLink().y(), getVibrationLink().block().size * 6f, 0f);
 			Draw.reset();
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
+			vGraph().add(this);
 			force.graph.flood(this).each(b -> graph().add(b));
+			vGraph().updateBuilds();
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			unLink();
+			forceUnLink();
 			graph().remove(this);
+			if (getVibrationLink() != null) vibrationUnlink();
+			vGraph().links.removeAll(vibration().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureBuildTap(other);
+			return configureForceLink(other) && configVibrationLink(other);
 		}
 
 		@Override
@@ -132,6 +150,7 @@ public class SWGenericCrafter extends GenericCrafter {
 			super.read(read, revision);
 			force.read(read);
 			heat.read(read);
+			vibration.read(read);
 			rotation = read.f();
 		}
 		@Override
@@ -139,6 +158,7 @@ public class SWGenericCrafter extends GenericCrafter {
 			super.write(write);
 			force.write(write);
 			heat.write(write);
+			vibration.write(write);
 			write.f(rotation);
 		}
 	}

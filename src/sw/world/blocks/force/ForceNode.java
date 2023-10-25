@@ -52,7 +52,7 @@ public class ForceNode extends Block {
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			if (getLink() != null) SWDraw.square(Pal.place, getLink().x(), getLink().y(), getLink().block().size * 6f, 0f);
+			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
 			Draw.reset();
 		}
 
@@ -64,13 +64,13 @@ public class ForceNode extends Block {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			unLink();
+			forceUnLink();
 			graph().softRemove(this);
 			graph().links.removeAll(force().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureBuildTap(other);
+			return configureForceLink(other);
 		}
 
 		@Override

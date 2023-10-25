@@ -67,7 +67,7 @@ public class ForceTurret extends Turret {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			unLink();
+			forceUnLink();
 			graph().softRemove(this);
 			graph().links.removeAll(force().links);
 		}

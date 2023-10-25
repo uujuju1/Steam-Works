@@ -3,8 +3,10 @@ package sw.world.blocks.distribution;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import sw.util.*;
 
@@ -13,7 +15,8 @@ import static mindustry.Vars.*;
 /**
  * please ignore the mess
  */
-public class MechanicalConveyor extends ArmoredConveyor {
+public class MechanicalConveyor extends Conveyor {
+	public boolean armored = false;
 	public TextureRegion[] tiles;
 	public MechanicalConveyor(String name) {
 		super(name);
@@ -25,12 +28,17 @@ public class MechanicalConveyor extends ArmoredConveyor {
 		tiles = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 4, 32);
 	}
 
-	public class MechanicalConveyorBuild extends ArmoredConveyorBuild {
+	public class MechanicalConveyorBuild extends ConveyorBuild {
 		public int getIndex() {
 			int val = (enabled && clogHeat <= 0.5f ? (int)(((Time.time * speed * 6f * timeScale * efficiency)) % 4) : 0) * 4;
 			if (front() instanceof ConveyorBuild && front().rotation == rotation) val++;
 			if (back() instanceof ConveyorBuild && back().rotation == rotation) val+=2;
 			return val;
+		}
+
+		@Override
+		public boolean acceptItem(Building source, Item item){
+			return super.acceptItem(source, item) && (!armored || (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) == rotation));
 		}
 
 		@Override

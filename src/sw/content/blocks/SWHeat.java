@@ -10,14 +10,10 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.world.blocks.heat.*;
-import sw.world.blocks.production.*;
 import sw.world.consumers.*;
-import sw.world.draw.*;
-import sw.world.graph.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -25,8 +21,6 @@ import static mindustry.type.ItemStack.*;
 public class SWHeat {
 	public static Block
 		heatPipe, heatBridge, heatRadiator,
-
-		burner, resistance, frictionHeater,
 
 		boiler, thermalBoiler,
 
@@ -48,86 +42,6 @@ public class SWHeat {
 				maxHeat = 400f;
 				heatLoss = 0.01f;
 			}};
-		}};
-
-		burner = new SWGenericCrafter("burner") {{
-			requirements(Category.power, with(
-				Items.silicon, 20,
-				Items.graphite, 30,
-				SWItems.denseAlloy, 50,
-				Items.lead, 25)
-			);
-			size = 2;
-			health = 160;
-			consume(new ConsumeItemFlammable());
-			drawer = new DrawMulti(new DrawDefault(), new DrawFlame() {{
-				flameRadius = 1.5f;
-				flameRadiusIn = 0.75f;
-				flameRadiusMag = 1f;
-			}});
-			hasForce = false;
-			updateEffect = Fx.coalSmeltsmoke;
-			craftTime = 120f;
-			outputHeat = 500f;
-			outputHeatSpeed = 3f;
-			heatConfig.acceptHeat = false;
-		}};
-		resistance = new SWGenericCrafter("resistance") {{
-			requirements(Category.power, with(
-				Items.silicon, 100,
-				SWItems.denseAlloy, 90,
-				Items.titanium, 70,
-				Items.graphite, 70
-			));
-			hasForce = false;
-			size = 2;
-			health = 160;
-			outputHeatSpeed = 400f;
-			outputHeat = 800f;
-//			consume(new ConsumePowerMin(9f, 0f, 540f, false));
-			consumePower(9f);
-			heatConfig = new HeatConfig() {{
-				maxHeat = 1000f;
-				acceptHeat = false;
-			}};
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawTemperature(),
-				new DrawDefault()
-			);
-		}};
-		frictionHeater = new SWGenericCrafter("friction-heater") {{
-			requirements(Category.power, with(
-				Items.silicon, 150,
-				SWItems.denseAlloy, 160,
-				SWItems.nickel, 100,
-				Items.titanium, 80,
-				SWItems.compound, 200
-			));
-			clampRotation = true;
-			size = 3;
-			health = 200;
-			craftTime = 5f;
-			craftEffect = SWFx.sparks;
-			forceConfig = new ForceConfig() {{
-				friction = 0.18f;
-				maxForce = 18f;
-				beltSize = 6f;
-				outputsForce = false;
-			}};
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawRegion("-bar"),
-				new DrawSinSpin() {{
-					sinScl = 1f;
-					sinMag = 6.25f;
-				}},
-				new DrawDefault()
-			);
-			consume(new ConsumeSpeed(1f, 3f));
-			consume(new ConsumeRatio(ForceGraph.ForceRatio.extreme));
-			heatConfig.acceptHeat = false;
-			outputHeat = 550f;
 		}};
 
 		boiler = new HeatGenericCrafter("boiler") {{

@@ -1,60 +1,43 @@
 package sw.world.blocks.production;
 
-import arc.Core;
-import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
-import arc.math.Mathf;
-import arc.scene.ui.layout.Table;
-import arc.struct.Seq;
-import arc.util.Eachable;
-import arc.util.Nullable;
-import arc.util.Structs;
-import arc.util.io.Reads;
-import arc.util.io.Writes;
-import mindustry.gen.Icon;
-import mindustry.world.meta.StatUnit;
-import sw.world.consumers.ConsumeLiquidDynamic;
-import sw.world.meta.SWStat;
-import sw.world.recipes.GenericRecipe;
-import mindustry.entities.Effect;
-import mindustry.entities.units.BuildPlan;
-import mindustry.gen.Building;
-import mindustry.graphics.Pal;
-import mindustry.type.Item;
-import mindustry.type.ItemStack;
-import mindustry.type.Liquid;
-import mindustry.type.LiquidStack;
-import mindustry.ui.ItemImage;
-import mindustry.world.Block;
-import mindustry.world.consumers.ConsumeItemDynamic;
-import mindustry.world.consumers.ConsumePowerDynamic;
-import mindustry.world.meta.StatValues;
+import arc.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.math.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
+import mindustry.entities.units.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
+import mindustry.ui.*;
+import mindustry.world.*;
+import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
+import mindustry.world.meta.*;
+import sw.content.*;
+import sw.world.blocks.production.MultiCrafterRecipe.*;
+import sw.world.consumers.*;
+import sw.world.meta.*;
+import sw.world.recipes.*;
 
-import static sw.world.meta.TableSelection.genericRecipeSelection;
+import java.util.concurrent.atomic.*;
+
+import static sw.world.meta.TableSelection.*;
 
 public class MultiCrafter extends Block {
   public Seq<GenericRecipe> recipes = new Seq<>();
-  public Effect changeEffect = new Effect(30f, e -> {
-    if (!(e.data instanceof Block block)) return;
-
-    Draw.mixcol(Pal.accent, 1);
-    Draw.alpha(e.fout());
-    Draw.rect(block.fullIcon, e.x, e.y, e.rotation);
-    Draw.alpha(1f);
-    Lines.stroke(4f * e.fout());
-    Lines.square(e.x, e.y, block.size * 4f);
-  });
+  public DrawBlock baseDrawer = new DrawDefault();
 
   public MultiCrafter(String name) {
     super(name);
-    configurable = true;
     hasItems = true;
     solid = update = sync = destructible = true;
     saveConfig = copyConfig = true;
 
-    consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.currentPlan != -1 ? e.getRecipe().consumeItems : ItemStack.empty));
+    consume(new ConsumeItemDynamic((MultiCrafterBuild e) -> e.getRecipe() != null ? e.getRecipe().consumeItems : ItemStack.empty));
     consume(new ConsumeLiquidDynamic<>(MultiCrafterBuild::getLiquidCons));
     consume(new ConsumePowerDynamic(e -> ((MultiCrafterBuild) e).getPowerCons()));
 
@@ -65,43 +48,52 @@ public class MultiCrafter extends Block {
   public void setStats() {
     super.setStats();
     stats.add(SWStat.recipes, t -> {
-      t.row();
       t.left();
       for (GenericRecipe recipe : recipes) {
         if (!(recipe.checkUnlocked())) {
-          t.table(table -> {
-            table.add(Core.bundle.get("category.crafting")).color(Pal.accent).left().row();
-            table.image(Icon.cancel).color(Color.scarlet);
-          }).growX().left().row();
+          t.table(recipeTable -> {
+            recipeTable.button(button -> {
+              for (ItemStack stack : recipe.outputItems) button.image(stack.item.uiIcon).padLeft(5);
+              for (LiquidStack stack : recipe.outputLiquids) button.image(stack.liquid.uiIcon).padLeft(5);
+            }, () -> {}).growX().row();
+            recipeTable.image(Icon.cancel).color(Color.scarlet).growX();
+          }).growX().row();
           continue;
         }
-        t.table(table -> {
-          table.add(Core.bundle.get("category.crafting")).color(Pal.accent).left().row();
-          table.table(input -> {
-            input.add(" " + Core.bundle.get("stat.input") + ":").color(Color.lightGray);
+        Table table = new Table(Styles.black3);
+        table.add(Core.bundle.get("category.crafting")).color(Pal.accent).pad(3).left().row();
+        table.table(input -> {
+          input.add(Core.bundle.get("stat.input") + ":").color(Color.lightGray);
 
-            for (ItemStack stack : recipe.consumeItems) input.add(new ItemImage(stack)).padLeft(5);
-            for (LiquidStack stack : recipe.consumeLiquids) input.image(stack.liquid.uiIcon).padLeft(5);
+          for (ItemStack stack : recipe.consumeItems) input.add(new ItemImage(stack)).padLeft(5);
+          for (LiquidStack stack : recipe.consumeLiquids) input.image(stack.liquid.uiIcon).padLeft(5);
 
-          }).left().marginLeft(3f).row();
+        }).left().pad(3).padLeft(6).row();
+        table.table(time -> {
+          time.add(Core.bundle.get("stat.productiontime") + ":").color(Color.lightGray).padRight(5);
+          StatValues.number(recipe.craftTime/60f, StatUnit.seconds).display(time);
+        }).left().pad(3).padLeft(6).row();
+        table.table(power -> {
+          power.add(Core.bundle.get("stat.poweruse") + ":").color(Color.lightGray).padRight(5);
+          StatValues.number(recipe.consumePower * 60f, StatUnit.powerSecond).display(power);
+        }).left().pad(3).padLeft(6).row();
+        table.table(output -> {
+          output.add(Core.bundle.get("stat.output") + ":").color(Color.lightGray);
 
-          table.table(output -> {
-            output.add(" " + Core.bundle.get("stat.output") + ":").color(Color.lightGray);
-
-            for (ItemStack stack : recipe.outputItems) output.add(new ItemImage(stack)).padLeft(5);
-            for (LiquidStack stack : recipe.outputLiquids) output.image(stack.liquid.uiIcon).padLeft(5);
-          }).left().marginLeft(3f).row();
-
-          table.table(time -> {
-            time.add(" " + Core.bundle.get("stat.productiontime") + ":").color(Color.lightGray).padRight(5);
-            StatValues.number(recipe.craftTime/60f, StatUnit.seconds).display(time);
-          }).left().margin(3f).row();
-
-          table.table(power -> {
-            power.add(" " + Core.bundle.get("stat.poweruse") + ":").color(Color.lightGray).padRight(5);
-            StatValues.number(recipe.consumePower * 60f, StatUnit.powerSecond).display(power);
-           }).left().margin(3f);
-        }).left().margin(5f).row();
+          for (ItemStack stack : recipe.outputItems) output.add(new ItemImage(stack)).padLeft(5);
+          for (LiquidStack stack : recipe.outputLiquids) output.image(stack.liquid.uiIcon).padLeft(5);
+        }).left().pad(3).padLeft(6).row();
+        table.left().margin(5).row();
+        AtomicBoolean shown = new AtomicBoolean(false);
+        t.table(recipeTable -> {
+          recipeTable.button(button -> {
+            for (ItemStack stack : recipe.outputItems) button.image(stack.item.uiIcon).padLeft(5);
+            for (LiquidStack stack : recipe.outputLiquids) button.image(stack.liquid.uiIcon).padLeft(5);
+          }, () -> {
+            shown.set(!shown.get());
+          }).growX().row();
+          recipeTable.collapser(table, false, shown::get);
+        }).growX().row();
       }
     });
   }
@@ -111,7 +103,7 @@ public class MultiCrafter extends Block {
     super.setBars();
 
     removeBar("liquid");
-    recipes.each(this::addRecipeBars);
+//    recipes.each(this::addRecipeBars);
   }
 
   public void addRecipeBars(GenericRecipe recipe) {
@@ -119,24 +111,31 @@ public class MultiCrafter extends Block {
     for (LiquidStack stack : recipe.outputLiquids) if (!barMap.containsKey("liquid-" + stack.liquid.name)) addLiquidBar(stack.liquid);
   }
 
-  @Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {recipes.get(0).drawer.drawPlan(this, plan, list);}
-  @Override public TextureRegion[] icons() {return recipes.get(0).drawer.finalIcons(this);}
-  @Override public void getRegionsToOutline(Seq<TextureRegion> out) {recipes.get(0).drawer.getRegionsToOutline(this, out);}
+  @Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+    baseDrawer.drawPlan(this, plan, list);
+  }
+  @Override public TextureRegion[] icons() {
+    return baseDrawer.finalIcons(this);
+  }
+  @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
+    baseDrawer.getRegionsToOutline(this, out);
+  }
 
   @Override
   public void load() {
     super.load();
+    baseDrawer.load(this);
     for (GenericRecipe recipe : recipes) recipe.drawer.load(this);
   }
 
   public class MultiCrafterBuild extends Building {
-    public int currentPlan = -1;
     public float progress;
     public float totalProgress;
     public float warmup;
+    public GenericRecipe currentRecipe;
 
     public @Nullable GenericRecipe getRecipe() {
-      return currentPlan == -1 ? null : recipes.get(currentPlan);
+      return currentRecipe;
     }
     public float getPowerCons() {
       return getRecipe() != null ? getRecipe().consumePower : 0f;
@@ -146,9 +145,9 @@ public class MultiCrafter extends Block {
     }
 
     public void changeRecipe(GenericRecipe recipe) {
-      currentPlan = recipes.indexOf(recipe);
       progress = totalProgress = warmup = 0f;
-      changeEffect.at(x, y, rotdeg(), block);
+      currentRecipe = recipe;
+      SWFx.changeEffect.at(x, y, rotdeg(), block);
     }
 
     public void dumpOutputs() {
@@ -163,6 +162,22 @@ public class MultiCrafter extends Block {
     @Override public float warmup() {return warmup;}
     @Override public float progress() {return progress;}
     @Override public float totalProgress() {return totalProgress;}
+
+    @Override
+    public void onProximityUpdate() {
+      super.onProximityUpdate();
+      for (Building build : proximity) {
+        if (
+					build instanceof MultiCrafterRecipeBuild recipe &&
+					recipe.front() == this &&
+					recipe.block().parent == block
+        ) {
+          if (recipe.block().recipe != currentRecipe) changeRecipe(recipe.block().recipe);
+          return;
+        }
+      }
+      if (currentRecipe != null) changeRecipe(null);
+    }
 
     @Override
     public void buildConfiguration(Table table) {
@@ -214,7 +229,7 @@ public class MultiCrafter extends Block {
       if (getRecipe() != null) {
         getRecipe().drawer.draw(this);
       } else {
-        recipes.get(0).drawer.draw(this);
+        baseDrawer.draw(this);
       }
     }
     @Override
@@ -232,7 +247,6 @@ public class MultiCrafter extends Block {
       w.f(warmup);
       w.f(progress);
       w.f(totalProgress);
-      w.i(currentPlan);
     }
     @Override
     public void read(Reads r, byte revision) {
@@ -240,7 +254,6 @@ public class MultiCrafter extends Block {
       warmup = r.f();
       progress = r.f();
       totalProgress = r.f();
-      currentPlan = r.i();
     }
   }
 }
