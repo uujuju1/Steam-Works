@@ -45,7 +45,11 @@ public class SWPlanets {
 
 			defaultCore = SWBlocks.coreScaffold;
 
-			generator = new ModularPlanetGenerator() {{
+			generator = new ModularPlanetGenerator() {
+				@Override
+				public float getSizeScl(){
+					return 2000 * 1.07f * 6f / 5f;
+				}{
 				minHeight = -5f;
 				heights.add(
 					new Noise3DSettings() {{
@@ -191,10 +195,10 @@ public class SWPlanets {
 
 					});
 					if (getHeight(sector.tile.v) * 10 < 0.2f) pathfind(
-						Math.round(width / 2f - starts.x),
-						Math.round(height / 2f - starts.y),
-						Math.round(width / 2f + starts.x),
-						Math.round(height / 2f + starts.y),
+						Math.round(width / 2f - copy.x),
+						Math.round(height / 2f - copy.y),
+						Math.round(width / 2f + copy.x),
+						Math.round(height / 2f + copy.y),
 						tile -> (tile.floor().isLiquid ? 0 : 300) + (tile.solid() ? 300 : 0),
 						Mathf::dst
 					).each(tile -> {

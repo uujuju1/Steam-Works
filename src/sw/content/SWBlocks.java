@@ -44,6 +44,8 @@ public class SWBlocks {
 		siliconBoiler,
 		nickelForge, oilDistiller,
     batchPress,
+		compoundSmelter, densePress,
+
 		rebuilder,
 		pressModule, smelterModule, arcSmelterModule, impactPressModule, mixerModule, crystalizerModule,
 
@@ -248,6 +250,46 @@ public class SWBlocks {
 			outputItems = with(Items.graphite, 8);
 		}};
 
+		compoundSmelter = new GenericCrafter("compound-smelter") {{
+			requirements(Category.crafting, with(
+				Items.silicon, 150,
+				Items.graphite, 160,
+				Items.titanium, 80,
+				SWItems.nickel, 200
+			));
+			size = 3;
+			health = 200;
+			craftTime = 60f;
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawFlame(Color.valueOf("BEB5B2"))
+			);
+
+			consumeItems(with(
+				Items.graphite, 2,
+				SWItems.nickel, 1
+			));
+			outputItem = new ItemStack(SWItems.compound, 1);
+		}};
+		densePress = new GenericCrafter("dense-press") {{
+			requirements(Category.crafting, with(
+				Items.silicon, 80,
+				Items.graphite, 160,
+				Items.titanium, 160,
+				SWItems.nickel, 200
+			));
+			size = 3;
+			health = 200;
+			craftTime = 60f;
+
+			consumeItems(with(
+				Items.titanium, 1,
+				SWItems.nickel, 1
+			));
+			outputItem = new ItemStack(SWItems.denseAlloy, 1);
+		}};
+
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
@@ -283,8 +325,8 @@ public class SWBlocks {
 				Items.silicon, 50
 			));
 			recipe = new GenericRecipe() {{
-				consumeItems = with(SWItems.nickel, 6, Items.titanium, 3);
-				outputItems = with(SWItems.denseAlloy, 4);
+				consumeItems = with(SWItems.nickel, 6, Items.titanium, 4);
+				outputItems = with(SWItems.denseAlloy, 5);
 				craftEffect = SWFx.denseAlloyCraft;
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),

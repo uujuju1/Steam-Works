@@ -25,7 +25,7 @@ public class SWForce {
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
 		electricSpinner, pressureSpinner, waterWheel,
-		compoundMixer, freezingSpinner,
+		freezingSpinner,
 
 		mortar, incend;
 
@@ -188,31 +188,6 @@ public class SWForce {
 			outputSpeed = 1f;
 		}};
 
-		compoundMixer = new SWGenericCrafter("compound-mixer") {{
-			requirements(Category.crafting, with(
-				Items.silicon, 150,
-				Items.graphite, 160,
-				Items.titanium, 80,
-				SWItems.compound, 200
-			));
-			hasHeat = false;
-			forceConfig = new ForceConfig() {{
-				outputsForce = false;
-				friction = 0.09f;
-				maxForce = 14f;
-				beltSize = 6f;
-			}};
-			size = 3;
-			health = 200;
-			craftTime = 45f;
-			consume(new ConsumeSpeed(1.5f, 15f));
-			consume(new ConsumeRatio(ForceGraph.ForceRatio.normal));
-			consumeItems(with(
-				Items.copper, 2,
-				SWItems.nickel, 1
-			));
-			outputItem = new ItemStack(SWItems.compound, 2);
-		}};
 		freezingSpinner = new SWGenericCrafter("freezing-spinner") {{
 			requirements(Category.production, with(
 				Items.silicon, 150,

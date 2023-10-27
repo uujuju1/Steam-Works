@@ -47,7 +47,7 @@ public class SWVibration {
 				Items.silicon, 80,
 				Items.graphite, 100
 			));
-			size = 3;
+			size = 2;
 			health = 360;
 			craftTime = 120f;
 			hasVibration = true;
@@ -61,16 +61,18 @@ public class SWVibration {
 			));
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawBlurSpin("-plate", 20),
+				new DrawBlurSpin("-rotator", 20) {{
+					blurThresh = 123123f;
+				}},
 				new DrawMixing() {{
-					circleRad = 10f;
-					particleRad = 10f;
+					circleRad = 6f;
+					particleRad = 6f;
 					alpha = 0.5f;
 					particleColor = circleColor = Color.valueOf("6D6F7F");
 				}},
 				new DrawMixing() {{
 					circleRad = 1f;
-					particleRad = 10f;
+					particleRad = 6f;
 					idOffset = 1;
 					alpha = 0.5f;
 					particleColor = circleColor = Color.valueOf("6C5252");

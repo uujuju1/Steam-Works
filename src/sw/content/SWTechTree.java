@@ -22,7 +22,7 @@ public class SWTechTree {
       // items
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> nodeProduce(butane, () -> {}));
-        nodeProduce(compound, () -> nodeProduce(graphene, () -> {}));
+        nodeProduce(compound, () -> nodeProduce(bismuth, () -> nodeProduce(graphene, () -> {})));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
       });
 
@@ -37,14 +37,19 @@ public class SWTechTree {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields)
         ), () -> {});
-        node(rebuilder, with(new SectorComplete(SectorPresets.ruinousShores)), () -> {
+        node(compoundSmelter, () -> {
+          node(smelterModule);
+        });
+        node(densePress, () -> {
+          node(impactPressModule);
+          node(thermiteMixer, () -> {
+            node(mixerModule);
+          });
+        });
+        node(rebuilder, () -> {
           node(torquePump);
-          node(electricSpinner, with(new SectorComplete(hotspot)), () -> {
+          node(electricSpinner, () -> {
             node(pressureSpinner);
-            node(compoundMixer, with(
-              new Research(electricSpinner),
-              new OnSector(SectorPresets.windsweptIslands)
-            ), () -> {});
           });
         });
 
@@ -79,9 +84,15 @@ public class SWTechTree {
       // turrets
 //      node(bolt, () -> {
 //        node(light);
+      node(artyleriya, () -> {
+        node(thermikos);
         node(mortar, () -> {
           node(incend, with(new Research(oilDistiller)), () -> {});
         });
+        node(sonus, () -> {
+          node(impacto);
+        });
+      });
 //      });
 
       // misc
@@ -100,7 +111,7 @@ public class SWTechTree {
 
         node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
         node(structuraFactory, with(
-          new Research(compoundMixer),
+          new Research(compoundSmelter),
           new Research(filler)
         ), () -> node(structura));
 
