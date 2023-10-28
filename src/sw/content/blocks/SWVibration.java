@@ -56,8 +56,7 @@ public class SWVibration {
 			consume(new ConsumeVibration(100f, 250f));
 			consumeItems(with(
 				Items.graphite, 2,
-				Items.sand, 2,
-				Items.sporePod, 1
+				SWItems.compound, 2
 			));
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -77,6 +76,7 @@ public class SWVibration {
 					alpha = 0.5f;
 					particleColor = circleColor = Color.valueOf("6C5252");
 				}},
+				new DrawRegion("-top"),
 				new DrawDefault()
 			);
 

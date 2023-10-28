@@ -12,6 +12,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
@@ -28,7 +29,6 @@ import sw.world.blocks.units.*;
 import sw.world.draw.*;
 import sw.world.recipes.*;
 
-import static arc.struct.ObjectMap.*;
 import static mindustry.type.ItemStack.*;
 import static mindustry.world.blocks.units.UnitFactory.*;
 
@@ -41,9 +41,10 @@ public class SWBlocks {
 		mechanicalDistributor, mechanicalBridge,
 		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
+		mechanicalPayloadConveyor, mechanicalPayloadRouter,
+
 		siliconBoiler,
-		nickelForge, oilDistiller,
-    batchPress,
+		oilDistiller,
 		compoundSmelter, densePress,
 
 		rebuilder,
@@ -70,6 +71,7 @@ public class SWBlocks {
 		SWHeat.load();
 		SWVibration.load();
 
+		// region production
 		mechanicalBore = new BeamDrill("mechanical-bore") {{
 			requirements(Category.production, with(
 				SWItems.nickel, 50
@@ -105,8 +107,9 @@ public class SWBlocks {
 			tier = 3;
 			drillTime = 400;
 		}};
+		// endregion
 
-//		distribution
+		// region distribution
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 2
@@ -170,7 +173,25 @@ public class SWBlocks {
 			regionRotated1 = 1;
 		}};
 
-//		crafting
+		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
+			requirements(Category.units, with(
+				Items.silicon, 10,
+				Items.titanium, 10,
+				SWItems.nickel, 10
+			));
+			canOverdrive = false;
+		}};
+		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
+			requirements(Category.units, with(
+				Items.silicon, 10,
+				Items.titanium, 10,
+				SWItems.nickel, 10
+			));
+			canOverdrive = false;
+		}};
+		//endregion
+
+		// region crafting
 		siliconBoiler = new GenericCrafter("silicon-boiler") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 150,
@@ -193,18 +214,6 @@ public class SWBlocks {
 			);
 		}};
 
-		nickelForge = new GenericCrafter("nickel-forge") {{
-			requirements(Category.crafting, with(Items.copper, 40, Items.graphite, 25));
-			size = 2;
-			health = 160;
-			craftTime = 30f;
-			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
-			craftEffect = SWFx.nickelCraft;
-      updateEffect = Fx.smeltsmoke;
-			consumeItems(with(Items.copper, 2, Items.lead, 1));
-			consumePower(1f);
-			outputItems = with(SWItems.nickel, 1);
-		}};
 		oilDistiller = new GenericCrafter("oil-distiller") {{
 			requirements(Category.crafting, with(
 				Items.graphite, 70,
@@ -219,35 +228,6 @@ public class SWBlocks {
 			consumeLiquid(Liquids.oil, 0.2f);
 			consumePower(2f);
 			outputLiquid = new LiquidStack(SWLiquids.butane, 0.1f);
-		}};
-		batchPress = new StackCrafter("batch-press") {{
-			requirements(Category.crafting, with(
-				Items.titanium, 120,
-				Items.silicon, 50,
-				Items.graphite, 75,
-				Items.plastanium, 140,
-				Items.thorium, 80
-			));
-			size = 3;
-			health = 200;
-			craftTime = 30f;
-			stacks = 6;
-			drawer = new DrawMulti(
-				new DrawRegion("-base"),
-				new DrawPistons() {{
-					sides = 4;
-					sideOffset = 10f;
-					sinScl = 2.5f;
-					sinMag = 2f;
-				}},
-				new DrawDefault()
-			);
-			consumeItem(Items.coal, 1);
-			consumeLiquid(SWLiquids.steam, 0.02f);
-			craftEffect = SWFx.graphiteCraft;
-			stackCraftEffect = SWFx.graphiteStackCraft;
-			updateEffect = Fx.smoke;
-			outputItems = with(Items.graphite, 8);
 		}};
 
 		compoundSmelter = new GenericCrafter("compound-smelter") {{
@@ -430,7 +410,9 @@ public class SWBlocks {
 				);
 			}};
 		}};
+		// endregion
 
+		// region turrets
 		artyleriya = new ItemTurret("artyleriya") {{
 			requirements(Category.turret, with(
 				SWItems.nickel, 100,
@@ -500,8 +482,9 @@ public class SWBlocks {
 				chargeEffect = SWFx.chargeFiery;
 			}};
 		}};
+		// endregion
 
-//		power
+		// region power
 		powerWire = new PowerNode("power-wire") {{
 			requirements(Category.power, with(
 				Items.titanium, 10,
@@ -525,8 +508,9 @@ public class SWBlocks {
 			itemDuration = 30f;
 			powerProduction = 0.5f;
 		}};
+		// endregion
 
-//    walls
+		// region walls
     compoundWall = new Wall("compound-wall") {{
       requirements(Category.defense, with(SWItems.compound, 6));
       health = 120 * 4;
@@ -547,8 +531,9 @@ public class SWBlocks {
 			health = 200 * 4 * 4;
 			absorbLasers = true;
 		}};
+		// endregion
 
-//		units
+		// region units
 		subFactory = new UnitFactory("submarine-factory") {{
 			requirements(Category.units, with(
 							SWItems.compound, 120,
@@ -585,8 +570,9 @@ public class SWBlocks {
 			unitPlan = new UnitPlan(SWUnitTypes.structura, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
 			consumeItems(unitPlan.requirements);
 		}};
+		// endregion
 
-//		storage
+		// region storage
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
 				SWItems.nickel, 2000,
@@ -609,17 +595,19 @@ public class SWBlocks {
 			));
 			size = 2;
 			itemCapacity = 200;
-			passes = new Entry[]{
-				new Entry<>(){{key=Blocks.deepwater; value = Blocks.water;}},
-				new Entry<>(){{key=Blocks.water; value = Blocks.metalFloor;}}
-			};
+			entries.addAll(
+				new Block[]{Blocks.deepwater, Blocks.water},
+				new Block[]{Blocks.water, Blocks.metalFloor}
+			);
 			consumeItem(SWItems.compound, 20);
 			consumePower(4f);
 		}};
+		// endregion
 
-//		sandbox
+		// region sandbox
 		allSource = new ResourceSource("all-source") {{
 			health = 2147483647;
 		}};
+		// endregion
 	}
 }

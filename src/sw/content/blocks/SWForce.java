@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -25,7 +26,7 @@ public class SWForce {
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
 		electricSpinner, pressureSpinner, waterWheel,
-		freezingSpinner,
+		bismuthCrystalizer,
 
 		mortar, incend;
 
@@ -188,24 +189,38 @@ public class SWForce {
 			outputSpeed = 1f;
 		}};
 
-		freezingSpinner = new SWGenericCrafter("freezing-spinner") {{
-			requirements(Category.production, with(
+		bismuthCrystalizer = new SWGenericCrafter("bismuth-crystalizer") {{
+			requirements(Category.crafting, with(
 				Items.silicon, 150,
 				Items.graphite, 160,
 				Items.thorium, 80,
-				SWItems.graphene, 200
+				SWItems.compound, 200
 			));
 			size = 2;
 			health = 160;
 			craftTime = 90f;
 			forceConfig.outputsForce = hasHeat = false;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water),
+				new DrawCultivator() {{
+					plantColorLight = Color.valueOf("C7D4CF");
+					plantColor = Color.valueOf("97ABA4");
+					bottomColor = Color.valueOf("97ABA4");
+				}},
+				new DrawDefault(),
+				new DrawRegion("-top")
+			);
+
 			consume(new ConsumeSpeed(2f, 4f));
 			consume(new ConsumeRatio(ForceGraph.ForceRatio.normal));
 			consumeItems(with(
-				SWItems.denseAlloy, 3
+				Items.graphite, 1,
+				Items.sand, 1
 			));
-			consumeLiquid(Liquids.cryofluid, 0.6f);
-			outputItem = new ItemStack(SWItems.graphene, 2);
+			consumeLiquid(Liquids.water, 0.1f);
+			outputItem = new ItemStack(SWItems.bismuth, 1);
 		}};
 
 		mortar = new ForceTurret("mortar") {{

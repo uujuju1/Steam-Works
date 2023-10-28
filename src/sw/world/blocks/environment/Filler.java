@@ -14,12 +14,11 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.util.*;
 
-import static arc.struct.ObjectMap.*;
 import static mindustry.Vars.*;
 
 public class Filler extends Block {
 	public UnitType unitType = SWUnitTypes.terra;
-	public Entry<Block, Block>[] passes = new Entry[]{};
+	public Seq<Block[]> entries = new Seq<>();
 	public float buildTime = 60f;
 	public float constructTime = 150f;
 	public int targetArea = 8;
@@ -61,14 +60,14 @@ public class Filler extends Block {
 				}
 			}
 			return out.removeAll(b -> {
-				for (Entry entry: passes) if (b.floor() == entry.key) return false;
+				for (Block[] entry: entries) if (b.floor() == entry[0]) return false;
 				return true;
 			});
 		}
 		public void swap(Tile tile) {
 			if (time <= 1f) return;
-			for (Entry<Block, Block> entry: passes) if (tile.floor() == entry.key) {
-				tile.setFloor(entry.value.asFloor());
+			for (Block[] entry : entries) if (tile.floor() == entry[0]) {
+				tile.setFloor(entry[1].asFloor());
 				Fx.itemTransfer.at(x, y, 0, unit);
 				consume();
 				time %= 1f;

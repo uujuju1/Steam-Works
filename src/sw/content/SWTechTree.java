@@ -39,6 +39,9 @@ public class SWTechTree {
         ), () -> {});
         node(compoundSmelter, () -> {
           node(smelterModule);
+          node(bismuthCrystalizer, () -> {
+            node(crystalizerModule);
+          });
         });
         node(densePress, () -> {
           node(impactPressModule);
@@ -52,8 +55,6 @@ public class SWTechTree {
             node(pressureSpinner);
           });
         });
-
-        node(batchPress, with(new Research(Blocks.multiPress)), () -> {});
       });
 
       // distribution
