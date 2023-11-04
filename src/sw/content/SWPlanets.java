@@ -6,6 +6,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
+import mindustry.*;
 import mindustry.ai.*;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -40,7 +41,16 @@ public class SWPlanets {
 			startSector = 1;
 
 			itemWhitelist.addAll(
-				SWItems.nickel, SWItems.compound, SWItems.denseAlloy, SWItems.thermite, SWItems.graphene, Items.graphite, Items.titanium, Items.silicon
+				SWItems.nickel,
+				SWItems.compound,
+				SWItems.denseAlloy,
+				SWItems.thermite,
+				SWItems.bismuth,
+				SWItems.scorch,
+				SWItems.graphene,
+				Items.graphite,
+				Items.titanium,
+				Items.silicon
 			);
 
 			defaultCore = SWBlocks.coreScaffold;
@@ -48,7 +58,7 @@ public class SWPlanets {
 			generator = new ModularPlanetGenerator() {
 				@Override
 				public float getSizeScl(){
-					return 2000 * 1.07f * 6f / 5f;
+					return 2000 * 1.07f * 5f / 5f;
 				}{
 				minHeight = -5f;
 				heights.add(
@@ -274,6 +284,12 @@ public class SWPlanets {
 
 					Schematics.placeLaunchLoadout(Math.round(width/2f + copy.x), Math.round(height/2f + copy.y));
 					tiles.get(Math.round(width/2f - copy.x), Math.round(height/2f - copy.y)).setOverlay(Blocks.spawn);
+
+					float threat = Math.abs(sector.tile.v.y) * 10f;
+
+					Vars.state.rules.waves = true;
+					Vars.state.rules.winWave = sector.info.winWave = (int) (threat * 15);
+					Vars.state.rules.spawns = SWWaveGeneration.navalGen(threat, Vars.state.rules.winWave, new Rand(sector.id));
 				};
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISAEAKJ5FQg=");
 			}};
