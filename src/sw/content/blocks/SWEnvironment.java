@@ -1,16 +1,18 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import sw.content.*;
+import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
-	charoite, charoiteCraters, charoiteWall, charoiteBoulder,
-	purpleSand, purpleSandWall, purpleSandBoulder,
+	charoite, charoiteCraters, charoiteWall, charoiteBoulder, charoiteGasVent,
+	purpleSand, purpleSandWall, purpleSandBoulder, purpleSandGasVent,
 	heavySnow, heavySnowWall, heavySnowBoulder,
 	purpleIce, purpleIceCraters, purpleIceWall, purpleIceBoulder,
 
@@ -36,6 +38,11 @@ public class SWEnvironment {
 			decoration = charoiteBoulder;
 			blendGroup = charoite;
 		}};
+		charoiteGasVent = new GasVent("charoite-gas-vent") {{
+			parent = blendGroup = charoite;
+			fluid = SWLiquids.steam;
+			cloudEffectColor = Color.white;
+		}};
 
 		purpleSandWall = new StaticWall("purple-sand-wall") {{
 			attributes.set(Attribute.sand, 1);
@@ -47,6 +54,11 @@ public class SWEnvironment {
 			variants = 4;
 			wall = purpleSandWall;
 			decoration = purpleSandBoulder;
+		}};
+		purpleSandGasVent = new GasVent("purple-sand-gas-vent") {{
+			parent = blendGroup = purpleSand;
+			fluid = SWLiquids.steam;
+			cloudEffectColor = Color.white;
 		}};
 
 		heavySnowWall = new StaticWall("heavy-snow-wall");

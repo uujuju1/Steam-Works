@@ -10,6 +10,8 @@ import mindustry.world.*;
 import sw.util.*;
 
 public class SWFx {
+  public static final Rand rand = new Rand();
+
   public static Effect
     sparks = new Effect(30f, e -> {
       Draw.color(Pal.accent);
@@ -29,6 +31,16 @@ public class SWFx {
         });
       }
     }),
+
+    gasVent = new Effect(60f, e -> {
+      Draw.color(e.color, Color.black, e.fin());
+      Draw.alpha(e.fslope() * 0.6f);
+      rand.setSeed(e.id);
+      Angles.randLenVectors(e.id, 3, 20f * e.fin(), (x, y) -> {
+        Fill.circle(e.x + x, e.y + y, 10 * Interp.sine.apply(e.fin() * 1.2f));
+      });
+    }).layer(Layer.darkness - 1),
+
     nickelCraft = new Effect(30f, e -> {
       Draw.color(Pal.accent);
       Angles.randLenVectors(e.id + 1, 10, e.finpow() * 30f, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
@@ -95,7 +107,7 @@ public class SWFx {
 
     }),
     grapheneCraft = new Effect(30f, e -> {
-    Angles.randLenVectors(e.id, 20, 10f * e.finpow(), (x, y) -> {
+      Angles.randLenVectors(e.id, 20, 10f * e.finpow(), (x, y) -> {
       Tmp.v1.trns(Mathf.angle(x, y), 8f);
       Fill.circle(
         e.x + x + Tmp.v1.x,
@@ -103,7 +115,7 @@ public class SWFx {
         3f * e.foutpow()
       );
     });
-  }),
+    }),
 
     graphiteCraft = new Effect(30f, e -> {
       Draw.color(Pal.accent, Color.gray, e.fin());
@@ -125,6 +137,7 @@ public class SWFx {
       Draw.color(Color.darkGray);
       Fill.circle(e.x - x, e.y - y, 2 * e.fout());
     })),
+
     shootFirery = new Effect(30f, e -> {
       for (int i = 0; i < 3; i++) {
         e.scaled((10 * i), b -> {
@@ -178,6 +191,7 @@ public class SWFx {
         });
       }
     }),
+
     soundDecay = new Effect(60f, e -> {
       Draw.mixcol(Color.black, e.finpow());
       Tmp.v1.trns(e.rotation, 40f * e.finpow());
@@ -192,6 +206,7 @@ public class SWFx {
         });
       }
     }),
+
     changeEffect = new Effect(30f, e -> {
       if (!(e.data instanceof Block block)) return;
 

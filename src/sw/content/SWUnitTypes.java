@@ -64,9 +64,9 @@ public class SWUnitTypes {
 
       weapons.add(
         new Weapon("sw-swarm-weapon") {{
-          x = 3f;
-          y = -2f;
+          x = y = 0f;
           reload = 15f;
+					mirror = false;
           bullet = new BasicBulletType(2f, 12) {{
             lifetime = 60f;
             width = 7f;

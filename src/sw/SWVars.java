@@ -1,15 +1,21 @@
 package sw;
 
 import arc.assets.*;
+import arc.struct.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.ctype.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.world.*;
 
 import java.util.*;
 
 public class SWVars implements Loadable {
 	public static final float maxHeatGlow = 100;
+
+	public static FluidArea fluidArea = new FluidArea(50, 50, 25, Liquids.water);
+	public static Seq<FluidArea> fluidAreas = new Seq<>();
 
   public static void init() {
     // glenn stuff
