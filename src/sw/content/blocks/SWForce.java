@@ -26,7 +26,7 @@ public class SWForce {
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
 		electricSpinner, pressureSpinner, waterWheel,
-		bismuthCrystalizer,
+		bismuthCrystalizer, deHumidifier, cleanser,
 
 		mortar, incend;
 
@@ -222,6 +222,26 @@ public class SWForce {
 			consumeLiquid(Liquids.water, 0.1f);
 			outputItem = new ItemStack(SWItems.bismuth, 1);
 		}};
+		deHumidifier = new SWGenericCrafter("de-humidifier") {{
+			requirements(Category.crafting, with(
+				Items.graphite, 1
+			));
+			size = 3;
+			craftTime = 5;
+			craftEffect = SWFx.steamCollect;
+			consume(new ConsumeAtmosphere(SWLiquids.steam));
+			outputLiquid = new LiquidStack(SWLiquids.steam, 0.5f);
+		}};
+		cleanser = new SWGenericCrafter("cleanser") {{
+			requirements(Category.crafting, with(
+				Items.graphite, 1
+			));
+			size = 3;
+			craftTime = 5;
+			craftEffect = SWFx.fungiCollect;
+			consume(new ConsumeAtmosphere(SWLiquids.fungi));
+			outputLiquid = new LiquidStack(SWLiquids.fungi, 0.5f);
+		}};
 
 		mortar = new ForceTurret("mortar") {{
 			requirements(Category.turret, with(
@@ -279,7 +299,7 @@ public class SWForce {
 			targetAir = false;
 			shootSound = Sounds.flame;
 			consume(new ConsumeSpeed(1f, 6f));
-			consumeLiquid(SWLiquids.butane, 0.2f);
+			consumeLiquid(SWLiquids.fungi, 0.2f);
 
 			forceConfig = new ForceConfig() {{
 				friction = 0.18f;

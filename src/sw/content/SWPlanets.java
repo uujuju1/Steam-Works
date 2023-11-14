@@ -80,7 +80,7 @@ public class SWPlanets {
 				);
 				colors.add(
 					new ColorPatch() {{
-						block = SWEnvironment.heavySnow;
+						block = SWEnvironment.sediment;
 						noise = new Noise3DSettings() {{
 							min = max = 1;
 						}};
@@ -92,7 +92,7 @@ public class SWPlanets {
 						}};
 					}},
 					new ColorPatch() {{
-						block = SWEnvironment.purpleSand;
+						block = SWEnvironment.grime;
 						noise = new Noise3DSettings() {{
 							offset.set(453, 259, -345);
 							max = 0f;
@@ -105,7 +105,7 @@ public class SWPlanets {
 						minT = -10f;
 					}},
 					new ColorPatch() {{
-						block = SWEnvironment.heavyWater;
+						block = SWEnvironment.chloro;
 						noise = new Noise3DSettings() {{
 							min = max = -0.5f;
 						}};
@@ -113,7 +113,7 @@ public class SWPlanets {
 					}}
 				);
 
-				Seq<Block> blocks = Seq.with(SWEnvironment.heavyWater, SWEnvironment.purpleSand, SWEnvironment.charoite, SWEnvironment.heavySnow);
+				Seq<Block> blocks = Seq.with(SWEnvironment.moss, SWEnvironment.sediment, SWEnvironment.grime, SWEnvironment.charoite);
 				gen = generator -> {
 					pass((x, y) -> {
 						block = Blocks.stoneWall;
@@ -201,7 +201,7 @@ public class SWPlanets {
 						if (floor.asFloor().wall != Blocks.air && block != Blocks.air) block = floor.asFloor().wall;
 
 						float waterNoise = noise(x + 500, y, 8, 0.7, 200, 1);
-						if (waterNoise > 0.6f) floor = SWEnvironment.heavyWater;
+						if (waterNoise > 0.6f) floor = SWEnvironment.chloro;
 
 					});
 					if (getHeight(sector.tile.v) * 10 < 0.2f) pathfind(
@@ -212,23 +212,23 @@ public class SWPlanets {
 						tile -> (tile.floor().isLiquid ? 0 : 300) + (tile.solid() ? 300 : 0),
 						Mathf::dst
 					).each(tile -> {
-						replace(tile.centerX(), tile.centerY(), 4, SWEnvironment.heavyWater, null, null);
+						replace(tile.centerX(), tile.centerY(), 4, SWEnvironment.chloro, null, null);
 					});
-					blend(SWEnvironment.heavyWater, SWEnvironment.purpleSandHeavyWater, 5f);
+					blend(SWEnvironment.chloro, SWEnvironment.shallowChloro, 5f);
 					if (getHeight(sector.tile.v) * 10 < 0.2f) Log.info(getHeight(sector.tile.v) * 10 + " naval sector");
 					pass((x, y) -> {
 						float waterNoise = noise(x + 500, y, 8, 0.7, 200, 1);
-						if (waterNoise > 0.7f) floor = SWEnvironment.deepHeavyWater;
+						if (waterNoise > 0.7f) floor = SWEnvironment.deepChloro;
 						if (
-							!nearFloor(x, y, 3, SWEnvironment.purpleSandHeavyWater)
+							!nearFloor(x, y, 3, SWEnvironment.shallowChloro)
 							&& tiles.get(x, y).dst(Math.round(width / 2f + copy.x), Math.round(height / 2f + copy.y)) > 30f
-							&& floor == SWEnvironment.heavyWater
+							&& floor == SWEnvironment.chloro
 							&& getHeight(sector.tile.v) * 10 < 0.2f
-						) floor = SWEnvironment.deepHeavyWater;
+						) floor = SWEnvironment.deepChloro;
 						
 						if(
 							noise(x + 500, y - 500, 7, 0.5, 500, 1) > 0.5 &&
-							(floor == SWEnvironment.heavyWater || floor == SWEnvironment.purpleSandHeavyWater || floor == SWEnvironment.deepHeavyWater) &&
+							(floor == SWEnvironment.chloro || floor == SWEnvironment.shallowChloro || floor == SWEnvironment.deepChloro) &&
 							getHeight(sector.tile.v) * 10 > 0.2f
 						) {
 							floor = Blocks.ice;
@@ -269,8 +269,9 @@ public class SWPlanets {
 							   Math.abs(0.5f - noise(offsetX, offsetY - 999, 1, 1, 34)) > 0.37f){
 							ore = SWEnvironment.oreNickel;
 						}
-						if(nearAir(x, y) && block == SWEnvironment.charoiteWall && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.62f){
-							block = Blocks.graphiticWall;
+						if(nearAir(x, y) && noise(x + 78, y, 4, 0.7f, 33f, 1f) > 0.62f){
+							if (block == SWEnvironment.charoiteWall) block = SWEnvironment.graphiteCharoiteWallOre;
+							if (block == SWEnvironment.grimeWall) block = SWEnvironment.graphiteGrimeWallOre;
 						}
 						if (noise(x + 500, y, 8, 0.7, 50, 1) > 0.7f && floor == SWEnvironment.purpleIce) {
 							ore = Blocks.oreTitanium;

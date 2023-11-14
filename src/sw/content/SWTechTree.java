@@ -21,7 +21,7 @@ public class SWTechTree {
     root = nodeRoot("Steam Works", coreScaffold, () -> {
       // items
       nodeProduce(nickel, () -> {
-        nodeProduce(steam, () -> nodeProduce(butane, () -> {}));
+        nodeProduce(steam, () -> nodeProduce(fungi, () -> {}));
         nodeProduce(compound, () -> nodeProduce(bismuth, () -> nodeProduce(graphene, () -> {})));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
       });

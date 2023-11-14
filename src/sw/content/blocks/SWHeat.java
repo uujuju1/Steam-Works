@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.world.blocks.heat.*;
@@ -22,7 +21,7 @@ public class SWHeat {
 	public static Block
 		heatPipe, heatBridge, heatRadiator,
 
-		boiler, thermalBoiler,
+//		boiler, thermalBoiler,
 
 		bolt, light;
 
@@ -44,29 +43,29 @@ public class SWHeat {
 			}};
 		}};
 
-		boiler = new HeatGenericCrafter("boiler") {{
-			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
-			heatConfig.outputHeat = false;
-			size = 2;
-			health = 160;
-			hasLiquids = true;
-			consumeLiquid(Liquids.water, 0.1f);
-			consume(new ConsumeHeat(0.5f, 100f, false));
-			updateEffect = Fx.smoke;
-			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
-		}};
-		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
-			requirements(Category.production, with(SWItems.nickel, 40, Items.titanium, 50, Items.metaglass, 35, Items.titanium, 30));
-			size = 2;
-			health = 160;
-			baseEfficiency = 0f;
-			minEfficiency = 0.25f;
-			maxBoost = 1.5f;
-			boostScale = 0.5f;
-			consumeLiquid(Liquids.water, 0.1f);
-			updateEffect = Fx.smoke;
-			outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
-		}};
+//		boiler = new HeatGenericCrafter("boiler") {{
+//			requirements(Category.production, with(SWItems.nickel, 40, Items.metaglass, 35, Items.titanium, 30));
+//			heatConfig.outputHeat = false;
+//			size = 2;
+//			health = 160;
+//			hasLiquids = true;
+//			consumeLiquid(Liquids.water, 0.1f);
+//			consume(new ConsumeHeat(0.5f, 100f, false));
+//			updateEffect = Fx.smoke;
+//			outputLiquid = new LiquidStack(SWLiquids.steam, 0.15f);
+//		}};
+//		thermalBoiler = new AttributeCrafter("thermal-boiler") {{
+//			requirements(Category.production, with(SWItems.nickel, 40, Items.titanium, 50, Items.metaglass, 35, Items.titanium, 30));
+//			size = 2;
+//			health = 160;
+//			baseEfficiency = 0f;
+//			minEfficiency = 0.25f;
+//			maxBoost = 1.5f;
+//			boostScale = 0.5f;
+//			consumeLiquid(Liquids.water, 0.1f);
+//			updateEffect = Fx.smoke;
+//			outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
+//		}};
 
 		Color col = Pal.accent.cpy().a(0.3f);
 		bolt = new HeatTurret("bolt") {{

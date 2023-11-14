@@ -227,7 +227,7 @@ public class SWBlocks {
 			updateEffect = Fx.smeltsmoke;
 			consumeLiquid(Liquids.oil, 0.2f);
 			consumePower(2f);
-			outputLiquid = new LiquidStack(SWLiquids.butane, 0.1f);
+			outputLiquid = new LiquidStack(SWLiquids.fungi, 0.1f);
 		}};
 
 		compoundSmelter = new GenericCrafter("compound-smelter") {{
@@ -269,6 +269,8 @@ public class SWBlocks {
 			));
 			outputItem = new ItemStack(SWItems.denseAlloy, 1);
 		}};
+
+
 
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(

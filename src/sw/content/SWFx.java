@@ -40,6 +40,21 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, 10 * Interp.sine.apply(e.fin() * 1.2f));
       });
     }).layer(Layer.darkness - 1),
+    steamCollect = new Effect(60f, e -> {
+      Draw.alpha(e.fslope() * 0.6f);
+      rand.setSeed(e.id);
+      Angles.randLenVectors(e.id, 3, 40f * e.fout(), e.fin() * 360f, e.fout() * 360f, (x, y) -> {
+        Fill.circle(e.x + x, e.y + y, 10f * Interp.sine.apply(e.fout() * 1.2f));
+      });
+    }),
+    fungiCollect = new Effect(60f, e -> {
+      Draw.color(Color.valueOf("9AC49A"));
+      Draw.alpha(e.fslope() * 0.6f);
+      rand.setSeed(e.id);
+      Angles.randLenVectors(e.id, 3, 40f * e.fout(), e.fin() * 360f, e.fout() * 360f, (x, y) -> {
+        Fill.circle(e.x + x, e.y + y, 10f * Interp.sine.apply(e.fout() * 1.2f));
+      });
+    }),
 
     nickelCraft = new Effect(30f, e -> {
       Draw.color(Pal.accent);

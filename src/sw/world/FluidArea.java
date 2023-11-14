@@ -15,8 +15,11 @@ public class FluidArea {
 		this.fluid = fluid;
 	}
 
-	public float get(int x, int y) {
-		return Mathf.maxZero(1f - Mathf.dst(this.x, this.y, x, y)/(float)radius);
+	public float get(float x, float y) {
+		return Mathf.maxZero(1f - (dst(x, y)/(radius * 8f)));
+	}
+	public float dst(float x, float y) {
+		return Mathf.dst(this.x * 8f, this.y * 8f, x, y);
 	}
 
 	@Override public boolean equals(Object obj) {

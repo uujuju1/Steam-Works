@@ -64,13 +64,15 @@ public class GasVent extends Floor {
 
 	@Override
 	public void renderUpdate(UpdateRenderState state) {
-		FluidArea area = new FluidArea(state.tile.x, state.tile.y, range, fluid);
+		FluidArea area = new FluidArea(state.tile.x - 1, state.tile.y - 1, range, fluid);
 		SWVars.fluidAreas.remove(area);
 
-		if(state.tile.nearby(-1, -1).block() == Blocks.air && (state.data += Time.delta) >= cloudEffectSpacing){
+		if(state.tile.nearby(-1, -1).block() == Blocks.air) {
 			SWVars.fluidAreas.addUnique(area);
-			cloudEffect.at(state.tile.x * tilesize - tilesize, state.tile.y * tilesize - tilesize, cloudEffectColor);
-			state.data = 0f;
+			if((state.data += Time.delta) >= cloudEffectSpacing) {
+				cloudEffect.at(state.tile.x * tilesize - tilesize, state.tile.y * tilesize - tilesize, cloudEffectColor);
+				state.data = 0f;
+			}
 		}
 	}
 

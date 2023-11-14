@@ -11,14 +11,15 @@ import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
-	charoite, charoiteCraters, charoiteWall, charoiteBoulder, charoiteGasVent,
-	purpleSand, purpleSandWall, purpleSandBoulder, purpleSandGasVent,
-	heavySnow, heavySnowWall, heavySnowBoulder,
+		charoite, charoiteCraters, charoiteWall, charoiteBoulder, charoiteGasVent,
+		grime, grimeWall, grimeBoulder, grimeGasVent,
+		sediment, sedimentWall, sedimentBoulder, sedimentGasVent,
+		moss, mossWall, mossBoulder, mossGasVent,
 	purpleIce, purpleIceCraters, purpleIceWall, purpleIceBoulder,
 
-	oreNickel,
+	oreNickel, graphiteCharoiteWallOre, graphiteGrimeWallOre,
 
-	heavyWater, deepHeavyWater, purpleSandHeavyWater, charoiteHeavyWater;
+	chloro, deepChloro, shallowChloro;
 
 	public static void load() {
 		charoiteWall = new StaticWall("charoite-wall") {{
@@ -44,31 +45,51 @@ public class SWEnvironment {
 			cloudEffectColor = Color.white;
 		}};
 
-		purpleSandWall = new StaticWall("purple-sand-wall") {{
+		grimeWall = new StaticWall("grime-wall") {{
 			attributes.set(Attribute.sand, 1);
 		}};
-		purpleSandBoulder = new Prop("purple-sand-boulder") {{
+		grimeBoulder = new Prop("grime-boulder") {{
 			variants = 2;
 		}};
-		purpleSand = new Floor("purple-sand") {{
+		grime = new Floor("grime") {{
 			variants = 4;
-			wall = purpleSandWall;
-			decoration = purpleSandBoulder;
+			wall = grimeWall;
+			decoration = grimeBoulder;
 		}};
-		purpleSandGasVent = new GasVent("purple-sand-gas-vent") {{
-			parent = blendGroup = purpleSand;
+		grimeGasVent = new GasVent("grime-gas-vent") {{
+			parent = blendGroup = grime;
 			fluid = SWLiquids.steam;
 			cloudEffectColor = Color.white;
 		}};
 
-		heavySnowWall = new StaticWall("heavy-snow-wall");
-		heavySnowBoulder = new Prop("heavy-snow-boulder") {{
+		sedimentWall = new StaticWall("sediment-wall");
+		sedimentBoulder = new Prop("sediment-boulder") {{
 			variants = 2;
 		}};
-		heavySnow = new Floor("heavy-snow") {{
+		sediment = new Floor("sediment") {{
 			variants = 4;
-			wall = heavySnowWall;
-			decoration = heavySnowBoulder;
+			wall = sedimentWall;
+			decoration = sedimentBoulder;
+		}};
+		sedimentGasVent = new GasVent("sediment-gas-vent") {{
+			parent = blendGroup = sediment;
+			fluid = SWLiquids.fungi;
+			cloudEffectColor = Color.valueOf("9AC49A");
+		}};
+
+		mossWall = new StaticWall("moss-wall");
+		mossBoulder = new Prop("moss-boulder") {{
+			variants = 2;
+		}};
+		moss = new Floor("moss") {{
+			variants = 4;
+			wall = mossWall;
+			decoration = mossBoulder;
+		}};
+		mossGasVent = new GasVent("moss-gas-vent") {{
+			parent = blendGroup = moss;
+			fluid = SWLiquids.fungi;
+			cloudEffectColor = Color.valueOf("9AC49A");
 		}};
 
 		purpleIceWall = new StaticWall("purple-ice-wall") {{
@@ -90,8 +111,14 @@ public class SWEnvironment {
 		}};
 
 		oreNickel = new OreBlock(SWItems.nickel);
+		graphiteCharoiteWallOre = new StaticWall("graphite-charoite-wall-ore") {{
+			itemDrop = Items.graphite;
+		}};
+		graphiteGrimeWallOre = new StaticWall("graphite-grime-wall-ore") {{
+			itemDrop = Items.graphite;
+		}};
 
-		deepHeavyWater = new Floor("deep-heavy-water") {{
+		deepChloro = new Floor("deep-chloro") {{
 			speedMultiplier = 0.25f;
 			variants = 0;
 			status = StatusEffects.wet;
@@ -103,7 +130,7 @@ public class SWEnvironment {
 			supportsOverlay = true;
 			drownTime = 200f;
 		}};
-		heavyWater = new Floor("heavy-water") {{
+		chloro = new Floor("chloro") {{
 			speedMultiplier = 0.5f;
 			variants = 0;
 			status = StatusEffects.wet;
@@ -114,18 +141,7 @@ public class SWEnvironment {
 			albedo = 0.9f;
 			supportsOverlay = true;
 		}};
-		purpleSandHeavyWater = new Floor("purple-sand-heavy-water") {{
-			speedMultiplier = 0.75f;
-			variants = 0;
-			status = StatusEffects.wet;
-			statusDuration = 90f;
-			liquidDrop = Liquids.water;
-			isLiquid = true;
-			cacheLayer = CacheLayer.water;
-			albedo = 0.9f;
-			supportsOverlay = true;
-		}};
-		charoiteHeavyWater = new Floor("charoite-heavy-water") {{
+		shallowChloro = new Floor("shallow-chloro") {{
 			speedMultiplier = 0.75f;
 			variants = 0;
 			status = StatusEffects.wet;
