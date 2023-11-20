@@ -2,7 +2,7 @@ displayName: "Steam Works"
 name: "sw"
 author: "Uujuju"
 main: "sw.ModLoader"
-description: "A heat and steam based mod."
-version: 1.0.8
+description: "A thing."
+version: 1.0.Alpha
 minGameVersion: 142
 java: true

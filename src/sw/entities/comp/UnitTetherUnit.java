@@ -46,11 +46,12 @@ public class UnitTetherUnit extends UnitEntity {
 	@Override
 	public void read(Reads read) {
 		super.read(read);
-		unitID = read.i();
+		int id = read.i();
+		if (id != -1) unitID = id;
 	}
 	@Override
 	public void write(Writes write) {
 		super.write(write);
-		write.i(unit.id);
+		write.i(unit == null ? -1 : unit.id);
 	}
 }

@@ -100,17 +100,13 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 			lastRoom = new Room(x, y, minRadius + rand.range(randomRadius), lastRoom);
 			output.add(lastRoom);
 			int newx = -1, newy = -1;
+			int max = 0;
 
-			try {
-				while (!tiles.in(newx, newy)) {
-					float newAngle = angle + rand.range(randomAngle);
-					Tmp.v1.trns(newAngle, distance + rand.range(randomDistance));
-					newx = x + Math.round(Tmp.v1.x);
-					newy = y + Math.round(Tmp.v1.y);
-				}
-			} catch(Exception e) {
-				Log.err("no it won't go back", e);
-				break;
+			while (!tiles.in(newx, newy)) {
+				float newAngle = angle + rand.range(randomAngle);
+				Tmp.v1.trns(newAngle, distance + rand.range(randomDistance));
+				newx = x + Math.round(Tmp.v1.x);
+				newy = y + Math.round(Tmp.v1.y);
 			}
 			x = newx;
 			y = newy;

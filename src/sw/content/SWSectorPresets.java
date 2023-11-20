@@ -3,9 +3,13 @@ package sw.content;
 import mindustry.type.*;
 
 public class SWSectorPresets {
-	public static SectorPreset hotspot, greatLake, erosion, aurora;
+	public static SectorPreset anthill, hotspot, greatLake, erosion, aurora;
 
 	public static void load() {
+		anthill = new SectorPreset("anthill", SWPlanets.wendi, 76) {{
+			captureWave = 10;
+			difficulty = 2;
+		}};
 		hotspot = new SectorPreset("hotspot", SWPlanets.wendi, 1) {{
 			captureWave = 20;
 			difficulty = 2;

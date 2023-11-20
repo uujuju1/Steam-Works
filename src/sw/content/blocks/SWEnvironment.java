@@ -15,11 +15,12 @@ public class SWEnvironment {
 		grime, grimeWall, grimeBoulder, grimeGasVent,
 		sediment, sedimentWall, sedimentBoulder, sedimentGasVent,
 		moss, mossWall, mossBoulder, mossGasVent,
-	purpleIce, purpleIceCraters, purpleIceWall, purpleIceBoulder,
+		chloroIce, chloroIceCraters, chloroIceWall, chloroIceBoulder,
+		scorched, scorchedWall, scorchedCrater,
 
-	oreNickel, graphiteCharoiteWallOre, graphiteGrimeWallOre,
+		oreNickel, graphiteCharoiteWallOre, graphiteGrimeWallOre,
 
-	chloro, deepChloro, shallowChloro;
+		chloro, deepChloro, shallowChloro;
 
 	public static void load() {
 		charoiteWall = new StaticWall("charoite-wall") {{
@@ -92,22 +93,32 @@ public class SWEnvironment {
 			cloudEffectColor = Color.valueOf("9AC49A");
 		}};
 
-		purpleIceWall = new StaticWall("purple-ice-wall") {{
+		chloroIceWall = new StaticWall("purple-ice-wall") {{
 			attributes.set(Attribute.sand, 1.5f);
 		}};
-		purpleIceBoulder = new Prop("purple-ice-boulder") {{
+		chloroIceBoulder = new Prop("purple-ice-boulder") {{
 			variants = 2;
 		}};
-		purpleIce = new Floor("purple-ice") {{
+		chloroIce = new Floor("purple-ice") {{
 			variants = 4;
-			wall = purpleIceWall;
-			decoration = purpleIceBoulder;
+			wall = chloroIceWall;
+			decoration = chloroIceBoulder;
 		}};
-		purpleIceCraters = new Floor("purple-ice-crater") {{
+		chloroIceCraters = new Floor("purple-ice-crater") {{
+			variants = 3;
+			wall = chloroIceWall;
+			decoration = chloroIceBoulder;
+			blendGroup = chloroIce;
+		}};
+
+		scorchedWall = new StaticWall("scorched-wall");
+		scorched = new Floor("scorched") {{
+			variants = 4;
+			wall = scorchedWall;
+		}};
+		scorchedCrater = new Floor("scorched-crater") {{
 			variants = 2;
-			wall = purpleIceWall;
-			decoration = purpleIceBoulder;
-			blendGroup = purpleIce;
+			wall = scorchedWall;
 		}};
 
 		oreNickel = new OreBlock(SWItems.nickel);
@@ -121,36 +132,35 @@ public class SWEnvironment {
 		deepChloro = new Floor("deep-chloro") {{
 			speedMultiplier = 0.25f;
 			variants = 0;
-			status = StatusEffects.wet;
-			statusDuration = 90f;
-			liquidDrop = Liquids.water;
+			liquidDrop = SWLiquids.chloro;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			albedo = 0.9f;
 			supportsOverlay = true;
-			drownTime = 200f;
+			wall = chloroIceWall;
+			decoration = chloroIceBoulder;
 		}};
-		chloro = new Floor("chloro") {{
+		chloro = new Floor("chloro-floor") {{
 			speedMultiplier = 0.5f;
 			variants = 0;
-			status = StatusEffects.wet;
-			statusDuration = 90f;
-			liquidDrop = Liquids.water;
+			liquidDrop = SWLiquids.chloro;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			albedo = 0.9f;
 			supportsOverlay = true;
+			wall = chloroIceWall;
+			decoration = chloroIceBoulder;
 		}};
 		shallowChloro = new Floor("shallow-chloro") {{
 			speedMultiplier = 0.75f;
 			variants = 0;
-			status = StatusEffects.wet;
-			statusDuration = 90f;
-			liquidDrop = Liquids.water;
+			liquidDrop = SWLiquids.chloro;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			albedo = 0.9f;
 			supportsOverlay = true;
+			wall = chloroIceWall;
+			decoration = chloroIceBoulder;
 		}};
 	}
 }
