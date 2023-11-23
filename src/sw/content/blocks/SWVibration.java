@@ -56,8 +56,9 @@ public class SWVibration {
 			consume(new ConsumeVibration(100f, 250f));
 			consumeItems(with(
 				Items.graphite, 2,
-				SWItems.compound, 2
+				SWItems.denseAlloy, 2
 			));
+			consumeLiquid(SWLiquids.steam, 0.2f);
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawBlurSpin("-rotator", 20) {{

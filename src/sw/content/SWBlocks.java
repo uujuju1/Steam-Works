@@ -53,7 +53,7 @@ public class SWBlocks {
 		powerWire,
 		burner,
 
-		artyleriya, thermikos,
+		artyleriya, curve, thermikos,
 
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
@@ -84,6 +84,9 @@ public class SWBlocks {
 			range = 5;
 			boostHeatColor = Color.black;
 			optionalBoostIntensity = 1f;
+			researchCost = with(
+				SWItems.nickel, 100
+			);
 		}};
 		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
 			requirements(Category.production, with(
@@ -96,6 +99,10 @@ public class SWBlocks {
 			output = Items.sand;
 			ambientSound = Sounds.drill;
 			ambientSoundVolume = 0.04f;
+			researchCost = with(
+				SWItems.nickel, 100,
+				Items.graphite, 100
+			);
 		}};
 		hydraulicDrill = new Drill("hydraulic-drill") {{
 			requirements(Category.production, with(
@@ -106,6 +113,10 @@ public class SWBlocks {
 			health = 160;
 			tier = 3;
 			drillTime = 400;
+			researchCost = with(
+				SWItems.nickel, 160,
+				Items.graphite, 200
+			);
 		}};
 		// endregion
 
@@ -117,6 +128,9 @@ public class SWBlocks {
 			health = 125;
 			speed = 0.08f;
 			displayedSpeed = 11f;
+			researchCost = with(
+				SWItems.nickel, 30
+			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
 			requirements(Category.distribution, with(
@@ -204,6 +218,7 @@ public class SWBlocks {
 			craftTime = 90f;
 
 			consumeItems(with(Items.graphite, 2, Items.sand, 2));
+			consumePower(0.5f);
 			outputItems = with(Items.silicon, 1);
 
 			drawer = new DrawMulti(
@@ -239,7 +254,7 @@ public class SWBlocks {
 			));
 			size = 3;
 			health = 200;
-			craftTime = 60f;
+			craftTime = 30f;
 
 			drawer = new DrawMulti(
 				new DrawDefault(),
@@ -247,8 +262,8 @@ public class SWBlocks {
 			);
 
 			consumeItems(with(
-				Items.graphite, 2,
-				SWItems.nickel, 1
+				Items.graphite, 1,
+				SWItems.nickel, 2
 			));
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
@@ -264,13 +279,11 @@ public class SWBlocks {
 			craftTime = 60f;
 
 			consumeItems(with(
-				Items.titanium, 1,
-				SWItems.nickel, 1
+				Items.titanium, 3,
+				SWItems.nickel, 2
 			));
-			outputItem = new ItemStack(SWItems.denseAlloy, 1);
+			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
-
-
 
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
@@ -307,8 +320,9 @@ public class SWBlocks {
 				Items.silicon, 50
 			));
 			recipe = new GenericRecipe() {{
-				consumeItems = with(SWItems.nickel, 6, Items.titanium, 4);
+				consumeItems = with(SWItems.nickel, 2, Items.titanium, 6);
 				outputItems = with(SWItems.denseAlloy, 5);
+				craftTime = 45f;
 				craftEffect = SWFx.denseAlloyCraft;
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
@@ -421,7 +435,7 @@ public class SWBlocks {
 				Items.graphite, 120
 			));
 			size = 2;
-			health = 480;
+			scaledHealth = 220f;
 			reload = 60f;
 			range = 96f;
 			shoot = new ShootAlternate();
@@ -438,6 +452,40 @@ public class SWBlocks {
 					width = height = 12f;
 					splashDamage = 50;
 					splashDamageRadius = 24f;
+				}}
+			);
+			researchCost = with(
+				SWItems.nickel, 200,
+				Items.graphite, 240
+			);
+		}};
+		curve = new ItemTurret("curve") {{
+			requirements(Category.turret, with(
+				SWItems.nickel, 150,
+				Items.titanium, 120,
+				Items.silicon, 80
+			));
+			size = 3;
+			scaledHealth = 220f;
+			reload = 45f;
+			range = 120f;
+			shootY = 0f;
+			shootSound = Sounds.missileSmall;
+			shoot = new ShootBarrel() {{
+				shots = 2;
+				barrels = new float[]{
+					6f, 8f, 15f,
+					-6f, 8f, -15f
+				};
+			}};
+			ammo(
+				Items.silicon, new BasicBulletType(3f, 40) {{
+					homingPower = 0.08f;
+					shrinkY = 0f;
+					width = 14f;
+					height = 14f;
+					hitSound = Sounds.explosion;
+					lifetime = 40f;
 				}}
 			);
 		}};
@@ -538,9 +586,9 @@ public class SWBlocks {
 		// region units
 		subFactory = new UnitFactory("submarine-factory") {{
 			requirements(Category.units, with(
-							SWItems.compound, 120,
-							Items.lead, 140,
-							Items.graphite, 100
+				SWItems.compound, 120,
+				Items.lead, 140,
+				Items.graphite, 100
 			));
 			size = 3;
 			health = 160;

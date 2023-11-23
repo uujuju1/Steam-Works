@@ -216,10 +216,9 @@ public class SWForce {
 			consume(new ConsumeSpeed(2f, 4f));
 			consume(new ConsumeRatio(ForceGraph.ForceRatio.normal));
 			consumeItems(with(
-				Items.graphite, 1,
+				SWItems.compound, 2,
 				Items.sand, 1
 			));
-			consumeLiquid(Liquids.water, 0.1f);
 			outputItem = new ItemStack(SWItems.bismuth, 1);
 		}};
 		deHumidifier = new SWGenericCrafter("de-humidifier") {{

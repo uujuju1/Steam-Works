@@ -19,21 +19,23 @@ public class SWTechTree {
 
   public static void load() {
     root = nodeRoot("Steam Works", coreScaffold, () -> {
-      // items
+      // region items
       nodeProduce(nickel, () -> {
         nodeProduce(steam, () -> nodeProduce(fungi, () -> {}));
         nodeProduce(compound, () -> nodeProduce(bismuth, () -> nodeProduce(graphene, () -> {})));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
       });
+      // endregion
 
-      // production
+      // region production
       node(mechanicalBore, () -> {
         node(hydraulicDrill);
         node(excavator, with(new Research(waterWheel)), () -> {});
       });
+      // endregion
 
-      // crafting
-      node(siliconBoiler, with(new SectorComplete(SectorPresets.craters)), () -> {
+      // region crafting
+      node(siliconBoiler, with(new OnSector(cLake)), () -> {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields)
         ), () -> {});
@@ -56,8 +58,9 @@ public class SWTechTree {
           });
         });
       });
+      // endregion
 
-      // distribution
+      // region distribution
       node(resistantConveyor, () -> {
         node(suspensionConveyor);
         node(mechanicalBridge);
@@ -75,17 +78,20 @@ public class SWTechTree {
         new Research(beltNode),
         new SectorComplete(hotspot)
       ), () -> {});
+      // endregion
 
-      // defense
+      // region defense
       node(compoundWall, with(new Produce(compound)), () -> {
         node(compoundWallLarge);
         node(denseWall, with(new Produce(denseAlloy)), () -> node(denseWallLarge));
       });
+      // endregion
 
-      // turrets
+      // region turrets
 //      node(bolt, () -> {
 //        node(light);
       node(artyleriya, () -> {
+        node(curve, with(new OnSector(cLake)), () -> {});
         node(thermikos);
         node(mortar, () -> {
           node(incend, with(new Research(oilDistiller)), () -> {});
@@ -95,11 +101,14 @@ public class SWTechTree {
         });
       });
 //      });
+      // endregion
 
-      // misc
+      // region power
+      node(burner, with(new OnSector(cLake)), () -> node(powerWire));
       node(filler, Seq.with(new OnSector(greatLake)), () -> node(terra));
+      // endregion
 
-      // units
+      // region units
       node(swarm, with(
         new Produce(compound),
         new Research(Blocks.airFactory)
@@ -125,8 +134,14 @@ public class SWTechTree {
           node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
         });
       });
+      // endregion
 
-      // maps
+      // region maps
+      node(anthill, () -> {
+        node(cLake, () -> {
+
+        });
+      });
       node(hotspot, with(
         new SectorComplete(SectorPresets.craters),
         new Produce(compound)
@@ -136,6 +151,7 @@ public class SWTechTree {
           node(aurora, with(new SectorComplete(greatLake)), () -> {});
         });
       });
+      // endregion
     });
     SWPlanets.wendi.techTree = root;
   }
