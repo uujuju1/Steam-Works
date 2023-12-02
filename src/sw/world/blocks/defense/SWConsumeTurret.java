@@ -81,7 +81,9 @@ public class SWConsumeTurret extends Turret {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
 			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
-			if (getVibrationLink() != null) SWDraw.square(Pal.place, getVibrationLink().x(), getVibrationLink().y(), getVibrationLink().block().size * 6f, 0f);
+			getVibrationLinks().each(build -> {
+				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
+			});
 			Draw.reset();
 		}
 
@@ -90,15 +92,22 @@ public class SWConsumeTurret extends Turret {
 			super.onProximityAdded();
 			vGraph().add(this);
 			force.graph.flood(this).each(b -> graph().add(b));
-			vGraph().updateBuilds();
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
+			vibration().links.each(link -> {
+				if (link.valid()) {
+					removeVibrationLink(link.other(this));
+				} else {
+					vibration().links.remove(link);
+					vGraph().remove(this);
+					vGraph().delete(link.other(this));
+					vGraph().links.remove(link);
+				}
+			});
 			forceUnLink();
 			graph().remove(this);
-			if (getVibrationLink() != null) vibrationUnlink();
-			vGraph().links.removeAll(vibration().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {

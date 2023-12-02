@@ -23,7 +23,7 @@ public interface HasVibration extends Buildingc {
 		return Vars.world.build(vibration().link) instanceof HasVibration b ? b : null;
 	}
 	default Seq<HasVibration> getVibrationLinks() {
-		return getVibrationLink() == null ? Seq.with() : Seq.with(getVibrationLink());
+		return vibration().links.map(link -> link.other(this));
 	}
 
 	default void drawLink() {
@@ -53,34 +53,39 @@ public interface HasVibration extends Buildingc {
 		Draw.z(Layer.block);
 	}
 
-	default void vibrationLink(HasVibration build) {
-		vibration().link = build.pos();
-		vibration().links.addUnique(new VibrationGraph.VibrationLink(pos(), build.pos()));
-		build.vibration().links.addUnique(new VibrationGraph.VibrationLink(pos(), build.pos()));
-		vGraph().links.addUnique(new VibrationGraph.VibrationLink(pos(), build.pos()));
-		vGraph().updateBuilds();
-	}
-	default void vibrationUnlink() {
-		vibration().links.remove(new VibrationGraph.VibrationLink(pos(), getVibrationLink().pos()));
-		getVibrationLink().vibration().links.remove(new VibrationGraph.VibrationLink(pos(), getVibrationLink().pos()));
-		vGraph().links.remove(new VibrationGraph.VibrationLink(pos(), getVibrationLink().pos()));
-		vibration().link = -1;
-		vGraph().updateBuilds();
-	}
-
 	default boolean configVibrationLink(Building other) {
 		if (vConfig().outputsVibration) {
 			if (getVibrationLink() != null) if (other == getVibrationLink() || other == this) {
-				vibrationUnlink();
+				removeVibrationLink(getVibrationLink());
+				vibration().link = -1;
 				return false;
 			}
-			if (other instanceof HasVibration b && other.dst(this) <= vConfig().range && b.vConfig().acceptsVibration) {
-				if (getVibrationLink() != null) vibrationUnlink();
-				if (b.getVibrationLink() == this) b.vibrationUnlink();
-				vibrationLink(b);
+			if (other instanceof HasVibration build && other.dst(this) <= vConfig().range && build.vConfig().acceptsVibration) {
+				if (getVibrationLink() != null) removeVibrationLink(getVibrationLink());
+				if (build.getVibrationLink() == this) {
+					build.removeVibrationLink(this);
+					build.vibration().link = -1;
+				}
+				createVibrationLink(build);
+				vibration().link = build.pos();
 				return false;
 			}
 		}
 		return true;
+	}
+
+	default void createVibrationLink(HasVibration other) {
+		VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+		vibration().links.addUnique(link);
+		other.vibration().links.addUnique(link);
+		vGraph().addLink(link);
+	}
+	default void removeVibrationLink(HasVibration other) {
+		if (other != null) {
+			VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+			vibration().links.remove(link);
+			other.vibration().links.remove(link);
+			vGraph().removeLink(link);
+		}
 	}
 }

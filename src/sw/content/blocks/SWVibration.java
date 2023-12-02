@@ -16,15 +16,16 @@ import sw.world.blocks.production.*;
 import sw.world.blocks.vibration.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
+import sw.world.graph.VibrationGraph.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWVibration {
 	public static Block
-		vibrationWire,
+		vibrationWire, vibrationDistributor,
 		thermiteMixer,
-		springHammer,
+		springHammer, windCollector,
 
 		sonus, impacto;
 
@@ -35,9 +36,14 @@ public class SWVibration {
 			));
 			health = 40;
 			vibrationConfig = new VibrationConfig() {{
-				resistance = 0.1f;
-				range = 40f;
+				range = 80f;
 			}};
+		}};
+		vibrationDistributor = new VibrationDistributor("vibration-distributor") {{
+			requirements(Category.power, with(
+				SWItems.denseAlloy, 5
+			));
+			health = 40;
 		}};
 
 		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
@@ -51,9 +57,10 @@ public class SWVibration {
 			health = 360;
 			craftTime = 120f;
 			hasVibration = true;
+			hasLiquids = true;
 			hasHeat = hasForce = false;
 
-			consume(new ConsumeVibration(100f, 250f));
+			consume(new ConsumeVibration(175f));
 			consumeItems(with(
 				Items.graphite, 2,
 				SWItems.denseAlloy, 2
@@ -98,7 +105,6 @@ public class SWVibration {
 			size = 2;
 			health = 160;
 			craftTime = 120f;
-			outputVibration = 480f;
 			hasHeat = false;
 			hasVibration = true;
 
@@ -123,6 +129,34 @@ public class SWVibration {
 				beltSize = 4f;
 				outputsForce = false;
 				maxForce = 1f;
+			}};
+		}};
+		windCollector = new SWGenericCrafter("wind-collector") {{
+			requirements(Category.power, with(
+				SWItems.denseAlloy, 150,
+				Items.titanium, 120,
+				Items.graphite, 130
+			));
+			size = 3;
+			health = 200;
+			craftTime = 1f;
+			hasHeat = false;
+			hasForce = false;
+			hasVibration = true;
+
+			outputVibration = new StaticFrequency(100f, 300f);
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawRegion("-rotator") {{
+					rotateSpeed = 0.5f;
+				}}
+			);
+
+			vibrationConfig = new VibrationConfig() {{
+				acceptsVibration = false;
+				resistance = 0.2f;
+				range = 80f;
 			}};
 		}};
 

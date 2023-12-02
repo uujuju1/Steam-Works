@@ -203,7 +203,7 @@ public class SWForce {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawLiquidTile(Liquids.water),
+//				new DrawLiquidTile(Liquids.water),
 				new DrawCultivator() {{
 					plantColorLight = Color.valueOf("C7D4CF");
 					plantColor = Color.valueOf("97ABA4");

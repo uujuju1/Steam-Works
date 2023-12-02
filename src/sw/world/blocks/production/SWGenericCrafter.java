@@ -2,7 +2,6 @@ package sw.world.blocks.production;
 
 import arc.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -11,6 +10,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 import sw.util.*;
+import sw.world.graph.VibrationGraph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -23,7 +23,8 @@ public class SWGenericCrafter extends GenericCrafter {
 	public HeatConfig heatConfig = new HeatConfig();
 	public VibrationConfig vibrationConfig = new VibrationConfig();
 
-	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f, outputVibration = -1f;
+	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f;
+	public Frequency outputVibration;
 	public boolean hasForce = true, hasHeat = true, hasVibration = false;
 
 /**
@@ -94,7 +95,10 @@ public class SWGenericCrafter extends GenericCrafter {
 
 		@Override
 		public void updateTile() {
-			if (efficiency > 0 && outputHeat >= 0) setHeat(Mathf.approach(temperature(), outputHeat * efficiency, outputHeatSpeed * edelta()));
+			if (outputVibration instanceof StaticFrequency frequency) {
+				StaticFrequency f = new StaticFrequency(efficiency > 0, frequency.min, frequency.max);
+				vGraph().addFrequency(f);
+			}
 			rotation += speed() * Time.delta;
 			if (Math.abs(rotation) > maxRotation && clampRotation) {
 				rotation = (maxRotation + 1f) * (rotation > 0 ? 1f : -1f);
@@ -107,7 +111,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			if (outputSpeed >= 0) force().speed = outputSpeed;
-			if (outputVibration >= 0) vGraph().frequencies.add(outputVibration);
+			if (outputVibration != null && (outputVibration instanceof StaticFrequency)) vGraph().addFrequency(outputVibration);
 		}
 
 		@Override
@@ -121,7 +125,9 @@ public class SWGenericCrafter extends GenericCrafter {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
 			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
-			if (getVibrationLink() != null) SWDraw.square(Pal.place, getVibrationLink().x(), getVibrationLink().y(), getVibrationLink().block().size * 6f, 0f);
+			getVibrationLinks().each(build -> {
+				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
+			});
 			Draw.reset();
 		}
 
@@ -130,19 +136,26 @@ public class SWGenericCrafter extends GenericCrafter {
 			super.onProximityAdded();
 			vGraph().add(this);
 			force.graph.flood(this).each(b -> graph().add(b));
-			vGraph().updateBuilds();
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
+			vibration().links.each(link -> {
+				if (link.valid()) {
+					removeVibrationLink(link.other(this));
+				} else {
+					vibration().links.remove(link);
+					vGraph().remove(this);
+					vGraph().delete(link.other(this));
+					vGraph().links.remove(link);
+				}
+			});
 			forceUnLink();
 			graph().remove(this);
-			if (getVibrationLink() != null) vibrationUnlink();
-			vGraph().links.removeAll(vibration().links);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureForceLink(other) && configVibrationLink(other);
+			return configureForceLink(other) || configVibrationLink(other);
 		}
 
 		@Override
