@@ -174,7 +174,7 @@ public class SWVibration {
 			hasVibration = true;
 			targetGround = false;
 			shootSound = Sounds.shootSmite;
-//			consume(new ConsumeVibration(0, 10000));
+			consume(new ConsumeVibration(150f));
 
 			drawer = new DrawTurret() {{
 				parts.add(new RegionPart("-speaker") {{
@@ -185,7 +185,7 @@ public class SWVibration {
 			}};
 
 			vibrationConfig = new VibrationConfig() {{
-				outputsVibration = true;
+				outputsVibration = false;
 			}};
 
 			shootType = new BasicBulletType(6f, 60, "sw-sound-wave") {{
@@ -216,6 +216,7 @@ public class SWVibration {
 			hasVibration = true;
 			targetAir = false;
 			shootSound = Sounds.titanExplosion;
+			consume(new ConsumeVibration(250f));
 
 			drawer = new DrawTurret() {{
 				parts.add(new RegionPart("-hammer") {{
@@ -226,7 +227,7 @@ public class SWVibration {
 			}};
 
 			vibrationConfig = new VibrationConfig() {{
-				outputsVibration = true;
+				outputsVibration = false;
 			}};
 
 			shoot = new ShootPattern() {{

@@ -35,5 +35,5 @@ public class SWStat {
     acceptsVibration = new Stat("sw-accepts-vibration", SWStatCat.vibration),
     outputsVibration = new Stat("sw-outputs-vibration", SWStatCat.vibration),
     outputVibration = new Stat("sw-output-vibration", SWStatCat.vibration),
-    consumeFrequency = new Stat("consume-frequency", SWStatCat.vibration);
+    consumeFrequency = new Stat("sw-consume-frequency", SWStatCat.vibration);
 }

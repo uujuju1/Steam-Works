@@ -1,12 +1,14 @@
 package sw.world.blocks.defense;
 
 import arc.graphics.g2d.*;
+import arc.struct.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.meta.*;
 import sw.util.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -23,7 +25,16 @@ public class SWConsumeTurret extends Turret {
 		super(name);
 	}
 
-	@Override public void drawOverlay(float x, float y, int rotation) {
+	@Override
+	public void setStats() {
+		super.setStats();
+		if (hasForce) forceConfig.addStats(stats);
+		if (hasVibration) vibrationConfig.addStats(stats);
+		stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
+	}
+
+	@Override
+	public void drawOverlay(float x, float y, int rotation) {
 		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 		if (vibrationConfig.outputsVibration) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
@@ -31,8 +42,14 @@ public class SWConsumeTurret extends Turret {
 	@Override
 	public void init() {
 		super.init();
-		if (!hasForce) forceConfig.acceptsForce = forceConfig.outputsForce = false;
-		if (!hasVibration) vibrationConfig.acceptsVibration = vibrationConfig.outputsVibration = false;
+		if (!hasForce) {
+			forceConfig.acceptsForce = false;
+			forceConfig.outputsForce = false;
+		}
+		if (!hasVibration) {
+			vibrationConfig.acceptsVibration = false;
+			vibrationConfig.outputsVibration = false;
+		}
 		configurable = forceConfig.outputsForce || vibrationConfig.outputsVibration;
 	}
 

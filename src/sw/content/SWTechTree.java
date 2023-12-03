@@ -45,7 +45,7 @@ public class SWTechTree {
             node(crystalizerModule);
           });
         });
-        node(densePress, () -> {
+        node(densePress, with(new OnSector(path)), () -> {
           node(impactPressModule);
           node(thermiteMixer, () -> {
             node(mixerModule);
@@ -68,7 +68,7 @@ public class SWTechTree {
           node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
           node(mechanicalUnloader);
         });
-        node(vibrationWire);
+        node(vibrationWire, with(new Research(windCollector)), () -> node(vibrationDistributor));
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
           node(omniBelt, with(new Research(graphene)), () -> {});
@@ -96,7 +96,7 @@ public class SWTechTree {
         node(mortar, () -> {
           node(incend, with(new Research(oilDistiller)), () -> {});
         });
-        node(sonus, () -> {
+        node(sonus, with(new Research(windCollector)), () -> {
           node(impacto);
         });
       });
@@ -104,7 +104,10 @@ public class SWTechTree {
       // endregion
 
       // region power
-      node(burner, with(new OnSector(cLake)), () -> node(powerWire));
+      node(burner, with(new OnSector(cLake)), () -> {
+        node(powerWire);
+        node(windCollector);
+      });
       node(filler, Seq.with(new OnSector(greatLake)), () -> node(terra));
       // endregion
 
