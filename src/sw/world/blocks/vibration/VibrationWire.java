@@ -19,6 +19,12 @@ public class VibrationWire extends Block {
 	}
 
 	@Override
+	public void setStats() {
+		super.setStats();
+		vibrationConfig.addStats(stats);
+	}
+
+	@Override
 	public void init() {
 		super.init();
 		configurable = vibrationConfig.outputsVibration;

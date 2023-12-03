@@ -1,8 +1,13 @@
 package sw.world.graph;
 
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.graphics.*;
+import mindustry.ui.*;
 import sw.world.interfaces.*;
 
 public class VibrationGraph extends Graph {
@@ -147,6 +152,10 @@ public class VibrationGraph extends Graph {
 		abstract void update(VibrationGraph graph);
 		abstract boolean valid(float frequency);
 		abstract void set(Frequency frequency);
+
+		public Table display() {
+			return new Table();
+		}
 	}
 	public static class StaticFrequency extends Frequency {
 		public boolean enabled;
@@ -169,6 +178,41 @@ public class VibrationGraph extends Graph {
 		}
 		@Override public void set(Frequency f) {
 			if (f instanceof StaticFrequency frequency) enabled = frequency.enabled;
+		}
+
+		@Override
+		public Table display() {
+			return new Table(stat -> {
+				Stack values = new Stack();
+
+				values.add(new Table(o -> {
+					o.add("").size(200, 0);
+				}));
+				values.add(new Table(o -> {
+					o.left();
+					o.add(min + "");
+				}));
+				values.add(new Table(o -> {
+					o.right();
+					o.add(max + "");
+				}));
+				stat.table(Styles.black3, table -> {
+					table.add("Static Frequency").color(Pal.accent).row();
+					table.add(values).row();
+					table.rect((x, y, w, h) -> {
+						Draw.color(Color.gray);
+						Fill.rect(x + 100, y, 200, 5);
+						for (int i = 0; i < 11; i++) {
+							if (i == 0 || i == 10) {
+								Draw.color(Pal.accent);
+							} else {
+								Draw.color(Color.gray);
+							}
+							Fill.rect(x + 10 + 18 * i, y, 5, 20);
+						}
+					}).size(200, 10);
+				}).margin(5);
+			});
 		}
 
 		@Override
@@ -197,20 +241,53 @@ public class VibrationGraph extends Graph {
 			if (decay < 0) graph.frequenci.remove(this);
 		}
 		@Override boolean valid(float frequency) {
-			return min - decay < frequency && frequency < max - decay;
+			return min + decay < frequency && frequency < max + decay;
 		}
 		@Override public void set(Frequency f) {
 			if (f instanceof DecayingFrequency frequency) decay = frequency.decay;
 		}
 
+		@Override
+		public Table display() {
+			return new Table(stat -> {
+				Stack values = new Stack();
+
+				values.add(new Table(o -> o.add("").size(200, 0)));
+				values.add(new Table(o -> o.add(decay + "+")));
+				values.add(new Table(o -> {
+					o.left();
+					o.add(min + "");
+				}));
+				values.add(new Table(o -> {
+					o.right();
+					o.add(max + "");
+				}));
+				stat.table(Styles.black3, table -> {
+					table.add("Decaying Frequency").color(Pal.accent).row();
+					table.add(values).row();
+					table.rect((x, y, w, h) -> {
+						Draw.color(Color.gray);
+						Fill.rect(x + 100, y, 200, 5);
+						for (int i = 0; i < 11; i++) {
+							if (i == 0 || i == 10) {
+								Draw.color(Pal.accent);
+							} else {
+								Draw.color(Color.gray);
+							}
+							Fill.rect(x + 10 + 18 * i, y, 5, 20);
+						}
+					}).size(200, 10);
+				}).margin(5);
+			});
+		}
 
 		@Override public boolean equals(Object obj) {
 			return obj instanceof DecayingFrequency frequency && min == frequency.min && max == frequency.max;
 		}
 		@Override public String toString() {
 			return "(DecayingFrequency" +
-				       ", min: " + (min - decay) + " from: " + min +
-				       ", max: " + (max - decay) + ", from: " + max +
+				       ", min: " + (min + decay) + " from: " + min +
+				       ", max: " + (max + decay) + ", from: " + max +
 				       ", decay: " + decay + ")";
 		}
 	}

@@ -2,7 +2,9 @@ package sw.world.consumers;
 
 import mindustry.gen.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 import sw.world.interfaces.*;
+import sw.world.meta.*;
 
 public class ConsumeVibration extends Consume {
 	public float frequency;
@@ -11,18 +13,14 @@ public class ConsumeVibration extends Consume {
 		this.frequency = frequency;
 	}
 
-	@Override
-	public float efficiency(Building build) {
-		if (build instanceof HasVibration hasBuild) {
-			return hasBuild.vGraph().hasFrequency(frequency) ? 1f : 0f;
-		}
-		return 0f;
+	@Override public float efficiency(Building build) {
+		return (build instanceof HasVibration hasBuild && hasBuild.vGraph().hasFrequency(frequency)) ? 1f : 0f;
 	}
-	@Override
-	public float efficiencyMultiplier(Building build) {
-		if (build instanceof HasVibration hasBuild) {
-			return hasBuild.vGraph().hasFrequency(frequency) ? 1f : 0f;
-		}
-		return 0f;
+	@Override public float efficiencyMultiplier(Building build) {
+		return (build instanceof HasVibration hasBuild && hasBuild.vGraph().hasFrequency(frequency)) ? 1f : 0f;
+	}
+
+	@Override public void display(Stats stats) {
+		stats.add(SWStat.consumeFrequency, frequency);
 	}
 }

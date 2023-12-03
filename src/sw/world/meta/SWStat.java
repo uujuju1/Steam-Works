@@ -27,5 +27,13 @@ public class SWStat {
     resistanceScl = new Stat("sw-resistance-scl", SWStatCat.force),
     minSpeedConsume = new Stat("sw-speed-min", SWStatCat.force),
     maxSpeedConsume = new Stat("sw-speed-max", SWStatCat.force),
-    strengthConsume = new Stat("sw-strength-cons", SWStatCat.force);
+    strengthConsume = new Stat("sw-strength-cons", SWStatCat.force),
+
+//  vibration
+    wireRange = new Stat("sw-wire-range", SWStatCat.vibration),
+    soundResistance = new Stat("sw-sound-resistance", SWStatCat.vibration),
+    acceptsVibration = new Stat("sw-accepts-vibration", SWStatCat.vibration),
+    outputsVibration = new Stat("sw-outputs-vibration", SWStatCat.vibration),
+    outputVibration = new Stat("sw-output-vibration", SWStatCat.vibration),
+    consumeFrequency = new Stat("consume-frequency", SWStatCat.vibration);
 }

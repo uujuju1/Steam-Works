@@ -8,7 +8,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
-import mindustry.world.meta.*;
 import sw.util.*;
 import sw.world.graph.VibrationGraph.*;
 import sw.world.interfaces.*;
@@ -23,27 +22,28 @@ public class SWGenericCrafter extends GenericCrafter {
 	public HeatConfig heatConfig = new HeatConfig();
 	public VibrationConfig vibrationConfig = new VibrationConfig();
 
-	public float outputSpeed = -1f, outputHeatSpeed = 0f, outputHeat = -1f;
+	public float outputSpeed = -1f;
 	public Frequency outputVibration;
-	public boolean hasForce = true, hasHeat = true, hasVibration = false;
+	public boolean hasForce = true, hasHeat = false, hasVibration = false;
 
 /**
- * makes so that it can spin continuously for a certain amount before stopping
+ * TODO remove
  */
 	public boolean clampRotation = false;
 	public float maxRotation = 30f;
 
 	public SWGenericCrafter(String name) {
 		super(name);
-		configurable = true;
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
-		if (hasHeat) heatConfig.heatStats(stats);
 		if (hasForce) forceConfig.addStats(stats);
-		if (outputHeat >= 0) stats.add(SWStat.outputHeat, outputHeat, StatUnit.degrees);
+		if (hasVibration) {
+			vibrationConfig.addStats(stats);
+			if (outputVibration != null) stats.add(SWStat.outputVibration, stat -> stat.add(outputVibration.display()));
+		}
 	}
 	@Override
 	public void setBars() {
@@ -60,9 +60,14 @@ public class SWGenericCrafter extends GenericCrafter {
 	@Override
 	public void init() {
 		super.init();
-		if (!hasHeat) heatConfig.acceptHeat = heatConfig.outputHeat = false;
-		if (!hasForce) forceConfig.acceptsForce = forceConfig.outputsForce = false;
-		if (!hasVibration) vibrationConfig.acceptsVibration = vibrationConfig.outputsVibration = false;
+		if (!hasForce) {
+			forceConfig.acceptsForce = false;
+			forceConfig.outputsForce = false;
+		}
+		if (!hasVibration) {
+			vibrationConfig.acceptsVibration = false;
+			vibrationConfig.outputsVibration = false;
+		}
 		configurable = forceConfig.outputsForce || vibrationConfig.outputsVibration;
 	}
 
@@ -111,7 +116,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			if (outputSpeed >= 0) force().speed = outputSpeed;
-			if (outputVibration != null && (outputVibration instanceof StaticFrequency)) vGraph().addFrequency(outputVibration);
+			if (outputVibration != null && !(outputVibration instanceof StaticFrequency)) vGraph().addFrequency(outputVibration);
 		}
 
 		@Override
@@ -155,7 +160,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureForceLink(other) || configVibrationLink(other);
+			return configureForceLink(other) && configVibrationLink(other);
 		}
 
 		@Override
