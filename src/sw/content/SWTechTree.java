@@ -35,7 +35,10 @@ public class SWTechTree {
       // endregion
 
       // region crafting
-      node(siliconBoiler, with(new OnSector(cLake)), () -> {
+      node(siliconBoiler, with(
+        new OnSector(cLake),
+        new Produce(Items.titanium)
+      ), () -> {
         node(oilDistiller, with(
           new SectorComplete(SectorPresets.tarFields)
         ), () -> {});
@@ -51,7 +54,10 @@ public class SWTechTree {
             node(mixerModule);
           });
         });
-        node(rebuilder, () -> {
+        node(rebuilder, with(
+          new Research(densePress),
+          new Research(compoundSmelter)
+        ), () -> {
           node(torquePump);
           node(electricSpinner, () -> {
             node(pressureSpinner);
@@ -91,7 +97,10 @@ public class SWTechTree {
 //      node(bolt, () -> {
 //        node(light);
       node(artyleriya, () -> {
-        node(curve, with(new OnSector(cLake)), () -> {});
+        node(curve, with(
+          new OnSector(cLake),
+          new Produce(Items.silicon)
+        ), () -> {});
         node(thermikos);
         node(mortar, () -> {
           node(incend, with(new Research(oilDistiller)), () -> {});
@@ -104,7 +113,10 @@ public class SWTechTree {
       // endregion
 
       // region power
-      node(burner, with(new OnSector(cLake)), () -> {
+      node(burner, with(
+        new OnSector(cLake),
+        new Produce(Items.titanium)
+      ), () -> {
         node(powerWire);
         node(windCollector);
       });

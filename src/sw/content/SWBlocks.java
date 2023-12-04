@@ -76,6 +76,9 @@ public class SWBlocks {
 			requirements(Category.production, with(
 				SWItems.nickel, 50
 			));
+			researchCost = with(
+				SWItems.nickel, 100
+			);
 			size = 2;
 			health = 160;
 			glowIntensity = pulseIntensity = 0f;
@@ -84,39 +87,36 @@ public class SWBlocks {
 			range = 5;
 			boostHeatColor = Color.black;
 			optionalBoostIntensity = 1f;
-			researchCost = with(
-				SWItems.nickel, 100
-			);
 		}};
 		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
 			requirements(Category.production, with(
 				SWItems.nickel, 50,
 				Items.graphite, 50
 			));
+			researchCost = with(
+				SWItems.nickel, 100,
+				Items.graphite, 100
+			);
 			size = 2;
 			health = 160;
 			drillTime = 110f;
 			output = Items.sand;
 			ambientSound = Sounds.drill;
 			ambientSoundVolume = 0.04f;
-			researchCost = with(
-				SWItems.nickel, 100,
-				Items.graphite, 100
-			);
 		}};
 		hydraulicDrill = new Drill("hydraulic-drill") {{
 			requirements(Category.production, with(
 				SWItems.nickel, 80,
 				Items.graphite, 100
 			));
-			size = 2;
-			health = 160;
-			tier = 3;
-			drillTime = 400;
 			researchCost = with(
 				SWItems.nickel, 160,
 				Items.graphite, 200
 			);
+			size = 2;
+			health = 160;
+			tier = 3;
+			drillTime = 400;
 		}};
 		// endregion
 
@@ -212,6 +212,11 @@ public class SWBlocks {
 				Items.titanium, 120,
 				Items.graphite, 80
 			));
+			researchCost = with(
+				SWItems.nickel, 1500,
+				Items.titanium, 1200,
+				Items.graphite, 800
+			);
 			size = 3;
 			health = 240;
 
@@ -550,12 +555,16 @@ public class SWBlocks {
 				Items.titanium, 50,
 				SWItems.nickel, 80
 			));
+			researchCost = with(
+				Items.titanium, 500,
+				SWItems.nickel, 800
+			);
 			size = 2;
 			health = 160;
 
 			consumeItem(Items.graphite, 1);
 
-			itemDuration = 30f;
+			itemDuration = 60f;
 			powerProduction = 0.5f;
 		}};
 		// endregion
@@ -626,9 +635,7 @@ public class SWBlocks {
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
 				SWItems.nickel, 2000,
-				Items.graphite, 1000,
-				Items.titanium, 1500,
-				Items.silicon, 1200
+				Items.graphite, 1000
 			));
 			size = 4;
 			health = 2000;
