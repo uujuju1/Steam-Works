@@ -14,7 +14,7 @@ public class SWItems {
 
     compound = new Item("compound", Color.valueOf("515151"));
     bismuth = new Item("bismuth", Color.valueOf("97ABA4"));
-    graphene = new Item("frozen-matter", Color.valueOf("D0D3DF"));
+    graphene = new Item("graphene", Color.valueOf("D0D3DF"));
 
     denseAlloy = new Item("dense-alloy", Color.valueOf("6E7080")) {{
       cost = 1f;

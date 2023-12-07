@@ -125,7 +125,7 @@ public class SWPlanets {
 
 					pass((x, y) -> {
 						if (
-							Mathf.dst(width / 2 - x, height/2 - y) < width/2.6f &&
+							Mathf.dst(width / 2 - x, height / 2 - y) < width/2.6f &&
 							noise(x + 1000, y, 3, 0.5, 80, 1) < 0.5
 						) {
 							block = Blocks.air;

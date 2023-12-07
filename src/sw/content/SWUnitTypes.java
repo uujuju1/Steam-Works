@@ -515,7 +515,10 @@ public class SWUnitTypes {
       rotateSpeed = 3;
       outlines = faceTarget = false;
       treadFrames = 16;
-      treadRects = new Rect[]{new Rect(-25f, -36f, 13, 71)};
+      treadRects = new Rect[]{
+        new Rect(-13, -49, 13, 72),
+        new Rect(-31, -21, 14, 56)
+      };
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
 

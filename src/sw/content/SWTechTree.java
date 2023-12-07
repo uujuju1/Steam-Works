@@ -30,6 +30,7 @@ public class SWTechTree {
       // region production
       node(mechanicalBore, () -> {
         node(hydraulicDrill);
+        node(mechanicalCrusher, with(new OnSector(path)), () -> {});
         node(excavator, with(new Research(waterWheel)), () -> {});
       });
       // endregion
@@ -154,7 +155,7 @@ public class SWTechTree {
       // region maps
       node(anthill, () -> {
         node(cLake, () -> {
-
+          node(path);
         });
       });
       node(hotspot, with(

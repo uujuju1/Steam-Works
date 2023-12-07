@@ -2,6 +2,7 @@ package sw.content;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
@@ -59,6 +60,8 @@ public class SWBlocks {
 
     subFactory,
 		crafterFactory, structuraFactory,
+		constructor,
+		upgrader,
 
 		coreScaffold,
 		filler,
@@ -628,6 +631,39 @@ public class SWBlocks {
 			consumePower(2f);
 			unitPlan = new UnitPlan(SWUnitTypes.structura, 60f * 30f, with(Items.silicon, 20, Items.titanium, 15, SWItems.compound, 10));
 			consumeItems(unitPlan.requirements);
+		}};
+
+		constructor = new UnitFactory("constructor") {{
+			requirements(Category.units, with(
+				Items.titanium, 120
+			));
+			size = 3;
+			health = 200;
+			plans.add(
+				new UnitPlan(SWUnitTypes.focus, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.nickel, 10)),
+				new UnitPlan(SWUnitTypes.swarm, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.nickel, 10)),
+				new UnitPlan(SWUnitTypes.sentry, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.denseAlloy, 10)),
+				new UnitPlan(SWUnitTypes.recluse, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.compound, 10))
+			);
+			consumePower(1f);
+			consumeLiquid(SWLiquids.steam, 0.3f);
+		}};
+		upgrader = new MultiReconstructor("upgrader") {{
+			requirements(Category.units, with(
+				Items.titanium, 200
+			));
+			size = 5;
+			health = 320;
+			constructTime = 10 * 60f;
+			upgrades.addAll(
+				new UnitType[]{SWUnitTypes.focus, SWUnitTypes.precision},
+				new UnitType[]{SWUnitTypes.precision, SWUnitTypes.target},
+				new UnitType[]{SWUnitTypes.swarm, SWUnitTypes.ambush},
+				new UnitType[]{SWUnitTypes.ambush, SWUnitTypes.trap},
+				new UnitType[]{SWUnitTypes.sentry, SWUnitTypes.tower},
+				new UnitType[]{SWUnitTypes.tower, SWUnitTypes.castle}
+			);
+			consumeItems(with(Items.silicon, 400));
 		}};
 		// endregion
 
