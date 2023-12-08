@@ -473,6 +473,11 @@ public class SWBlocks {
 				Items.titanium, 120,
 				Items.silicon, 80
 			));
+			researchCost = with(
+				SWItems.nickel, 1500,
+				Items.titanium, 1200,
+				Items.silicon, 800
+			);
 			size = 3;
 			scaledHealth = 220f;
 			reload = 45f;

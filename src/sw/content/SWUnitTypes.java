@@ -458,14 +458,15 @@ public class SWUnitTypes {
       hitSize = 8f;
       rotateSpeed = 4;
       outlines = faceTarget = false;
-      treadFrames = 14;
-      treadRects = new Rect[]{new Rect(11f - 32f, 8f - 32f, 14, 53)};
+      treadFrames = 16;
+      treadRects = new Rect[]{
+				new Rect(-24f, -29f, 14, 56)
+			};
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
 
       weapons.add(new Weapon("sw-sentry-fuse") {{
-        x = 0f;
-        y = 0.25f;
+        x = y = 0f;
         reload = 120f;
         recoil = 0f;
         range = 160f;
@@ -516,15 +517,14 @@ public class SWUnitTypes {
       outlines = faceTarget = false;
       treadFrames = 16;
       treadRects = new Rect[]{
-        new Rect(-13, -49, 13, 72),
-        new Rect(-31, -21, 14, 56)
+        new Rect(-31, -21, 14, 56),
+        new Rect(-13, -37, 13, 72)
       };
       ammoType = new ItemAmmoType(Items.copper);
       constructor = TankUnit::create;
 
 			weapons.add(new Weapon("sw-tower-shotgun") {{
-        x = 0f;
-        y = 0.5f;
+        x = y = 0f;
 				reload = 60f;
         range = 160f;
         mirror = false;
@@ -567,8 +567,11 @@ public class SWUnitTypes {
       hitSize = 14f;
       rotateSpeed = 2.5f;
       outlines = false;
-      treadFrames = 22;
-      treadRects = new Rect[]{new Rect(-8f, -49f, 16, 95), new Rect(-34, -40, 13, 88)};
+      treadFrames = 16;
+      treadRects = new Rect[]{
+        new Rect(-34f, -20f, 14, 64),
+        new Rect(-12f, -47f, 12, 95)
+      };
       constructor = TankUnit::create;
 
       weapons.add(new Weapon("sw-castle-gun") {{
