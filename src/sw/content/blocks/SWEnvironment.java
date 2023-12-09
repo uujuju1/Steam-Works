@@ -18,7 +18,8 @@ public class SWEnvironment {
 		chloroIce, chloroIceCraters, chloroIceWall, chloroIceBoulder,
 		scorched, scorchedWall, scorchedCrater,
 
-		oreNickel, graphiteCharoiteWallOre, graphiteGrimeWallOre,
+		oreNickel, oreIron, oreArsenic,
+		graphiteCharoiteWallOre, graphiteGrimeWallOre,
 
 		chloro, deepChloro, shallowChloro;
 
@@ -121,7 +122,15 @@ public class SWEnvironment {
 			wall = scorchedWall;
 		}};
 
-		oreNickel = new OreBlock(SWItems.nickel);
+		oreNickel = new OreBlock(SWItems.nickel) {{
+			variants = 4;
+		}};
+		oreIron = new OreBlock(SWItems.iron) {{
+			variants = 4;
+		}};
+		oreArsenic = new OreBlock(SWItems.arsenic) {{
+			variants = 4;
+		}};
 		graphiteCharoiteWallOre = new StaticWall("graphite-charoite-wall-ore") {{
 			itemDrop = Items.graphite;
 		}};

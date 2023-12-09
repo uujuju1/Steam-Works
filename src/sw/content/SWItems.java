@@ -5,12 +5,14 @@ import mindustry.type.Item;
 
 public class SWItems {
   public static Item
-    nickel,
+    nickel, iron, arsenic,
     compound, bismuth, graphene,
     denseAlloy, thermite, scorch;
 
   public static void load() {
     nickel = new Item("nickel", Color.valueOf("CCD4D9"));
+    iron = new Item("iron", Color.valueOf("646485"));
+    arsenic = new Item("arsenic", Color.valueOf("857164"));
 
     compound = new Item("compound", Color.valueOf("515151"));
     bismuth = new Item("bismuth", Color.valueOf("97ABA4"));

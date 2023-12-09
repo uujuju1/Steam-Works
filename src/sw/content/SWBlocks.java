@@ -56,6 +56,7 @@ public class SWBlocks {
 
 		artyleriya, curve, thermikos,
 
+		ironWall, ironWallLarge, nickelWall, nickelWallLarge,
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
     subFactory,
@@ -578,10 +579,10 @@ public class SWBlocks {
 		// endregion
 
 		// region walls
-    compoundWall = new Wall("compound-wall") {{
-      requirements(Category.defense, with(SWItems.compound, 6));
-      health = 120 * 4;
-    }};
+		compoundWall = new Wall("compound-wall") {{
+			requirements(Category.defense, with(SWItems.compound, 6));
+			health = 120 * 4;
+		}};
 		compoundWallLarge = new Wall("compound-wall-large") {{
 			requirements(Category.defense, mult(compoundWall.requirements, 4));
 			size = 2;
@@ -593,6 +594,26 @@ public class SWBlocks {
 			absorbLasers = true;
 		}};
 		denseWallLarge = new Wall("dense-wall-large") {{
+			requirements(Category.defense, mult(denseWall.requirements, 4));
+			size = 2;
+			health = 200 * 4 * 4;
+			absorbLasers = true;
+		}};
+		nickelWall = new Wall("nickel-wall") {{
+			requirements(Category.defense, with(SWItems.nickel, 6));
+			health = 120 * 4;
+		}};
+		nickelWallLarge = new Wall("nickel-wall-large") {{
+			requirements(Category.defense, mult(compoundWall.requirements, 4));
+			size = 2;
+			health = 120 * 4 * 4;
+		}};
+		ironWall = new Wall("iron-wall") {{
+			requirements(Category.defense, with(SWItems.iron, 6));
+			health = 200 * 4;
+			absorbLasers = true;
+		}};
+		ironWallLarge = new Wall("iron-wall-large") {{
 			requirements(Category.defense, mult(denseWall.requirements, 4));
 			size = 2;
 			health = 200 * 4 * 4;
