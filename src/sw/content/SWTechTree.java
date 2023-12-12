@@ -88,9 +88,11 @@ public class SWTechTree {
       // endregion
 
       // region defense
-      node(compoundWall, with(new Produce(compound)), () -> {
-        node(compoundWallLarge);
-        node(denseWall, with(new Produce(denseAlloy)), () -> node(denseWallLarge));
+      node(nickelWall, () -> {
+        node(ironWall, () -> {
+          node(compoundWall, () -> node(compoundWallLarge));
+          node(denseWall, () -> node(denseWallLarge));
+        });
       });
       // endregion
 
@@ -154,8 +156,8 @@ public class SWTechTree {
 
       // region maps
       node(anthill, () -> {
-        node(cLake, () -> {
-          node(path);
+        node(cLake, with(new SectorComplete(anthill)), () -> {
+          node(path, with(new SectorComplete(cLake)), () -> {});
         });
       });
       node(hotspot, with(

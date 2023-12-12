@@ -138,7 +138,7 @@ public class SWBlocks {
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
 			requirements(Category.distribution, with(
-				SWItems.denseAlloy, 2
+				SWItems.iron, 2
 			));
 			health = 125;
 			speed = 0.08f;
@@ -213,7 +213,7 @@ public class SWBlocks {
 		siliconBoiler = new GenericCrafter("silicon-boiler") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 150,
-				Items.titanium, 120,
+				SWItems.iron, 120,
 				Items.graphite, 80
 			));
 			researchCost = with(
@@ -228,7 +228,7 @@ public class SWBlocks {
 
 			consumeItems(with(Items.graphite, 2, Items.sand, 2));
 			consumePower(0.5f);
-			outputItems = with(Items.silicon, 1);
+			outputItems = with(Items.silicon, 3);
 
 			drawer = new DrawMulti(
 				new DrawDefault(),
@@ -256,10 +256,10 @@ public class SWBlocks {
 
 		compoundSmelter = new GenericCrafter("compound-smelter") {{
 			requirements(Category.crafting, with(
+				SWItems.iron, 80,
+				SWItems.nickel, 200,
 				Items.silicon, 150,
-				Items.graphite, 160,
-				Items.titanium, 80,
-				SWItems.nickel, 200
+				Items.graphite, 160
 			));
 			size = 3;
 			health = 200;
@@ -278,17 +278,18 @@ public class SWBlocks {
 		}};
 		densePress = new GenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
+				SWItems.iron, 160,
+				SWItems.nickel, 200,
 				Items.silicon, 80,
-				Items.graphite, 160,
-				Items.titanium, 160,
-				SWItems.nickel, 200
+				Items.graphite, 160
 			));
 			size = 3;
 			health = 200;
-			craftTime = 60f;
+			craftTime = 120f;
+			craftEffect = SWFx.denseAlloyCraft;
 
 			consumeItems(with(
-				Items.titanium, 3,
+				SWItems.iron, 3,
 				SWItems.nickel, 2
 			));
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
@@ -297,8 +298,8 @@ public class SWBlocks {
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
 				SWItems.nickel, 65,
+				SWItems.iron, 60,
 				Items.silicon, 80,
-				Items.titanium, 60,
 				Items.graphite, 75
 			));
 			size = 3;
@@ -329,9 +330,9 @@ public class SWBlocks {
 				Items.silicon, 50
 			));
 			recipe = new GenericRecipe() {{
-				consumeItems = with(SWItems.nickel, 2, Items.titanium, 6);
-				outputItems = with(SWItems.denseAlloy, 5);
-				craftTime = 45f;
+				consumeItems = with(SWItems.nickel, 2, SWItems.iron, 3);
+				outputItems = with(SWItems.denseAlloy, 3);
+				craftTime = 60f;
 				craftEffect = SWFx.denseAlloyCraft;
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
@@ -455,7 +456,7 @@ public class SWBlocks {
 					splashDamage = 15;
 					splashDamageRadius = 16f;
 				}},
-				Items.titanium, new ArtilleryBulletType(2f, 50) {{
+				SWItems.iron, new ArtilleryBulletType(2f, 50) {{
 					lifetime = 60f;
 					rangeChange = 24f;
 					width = height = 12f;
@@ -471,7 +472,7 @@ public class SWBlocks {
 		curve = new ItemTurret("curve") {{
 			requirements(Category.turret, with(
 				SWItems.nickel, 150,
-				Items.titanium, 120,
+				SWItems.iron, 120,
 				Items.silicon, 80
 			));
 			researchCost = with(
@@ -551,7 +552,7 @@ public class SWBlocks {
 		// region power
 		powerWire = new PowerNode("power-wire") {{
 			requirements(Category.power, with(
-				Items.titanium, 10,
+				SWItems.iron, 10,
 				SWItems.nickel, 5
 			));
 			size = 2;
@@ -561,7 +562,7 @@ public class SWBlocks {
 		}};
 		burner = new ConsumeGenerator("burner") {{
 			requirements(Category.power, with(
-				Items.titanium, 50,
+				SWItems.iron, 50,
 				SWItems.nickel, 80
 			));
 			researchCost = with(
@@ -604,7 +605,7 @@ public class SWBlocks {
 			health = 120 * 4;
 		}};
 		nickelWallLarge = new Wall("nickel-wall-large") {{
-			requirements(Category.defense, mult(compoundWall.requirements, 4));
+			requirements(Category.defense, mult(nickelWall.requirements, 4));
 			size = 2;
 			health = 120 * 4 * 4;
 		}};
@@ -614,7 +615,7 @@ public class SWBlocks {
 			absorbLasers = true;
 		}};
 		ironWallLarge = new Wall("iron-wall-large") {{
-			requirements(Category.defense, mult(denseWall.requirements, 4));
+			requirements(Category.defense, mult(ironWall.requirements, 4));
 			size = 2;
 			health = 200 * 4 * 4;
 			absorbLasers = true;
