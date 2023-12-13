@@ -134,7 +134,7 @@ public class SWVibration {
 		windCollector = new SWGenericCrafter("wind-collector") {{
 			requirements(Category.power, with(
 				SWItems.denseAlloy, 150,
-				Items.titanium, 120,
+				SWItems.iron, 120,
 				Items.graphite, 130
 			));
 			size = 3;
@@ -162,9 +162,9 @@ public class SWVibration {
 
 		sonus = new SWConsumeTurret("sonus") {{
 			requirements(Category.turret, with(
-				SWItems.scorch, 120,
-				Items.silicon, 150,
-				Items.titanium, 200
+				SWItems.denseAlloy, 120,
+				SWItems.iron, 200,
+				Items.silicon, 150
 			));
 			size = 3;
 			scaledHealth = 220f;

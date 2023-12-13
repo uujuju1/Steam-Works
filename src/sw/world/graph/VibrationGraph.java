@@ -13,7 +13,6 @@ import sw.world.interfaces.*;
 public class VibrationGraph extends Graph {
 	public final Seq<HasVibration> builds = new Seq<>(false, 16, HasVibration.class);
 	public final Seq<VibrationLink> links = new Seq<>(false, 16, VibrationLink.class);
-	public FloatSeq frequencies = new FloatSeq();
 	public final Seq<Frequency> frequenci = new Seq<>(false, 16, Frequency.class);
 
 	/**
@@ -103,11 +102,6 @@ public class VibrationGraph extends Graph {
 
 	@Override
 	public void update() {
-		FloatSeq f = new FloatSeq();
-		for (int i = 0; i < frequencies.size; i++) if (frequencies.get(i) > 0) f.add(frequencies.get(i));
-		frequencies = f;
-
-		for (int i = 0; i < frequencies.size; i++) frequencies.incr(i, -Time.delta * resistance());
 		frequenci.each(frequency -> frequency.update(this));
 	}
 

@@ -27,26 +27,32 @@ public interface HasVibration extends Buildingc {
 	}
 
 	default void drawLink() {
-		Draw.z(Layer.block - 0.01f);
 		if (getVibrationLink() == null) return;
-		Vec2
-			x = new Vec2(x(), y()),
-			y = new Vec2(getVibrationLink().x(), getVibrationLink().y());
+		Draw.z(Layer.block - 0.01f);
 
-		SWDraw.linePoint(SWDraw.denseAlloyMiddle, SWDraw.denseAlloyBase, x.x, x.y, y.x, y.y);
+		Vec2 pos1 = new Vec2(x(), y());
+		Vec2 pos2 = new Vec2(getVibrationLink().x(), getVibrationLink().y());
+		SWDraw.linePoint(
+			SWDraw.denseAlloyMiddle,
+			SWDraw.denseAlloyBase,
+			pos1.x, pos1.y,
+			pos2.x, pos2.y
+		);
 
+		int serrations = Mathf.floor(pos1.dst(pos2)/4);
+		float angle = Tmp.v1.set(pos1).sub(pos2).angle();
 		Draw.color(SWDraw.denseAlloySerration);
-		int serrations = Mathf.floor((x.dst(y)/4f));
-		for (int i = 0; i < serrations; i++) {
-			float angle = Tmp.v1.set(x).sub(y).angle();
-			float intensity = 0;
+		for (int i = 0; i < serrations + 1; i++) {
+			Tmp.v1.set(pos1).lerp(pos2, i/(float)serrations);
 
-			for(float f : vGraph().frequencies.toArray()) intensity += Math.sin(Time.time + i * f) * f / 4000;
+			Tmp.v2.set(0, 0);
+			for(int j = 0; j < 5; j++) {
+				Tmp.v2.add((float) Math.sin((Time.time + i) * (j + 1f))/10f, 0f);
+			}
+			Tmp.v2.rotate(angle + 90).limit(1);
+			Tmp.v1.add(Tmp.v2);
 
-			Tmp.v2.set(x).lerp(y, i/((float) serrations)).add(Tmp.v1.trns(angle + 90, intensity));
-
-			Fill.rect(Tmp.v2.x, Tmp.v2.y + Tmp.v1.y, 1f, 5f, angle);
-			Fill.rect(Tmp.v2.x, Tmp.v2.y + Tmp.v1.y, 1f, 5f, angle);
+			Fill.rect(Tmp.v1.x, Tmp.v1.y, 1, 4, angle);
 		}
 
 		Draw.reset();
