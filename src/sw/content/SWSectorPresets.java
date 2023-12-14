@@ -3,7 +3,10 @@ package sw.content;
 import mindustry.type.*;
 
 public class SWSectorPresets {
-	public static SectorPreset anthill, cLake, path,
+	public static SectorPreset
+		anthill, cLake,
+		path,
+	  shore,
 		hotspot, greatLake, erosion, aurora;
 
 	public static void load() {
@@ -16,6 +19,10 @@ public class SWSectorPresets {
 			difficulty = 4;
 		}};
 		path = new SectorPreset("path", SWPlanets.wendi, 19) {{
+			captureWave = 30;
+			difficulty = 5;
+		}};
+		shore = new SectorPreset("shore", SWPlanets.wendi, 55) {{
 			captureWave = 30;
 			difficulty = 5;
 		}};

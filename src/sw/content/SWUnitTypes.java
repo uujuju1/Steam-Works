@@ -56,7 +56,7 @@ public class SWUnitTypes {
       health = 250;
       speed = 2f;
       rotateSpeed = 8f;
-      range = maxRange = 120f;
+      range = maxRange = 112f;
 
       flying = lowAltitude = true;
 
@@ -80,7 +80,7 @@ public class SWUnitTypes {
       hitSize = 10f;
       speed = 2f;
       rotateSpeed = 4f;
-      range = maxRange = 120f;
+      range = maxRange = 112f;
 
       engineSize = 3f;
       engineOffset = 9f;

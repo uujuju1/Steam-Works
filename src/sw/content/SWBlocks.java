@@ -483,7 +483,7 @@ public class SWBlocks {
 			size = 3;
 			scaledHealth = 220f;
 			reload = 45f;
-			range = 120f;
+			range = 150f;
 			shootY = 0f;
 			shootSound = Sounds.missileSmall;
 			shoot = new ShootBarrel() {{
@@ -500,7 +500,7 @@ public class SWBlocks {
 					width = 14f;
 					height = 14f;
 					hitSound = Sounds.explosion;
-					lifetime = 40f;
+					lifetime = 50f;
 				}}
 			);
 		}};
