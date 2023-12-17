@@ -1,6 +1,5 @@
 package sw.content;
 
-import arc.struct.*;
 import mindustry.content.*;
 import mindustry.game.Objectives.*;
 
@@ -34,16 +33,13 @@ public class SWTechTree {
         node(excavator, with(new Research(waterWheel)), () -> {});
       });
       // endregion
-
+      
       // region crafting
       node(siliconBoiler, with(
         new OnSector(cLake),
-        new Produce(Items.titanium)
+        new Produce(SWItems.iron)
       ), () -> {
-        node(oilDistiller, with(
-          new SectorComplete(SectorPresets.tarFields)
-        ), () -> {});
-        node(compoundSmelter, () -> {
+        node(compoundSmelter, with(new OnSector(shore)), () -> {
           node(smelterModule);
           node(bismuthCrystalizer, () -> {
             node(crystalizerModule);
@@ -82,14 +78,15 @@ public class SWTechTree {
         });
       });
       node(waterWheel, with(
-        new Research(beltNode),
-        new SectorComplete(hotspot)
+        new Research(beltNode)
       ), () -> {});
       // endregion
 
       // region defense
       node(nickelWall, () -> {
+        node(nickelWallLarge);
         node(ironWall, () -> {
+          node(ironWallLarge);
           node(compoundWall, () -> node(compoundWallLarge));
           node(denseWall, () -> node(denseWallLarge));
         });
@@ -105,8 +102,8 @@ public class SWTechTree {
           new Produce(Items.silicon)
         ), () -> {});
         node(thermikos);
-        node(mortar, () -> {
-          node(incend, with(new Research(oilDistiller)), () -> {});
+        node(mortar, with(new Research(windmill)), () -> {
+          node(incend, () -> {});
         });
         node(sonus, with(new Research(windCollector)), () -> {
           node(impacto);
@@ -118,38 +115,32 @@ public class SWTechTree {
       // region power
       node(burner, with(
         new OnSector(cLake),
-        new Produce(Items.titanium)
+        new Produce(iron)
       ), () -> {
         node(powerWire);
         node(windCollector);
+        node(windmill);
       });
-      node(filler, Seq.with(new OnSector(greatLake)), () -> node(terra));
+      node(filler, () -> node(terra));
       // endregion
 
       // region units
-      node(swarm, with(
-        new Produce(compound),
-        new Research(Blocks.airFactory)
-      ), () -> {
-        node(subFactory, () -> node(recluse, () -> {
-          node(retreat, with(new Research(Blocks.additiveReconstructor)), () -> {
-            node(evade, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+      node(constructor, () -> {
+        node(upgrader);
+        node(recluse, () -> {
+          node(retreat, with(new Research(upgrader)), () -> {
+            node(evade);
           });
-        }));
-
-        node(crafterFactory, with(new Research(Blocks.siliconCrucible)), () -> node(bakler));
-        node(structuraFactory, with(
-          new Research(compoundSmelter),
-          new Research(filler)
-        ), () -> node(structura));
-
-        node(sentry, () -> node(tower, with(new Research(Blocks.additiveReconstructor)), () -> {
-          node(castle, with(new Research(Blocks.multiplicativeReconstructor)), () -> {
-            node(stronghold, with(new Research(Blocks.exponentialReconstructor)), () -> {});
+        });
+        node(sentry, () -> {
+          node(tower, with(new Research(upgrader)), () -> {
+            node(castle);
           });
-        }));
-        node(ambush, with(new Research(Blocks.additiveReconstructor)), () -> {
-          node(trap, with(new Research(Blocks.multiplicativeReconstructor)), () -> {});
+        });
+        node(swarm, () -> {
+          node(ambush, with(new Research(upgrader)), () -> {
+            node(trap);
+          });
         });
       });
       // endregion
@@ -158,15 +149,7 @@ public class SWTechTree {
       node(anthill, () -> {
         node(cLake, with(new SectorComplete(anthill)), () -> {
           node(path, with(new SectorComplete(cLake)), () -> {});
-        });
-      });
-      node(hotspot, with(
-        new SectorComplete(SectorPresets.craters),
-        new Produce(compound)
-      ), () -> {
-        node(greatLake, with(new SectorComplete(hotspot)), () -> {
-          node(erosion, with(new SectorComplete(greatLake)), () -> {});
-          node(aurora, with(new SectorComplete(greatLake)), () -> {});
+          node(shore, with(new SectorComplete(cLake)), () -> {});
         });
       });
       // endregion

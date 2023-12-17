@@ -662,22 +662,28 @@ public class SWBlocks {
 
 		constructor = new UnitFactory("constructor") {{
 			requirements(Category.units, with(
-				Items.titanium, 120
+				SWItems.nickel, 150,
+				SWItems.iron, 120,
+				Items.silicon, 100
 			));
 			size = 3;
 			health = 200;
 			plans.add(
-				new UnitPlan(SWUnitTypes.focus, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.nickel, 10)),
-				new UnitPlan(SWUnitTypes.swarm, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.nickel, 10)),
-				new UnitPlan(SWUnitTypes.sentry, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.denseAlloy, 10)),
-				new UnitPlan(SWUnitTypes.recluse, 60 * Time.toMinutes, with(Items.silicon, 15, SWItems.compound, 10))
+				new UnitPlan(SWUnitTypes.focus, 60 * Time.toSeconds, with(Items.silicon, 15, SWItems.nickel, 10)),
+				new UnitPlan(SWUnitTypes.swarm, 40 * Time.toSeconds, with(Items.silicon, 15, SWItems.iron, 10)),
+				new UnitPlan(SWUnitTypes.sentry, 80 * Time.toSeconds, with(Items.silicon, 25, SWItems.denseAlloy, 10)),
+				new UnitPlan(SWUnitTypes.recluse, 80 * Time.toSeconds, with(Items.silicon, 15, SWItems.compound, 20))
 			);
 			consumePower(1f);
 			consumeLiquid(SWLiquids.steam, 0.3f);
 		}};
 		upgrader = new MultiReconstructor("upgrader") {{
 			requirements(Category.units, with(
-				Items.titanium, 200
+				SWItems.nickel, 200,
+				SWItems.iron, 240,
+				SWItems.graphene, 300,
+				SWItems.scorch, 300,
+				Items.silicon, 220
 			));
 			size = 5;
 			health = 320;

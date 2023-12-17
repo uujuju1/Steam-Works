@@ -25,6 +25,7 @@ public class SWForce {
 
 		beltNode, beltNodeLarge, omniBelt,
 		torquePump,
+		windmill,
 		electricSpinner, pressureSpinner, waterWheel,
 		bismuthCrystalizer, deHumidifier, cleanser,
 
@@ -55,8 +56,8 @@ public class SWForce {
 			));
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.001f;
-				maxForce = 1f;
+				friction = 0.01f;
+				maxForce = 5f;
 				range = 60f;
 			}};
 		}};
@@ -69,8 +70,8 @@ public class SWForce {
 			size = 2;
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.002f;
-				maxForce = 2f;
+				friction = 0.02f;
+				maxForce = 10f;
 				range = 90f;
 				beltSize = 4f;
 			}};
@@ -84,7 +85,7 @@ public class SWForce {
 			size = 3;
 			health = 120;
 			forceConfig = new ForceConfig() {{
-				friction = 0.003f;
+				friction = 0.03f;
 				maxForce = 3f;
 				range = 120f;
 			}};
@@ -113,16 +114,48 @@ public class SWForce {
 			}};
 		}};
 
+		windmill = new SWGenericCrafter("windmill") {{
+			requirements(Category.power, with(
+				SWItems.compound, 60,
+				SWItems.iron, 70,
+				Items.silicon, 80
+			));
+			size = 3;
+			health = 200;
+			craftTime = 1f;
+			hasHeat = false;
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawRegion("-rotor-bottom") {{
+					rotateSpeed = -2f;
+				}},
+				new DrawRegion("-rotor-top") {{
+					rotateSpeed = 2.5f;
+				}},
+				new DrawRegion("-top")
+			);
+
+			outputSpeed = 5f;
+
+			forceConfig = new ForceConfig() {{
+				maxForce = 5;
+				friction = 0f;
+				beltSize = 6f;
+				acceptsForce = false;
+			}};
+		}};
 		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
 			requirements(Category.power, with(
-				Items.silicon, 50,
-				Items.graphite, 80,
-				SWItems.compound, 60
+				SWItems.compound, 60,
+				SWItems.iron, 50,
+				Items.graphite, 80
 			));
 			size = 3;
 			health = 160;
 			swayScl = 0.7f;
 			craftTime = 1f;
+
 			drawer = new DrawMulti(
 				new DrawDefault(),
 				new DrawRegion("-rotator") {{
@@ -130,14 +163,17 @@ public class SWForce {
 					rotateSpeed = 16f;
 				}}
 			);
-			consumeLiquid(SWLiquids.steam, 0.2f);
+
+			outputSpeed = 5f;
+
+			consumeLiquid(SWLiquids.steam, 0.25f);
+
 			forceConfig = new ForceConfig() {{
 				maxForce = 5f;
-				friction = 0.002f;
+				friction = 0f;
 				beltSize = 6f;
 				acceptsForce = false;
 			}};
-			outputSpeed = 2f;
 		}};
 		electricSpinner = new SWGenericCrafter("electric-spinner") {{
 			requirements(Category.power, with(
@@ -223,12 +259,15 @@ public class SWForce {
 		}};
 		deHumidifier = new SWGenericCrafter("de-humidifier") {{
 			requirements(Category.crafting, with(
-				Items.graphite, 1
+				SWItems.compound, 90,
+				SWItems.iron, 100,
+				Items.graphite, 80
 			));
 			size = 3;
 			craftTime = 5;
 			craftEffect = SWFx.steamCollect;
 			consume(new ConsumeAtmosphere(SWLiquids.steam));
+			consume(new ConsumeSpeed(2.5f, 7.5f));
 			outputLiquid = new LiquidStack(SWLiquids.steam, 0.5f);
 		}};
 		cleanser = new SWGenericCrafter("cleanser") {{
@@ -244,13 +283,11 @@ public class SWForce {
 
 		mortar = new ForceTurret("mortar") {{
 			requirements(Category.turret, with(
-				Items.silicon, 120,
-				Items.graphite, 100,
-				SWItems.compound, 150
+				SWItems.compound, 150,
+				SWItems.iron, 120,
+				Items.graphite, 100
 			));
 			targetAir = false;
-			consume(new ConsumeSpeed(1f, 6f));
-			consumeItem(Items.graphite, 2);
 			size = 3;
 			health = 200 * 9;
 			reload = 120f;
@@ -261,8 +298,18 @@ public class SWForce {
 			shoot = new ShootPattern() {{
 				firstShotDelay = 30f;
 			}};
+			shootType = new ArtilleryBulletType(4f, 120) {{
+				width = height = 20f;
+				splashDamage = 120f;
+				splashDamageRadius = 40f;
+				lifetime = 50f;
+			}};
+
+			consume(new ConsumeSpeed(2.5f, 7.5f));
+			consumeItem(Items.graphite, 2);
+
 			forceConfig = new ForceConfig() {{
-				friction = 0.09f;
+				friction = 0.03f;
 				maxForce = 10f;
 				outputsForce = false;
 			}};
@@ -274,12 +321,6 @@ public class SWForce {
 						progress = PartProgress.charge.mul(1.5f).curve(Interp.pow2Out);
 					}}
 				);
-			}};
-			shootType = new ArtilleryBulletType(4f, 120) {{
-				width = height = 20f;
-				splashDamage = 120f;
-				splashDamageRadius = 40f;
-				lifetime = 50f;
 			}};
 		}};
 		incend = new ForceTurret("incend") {{
