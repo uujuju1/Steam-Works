@@ -108,6 +108,7 @@ public class SWConsumeTurret extends Turret {
 		public void onProximityAdded() {
 			super.onProximityAdded();
 			vGraph().add(this);
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 			force.graph.flood(this).each(b -> graph().add(b));
 		}
 		@Override
@@ -125,6 +126,11 @@ public class SWConsumeTurret extends Turret {
 			});
 			forceUnLink();
 			graph().remove(this);
+		}
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {

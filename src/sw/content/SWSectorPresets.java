@@ -5,7 +5,7 @@ import mindustry.type.*;
 public class SWSectorPresets {
 	public static SectorPreset
 		anthill, cLake,
-		path,
+		path, industry,
 	  shore;
 
 	public static void load() {
@@ -19,6 +19,10 @@ public class SWSectorPresets {
 		}};
 		path = new SectorPreset("path", SWPlanets.wendi, 19) {{
 			captureWave = 30;
+			difficulty = 5;
+		}};
+		industry = new SectorPreset("industry", SWPlanets.wendi, 1) {{
+			captureWave = 40;
 			difficulty = 5;
 		}};
 		shore = new SectorPreset("shore", SWPlanets.wendi, 55) {{

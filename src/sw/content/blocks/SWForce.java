@@ -311,6 +311,7 @@ public class SWForce {
 			forceConfig = new ForceConfig() {{
 				friction = 0.03f;
 				maxForce = 10f;
+				beltSize = 6f;
 				outputsForce = false;
 			}};
 			drawer = new DrawTurret() {{

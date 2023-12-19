@@ -125,7 +125,7 @@ public class SWTechTree {
       // endregion
 
       // region units
-      node(constructor, () -> {
+      node(constructor, with(new OnSector(industry)), () -> {
         node(upgrader);
         node(recluse, () -> {
           node(retreat, with(new Research(upgrader)), () -> {
@@ -148,7 +148,9 @@ public class SWTechTree {
       // region maps
       node(anthill, () -> {
         node(cLake, with(new SectorComplete(anthill)), () -> {
-          node(path, with(new SectorComplete(cLake)), () -> {});
+          node(path, with(new SectorComplete(cLake)), () -> {
+            node(industry, with(new SectorComplete(path)), () -> {});
+          });
           node(shore, with(new SectorComplete(cLake)), () -> {});
         });
       });

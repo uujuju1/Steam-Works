@@ -46,6 +46,7 @@ public class VibrationDistributor extends VibrationWire {
 			for (HasVibration build : proximity.copy().filter(b -> b instanceof HasVibration).map(b -> (HasVibration) b)) {
 				createVibrationLink(build);
 			}
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 		}
 	}
 }

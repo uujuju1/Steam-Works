@@ -28,6 +28,7 @@ public class VibrationWire extends Block {
 	public void init() {
 		super.init();
 		configurable = vibrationConfig.outputsVibration;
+		clipSize = vibrationConfig.range;
 	}
 
 	@Override public void drawOverlay(float x, float y, int rotation) {
@@ -67,6 +68,7 @@ public class VibrationWire extends Block {
 		public void onProximityAdded() {
 			super.onProximityAdded();
 			vGraph().add(this);
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 		}
 		@Override
 		public void onProximityRemoved() {
@@ -82,6 +84,11 @@ public class VibrationWire extends Block {
 				}
 			});
 			vGraph().delete(this);
+		}
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 		}
 
 		@Override

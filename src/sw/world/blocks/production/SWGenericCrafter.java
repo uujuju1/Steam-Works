@@ -158,6 +158,11 @@ public class SWGenericCrafter extends GenericCrafter {
 			forceUnLink();
 			graph().remove(this);
 		}
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
 			return configureForceLink(other) && configVibrationLink(other);
