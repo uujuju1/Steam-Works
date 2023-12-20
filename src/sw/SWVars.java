@@ -6,7 +6,6 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import sw.content.*;
-import sw.entities.*;
 import sw.world.*;
 
 import java.util.*;
@@ -74,7 +73,7 @@ public class SWVars implements Loadable {
 		public static void loadContent() {
 			SWItems.load();
 			SWLiquids.load();
-			SWEntityMapping.load();
+//			SWEntityMapping.load();
 			SWUnitTypes.load();
 			SWBlocks.load();
 			SWPlanets.load();

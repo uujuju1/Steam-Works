@@ -2,6 +2,7 @@ package sw.content;
 
 import arc.graphics.*;
 import arc.math.geom.*;
+import ent.anno.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
@@ -17,6 +18,7 @@ import mindustry.world.blocks.units.*;
 import sw.ai.*;
 import sw.entities.bullet.*;
 import sw.entities.comp.*;
+import sw.gen.*;
 import sw.type.*;
 import sw.world.recipes.*;
 
@@ -24,17 +26,18 @@ import static mindustry.type.ItemStack.*;
 import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWUnitTypes {
+  @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
+  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask;
+  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot;
+
   public static UnitType
     terra,
 
     swarm, ambush, trap, misleading,
 		focus, precision, target,
 
-    recluse, retreat, evade,
     sentry, tower, castle, stronghold,
 		existence, remembered, presence,
-    prot, protMask,
-    delta, deltaShield,
     bakler, structura;
 
   public static void load() {
@@ -47,7 +50,7 @@ public class SWUnitTypes {
       engineOffset = 6.5f;
       range = maxRange = 120f;
 
-      constructor = BuildingTetherUnit::new;
+      constructor = UnitEntity::create;
       controller = u -> new FillerAI();
     }};
 
@@ -324,7 +327,7 @@ public class SWUnitTypes {
       range = maxRange = 40f;
       submerges = true;
 
-      constructor = SubmarineUnit::new;
+      constructor = UnitWaterMoveSubmarine::create;
 
       weapons.add(new Weapon("sw-recluse-weapon") {{
         x = 3.75f;
@@ -351,7 +354,7 @@ public class SWUnitTypes {
       submerges = true;
       vulnerabilityTime = 150f;
 
-      constructor = SubmarineUnit::new;
+      constructor = UnitWaterMoveSubmarine::create;
 
       weapons.add(new Weapon("sw-retreat-weapon") {{
         x = y = 0f;
@@ -385,7 +388,7 @@ public class SWUnitTypes {
       submerges = true;
       vulnerabilityTime = 240f;
 
-      constructor = SubmarineUnit::new;
+      constructor = UnitWaterMoveSubmarine::create;
 
       weapons.add(
         new Weapon() {{
@@ -798,7 +801,7 @@ public class SWUnitTypes {
       playerControllable = targetable = false;
 
       controller = u -> new ShieldAI();
-      constructor = UnitTetherUnit::new;
+      constructor = UnitTetherUnit::create;
     }};
     prot = new SWUnitType("prot") {{
       health = 2300;
@@ -821,7 +824,7 @@ public class SWUnitTypes {
       legBaseOffset = 10f;
 			legExtension = 15f;
 
-      constructor = ShieldedUnit::new;
+      constructor = UnitLegsShielded::create;
 
       weapons.add(new Weapon("sw-prot-weapon") {{
 				x = 12.75f;
@@ -854,7 +857,7 @@ public class SWUnitTypes {
       playerControllable = drawCell = targetable = false;
 
       controller = u -> new ShieldAI();
-      constructor = UnitTetherUnit::new;
+      constructor = UnitTetherUnit::create;
     }};
     delta = new SWUnitType("delta") {{
       health = 650f;
@@ -888,7 +891,7 @@ public class SWUnitTypes {
 
       buildSpeed = 0.75f;
 
-      constructor = ShieldedUnit::new;
+      constructor = UnitLegsShielded::create;
 
 			parts.add(
 				new RegionPart("-spine") {{
@@ -944,7 +947,7 @@ public class SWUnitTypes {
         updateEffect = Fx.smoke;
       }};
 
-      constructor = CrafterUnit::new;
+      constructor = UnitEntity::create;
     }};
     structura = new SWUnitType("structura") {{
       health = 1500;
@@ -966,7 +969,7 @@ public class SWUnitTypes {
         updateEffect = Fx.smoke;
       }};
 
-      constructor = CrafterUnit::new;
+      constructor = UnitEntity::create;
     }};
 
     ((UnitFactory) Blocks.groundFactory).plans.add(

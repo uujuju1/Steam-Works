@@ -1,6 +1,5 @@
 package sw.type;
 
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
@@ -13,7 +12,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
-import sw.entities.comp.*;
+import sw.gen.*;
 import sw.world.meta.*;
 import sw.world.recipes.*;
 
@@ -23,6 +22,7 @@ public class SWUnitType extends UnitType {
   // Submarine stuff
   public boolean submerges = false;
   public float vulnerabilityTime = 60f;
+  public float minSubmergeAlpha = 0.1f;
 
   // Crafter unit stuff
   public GenericRecipe recipe;
@@ -86,14 +86,15 @@ public class SWUnitType extends UnitType {
 
   @Override
   public boolean targetable(Unit unit, Team from) {
-    if (submerges && unit instanceof SubmarineUnit u) return !u.submerged();
+    if (submerges && unit instanceof Submarinec u) return !u.submerged();
     return super.targetable(unit, from);
   }
 
   @Override
   public void applyColor(Unit unit) {
-    if (submerges && unit instanceof SubmarineUnit u) {
-      Draw.mixcol(Color.darkGray, 0.6f * (1f - u.vulnerabilityFrame/vulnerabilityTime));
+    if (submerges && unit instanceof Submarinec u) {
+      Draw.mixcol(Pal.shadow, 0.6f * (1f - u.submergeTime()/vulnerabilityTime));
+      Draw.alpha(Math.max(minSubmergeAlpha, (1f - u.submergeTime()/vulnerabilityTime)));
     } else {
       super.applyColor(unit);
     }
@@ -102,13 +103,13 @@ public class SWUnitType extends UnitType {
   @Override
   public void draw(Unit unit) {
     super.draw(unit);
-    if (unit instanceof ShieldedUnit u) drawShields(u);
+    if (unit instanceof Shieldedc u) drawShields(u);
   }
 
   @Override
   public void drawShadow(Unit unit) {
-    if (submerges && unit instanceof SubmarineUnit u) {
-      float e = Mathf.clamp(unit.elevation, shadowElevation, 1f) * shadowElevationScl * (1f - unit.drownTime) * (u.vulnerabilityFrame/vulnerabilityTime);
+    if (submerges && unit instanceof Submarinec u) {
+      float e = Mathf.clamp(unit.elevation, shadowElevation, 1f) * shadowElevationScl * (1f - unit.drownTime) * (u.submergeTime()/vulnerabilityTime);
       float x = unit.x + shadowTX * e, y = unit.y + shadowTY * e;
       Floor floor = world.floorWorld(x, y);
 
@@ -122,13 +123,13 @@ public class SWUnitType extends UnitType {
     } else super.drawShadow(unit);
   }
 
-  public void drawShields(ShieldedUnit u) {
+  public void drawShields(Shieldedc u) {
     Draw.draw(Draw.z(), () -> {
-      if (u.mounts.length > 0) {
-        WeaponMount first = u.mounts[0];
-        DrawPart.params.set(first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, first.recoil, first.charge, u.x, u.y, u.rotation);
+      if (u.mounts().length > 0) {
+        WeaponMount first = u.mounts()[0];
+        DrawPart.params.set(first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, first.recoil, first.charge, u.x(), u.y(), u.rotation());
       } else {
-        DrawPart.params.set(0, 0, 0, 0, 0, 0, u.x, u.y, u.rotation);
+        DrawPart.params.set(0, 0, 0, 0, 0, 0, u.x(), u.y(), u.rotation());
       }
       for(int i = 0; i < shields; i++) {
         float ang = Mathf.lerp(
@@ -138,9 +139,9 @@ public class SWUnitType extends UnitType {
         );
         Tmp.v1.trns(ang, shieldSeparateRadius).add(u);
         try {
-          if (u.units.get(i).dead()) Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress, 1f, u.progress * shieldConstructTime);
+          if (u.units().get(i).dead()) Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress(), 1f, u.progress() * shieldConstructTime);
         } catch (IndexOutOfBoundsException e) {
-          Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress, 1f, u.progress * shieldConstructTime);
+          Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress(), 1f, u.progress() * shieldConstructTime);
         }
       }
     });
