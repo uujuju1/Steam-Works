@@ -2,6 +2,7 @@ package sw;
 
 import mindustry.mod.*;
 import sw.core.*;
+import sw.gen.*;
 
 public class ModLoader extends Mod {
   public ModLoader() {
@@ -16,6 +17,7 @@ public class ModLoader extends Mod {
 
   @Override
   public void loadContent() {
+    EntityRegistry.register();
     SWVars.loadContent();
   }
 }
