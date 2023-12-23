@@ -722,11 +722,12 @@ public class SWBlocks {
 			size = 2;
 			itemCapacity = 200;
 			entries.addAll(
-				new Block[]{Blocks.deepwater, Blocks.water},
-				new Block[]{Blocks.water, Blocks.metalFloor}
+				new Block[]{SWEnvironment.deepChloro, Blocks.darkPanel3},
+				new Block[]{SWEnvironment.chloro, Blocks.darkPanel3},
+				new Block[]{SWEnvironment.shallowChloro, Blocks.darkPanel3}
 			);
-			consumeItem(SWItems.compound, 20);
-			consumePower(4f);
+			consumeItems(with(Items.silicon, 10, Items.sand, 10));
+			consumePower(1f);
 		}};
 		// endregion
 

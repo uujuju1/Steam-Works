@@ -6,7 +6,7 @@ import sw.gen.*;
 import sw.world.graph.*;
 
 @EntityComponent(base = true)
-@EntityDef(GraphUpdaterc.class)
+@EntityDef(value = GraphUpdaterc.class, genIO = false)
 abstract class GraphUpdaterComp implements Entityc {
 	transient Graph graph;
 

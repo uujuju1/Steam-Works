@@ -104,7 +104,7 @@ public class Filler extends Block {
 					unit.add();
 					Call.unitTetherBlockSpawned(tile, unit.id);
 				}
-			} else time += edelta() / constructTime;
+			} else time += (edelta() / constructTime) * (time <= 1 ? 1 : 0);
 		}
 
 		@Override

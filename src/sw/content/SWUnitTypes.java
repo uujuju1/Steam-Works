@@ -17,7 +17,6 @@ import mindustry.type.unit.*;
 import mindustry.world.blocks.units.*;
 import sw.ai.*;
 import sw.entities.bullet.*;
-import sw.entities.comp.*;
 import sw.gen.*;
 import sw.type.*;
 import sw.world.recipes.*;
@@ -29,9 +28,9 @@ public class SWUnitTypes {
   @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
   @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask;
   @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot;
+  @EntityDef({BuildingTetherc.class, Unitc.class}) public static UnitType terra;
 
   public static UnitType
-    terra,
 
     swarm, ambush, trap, misleading,
 		focus, precision, target,
@@ -47,10 +46,12 @@ public class SWUnitTypes {
       flying = lowAltitude = true;
       playerControllable = useUnitCap = false;
       rotateSpeed = 10f;
-      engineOffset = 6.5f;
-      range = maxRange = 120f;
+      engineOffset = 8.5f;
+      engineSize = 5;
+      setEnginesMirror(new UnitEngine(8.5f, 0, 5, 0));
+      engines.add(new UnitEngine(0, 8.5f, 5, 90));
 
-      constructor = UnitEntity::create;
+      constructor = UnitBuildingTether::create;
       controller = u -> new FillerAI();
     }};
 

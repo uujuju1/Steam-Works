@@ -25,7 +25,7 @@ public class ShieldAI extends AIController {
 
 	@Override
 	public void updateMovement() {
-		if (unit instanceof TetherUnitc u && u.tetherUnit().type() instanceof SWUnitType type) {
+		if (unit instanceof TetherUnitc u && u.tetherUnit() != null && u.tetherUnit().type() instanceof SWUnitType type) {
 			Tmp.v1.trns(getRotation(), type.shieldSeparateRadius);
 			u.set(Tmp.v1.add(u.tetherUnit()));
 			u.rotation(u.angleTo(u.tetherUnit()) + 180f);
