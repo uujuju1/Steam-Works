@@ -4,11 +4,11 @@ import arc.struct.*;
 import arc.util.io.*;
 import mindustry.world.modules.*;
 import sw.world.graph.*;
-import sw.world.graph.HeatGraph.*;
+import sw.world.graph.HeatGraphDeprecated.*;
 
 public class HeatModule extends BlockModule {
   public float heat;
-	public HeatGraph graph = new HeatGraph();
+	public HeatGraphDeprecated graph = new HeatGraphDeprecated();
 
   public final Seq<HeatLink> links = new Seq<>();
 

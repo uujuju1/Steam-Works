@@ -9,7 +9,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import sw.util.*;
-import sw.world.graph.VibrationGraph.*;
+import sw.world.graph.VibrationGraphDeprecated.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -87,7 +87,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		@Override public ForceModule force() {
 			return force;
 		}
-		@Override public ForceConfig forceConfig() {
+		@Override public ForceConfig fConfig() {
 			return forceConfig;
 		}
 
@@ -140,7 +140,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void onProximityAdded() {
 			super.onProximityAdded();
 			vGraph().add(this);
-			force.graph.flood(this).each(b -> graph().add(b));
+			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
@@ -155,8 +155,8 @@ public class SWGenericCrafter extends GenericCrafter {
 					vGraph().links.remove(link);
 				}
 			});
-			forceUnLink();
-			graph().remove(this);
+			force().links.each(link -> fGraph().removeLink(link));
+			fGraph().removeBuild(this, false);
 		}
 		@Override
 		public void onProximityUpdate() {

@@ -4,10 +4,10 @@ import arc.struct.*;
 import arc.util.io.*;
 import mindustry.world.modules.*;
 import sw.world.graph.*;
-import sw.world.graph.VibrationGraph.*;
+import sw.world.graph.VibrationGraphDeprecated.*;
 
 public class VibrationModule extends BlockModule {
-	public VibrationGraph graph = new VibrationGraph();
+	public VibrationGraphDeprecated graph = new VibrationGraphDeprecated();
 	public Seq<VibrationLink> links = new Seq<>();
 	public int link = -1;
 

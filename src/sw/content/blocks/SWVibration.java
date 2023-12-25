@@ -16,7 +16,7 @@ import sw.world.blocks.production.*;
 import sw.world.blocks.vibration.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
-import sw.world.graph.VibrationGraph.*;
+import sw.world.graph.VibrationGraphDeprecated.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;

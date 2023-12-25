@@ -16,7 +16,7 @@ import sw.world.modules.*;
 public interface HasVibration extends Buildingc {
 	VibrationConfig vConfig();
 	VibrationModule vibration();
-	default VibrationGraph vGraph() {
+	default VibrationGraphDeprecated vGraph() {
 		return vibration().graph;
 	}
 	default @Nullable HasVibration getVibrationLink() {
@@ -81,14 +81,14 @@ public interface HasVibration extends Buildingc {
 	}
 
 	default void createVibrationLink(HasVibration other) {
-		VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+		VibrationGraphDeprecated.VibrationLink link = new VibrationGraphDeprecated.VibrationLink(this.pos(), other.pos());
 		vibration().links.addUnique(link);
 		other.vibration().links.addUnique(link);
 		vGraph().addLink(link);
 	}
 	default void removeVibrationLink(HasVibration other) {
 		if (other != null) {
-			VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+			VibrationGraphDeprecated.VibrationLink link = new VibrationGraphDeprecated.VibrationLink(this.pos(), other.pos());
 			vibration().links.remove(link);
 			other.vibration().links.remove(link);
 			vGraph().removeLink(link);

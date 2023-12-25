@@ -41,7 +41,7 @@ public class ForceNode extends Block {
 		public ForceModule force() {
 			return force;
 		}
-		public ForceConfig forceConfig() {return forceConfig;}
+		public ForceConfig fConfig() {return forceConfig;}
 
 		@Override
 		public void draw() {
@@ -59,14 +59,12 @@ public class ForceNode extends Block {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			force.graph.flood(this).each(b -> graph().add(b));
+			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			forceUnLink();
-			graph().softRemove(this);
-			graph().links.removeAll(force().links);
+			fGraph().removeBuild(this, false);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
@@ -77,9 +75,6 @@ public class ForceNode extends Block {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			graph().flood(this).each(build -> {
-				graph().merge(build.graph());
-			});
 		}
 		@Override
 		public void write(Writes write) {

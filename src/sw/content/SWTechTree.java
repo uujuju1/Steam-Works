@@ -57,7 +57,7 @@ public class SWTechTree {
         ), () -> {
           node(torquePump);
           node(electricSpinner, () -> {
-            node(pressureSpinner);
+//            node(pressureSpinner);
           });
         });
       });

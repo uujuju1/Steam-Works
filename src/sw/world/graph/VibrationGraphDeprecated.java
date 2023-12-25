@@ -10,7 +10,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import sw.world.interfaces.*;
 
-public class VibrationGraph extends Graph {
+public class VibrationGraphDeprecated extends GraphDeprecated {
 	public final Seq<HasVibration> builds = new Seq<>(false, 16, HasVibration.class);
 	public final Seq<VibrationLink> links = new Seq<>(false, 16, VibrationLink.class);
 	public final Seq<Frequency> frequenci = new Seq<>(false, 16, Frequency.class);
@@ -31,7 +31,7 @@ public class VibrationGraph extends Graph {
   */
 	public void remove(HasVibration b) {
 		builds.remove(b);
-		b.vibration().graph = new VibrationGraph();
+		b.vibration().graph = new VibrationGraphDeprecated();
 		b.vGraph().add(b);
 		if (builds.isEmpty()) removeGraph();
 	}
@@ -43,7 +43,7 @@ public class VibrationGraph extends Graph {
 		if (builds.isEmpty()) removeGraph();
 	}
 
-	public void mergeGraph(VibrationGraph other) {
+	public void mergeGraph(VibrationGraphDeprecated other) {
 		if (other.builds.size > builds.size) {
 			other.mergeGraph(this);
 			return;
@@ -143,7 +143,7 @@ public class VibrationGraph extends Graph {
 	}
 
 	public static abstract class Frequency {
-		abstract void update(VibrationGraph graph);
+		abstract void update(VibrationGraphDeprecated graph);
 		abstract boolean valid(float frequency);
 		abstract void set(Frequency frequency);
 
@@ -164,7 +164,7 @@ public class VibrationGraph extends Graph {
 			this(true, min, max);
 		}
 
-		@Override public void update(VibrationGraph graph) {
+		@Override public void update(VibrationGraphDeprecated graph) {
 			if (!enabled) graph.frequenci.remove(this);
 		}
 		@Override public boolean valid(float frequency) {
@@ -230,7 +230,7 @@ public class VibrationGraph extends Graph {
 		}
 
 		@Override
-		public void update(VibrationGraph graph) {
+		public void update(VibrationGraphDeprecated graph) {
 			decay -= graph.resistance() * Time.delta;
 			if (decay < 0) graph.frequenci.remove(this);
 		}

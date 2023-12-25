@@ -15,99 +15,98 @@ import sw.world.modules.*;
 
 public interface HasForce extends Buildingc, Posc{
 	ForceModule force();
-	ForceConfig forceConfig();
+	ForceConfig fConfig();
 	default @Nullable HasForce getForceLink() {
 		return (HasForce) Vars.world.build(force().link);
 	}
-	default ForceGraph graph() {
+	default ForceGraph fGraph() {
 		return force().graph;
 	}
 
 	default float beltSize() {
-		return forceConfig().beltSize;
+		return fConfig().beltSize;
 	}
 
 	default float spin() {
-		return graph().rotation;
+		return fGraph().rotation;
 	}
 	default float speed() {
 		return force().speed * ratioScl();
 	}
 	default float ratioScl() {
-		switch (getRatio()) {
-			case equal : return 1f;
-			case normal : return 2f;
-			case extreme : return 3f;
-		}
-		return 1f;
+		return switch (getRatio()) {
+			case equal -> 1f;
+			case normal -> 2f;
+			case extreme -> 3f;
+		};
 	}
 	default float ratioNumber() {
-		if (force().links.copy().removeAll(l -> l.l1() == this).isEmpty()) return 1f;
-		return beltSize() / force().links.copy().removeAll(
-			l -> l.l1() == this || l.l1() == null
-		).max(l -> l.l1().beltSize()).l1().beltSize();
+		return force().links.sumf(link -> link.ratio(link.startBuild() == this))/force().links.size;
 	}
 	default ForceRatio getRatio() {
-		float ratio = ratioNumber();
-		if (Math.abs(ratio - 1/ratio) > 1.5) {
-			return ForceRatio.extreme;
-		} else if (Math.abs(ratio - 1/ratio) > 1) {
-			return ForceRatio.normal;
-		} else return ForceRatio.equal;
+		int ratio = Mathf.round(Math.max(ratioNumber(), 1/ratioNumber()));
+		return switch (ratio) {
+			case 2 -> ForceRatio.normal;
+			case 3 -> ForceRatio.extreme;
+			default -> ForceRatio.equal;
+		};
 	}
 
 	default void drawBelt() {
 		if (getForceLink() != null) {
 			Draw.z(Layer.block - 1f);
-			for (int i : Mathf.signs) {
-				Vec2 p1 = new Vec2(x(), y()), p2 = new Vec2(getForceLink().x(), getForceLink().y());
-				int serrations = Mathf.ceil(p1.dst(p2) / 8f);
-				float time = serrations * 20f;
-				float rot = spin() * i;
-				rot += rot > 0 ? time : -time;
+			Vec2 start = new Vec2(x(), y()), end = new Vec2(getForceLink().x(), getForceLink().y());
+			float angle = Tmp.v1.set(start).sub(end).angle() + 90;
+			for (int i = 0; i < 2; i++) {
+				Tmp.v1.trns(angle + i * 180, beltSize());
+				Vec2 p1 = new Vec2(start).add(Tmp.v1);
 
-				float angle = Tmp.v1.set(p1).sub(p2).angle();
-				p1.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), beltSize()));
-				p2.add(Tmp.v1.trns(angle + 90 + (i > 0 ? 0 : 180), ((HasForce) getForceLink()).beltSize()));
+				Tmp.v1.trns(angle + i * 180, getForceLink().beltSize());
+				Vec2 p2 = new Vec2(end).add(Tmp.v1);
 
-				SWDraw.beltLine(SWDraw.compoundSerration, SWDraw.compoundBase, SWDraw.compoundMiddle, p1.x, p1.y, p2.x, p2.y, rot);
+				if (i == 1) {
+					Tmp.v1.set(p1);
+					p1.set(p2);
+					p2.set(Tmp.v1);
+				}
+				SWDraw.beltLine(SWDraw.compoundSerration, SWDraw.compoundBase, SWDraw.compoundMiddle, p1.x, p1.y, p2.x, p2.y, spin());
 			}
 			Draw.reset();
 		}
 	}
 
-	default void forceLink(HasForce b) {
-		force().link = b.pos();
-
-		graph().merge(b.graph());
-		graph().links.addUnique(new ForceLink(this, b));
-		force().links.addUnique(new ForceLink(this, b));
-		b.force().links.addUnique(new ForceLink(this, b));
-		graph().updateGraph();
+	default void createForceLink(HasForce other) {
+		ForceLink forceLink = new ForceLink(this, other);
+		force().links.add(forceLink);
+		other.force().links.add(forceLink);
+		fGraph().addLink(forceLink);
 	}
-	default void forceUnLink() {
-		if (getForceLink() != null) {
-			graph().links.remove(new ForceLink(this, getForceLink()));
-			force().links.remove(new ForceLink(this, getForceLink()));
-			getForceLink().force().links.remove(new ForceLink(this, getForceLink()));
-			force().link = -1;
-			graph().updateGraph();
+	default void removeForceLink(HasForce other) {
+		if (other != null) {
+			ForceLink forceLink = new ForceLink(this, other);
+			force().links.remove(forceLink);
+			other.force().links.remove(forceLink);
+			fGraph().removeLink(forceLink);
 		}
 	}
 
 	default boolean configureForceLink(Building other) {
-		if (other instanceof HasForce next && tile().dst(other) < forceConfig().range && next.forceConfig().acceptsForce && forceConfig().outputsForce) {
-			if ((getForceLink() != null && getForceLink() == other) || other == this) {
-				forceUnLink();
+		if (fConfig().outputsForce) {
+			if (getForceLink() != null) if (other == getForceLink() || other == this) {
+				removeForceLink(getForceLink());
+				force().link = -1;
 				return false;
 			}
-
-			if (next.getForceLink() == this) next.forceUnLink();
-			if (getForceLink() != null) forceUnLink();
-
-			forceLink(next);
-			graph().rotation = 0;
-			return false;
+			if (other instanceof HasForce build && other.dst(this) <= fConfig().range && build.fConfig().acceptsForce) {
+				if (getForceLink() != null) removeForceLink(getForceLink());
+				if (build.getForceLink() == this) {
+					build.removeForceLink(this);
+					build.force().link = -1;
+				}
+				createForceLink(build);
+				force().link = build.pos();
+				return false;
+			}
 		}
 		return true;
 	}

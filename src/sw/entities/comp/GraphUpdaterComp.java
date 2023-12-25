@@ -6,12 +6,12 @@ import sw.gen.*;
 import sw.world.graph.*;
 
 @EntityComponent(base = true)
-@EntityDef(value = GraphUpdaterc.class, genIO = false)
+@EntityDef(value = GraphUpdaterc.class, genIO = false, serialize = false)
 abstract class GraphUpdaterComp implements Entityc {
-	transient Graph graph;
+	transient GraphDeprecated graphDeprecated;
 
 	@Override
 	public void update() {
-		graph.update();
+		if (graphDeprecated != null) graphDeprecated.update();
 	}
 }
