@@ -9,7 +9,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import sw.util.*;
-import sw.world.graph.VibrationGraphDeprecated.*;
+import sw.world.graph.VibrationGraph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -130,31 +130,23 @@ public class SWGenericCrafter extends GenericCrafter {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
 			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
-			getVibrationLinks().each(build -> {
-				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
-			});
+//			getVibrationLinks().each(build -> {
+//				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
+//			});
 			Draw.reset();
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().add(this);
+			vGraph().addBuild(this);
 			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> {
-				if (link.valid()) {
-					removeVibrationLink(link.other(this));
-				} else {
-					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
-				}
-			});
+			vibration().links.each(link -> vGraph().removeLink(link));
+			vGraph().removeBuild(this, false);
 			force().links.each(link -> fGraph().removeLink(link));
 			fGraph().removeBuild(this, false);
 		}

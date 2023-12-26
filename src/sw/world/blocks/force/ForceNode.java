@@ -64,6 +64,9 @@ public class ForceNode extends Block {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
+			fGraph().links.each(link -> {
+				removeForceLink(link.other(this));
+			});
 			fGraph().removeBuild(this, false);
 		}
 

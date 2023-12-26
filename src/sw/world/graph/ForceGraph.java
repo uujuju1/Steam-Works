@@ -157,6 +157,9 @@ public class ForceGraph {
 			if (!valid()) return 1;
 			return reversed ? (startBuild().beltSize()/endBuild().beltSize()) : (endBuild().beltSize()/startBuild().beltSize());
 		}
+		public @Nullable HasForce other(HasForce link) {
+			return link == endBuild() ? startBuild() : endBuild();
+		}
 
 		@Override public boolean equals(Object obj) {
 			return obj instanceof ForceLink forceLink &&

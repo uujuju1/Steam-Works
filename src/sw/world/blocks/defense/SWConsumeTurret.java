@@ -107,30 +107,16 @@ public class SWConsumeTurret extends Turret {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().add(this);
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+			vGraph().addBuild(this);
 			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> {
-				if (link.valid()) {
-					removeVibrationLink(link.other(this));
-				} else {
-					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
-				}
-			});
+			vibration().links.each(link -> vGraph().removeLink(link));
+			vGraph().removeBuild(this, false);
 			force().links.each(link -> fGraph().removeLink(link));
 			fGraph().removeBuild(this, false);
-		}
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
