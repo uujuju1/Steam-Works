@@ -11,6 +11,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.world.blocks.defense.*;
 import sw.world.blocks.force.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -145,36 +146,36 @@ public class SWForce {
 				acceptsForce = false;
 			}};
 		}};
-		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
-			requirements(Category.power, with(
-				SWItems.compound, 60,
-				SWItems.iron, 50,
-				Items.graphite, 80
-			));
-			size = 3;
-			health = 160;
-			swayScl = 0.7f;
-			craftTime = 1f;
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawRegion("-rotator") {{
-					spinSprite = true;
-					rotateSpeed = 16f;
-				}}
-			);
-
-			outputSpeed = 5f;
-
-			consumeLiquid(SWLiquids.steam, 0.25f);
-
-			forceConfig = new ForceConfig() {{
-				maxForce = 5f;
-				friction = 0f;
-				beltSize = 6f;
-				acceptsForce = false;
-			}};
-		}};
+//		pressureSpinner = new ForceSwayCrafter("pressure-spinner") {{
+//			requirements(Category.power, with(
+//				SWItems.compound, 60,
+//				SWItems.iron, 50,
+//				Items.graphite, 80
+//			));
+//			size = 3;
+//			health = 160;
+//			swayScl = 0.7f;
+//			craftTime = 1f;
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault(),
+//				new DrawRegion("-rotator") {{
+//					spinSprite = true;
+//					rotateSpeed = 16f;
+//				}}
+//			);
+//
+//			outputSpeed = 5f;
+//
+//			consumeLiquid(SWLiquids.steam, 0.25f);
+//
+//			forceConfig = new ForceConfig() {{
+//				maxForce = 5f;
+//				friction = 0f;
+//				beltSize = 6f;
+//				acceptsForce = false;
+//			}};
+//		}};
 		electricSpinner = new SWGenericCrafter("electric-spinner") {{
 			requirements(Category.power, with(
 				Items.silicon, 50,
@@ -281,7 +282,7 @@ public class SWForce {
 			outputLiquid = new LiquidStack(SWLiquids.fungi, 0.5f);
 		}};
 
-		mortar = new ForceTurret("mortar") {{
+		mortar = new SWConsumeTurret("mortar") {{
 			requirements(Category.turret, with(
 				SWItems.compound, 150,
 				SWItems.iron, 120,
@@ -324,7 +325,7 @@ public class SWForce {
 				);
 			}};
 		}};
-		incend = new ForceTurret("incend") {{
+		incend = new SWConsumeTurret("incend") {{
 			requirements(Category.turret, with(
 				Items.silicon, 50,
 				SWItems.compound, 40,

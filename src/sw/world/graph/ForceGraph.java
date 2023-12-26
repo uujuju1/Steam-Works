@@ -1,19 +1,87 @@
 package sw.world.graph;
 
+import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
+import sw.gen.*;
 import sw.world.interfaces.*;
 
+public class ForceGraph {
+	public final @Nullable ForceGraphEntity entity;
+	private final int id;
+
+	public final Seq<HasForce> builds = new Seq<>();
+	public final Seq<ForceLink> links = new Seq<>();
+
+	public float rotation;
+
+	public ForceGraph() {
+		this(ForceGraphEntity.create());
+	}
+	public ForceGraph(ForceGraphEntity entity) {
+		this.entity = entity;
+		entity.graph(this);
+		entity.add();
+		id = entity.id();
+	}
+
 /**
- * TODO visual speed setting
+ * adds a build with flood
  */
-public class ForceGraph extends Graph {
-	public final Seq<HasForce> builds = new Seq<>(false, 16, HasForce.class);
-	public final Seq<ForceLink> links = new Seq<>(false, 16, ForceLink.class);
+	public void addBuild(HasForce build) {
+		if (!builds.contains(build)) {
+			build.fGraph().removeBuild(build, false);
+			build.force().graph = this;
+			builds.addUnique(build);
+			for (ForceLink forceLink : build.force().links) {
+				addLink(forceLink);
+			}
+		}
+	}
+/**
+ * removes the build from this graph and adds it (or not) to another graph
+ */
+	public void removeBuild(HasForce build) {
+		removeBuild(build, true);
+	}
+	public void removeBuild(HasForce build, boolean replace) {
+		builds.remove(build);
+		if (replace) new ForceGraph().addBuild(build);
+		if (builds.isEmpty()) remove();
+	}
+/**
+ * adds a link and it's builds into the graph
+ */
+	public void addLink(ForceLink link) {
+		if (!link.valid()) return;
+		links.addUnique(link);
+		if (link.startBuild() != null) addBuild(link.startBuild());
+		if (link.endBuild() != null) addBuild(link.endBuild());
+	}
+/**
+ * removes a link and it's builds from the graph
+ */
+	public void removeLink(ForceLink link) {
+		links.remove(link);
+		removeBuild(link.startBuild(), link.startBuild() != null);
+		removeBuild(link.endBuild(), link.endBuild() != null);
+	}
 
-	public float rotation = 0;
+/**
+ * gets rotation parameters from the builds
+ */
+	public float getSpeed() {
+		return builds.sumf(b -> b.force().speed);
+	}
+	public float getFriction() {
+		return builds.sumf(b -> b.fConfig().friction);
+	}
 
-	@Override
+/**
+ * method that constantly updates the graph and it's funcions
+ */
 	public void update() {
 		float speed = Math.max(0, Math.abs(getSpeed()/builds.size) - getFriction()) * (getSpeed() > 0f ? 1f : -1f);
 		builds.each(b -> {
@@ -23,104 +91,97 @@ public class ForceGraph extends Graph {
 		rotation += getSpeed();
 	}
 
-	public void add(HasForce build) {
-		builds.addUnique(build);
-		build.force().graph = this;
-		addGraph();
+/**
+ * add or remove the graph (entity related)
+ */
+	public void add() {
+		entity.add();
 	}
-	public void remove(HasForce build) {
-		softRemove(build);
-		build.force().graph = new ForceGraph();
-		build.graph().add(build);
+	public void remove() {
+		entity.remove();
 	}
-	public void softRemove(HasForce build) {
-		builds.remove(build);
-		if (builds.isEmpty()) removeGraph();
-	}
-	public void merge(ForceGraph graph) {
-		if (graph.builds.size > builds.size) {
-			graph.merge(this);
-			return;
+
+/**
+ * io
+ */
+	public void read(Reads read) {
+		short size = read.s();
+		for (int i = 0; i < size; i++) {
+			ForceLink forceLink = new ForceLink(-1, -1);
+			forceLink.read(read);
+			links.add(forceLink);
 		}
-		graph.removeGraph();
-		graph.builds.each(b -> {
-			graph.softRemove(b);
-			add(b);
-		});
-		graph.links.each(links::addUnique);
 	}
-	public void updateGraph() {
-		Seq<HasForce> build = builds.copy();
-		Seq<ForceLink> link = links.copy();
-
-		build.each(this::remove);
-		links.each(l -> {
-			if (l.l1() != null && l.l2() != null) {
-				l.l1().graph().merge(l.l2().graph());
-				l.l1().graph().links.addUnique(l);
-			}
-		});
+	public void afterRead() {
+		links.each(this::addLink);
 	}
-
-	public Seq<HasForce> flood(HasForce start) {
-		Seq<HasForce> out = Seq.with(start);
-		Seq<HasForce> temp = Seq.with(start);
-
-		while (!temp.isEmpty()) {
-			HasForce init = temp.pop();
-			init.force().links.each(c -> {
-				if (c.other(init) != null && !out.contains(c.other(init))) {
-					out.add(c.other(init));
-					temp.add(c.other(init));
-				}
-			});
+	public void write(Writes write) {
+		write.s(links.size);
+		for (ForceLink forceLink : links) {
+			forceLink.write(write);
 		}
-
-		return out;
-	}
-
-	public float getSpeed() {
-		return builds.sumf(b -> b.force().speed);
-	}
-	public float getFriction() {
-		return builds.sumf(b -> b.forceConfig().friction);
 	}
 
 	public static class ForceLink {
-		public int l1, l2;
+		public int start, end;
 
-		public ForceLink(HasForce l1, HasForce l2) {
-			this(l1.pos(), l2.pos());
+		public ForceLink(HasForce start, HasForce end) {
+			this.start = start.pos();
+			this.end = end.pos();
 		}
-		public ForceLink(int l1, int l2) {
-			this.l1 = l1;
-			this.l2 = l2;
-		}
-
-		public HasForce l1() {
-			return (HasForce) Vars.world.build(l1);
-		}
-		public HasForce l2() {
-			return (HasForce) Vars.world.build(l2);
+		public ForceLink(int start, int end) {
+			this.start = start;
+			this.end = end;
 		}
 
-		public HasForce other(HasForce build) {
-			return build == l1() ? l2() : l1();
+/**
+ * cast links as buildings
+ */
+		public HasForce startBuild() {
+			return Vars.world.build(start) instanceof HasForce hasForce ? hasForce : null;
 		}
-		public boolean has(HasForce build) {
-			return build == l1() || build == l2();
+		public HasForce endBuild() {
+			return Vars.world.build(end) instanceof HasForce hasForce ? hasForce : null;
+		}
+
+/**
+ * returns true if both builds are something
+ */
+		public boolean valid() {
+			return startBuild() != null && endBuild() != null;
+		}
+/**
+ * ratio between 2 links
+ */
+		public float ratio(boolean reversed) {
+			if (!valid()) return 1;
+			return reversed ? (startBuild().beltSize()/endBuild().beltSize()) : (endBuild().beltSize()/startBuild().beltSize());
+		}
+		public @Nullable HasForce other(HasForce link) {
+			return link == endBuild() ? startBuild() : endBuild();
 		}
 
 		@Override public boolean equals(Object obj) {
-			return obj instanceof sw.world.graph.ForceGraph.ForceLink forceLink &&
-				       (forceLink.l1 == l1 || forceLink.l1 == l2) &&
-				       (forceLink.l2 == l2 || forceLink.l2 == l1);
+			return obj instanceof ForceLink forceLink &&
+				       (forceLink.start == start || forceLink.start == end) &&
+				       (forceLink.end == end || forceLink.end == start);
 		}
 		@Override public String toString() {
-			return "link1: " + l1 + "; link2: " + l2;
+			return "(link1: " + Point2.unpack(start) + "; link2: " + Point2.unpack(end) + ")";
+		}
+
+/**
+ * link related io
+ */
+		public void write(Writes write) {
+			write.i(start);
+			write.i(end);
+		}
+		public void read(Reads read) {
+			start = read.i();
+			end = read.i();
 		}
 	}
-
 	public enum ForceRatio {
 		extreme("ratio.extreme"),
 		normal("ratio.normal"),

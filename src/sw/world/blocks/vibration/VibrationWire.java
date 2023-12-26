@@ -67,23 +67,15 @@ public class VibrationWire extends Block {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().add(this);
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+			vGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 			vibration().links.each(link -> {
-				if (link.valid()) {
-					removeVibrationLink(link.other(this));
-				} else {
-					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
-				}
+				removeVibrationLink(link.other(this));
 			});
-			vGraph().delete(this);
+			vGraph().removeBuild(this, false);
 		}
 		@Override
 		public void onProximityUpdate() {

@@ -18,17 +18,15 @@ public class VibrationModule extends BlockModule {
 		for (int i = 0; i < size; i++) {
 			VibrationLink vlink = new VibrationLink(read.i(), read.i());
 			links.add(vlink);
-			graph.links.addUnique(vlink);
 		}
 	}
-
 	@Override
 	public void write(Writes write) {
 		write.i(link);
 		write.s(links.size);
 		for (VibrationLink vlink : links) {
-			write.i(vlink.link1);
-			write.i(vlink.link2);
+			write.i(vlink.start);
+			write.i(vlink.end);
 		}
 	}
 }

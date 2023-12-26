@@ -3,12 +3,12 @@ package sw.world.graph;
 import arc.util.*;
 import sw.gen.*;
 
-public abstract class Graph {
+public abstract class GraphDeprecated {
 	public final @Nullable GraphUpdater entity;
 
-	public Graph() {
+	public GraphDeprecated() {
 		entity = GraphUpdater.create();
-		entity.graph = this;
+		entity.graphDeprecated = this;
 	}
 
 	public void addGraph() {

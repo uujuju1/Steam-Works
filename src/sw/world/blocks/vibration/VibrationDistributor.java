@@ -17,30 +17,13 @@ public class VibrationDistributor extends VibrationWire {
 		}
 
 		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			vibration().links.each(link -> {
-				if (link.valid()) {
-					removeVibrationLink(link.other(this));
-				} else {
-					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
-				}
-			});
-			vGraph().delete(this);
-		}
-		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 			vibration().links.each(link -> {
-				if (link.link2() != getVibrationLink() && link.valid()) removeVibrationLink(link.other(this));
+				if (link.endBuild() != getVibrationLink() && link.valid()) removeVibrationLink(link.other(this));
 				if (!link.valid()) {
 					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
+					vGraph().removeLink(link);
 				}
 			});
 			for (HasVibration build : proximity.copy().filter(b -> b instanceof HasVibration).map(b -> (HasVibration) b)) {

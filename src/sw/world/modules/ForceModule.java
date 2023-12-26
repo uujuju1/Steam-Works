@@ -17,14 +17,14 @@ public class ForceModule extends BlockModule {
 
 	@Override
 	public void write(Writes write) {
-		links.remove(forceLink -> forceLink.l1() == null || forceLink.l2() == null);
+		links.remove(forceLink -> !forceLink.valid());
 		write.f(speed);
 		write.f(ratio);
 		write.i(link);
 		write.s(links.size);
 		for (ForceLink forceLink : links) {
-			write.i(forceLink.l1);
-			write.i(forceLink.l2);
+			write.i(forceLink.start);
+			write.i(forceLink.end);
 		}
 	}
 	@Override
@@ -36,8 +36,6 @@ public class ForceModule extends BlockModule {
 		for (int i = 0; i < size; i++) {
 			ForceLink forceLink = new ForceLink(read.i(), read.i());
 			links.add(forceLink);
-			graph.links.addUnique(forceLink);
 		}
-		graph.addGraph();
 	}
 }

@@ -13,7 +13,7 @@ import static sw.util.SWDraw.*;
 public interface HasHeat extends Buildingc{
   HeatModule heat();
   HeatConfig heatC();
-  default HeatGraph hGraph() {
+  default HeatGraphDeprecated hGraph() {
     return heat().graph;
   }
   default Building asBuild() {

@@ -10,6 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.util.*;
 import sw.world.graph.*;
+import sw.world.graph.VibrationGraph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
@@ -81,14 +82,14 @@ public interface HasVibration extends Buildingc {
 	}
 
 	default void createVibrationLink(HasVibration other) {
-		VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+		VibrationLink link = new VibrationLink(this.pos(), other.pos());
 		vibration().links.addUnique(link);
 		other.vibration().links.addUnique(link);
 		vGraph().addLink(link);
 	}
 	default void removeVibrationLink(HasVibration other) {
 		if (other != null) {
-			VibrationGraph.VibrationLink link = new VibrationGraph.VibrationLink(this.pos(), other.pos());
+			VibrationLink link = new VibrationLink(this.pos(), other.pos());
 			vibration().links.remove(link);
 			other.vibration().links.remove(link);
 			vGraph().removeLink(link);
