@@ -119,9 +119,23 @@ public class VibrationGraph {
 	/**
 	 * io
 	 */
-	public void read(Reads read) {}
-	public void afterRead() {}
-	public void write(Writes write) {}
+	public void read(Reads read) {
+		short size = read.s();
+		for (int i = 0; i < size; i++) {
+			VibrationLink forceLink = new VibrationLink(-1, -1);
+			forceLink.read(read);
+			links.add(forceLink);
+		}
+	}
+	public void afterRead() {
+		links.each(this::addLink);
+	}
+	public void write(Writes write) {
+		write.s(links.size);
+		for (VibrationLink vibrationLink : links) {
+			vibrationLink.write(write);
+		}
+	}
 
 	public static class VibrationLink {
 		public int start, end;
@@ -155,6 +169,15 @@ public class VibrationGraph {
 		}
 		@Override public String toString() {
 			return "(link1: " + Point2.unpack(start) + "; link2: " + Point2.unpack(end) + ")";
+		}
+
+		public void write(Writes write) {
+			write.i(start);
+			write.i(end);
+		}
+		public void read(Reads read) {
+			start = read.i();
+			end = read.i();
 		}
 	}
 
