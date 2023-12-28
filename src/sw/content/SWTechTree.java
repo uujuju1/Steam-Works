@@ -66,7 +66,7 @@ public class SWTechTree {
       // region distribution
       node(resistantConveyor, () -> {
         node(suspensionConveyor);
-        node(mechanicalBridge);
+        node(mechanicalTunnel);
         node(mechanicalDistributor, () -> {
           node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
           node(mechanicalUnloader);

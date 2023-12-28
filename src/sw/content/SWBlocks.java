@@ -19,6 +19,7 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.blocks.*;
 import sw.util.*;
 import sw.world.blocks.defense.*;
@@ -39,7 +40,7 @@ public class SWBlocks {
 		mechanicalBore, mechanicalCrusher, hydraulicDrill,
 
 		resistantConveyor, suspensionConveyor,
-		mechanicalDistributor, mechanicalBridge,
+		mechanicalDistributor, mechanicalBridge, mechanicalTunnel,
 		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
@@ -155,12 +156,24 @@ public class SWBlocks {
 			solid = false;
 		}};
 		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
-			requirements(Category.distribution, with(
+			requirements(Category.distribution, BuildVisibility.hidden, with(
 				SWItems.nickel, 7,
 				Items.graphite, 5
 			));
 			health = 50;
 			speed = 2f;
+		}};
+		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 3,
+				Items.graphite, 3
+			));
+			health = 140;
+			floors.put(SWEnvironment.charoite, -1);
+			floors.put(SWEnvironment.charoiteCraters, 2);
+			floors.put(SWEnvironment.grime, -1);
+			floors.put(SWEnvironment.scorched, -1);
+			floors.put(SWEnvironment.scorchedCrater, 2);
 		}};
 		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
 			requirements(Category.distribution, with(
