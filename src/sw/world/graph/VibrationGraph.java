@@ -2,83 +2,77 @@ package sw.world.graph;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import sw.gen.*;
 import sw.world.interfaces.*;
 
-public class VibrationGraph extends Graph {
-	public final Seq<HasVibration> builds = new Seq<>(false, 16, HasVibration.class);
-	public final Seq<VibrationLink> links = new Seq<>(false, 16, VibrationLink.class);
-	public final Seq<Frequency> frequenci = new Seq<>(false, 16, Frequency.class);
+public class VibrationGraph {
+	public final @Nullable VibrationGraphEntity entity;
+
+	public final Seq<HasVibration> builds = new Seq<>();
+	public final Seq<VibrationLink> links = new Seq<>();
+	public final Seq<Frequency> frequenci = new Seq<>();
+
+	public VibrationGraph() {
+		this(VibrationGraphEntity.create());
+	}
+	public VibrationGraph(VibrationGraphEntity entity) {
+		this.entity = entity;
+		entity.graph(this);
+		entity.add();
+	}
 
 	/**
-	 * takes the build from the other graph and puts it here
+	 * adds a build with flood
 	 */
-	public void add(HasVibration b) {
-		if (!builds.contains(b)) {
-			builds.add(b);
-			b.vibration().links.each(this::addLink);
-			b.vibration().graph = this;
-			addGraph();
+	public void addBuild(HasVibration build) {
+		if (!builds.contains(build)) {
+			build.vGraph().removeBuild(build, false);
+			build.vibration().graph = this;
+			builds.addUnique(build);
+			for (VibrationLink forceLink : build.vibration().links) {
+				addLink(forceLink);
+			}
 		}
 	}
 	/**
-  * puts the removed build into another graph
-  */
-	public void remove(HasVibration b) {
-		builds.remove(b);
-		b.vibration().graph = new VibrationGraph();
-		b.vGraph().add(b);
-		if (builds.isEmpty()) removeGraph();
-	}
-	/**
-	 * just removes the build from this graph
+	 * removes the build from this graph and adds it (or not) to another graph
 	 */
-	public void delete(HasVibration b) {
-		builds.remove(b);
-		if (builds.isEmpty()) removeGraph();
+	public void removeBuild(HasVibration build) {
+		removeBuild(build, true);
 	}
-
-	public void mergeGraph(VibrationGraph other) {
-		if (other.builds.size > builds.size) {
-			other.mergeGraph(this);
-			return;
-		}
-		other.removeGraph();
-		other.builds.each(this::add);
-		other.links.each(links::addUnique);
+	public void removeBuild(HasVibration build, boolean replace) {
+		builds.remove(build);
+		if (replace) new VibrationGraph().addBuild(build);
+		if (builds.isEmpty()) remove();
 	}
-
 	/**
-	 * links the 2 builds in this graph
+	 * adds a link and it's builds into the graph
 	 */
 	public void addLink(VibrationLink link) {
-		if(!link.valid()) return;
-		add(link.link1());
-		add(link.link2());
+		if (!link.valid()) return;
 		links.addUnique(link);
+		if (link.startBuild() != null) addBuild(link.startBuild());
+		if (link.endBuild() != null) addBuild(link.endBuild());
 	}
 	/**
-	 * separate the 2 builds into other graphs
+	 * removes a link and it's builds from the graph
 	 */
 	public void removeLink(VibrationLink link) {
-		if (link.link1() != null) {
-			remove(link.link1());
-		} else {
-			delete(link.link1());
-		}
-		if (link.link2() != null) {
-			remove(link.link2());
-		} else {
-			delete(link.link2());
-		}
 		links.remove(link);
+		removeBuild(link.startBuild(), link.startBuild() != null);
+		removeBuild(link.endBuild(), link.endBuild() != null);
 	}
-
+/**
+ * adds a frequency
+ */
 	public void addFrequency(Frequency frequency) {
 		if (!frequenci.contains(frequency)) {
 			frequenci.add(frequency);
@@ -87,6 +81,9 @@ public class VibrationGraph extends Graph {
 		}
 	}
 
+	/**
+	 * checks if this frequency exists in any of the frequencies on the graph
+	 */
 	public boolean hasFrequency(float frequency) {
 		for (Frequency f : frequenci) {
 			if (f.valid(frequency)) {
@@ -95,50 +92,92 @@ public class VibrationGraph extends Graph {
 		}
 		return false;
 	}
-
+	/**
+	 * resistance used by DecayingFrequency
+	 */
 	public float resistance() {
 		return builds.sumf(b -> b.vConfig().resistance);
 	}
 
-	@Override
+	/**
+	 * method that constantly updates the graph and it's funcions
+	 */
 	public void update() {
 		frequenci.each(frequency -> frequency.update(this));
 	}
 
+	/**
+	 * add or remove the graph (entity related)
+	 */
+	public void add() {
+		entity.add();
+	}
+	public void remove() {
+		entity.remove();
+	}
+
+	/**
+	 * io
+	 */
+	public void read(Reads read) {
+		short size = read.s();
+		for (int i = 0; i < size; i++) {
+			VibrationLink forceLink = new VibrationLink(-1, -1);
+			forceLink.read(read);
+			links.add(forceLink);
+		}
+	}
+	public void afterRead() {
+		links.each(this::addLink);
+	}
+	public void write(Writes write) {
+		write.s(links.size);
+		for (VibrationLink vibrationLink : links) {
+			vibrationLink.write(write);
+		}
+	}
+
 	public static class VibrationLink {
-		public int link1, link2;
+		public int start, end;
 
-		public VibrationLink(int link1, int link2) {
-			this.link1 = link1;
-			this.link2 = link2;
+		public VibrationLink(int start, int end) {
+			this.start = start;
+			this.end = end;
 		}
 
-		public @Nullable HasVibration link1() {
-			return (HasVibration) Vars.world.build(link1);
+		public @Nullable HasVibration startBuild() {
+			return (HasVibration) Vars.world.build(start);
 		}
-		public @Nullable HasVibration link2() {
-			return (HasVibration) Vars.world.build(link2);
+		public @Nullable HasVibration endBuild() {
+			return (HasVibration) Vars.world.build(end);
 		}
 
 		public boolean has(HasVibration link) {
-			return link == link1() || link == link2();
+			return link == startBuild() || link == endBuild();
 		}
 		public @Nullable HasVibration other(HasVibration link) {
-			return has(link) ? (link == link2() ? link1() : link2()) : null;
+			return has(link) ? (link == endBuild() ? startBuild() : endBuild()) : null;
 		}
 		public boolean valid() {
-			return link1() != null && link2() != null;
+			return startBuild() != null && endBuild() != null;
 		}
 
-		@Override
-		public boolean equals(Object obj) {
+		@Override public boolean equals(Object obj) {
 			return obj instanceof VibrationLink vibrationLink &&
-				       (vibrationLink.link1 == link1 || vibrationLink.link1 == link2) &&
-				       (vibrationLink.link2 == link1 || vibrationLink.link2 == link2);
+				       (vibrationLink.start == start || vibrationLink.start == end) &&
+				       (vibrationLink.end == end || vibrationLink.end == start);
 		}
-		@Override
-		public String toString() {
-			return "Link:( (" + link1().tileX() + ", " + link1().tileY() + ") (" + link2().tileX() + ", " + link2().tileY() + ") )";
+		@Override public String toString() {
+			return "(link1: " + Point2.unpack(start) + "; link2: " + Point2.unpack(end) + ")";
+		}
+
+		public void write(Writes write) {
+			write.i(start);
+			write.i(end);
+		}
+		public void read(Reads read) {
+			start = read.i();
+			end = read.i();
 		}
 	}
 
@@ -212,8 +251,8 @@ public class VibrationGraph extends Graph {
 		@Override
 		public boolean equals(Object obj) {
 			return obj instanceof StaticFrequency frequency &&
-							 min == frequency.min &&
-							 max == frequency.max;
+				       min == frequency.min &&
+				       max == frequency.max;
 		}
 		@Override public String toString() {
 			return "(StaticFrequency, enabled: " + enabled + ", min: " + min + ", frequency: " + max + ")";

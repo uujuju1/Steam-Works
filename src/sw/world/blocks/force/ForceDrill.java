@@ -44,7 +44,7 @@ public class ForceDrill extends Drill {
 		public ForceModule force() {
 			return force;
 		}
-		public ForceConfig forceConfig() {return forceConfig;}
+		public ForceConfig fConfig() {return forceConfig;}
 
 		@Override
 		public void draw() {
@@ -93,14 +93,13 @@ public class ForceDrill extends Drill {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			force.graph.flood(this).each(b -> graph().add(b));
+			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			forceUnLink();
-			graph().softRemove(this);
-			graph().links.removeAll(force().links);
+			force().links.each(link -> fGraph().removeLink(link));
+			fGraph().removeBuild(this, false);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
@@ -111,9 +110,6 @@ public class ForceDrill extends Drill {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			graph().flood(this).each(build -> {
-				graph().merge(build.graph());
-			});
 		}
 		@Override
 		public void write(Writes write) {

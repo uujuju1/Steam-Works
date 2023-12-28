@@ -60,7 +60,7 @@ public class SWConsumeTurret extends Turret {
 		@Override public ForceModule force() {
 			return force;
 		}
-		@Override public ForceConfig forceConfig() {
+		@Override public ForceConfig fConfig() {
 			return forceConfig;
 		}
 
@@ -107,30 +107,16 @@ public class SWConsumeTurret extends Turret {
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().add(this);
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
-			force.graph.flood(this).each(b -> graph().add(b));
+			vGraph().addBuild(this);
+			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> {
-				if (link.valid()) {
-					removeVibrationLink(link.other(this));
-				} else {
-					vibration().links.remove(link);
-					vGraph().remove(this);
-					vGraph().delete(link.other(this));
-					vGraph().links.remove(link);
-				}
-			});
-			forceUnLink();
-			graph().remove(this);
-		}
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+			vibration().links.each(link -> vGraph().removeLink(link));
+			vGraph().removeBuild(this, false);
+			force().links.each(link -> fGraph().removeLink(link));
+			fGraph().removeBuild(this, false);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {

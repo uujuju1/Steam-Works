@@ -7,11 +7,11 @@ import mindustry.gen.*;
 import sw.util.*;
 import sw.world.interfaces.*;
 
-public class HeatGraph extends Graph {
+public class HeatGraphDeprecated extends GraphDeprecated {
 	public Seq<HasHeat> builds = new Seq<>(false, 16, HasHeat.class);
 	public Seq<HeatLink> links = new Seq<>(false, 16, HeatLink.class);
 
-	public HeatGraph() {
+	public HeatGraphDeprecated() {
 		super();
 		addGraph();
 	}
@@ -43,7 +43,7 @@ public class HeatGraph extends Graph {
 		});
 	}
 
-	public void merge(HeatGraph graph) {
+	public void merge(HeatGraphDeprecated graph) {
 		if (graph == this) return;
 		if (graph.builds.size > builds.size) {
 			graph.merge(this);
