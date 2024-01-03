@@ -18,6 +18,14 @@ public class SWEnvironment {
 		chloroIce, chloroIceCraters, chloroIceWall, chloroIceBoulder,
 		scorched, scorchedWall, scorchedCrater,
 
+	//biome1
+		rock, rockCrater, rockNubs, rockBoulder, rockWall,
+		dust, dustPit, dustNubs, dustBoulder, dustDune,
+		flake, flakeCrater, flakeNubs, flakeBoulder, flakeWall,
+		graphiteRock, greenCrystal,
+
+	//biome2
+	//biome3
 		oreNickel, oreIron, oreArsenic,
 		graphiteCharoiteWallOre, graphiteGrimeWallOre,
 
@@ -171,5 +179,73 @@ public class SWEnvironment {
 			wall = chloroIceWall;
 			decoration = chloroIceBoulder;
 		}};
+
+		//region biome1
+		rockWall = new StaticWall("rock-wall") {{
+			attributes.set(Attribute.sand, 0.25f);
+		}};
+		rock = new Floor("rock") {{
+			variants = 4;
+			wall = rockWall;
+		}};
+		rockCrater = new Floor("rock-crater") {{
+			variants = 2;
+			wall = rockWall;
+		}};
+		rockNubs = new Floor("rock-nubs") {{
+			variants = 2;
+			wall = rockWall;
+		}};
+		rockBoulder = new Prop("rock-boulder") {{
+			variants = 2;
+		}};
+
+		dustDune = new StaticWall("dust-dune") {{
+			attributes.set(Attribute.sand, 1f);
+		}};
+		dust = new Floor("dust") {{
+			variants = 4;
+			wall = dustDune;
+		}};
+		dustPit = new Floor("dust-pit") {{
+			variants = 2;
+			wall = dustDune;
+		}};
+		dustNubs = new Floor("dust-nubs") {{
+			variants = 2;
+			wall = dustDune;
+		}};
+		dustBoulder = new Prop("dust-boulder") {{
+			variants = 2;
+		}};
+
+		flakeWall = new StaticWall("flake-wall") {{
+			attributes.set(Attribute.sand, 0.75f);
+		}};
+		flake = new Floor("flake") {{
+			variants = 4;
+			wall = flakeWall;
+		}};
+		flakeCrater = new Floor("flake-crater") {{
+			variants = 2;
+			wall = flakeWall;
+		}};
+		flakeNubs = new Floor("flake-nubs") {{
+			variants = 2;
+			wall = flakeWall;
+		}};
+		flakeBoulder = new Prop("flake-boulder") {{
+			variants = 2;
+		}};
+
+		graphiteRock = new StaticWall("graphite-rock") {{
+			itemDrop = Items.graphite;
+		}};
+
+		greenCrystal = new TallBlock("green-crystal") {{
+			variants = 3;
+			clipSize = 128f;
+		}};
+		//endregion
 	}
 }
