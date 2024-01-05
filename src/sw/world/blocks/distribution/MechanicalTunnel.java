@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.*;
 import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
@@ -28,15 +27,10 @@ public class MechanicalTunnel extends Block {
 		solid = true;
 		rotate = true;
 		hasItems = true;
-		saveConfig = copyConfig = true;
 		group = BlockGroup.transportation;
 		noUpdateDisabled = true;
 		priority = TargetPriority.transport;
 		drawArrow = false;
-
-		config(Boolean.class, (MechanicalTunnelBuild build, Boolean priority) -> {
-			build.prioritized = priority;
-		});
 	}
 
 	@Override
@@ -80,7 +74,6 @@ public class MechanicalTunnel extends Block {
 	}
 
 	public class MechanicalTunnelBuild extends Building {
-		public boolean prioritized;
 
 		public @Nullable MechanicalTunnelBuild getLink() {
 			for (int i = 0; i < maxDistance(tile, rotation); i++) {
@@ -88,27 +81,20 @@ public class MechanicalTunnel extends Block {
 					tile.nearby(new Point2(i, 0).rotate(rotation)).build instanceof MechanicalTunnelBuild build &&
 					(build.rotation + 2) % 4 == rotation
 				) {
-					configure(!build.prioritized);
 					return build;
 				}
 			}
 			return null;
 		}
 
-		@Override public Boolean config() {
-			return prioritized;
-		}
-
-		@Override
-		public void tapped() {
-			configure(true);
-			if (getLink() != null) getLink().configure(false);
+		public boolean isSending(Item item) {
+			return back() != null && !back().acceptItem(this, item);
 		}
 
 		@Override
 		public void draw() {
 			Draw.rect(regions[rotation], x, y, 0);
-			if (prioritized) Draw.rect(priorityRegion, x, y, rotdeg());
+//			if (prioritized) Draw.rect(priorityRegion, x, y, rotdeg());
 		}
 		@Override
 		public void drawSelect() {
@@ -125,36 +111,25 @@ public class MechanicalTunnel extends Block {
 
 		@Override
 		public boolean acceptItem(Building source, Item item) {
-			return this.items.get(item) < this.getMaximumAccepted(item) && getLink() != null && prioritized && back() == source;
+			return this.items.get(item) < this.getMaximumAccepted(item) && getLink() != null && !getLink().isSending(item) && back() == source;
 		}
 
 		@Override
 		public boolean canDump(Building to, Item item) {
-			return super.canDump(to, item) && back() == to;
+			return super.canDump(to, item) && !isSending(item) && back() == to;
 		}
 
 		@Override
 		public void updateTile() {
-			if (!prioritized) dump();
-			if (getLink() != null && items != null && prioritized) {
+			dump();
+			if (getLink() != null && items != null) {
 				if (items.any() && getLink().items.total() < getLink().block.itemCapacity) {
 					Item next = items.take();
-					if (next != null) {
+					if (next != null && isSending(next)) {
 						getLink().handleItem(this, next);
 					}
 				}
 			}
-		}
-
-		@Override
-		public void read(Reads read, byte revision) {
-			super.read(read, revision);
-			prioritized = read.bool();
-		}
-		@Override
-		public void write(Writes write) {
-			super.write(write);
-			write.bool(prioritized);
 		}
 	}
 }
