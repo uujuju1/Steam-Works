@@ -209,7 +209,6 @@ public class SWVibration {
 			));
 			size = 2;
 			scaledHealth = 220f;
-			rotateSpeed = 360f;
 			reload = 60f;
 			range = 120f;
 			recoil = shootY = 0f;
