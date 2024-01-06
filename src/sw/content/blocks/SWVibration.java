@@ -24,7 +24,7 @@ import static mindustry.type.ItemStack.*;
 public class SWVibration {
 	public static Block
 		vibrationWire, vibrationDistributor,
-		thermiteMixer,
+		thermiteMixer, liquidCollector,
 		springHammer, windCollector,
 
 		sonus, impacto;
@@ -95,6 +95,7 @@ public class SWVibration {
 				outputsVibration = false;
 			}};
 		}};
+//		liquidCollector = new SWPump("liquid-collector")
 
 		springHammer = new SWGenericCrafter("spring-hammer") {{
 			requirements(Category.power, with(
@@ -213,6 +214,8 @@ public class SWVibration {
 			range = 120f;
 			recoil = shootY = 0f;
 			outlineRadius = 0;
+			shootCone = 360;
+			rotateSpeed = 0;
 			hasVibration = true;
 			targetAir = false;
 			shootSound = Sounds.titanExplosion;

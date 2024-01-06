@@ -71,7 +71,7 @@ public class SWTechTree {
           node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
           node(mechanicalUnloader);
         });
-        node(vibrationWire, with(new Research(windCollector)), () -> node(vibrationDistributor));
+        node(vibrationDistributor, with(new Research(windCollector)), () -> node(vibrationWire));
         node(beltNode, with(new Research(electricSpinner)), () -> {
           node(beltNodeLarge);
           node(omniBelt, with(new Research(graphene)), () -> {});
