@@ -41,6 +41,7 @@ public class SWBlocks {
 
 		resistantConveyor, suspensionConveyor,
 		mechanicalDistributor, mechanicalBridge, mechanicalTunnel,
+		mechanicalGate,
 		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
@@ -155,14 +156,6 @@ public class SWBlocks {
 			speed = 2f;
 			solid = false;
 		}};
-		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
-			requirements(Category.distribution, BuildVisibility.hidden, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 50;
-			speed = 2f;
-		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 3,
@@ -175,22 +168,12 @@ public class SWBlocks {
 			floors.put(SWEnvironment.scorched, -1);
 			floors.put(SWEnvironment.scorchedCrater, 2);
 		}};
-		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
+		mechanicalGate = new MechanicalGate("mechanical-gate") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 7,
 				Items.graphite, 5
 			));
-			health = 40;
-			solid = false;
-		}};
-		mechanicalUnderflowGate = new OverflowDuct("mechanical-underflow-gate") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 40;
-			solid = false;
-			invert = true;
+			health = 50;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
 			requirements(Category.distribution, with(
@@ -202,6 +185,32 @@ public class SWBlocks {
 			solid = false;
 			underBullets = true;
 			regionRotated1 = 1;
+		}};
+
+		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+		}};
+		mechanicalUnderflowGate = new OverflowDuct("mechanical-underflow-gate") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+			invert = true;
+		}};
+		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 50;
+			speed = 2f;
 		}};
 
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{

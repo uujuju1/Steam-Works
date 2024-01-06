@@ -43,6 +43,10 @@ public class MechanicalConveyor extends Conveyor {
 		Draw.rect(tiles[ref.val], plan.drawx(), plan.drawy(), plan.rotation * 90);
 	}
 
+	@Override public TextureRegion[] icons() {
+		return new TextureRegion[]{region};
+	}
+
 	@Override
 	public void load() {
 		super.load();
