@@ -147,13 +147,12 @@ public class SWBlocks {
 			displayedSpeed = 11f;
 			armored = true;
 		}};
-		mechanicalDistributor = new DuctRouter("mechanical-distributor") {{
+		mechanicalDistributor = new MechanicalDistributorSorter("mechanical-distributor") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 5,
 				Items.graphite, 3
 			));
 			health = 40;
-			speed = 2f;
 			solid = false;
 		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
