@@ -137,9 +137,9 @@ public class SWTechTree {
             node(castle);
           });
         });
-        node(swarm, () -> {
-          node(ambush, with(new Research(upgrader)), () -> {
-            node(trap);
+        node(fly, () -> {
+          node(spin, with(new Research(upgrader)), () -> {
+            node(gyro);
           });
         });
       });

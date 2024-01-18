@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.math.geom.*;
 import ent.anno.Annotations.*;
 import mindustry.content.*;
-import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
@@ -14,7 +13,6 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.ammo.*;
 import mindustry.type.unit.*;
-import mindustry.world.blocks.units.*;
 import sw.ai.*;
 import sw.entities.bullet.*;
 import sw.gen.*;
@@ -22,17 +20,15 @@ import sw.type.*;
 import sw.world.recipes.*;
 
 import static mindustry.type.ItemStack.*;
-import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWUnitTypes {
   @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
   @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask;
   @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot;
+  @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
   @EntityDef({BuildingTetherc.class, Unitc.class}) public static UnitType terra;
 
   public static UnitType
-
-    swarm, ambush, trap, misleading,
 		focus, precision, target,
 
     sentry, tower, castle, stronghold,
@@ -56,143 +52,6 @@ public class SWUnitTypes {
     }};
 
     //region attack
-    swarm = new UnitType("swarm") {{
-      health = 250;
-      speed = 2f;
-      rotateSpeed = 8f;
-      range = maxRange = 112f;
-
-      flying = lowAltitude = true;
-
-      constructor = UnitEntity::create;
-
-      weapons.add(
-        new Weapon("sw-swarm-weapon") {{
-          x = y = 0f;
-          reload = 15f;
-					mirror = false;
-          bullet = new BasicBulletType(2f, 12) {{
-            lifetime = 60f;
-            width = 7f;
-            height = 9f;
-          }};
-        }}
-      );
-    }};
-    ambush = new UnitType("ambush") {{
-      health = 560;
-      hitSize = 10f;
-      speed = 2f;
-      rotateSpeed = 4f;
-      range = maxRange = 112f;
-
-      engineSize = 3f;
-      engineOffset = 9f;
-
-      flying = lowAltitude = true;
-
-      constructor = UnitEntity::create;
-
-      weapons.add(
-        new Weapon("sw-ambush-weapon") {{
-          x = 4.75f;
-          y = -0.75f;
-          reload = 60;
-          bullet = new BasicBulletType(3f, 25) {{
-            lifetime = 40f;
-            width = 9f;
-            height = 11f;
-          }};
-        }}
-      );
-
-      abilities.add(new SpawnDeathAbility(swarm, 1, 0));
-    }};
-    trap = new UnitType("trap") {{
-      health = 1300;
-      hitSize = 14f;
-      speed = 1.5f;
-      rotateSpeed = 2f;
-      range = maxRange = 144f;
-
-      engineSize = 5.25f;
-      engineOffset = 12.5f;
-
-      flying = lowAltitude = true;
-
-	    constructor = UnitEntity::create;
-
-      weapons.add(
-        new Weapon("sw-trap-cannon") {{
-          x = y = 0f;
-          reload = 60;
-          mirror = false;
-          shootSound = Sounds.shotgun;
-          shake = 2f;
-          bullet = new ArtilleryBulletType(4f, 30) {{
-            width = height = 10f;
-            lifetime = 36f;
-            splashDamage = 30f;
-            splashDamageRadius = 64f;
-            collides = collidesAir = collidesGround = true;
-            hitEffect = despawnEffect = Fx.hitBulletBig;
-          }};
-        }}
-      );
-
-      abilities.addAll(new SpawnDeathAbility(ambush, 1, 0));
-    }};
-		misleading = new UnitType("misleading") {{
-      health = 8500;
-      hitSize = 16f;
-      speed = 1.5f;
-      rotateSpeed = 3f;
-      range = maxRange = 160f;
-
-      engineSize = 5f;
-      engineOffset = 13f;
-      setEnginesMirror(
-        new UnitEngine(12f, -8f, 3f, -45f),
-        new UnitEngine(6f, -13f, 3f, -80f)
-      );
-
-      flying = lowAltitude = true;
-
-      constructor = UnitEntity::create;
-
-      weapons.add(
-        new Weapon("sw-misleading-cannon") {{
-          x = 7f;
-          y = 1.5f;
-          reload = 45f;
-          recoil = 3f;
-          inaccuracy = 2f;
-
-          shootSound = Sounds.mediumCannon;
-
-          bullet = new BasicBulletType(4f, 100, "missile-large") {{
-            lifetime = 40f;
-            width = height = 15f;
-            splashDamage = 60f;
-            splashDamageRadius = 40f;
-
-            hitColor = backColor;
-
-            shootEffect = Fx.shootTitan;
-            smokeEffect = Fx.shootSmokeTitan;
-            despawnEffect = new ExplosionEffect() {{
-              smokeColor = Color.gray;
-              waveColor = sparkColor = frontColor;
-              waveStroke = 4f;
-              waveRad = 40f;
-            }};
-          }};
-        }}
-      );
-
-      abilities.add(new SpawnDeathAbility(trap, 1, 0));
-		}};
-
 		focus = new UnitType("focus") {{
 			health = 200;
 			speed = 0.5f;
@@ -454,7 +313,7 @@ public class SWUnitTypes {
     }};
 
     //endregion
-
+    //region tanks
     sentry = new TankUnitType("sentry") {{
       health = 320;
       speed = 1f;
@@ -693,7 +552,8 @@ public class SWUnitTypes {
         }}
       );
     }};
-
+    //endregion
+    //region legs
     existence = new SWUnitType("existence") {{
       health = 250;
   		speed = 1.2f;
@@ -845,6 +705,176 @@ public class SWUnitTypes {
 				}};
 			}});
     }};
+    //endregion
+	  //region copter
+    fly = new SWUnitType("fly") {{
+      health = 250;
+      speed = 2f;
+      fallSpeed = 0.005f;
+      rotateSpeed = 8f;
+      range = maxRange = 120f;
+
+      engineSize = 0f;
+
+      flying = lowAltitude = true;
+
+      loopSound = Sounds.cutter;
+      constructor = UnitCopter::create;
+
+      rotors.add(
+        new UnitRotor("-rotor", true) {{
+          speed = 10f;
+        }}
+      );
+
+      weapons.add(
+        new Weapon("sw-small-launcher") {{
+          x = 3.75f;
+          y = 3f;
+          reload = 60;
+          layerOffset = -0.01f;
+          shootSound = Sounds.missileLarge;
+
+          shoot = new ShootSpread(3, 5f) {{
+            shotDelay = 5f;
+          }};
+
+          bullet = new BasicBulletType(2f, 5, "missile") {{
+            frontColor = Pal.missileYellow;
+            backColor = Pal.missileYellowBack;
+            trailLength = 5;
+            width = 7f;
+            height = 9f;
+            lifetime = 60f;
+          }};
+        }}
+      );
+    }};
+	  spin = new SWUnitType("spin") {{
+		  health = 560;
+		  hitSize = 10f;
+		  speed = 2f;
+      fallSpeed = 0.005f;
+		  rotateSpeed = 4f;
+		  range = maxRange = 96f;
+
+		  engineSize = 0f;
+
+		  flying = lowAltitude = true;
+
+      loopSound = Sounds.cutter;
+		  constructor = UnitCopter::create;
+
+      rotors.add(
+        new UnitRotor("sw-bottom-rotor", false) {{
+          speed = 10f;
+          layerOffset = -0.02f;
+          drawTop = false;
+        }}
+      );
+
+		  weapons.add(
+        new Weapon("sw-small-artillery") {{
+          x = 0f;
+          y = -3f;
+          reload = 45;
+          mirror = false;
+          rotate = true;
+          shootSound = Sounds.malignShoot;
+
+          bullet = new BasicBulletType(3f, 20, "mine-bullet") {{
+            frontColor = Pal.missileYellow;
+            backColor = Pal.missileYellowBack;
+            trailLength = 10;
+            width = 8f;
+            height = 12f;
+            recoil = 1f;
+            lifetime = 32f;
+          }};
+        }},
+        new Weapon("sw-small-launcher") {{
+          x = 6.5f;
+          y = 0.75f;
+          reload = 30;
+          layerOffset = -0.01f;
+          shootSound = Sounds.shootAlt;
+          alternate = false;
+
+          bullet = new BasicBulletType(2f, 12f, "missile-large") {{
+            frontColor = Pal.missileYellow;
+            backColor = Pal.missileYellowBack;
+            trailLength = 5;
+            width = 7f;
+            height = 9f;
+            homingPower = 0.012f;
+            lifetime = 48f;
+          }};
+        }}
+      );
+	  }};
+    gyro = new SWUnitType("gyro") {{
+      health = 1300;
+      hitSize = 14f;
+      speed = 1.5f;
+      fallSpeed = 0.005f;
+      rotateSpeed = 4f;
+      range = maxRange = 200f;
+
+      engineSize = 0f;
+
+      flying = lowAltitude = true;
+
+      loopSound = Sounds.cutter;
+      constructor = UnitCopter::create;
+
+      rotors.add(
+        new UnitRotor("-rotor", true) {{
+          speed = 10f;
+        }},
+        new UnitRotor("sw-bottom-rotor", false) {{
+          x = 10f;
+          speed = 10f;
+          layerOffset = -0.02f;
+          mirrored = true;
+          drawTop = false;
+        }}
+      );
+
+      weapons.add(
+        new Weapon("sw-small-artillery") {{
+          x = 4.5f;
+          y = -2.75f;
+          reload = 60;
+          rotate = true;
+          shootSound = Sounds.missileSmall;
+
+          bullet = new BasicBulletType(2f, 20, "missile-large") {{
+            frontColor = Pal.missileYellow;
+            backColor = Pal.missileYellowBack;
+            width = height = 8f;
+            shrinkY = 0f;
+            trailLength  = 15;
+            lifetime = 100f;
+            homingPower = 0.02f;
+          }};
+        }},
+        new Weapon("sw-medium-launcher") {{
+          x = 7.75f;
+          y = 5.5f;
+          reload = 30;
+          layerOffset = -0.01f;
+          shootSound = Sounds.shootBig;
+
+          bullet = new BasicBulletType(4f, 10) {{
+            frontColor = Pal.missileYellow;
+            backColor = Pal.missileYellowBack;
+            width = height = 12f;
+            lifetime = 25f;
+          }};
+        }}
+      );
+    }};
+		//endregion
 
     deltaShield = new SWUnitType("delta-shield") {{
       health = 500;
@@ -972,28 +1002,5 @@ public class SWUnitTypes {
 
       constructor = UnitEntity::create;
     }};
-
-    ((UnitFactory) Blocks.groundFactory).plans.add(
-      new UnitPlan(sentry, 60f * 40f, with(SWItems.compound, 16, Items.silicon, 7, Items.titanium, 7)),
-      new UnitPlan(existence, 60f * 45f, with(SWItems.denseAlloy, 20, Items.silicon, 8, Items.pyratite, 7))
-    );
-    ((UnitFactory) Blocks.airFactory).plans.add(new UnitPlan(swarm, 60f * 10f, with(SWItems.compound, 12, Items.silicon, 7)));
-    ((Reconstructor) Blocks.additiveReconstructor).upgrades.addAll(
-      new UnitType[]{swarm, ambush},
-      new UnitType[]{recluse, retreat},
-      new UnitType[]{sentry, tower},
-      new UnitType[]{existence, remembered}
-    );
-    ((Reconstructor) Blocks.multiplicativeReconstructor).upgrades.addAll(
-      new UnitType[]{ambush, trap},
-      new UnitType[]{retreat, evade},
-      new UnitType[]{tower, castle},
-      new UnitType[]{remembered, presence}
-    );
-		((Reconstructor) Blocks.exponentialReconstructor).upgrades.addAll(
-      new UnitType[]{trap, misleading},
-      new UnitType[]{castle, stronghold},
-      new UnitType[]{presence, prot}
-    );
   }
 }
