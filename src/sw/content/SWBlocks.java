@@ -25,6 +25,7 @@ import sw.util.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.environment.*;
+import sw.world.blocks.liquids.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.sandbox.*;
 import sw.world.blocks.units.*;
@@ -45,6 +46,8 @@ public class SWBlocks {
 		mechanicalOverflowGate, mechanicalUnderflowGate, mechanicalUnloader,
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
+
+		mechanicalConduit,
 
 		siliconBoiler,
 		oilDistiller,
@@ -128,39 +131,29 @@ public class SWBlocks {
 
 		// region distribution
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 2
-			));
-			health = 125;
-			speed = 0.08f;
-			displayedSpeed = 11f;
+			requirements(Category.distribution, with());
+			health = 100;
+			speed = 0.04f;
+			displayedSpeed = 5f;
 			researchCost = with(
 				SWItems.nickel, 30
 			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
-			requirements(Category.distribution, with(
-				SWItems.iron, 2
-			));
-			health = 125;
-			speed = 0.08f;
-			displayedSpeed = 11f;
+			requirements(Category.distribution, with());
+			health = 109;
+			speed = 0.04f;
+			displayedSpeed = 5f;
 			armored = true;
 		}};
 		mechanicalDistributor = new MechanicalDistributorSorter("mechanical-distributor") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 5,
-				Items.graphite, 3
-			));
-			health = 40;
+			requirements(Category.distribution, with());
+			health = 100;
 			solid = false;
 		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 3,
-				Items.graphite, 3
-			));
-			health = 140;
+			requirements(Category.distribution, with());
+			health = 100;
 			floors.put(SWEnvironment.charoite, -1);
 			floors.put(SWEnvironment.charoiteCraters, 2);
 			floors.put(SWEnvironment.grime, -1);
@@ -168,48 +161,16 @@ public class SWBlocks {
 			floors.put(SWEnvironment.scorchedCrater, 2);
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 50;
+			requirements(Category.distribution, with());
+			health = 100;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
-			requirements(Category.distribution, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 50;
+			requirements(Category.distribution, with());
+			health = 100;
 			speed = 2f;
 			solid = false;
 			underBullets = true;
 			regionRotated1 = 1;
-		}};
-
-		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
-			requirements(Category.distribution, BuildVisibility.hidden, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 40;
-			solid = false;
-		}};
-		mechanicalUnderflowGate = new OverflowDuct("mechanical-underflow-gate") {{
-			requirements(Category.distribution, BuildVisibility.hidden, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 40;
-			solid = false;
-			invert = true;
-		}};
-		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
-			requirements(Category.distribution, BuildVisibility.hidden, with(
-				SWItems.nickel, 7,
-				Items.graphite, 5
-			));
-			health = 50;
-			speed = 2f;
 		}};
 
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
@@ -227,6 +188,13 @@ public class SWBlocks {
 				SWItems.nickel, 10
 			));
 			canOverdrive = false;
+		}};
+		//endregion
+
+		//region liquids
+		mechanicalConduit = new MechanicalConduit("mechanical-conduit") {{
+			requirements(Category.liquid, with());
+			health = 100;
 		}};
 		//endregion
 
@@ -757,5 +725,33 @@ public class SWBlocks {
 			health = 2147483647;
 		}};
 		// endregion
+
+		//region unused
+		mechanicalOverflowGate = new OverflowDuct("mechanical-overflow-gate") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+		}};
+		mechanicalUnderflowGate = new OverflowDuct("mechanical-underflow-gate") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 40;
+			solid = false;
+			invert = true;
+		}};
+		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
+			requirements(Category.distribution, BuildVisibility.hidden, with(
+				SWItems.nickel, 7,
+				Items.graphite, 5
+			));
+			health = 50;
+			speed = 2f;
+		}};
+		//endregion
 	}
 }
