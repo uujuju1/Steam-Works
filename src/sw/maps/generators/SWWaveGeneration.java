@@ -18,7 +18,7 @@ public class SWWaveGeneration {
 		{recluse, retreat, evade}
 	};
 	public static UnitType[][] air = {
-		{swarm, ambush, trap}
+		{fly, spin, gyro}
 	};
 
 	public static Seq<SpawnGroup> navalGen(float difficulty, int maxWave, Rand rand) {

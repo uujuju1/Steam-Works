@@ -25,6 +25,11 @@ public class SWEnvironment {
 		graphiteRock, greenCrystal,
 
 	//biome2
+		schist, schistCrater, schistBoulder, schistWall,
+		chlorite, chloriteCrater, chloriteBoulder, chloriteWall, chloriteGasVent,
+		epidote, epidoteCrater, epidoteBoulder, epidoteWall,
+		staurolite, stauroliteCrater, stauroliteBoulder, stauroliteWall,
+
 	//biome3
 		oreNickel, oreIron, oreArsenic,
 		graphiteCharoiteWallOre, graphiteGrimeWallOre,
@@ -32,6 +37,7 @@ public class SWEnvironment {
 		chloro, deepChloro, shallowChloro;
 
 	public static void load() {
+		//region old
 		charoiteWall = new StaticWall("charoite-wall") {{
 			attributes.set(Attribute.sand, 2f);
 		}};
@@ -179,7 +185,7 @@ public class SWEnvironment {
 			wall = chloroIceWall;
 			decoration = chloroIceBoulder;
 		}};
-
+		//endregion
 		//region biome1
 		rockWall = new StaticWall("rock-wall") {{
 			attributes.set(Attribute.sand, 0.25f);
@@ -245,6 +251,67 @@ public class SWEnvironment {
 		greenCrystal = new TallBlock("green-crystal") {{
 			variants = 3;
 			clipSize = 128f;
+			emitLight = true;
+			lightColor = Color.teal.cpy().a(0.3f);
+			lightRadius = 50f;
+		}};
+		//endregion
+		//region biome2
+		schistWall = new StaticWall("schist-wall");
+		schistBoulder = new Prop("schist-boulder") {{
+			variants = 2;
+		}};
+		schist = new Floor("schist", 4) {{
+			wall = schistWall;
+			decoration = schistBoulder;
+		}};
+		schistCrater = new Floor("schist-crater", 2) {{
+			wall = schistWall;
+			decoration = schistBoulder;
+		}};
+
+		chloriteWall = new StaticWall("chlorite-wall");
+		chloriteBoulder = new Prop("chlorite-boulder") {{
+			variants = 2;
+		}};
+		chlorite = new Floor("chlorite", 4) {{
+			wall = chloriteWall;
+			decoration = chloriteBoulder;
+		}};
+		chloriteCrater = new Floor("chlorite-crater", 2) {{
+			wall = chloriteWall;
+			decoration = chloriteBoulder;
+		}};
+		chloriteGasVent = new GasVent("chlorite-gas-vent") {{
+			parent = blendGroup = chlorite;
+			fluid = SWLiquids.steam;
+			cloudEffectColor = Color.white;
+		}};
+
+		epidoteWall = new StaticWall("epidote-wall");
+		epidoteBoulder = new Prop("epidote-boulder") {{
+			variants = 2;
+		}};
+		epidote = new Floor("epidote", 4) {{
+			wall = epidoteWall;
+			decoration = epidoteBoulder;
+		}};
+		epidoteCrater = new Floor("epidote-crater", 2) {{
+			wall = epidoteWall;
+			decoration = epidoteBoulder;
+		}};
+
+		stauroliteWall = new StaticWall("staurolite-wall");
+		stauroliteBoulder = new Prop("staurolite-boulder") {{
+			variants = 2;
+		}};
+		staurolite = new Floor("staurolite", 4) {{
+			wall = stauroliteWall;
+			decoration = stauroliteBoulder;
+		}};
+		stauroliteCrater = new Floor("staurolite-crater", 2) {{
+			wall = stauroliteWall;
+			decoration = stauroliteBoulder;
 		}};
 		//endregion
 	}

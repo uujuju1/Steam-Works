@@ -2,7 +2,6 @@ package sw.world.blocks.liquids;
 
 import arc.*;
 import arc.graphics.g2d.*;
-import mindustry.graphics.*;
 import mindustry.world.blocks.liquid.*;
 import sw.util.*;
 
@@ -20,7 +19,7 @@ public class MechanicalConduit extends ArmoredConduit {
 	@Override
 	public void load() {
 		super.load();
-		regions = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 1, 32);
+		regions = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 4, 32);
 	}
 
 	public class MechanicalConduitBuild extends ArmoredConduitBuild {
@@ -29,8 +28,11 @@ public class MechanicalConduit extends ArmoredConduit {
 		@Override
 		public void draw() {
 			Draw.rect(bottomRegion, x, y, 0);
-			if(liquids.currentAmount() > 0.001f){
-				Drawf.liquid(liquidRegion, x, y, liquids.currentAmount() / liquidCapacity, liquids.current().color);
+			if (liquids().currentAmount() > 0.01f) {
+				Draw.color(liquids.current().color);
+				Draw.alpha(liquids.currentAmount() / liquidCapacity);
+				Draw.rect(liquidRegion, x, y);
+				Draw.color();
 			}
 			Draw.rect(regions[tiling], x, y, 0);
 			if (tiling != 0) Draw.rect(topRegion, x, y, rotdeg());

@@ -83,7 +83,7 @@ public class SWBlocks {
 		// region production
 		mechanicalBore = new BeamDrill("mechanical-bore") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 50
+				SWItems.nickel, 25
 			));
 			researchCost = with(
 				SWItems.nickel, 100
@@ -99,8 +99,8 @@ public class SWBlocks {
 		}};
 		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 50,
-				Items.graphite, 50
+				SWItems.nickel, 25,
+				Items.graphite, 25
 			));
 			researchCost = with(
 				SWItems.nickel, 100,
@@ -115,8 +115,8 @@ public class SWBlocks {
 		}};
 		hydraulicDrill = new Drill("hydraulic-drill") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 80,
-				Items.graphite, 100
+				SWItems.nickel, 40,
+				Items.graphite, 50
 			));
 			researchCost = with(
 				SWItems.nickel, 160,
@@ -131,7 +131,7 @@ public class SWBlocks {
 
 		// region distribution
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(SWItems.nickel, 1));
 			health = 100;
 			speed = 0.04f;
 			displayedSpeed = 5f;
@@ -140,19 +140,22 @@ public class SWBlocks {
 			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(SWItems.iron, 1));
 			health = 109;
 			speed = 0.04f;
 			displayedSpeed = 5f;
 			armored = true;
 		}};
 		mechanicalDistributor = new MechanicalDistributorSorter("mechanical-distributor") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(SWItems.nickel, 5));
 			health = 100;
 			solid = false;
 		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(
+				SWItems.nickel, 5,
+				SWItems.iron, 5
+			));
 			health = 100;
 			floors.put(SWEnvironment.charoite, -1);
 			floors.put(SWEnvironment.charoiteCraters, 2);
@@ -161,11 +164,17 @@ public class SWBlocks {
 			floors.put(SWEnvironment.scorchedCrater, 2);
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(
+				SWItems.nickel, 5,
+				SWItems.iron, 3
+			));
 			health = 100;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
-			requirements(Category.distribution, with());
+			requirements(Category.distribution, with(
+				SWItems.nickel, 6,
+				SWItems.iron, 4
+			));
 			health = 100;
 			speed = 2f;
 			solid = false;
