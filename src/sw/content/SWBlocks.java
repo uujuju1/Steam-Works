@@ -716,7 +716,7 @@ public class SWBlocks {
 				Items.silicon, 270,
 				SWItems.compound, 200
 			));
-			size = 2;
+			size = 3;
 			itemCapacity = 200;
 			entries.addAll(
 				new Block[]{SWEnvironment.deepChloro, Blocks.darkPanel3},

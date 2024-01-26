@@ -1,25 +1,23 @@
 package sw.world.blocks.environment;
 
+import arc.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import sw.content.*;
 import sw.util.*;
 
-import static mindustry.Vars.*;
-
 public class Filler extends Block {
-	public UnitType unitType = SWUnitTypes.terra;
 	public Seq<Block[]> entries = new Seq<>();
-	public float buildTime = 60f;
+	public TextureRegion topRegion, armRegion;
+	public float armSpeed = 0.014f;
 	public float constructTime = 150f;
 	public int targetArea = 8;
 
@@ -35,6 +33,13 @@ public class Filler extends Block {
 	}
 
 	@Override
+	public void load() {
+		super.load();
+		topRegion = Core.atlas.find(name + "-top");
+		armRegion = Core.atlas.find(name + "-arm");
+	}
+
+	@Override
 	public void setStats() {
 		super.setStats();
 		stats.add(Stat.range, targetArea, StatUnit.blocksSquared);
@@ -46,11 +51,8 @@ public class Filler extends Block {
 	}
 
 	public class FillerBuild extends Building {
-		public Unit unit;
-		public int unitId;
-
 		public float time, totalTime,
-		targetX, targetY;
+		targetX = x, targetY = y;
 
 		public Seq<Tile> targets() {
 			Seq<Tile> out = new Seq<>();
@@ -64,53 +66,50 @@ public class Filler extends Block {
 				return true;
 			});
 		}
+
 		public void swap(Tile tile) {
-			if (time <= 1f) return;
-			for (Block[] entry : entries) if (tile.floor() == entry[0]) {
-				tile.setFloor(entry[1].asFloor());
-				Fx.itemTransfer.at(x, y, 0, unit);
-				consume();
-				time %= 1f;
-				return;
+			if (!Vars.net.client()) {
+				for (Block[] entry : entries) {
+					if (tile.floor() == entry[0]) {
+						tile.setFloorNet(entry[1], Blocks.air);
+						consume();
+						break;
+					}
+				}
 			}
-			time %= 1f;
 		}
 
 		@Override
 		public void updateTile() {
-			if (Vars.net.active()) return;
 			Seq<Tile> targets = targets();
-			Tile target;
+			Tile target = null;
 			if (!targets.isEmpty()) {
-				target = targets().first();
-				targetX = target.worldx();
-				targetY = target.worldy();
+				target = targets.first();
+				targetX = Mathf.approachDelta(targetX, target.worldx(), armSpeed);
+				targetY = Mathf.approachDelta(targetY, target.worldx(), armSpeed);
+			} else {
+				targetX = Mathf.approachDelta(targetX, x, armSpeed);
+				targetY = Mathf.approachDelta(targetY, y, armSpeed);
 			}
 
-			if(unit != null && (unit.dead || !unit.isAdded())) unit = null;
-			if(unitId != -1) {
-				unit = Groups.unit.getByID(unitId);
-				if(unit == null || !net.client()) unitId = -1;
-			}
-
-			if(unit == null) {
-				time+=edelta()/buildTime;
-				totalTime += Time.delta;
-				if(time >= 1f && !net.client()) {
-					unit = unitType.create(team);
-					if(unit instanceof BuildingTetherc u) u.building(this);
-					unit.set(x, y);
-					unit.rotation = 90f;
-					unit.add();
-					Call.unitTetherBlockSpawned(tile, unit.id);
+			if (efficiency > 0 && target != null) {
+				time += getProgressIncrease(constructTime);
+				if (time >= 1f) {
+					swap(target);
+					time %= 1f;
 				}
-			} else time += (edelta() / constructTime) * (time <= 1 ? 1 : 0);
+			}
 		}
 
 		@Override
 		public void draw() {
 			super.draw();
-			if (unit == null) Draw.draw(Layer.blockOver, () -> Drawf.construct(this, unitType, 0, time, efficiency * Vars.state.rules.unitBuildSpeedMultiplier, totalTime));
+			Draw.z(Layer.blockOver);
+			Tmp.v1.set(x, y).lerp(targetX, targetY, 0.5f);
+			Draw.rect(armRegion, Tmp.v1.x, Tmp.v1.y, Mathf.dst(x, y, targetX, targetY), 8f, Angles.angle(x, y, targetX, targetY));
+			Draw.rect(topRegion, x, y, 0);
+			Draw.rect(topRegion, targetX, targetY, 0);
+			Draw.z(Layer.block);
 		}
 
 		@Override public float progress() {
