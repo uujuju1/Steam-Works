@@ -77,7 +77,6 @@ public class SWBlocks {
 	public static void load() {
 		SWEnvironment.load();
 		SWForce.load();
-		SWHeat.load();
 		SWVibration.load();
 
 		// region production

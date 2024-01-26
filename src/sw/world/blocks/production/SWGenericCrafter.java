@@ -1,12 +1,10 @@
 package sw.world.blocks.production;
 
-import arc.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.blocks.production.*;
 import sw.util.*;
 import sw.world.graph.VibrationGraph.*;
@@ -19,7 +17,6 @@ import sw.world.modules.*;
  */
 public class SWGenericCrafter extends GenericCrafter {
 	public ForceConfig forceConfig = new ForceConfig();
-	public HeatConfig heatConfig = new HeatConfig();
 	public VibrationConfig vibrationConfig = new VibrationConfig();
 
 	public float outputSpeed = -1f;
@@ -48,8 +45,6 @@ public class SWGenericCrafter extends GenericCrafter {
 	@Override
 	public void setBars() {
 		super.setBars();
-		if (!hasHeat) return;
-		addBar("heat", (SWGenericCrafterBuild entity) -> new Bar(Core.bundle.get("bar.heat"), Pal.accent, entity::fraction));
 	}
 
 	@Override public void drawOverlay(float x, float y, int rotation) {
@@ -71,18 +66,10 @@ public class SWGenericCrafter extends GenericCrafter {
 		configurable = forceConfig.outputsForce || vibrationConfig.outputsVibration;
 	}
 
-	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasHeat, HasForce, HasVibration{
+	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasForce, HasVibration{
 		public float rotation = 0;
-		HeatModule heat = new HeatModule();
 		ForceModule force = new ForceModule();
 		VibrationModule vibration = new VibrationModule();
-
-		@Override public HeatModule heat() {
-			return heat;
-		}
-		@Override public HeatConfig heatC() {
-			return heatConfig;
-		}
 
 		@Override public ForceModule force() {
 			return force;
@@ -164,7 +151,6 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			force.read(read);
-			heat.read(read);
 			vibration.read(read);
 			rotation = read.f();
 		}
@@ -172,7 +158,6 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void write(Writes write) {
 			super.write(write);
 			force.write(write);
-			heat.write(write);
 			vibration.write(write);
 			write.f(rotation);
 		}
