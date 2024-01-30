@@ -1,6 +1,7 @@
 package sw.content;
 
 import arc.graphics.*;
+import arc.math.*;
 import arc.math.geom.*;
 import ent.anno.Annotations.*;
 import mindustry.content.*;
@@ -314,62 +315,67 @@ public class SWUnitTypes {
 
     //endregion
     //region tanks
-    sentry = new TankUnitType("sentry") {{
+    sentry = new SWUnitType("sentry") {{
       health = 320;
-      speed = 1f;
-      range = maxRange = 160f;
+      speed = 0.25f;
+      range = maxRange = 800f;
       hitSize = 8f;
-      rotateSpeed = 4;
+      rotateSpeed = 1;
       outlines = faceTarget = false;
+      targetAir = false;
+      squareShape = true;
+      omniMovement = false;
+      rotateMoveFirst = true;
+      aiController = MortarAI::new;
+
       treadFrames = 16;
       treadRects = new Rect[]{
 				new Rect(-24f, -29f, 14, 56)
 			};
-      ammoType = new ItemAmmoType(Items.copper);
+
       constructor = TankUnit::create;
 
-      weapons.add(new Weapon("sw-sentry-fuse") {{
-        x = y = 0f;
-        reload = 120f;
-        recoil = 0f;
-        range = 160f;
-        rotate = true;
-        rotateSpeed = 7f;
-        mirror = false;
-				shootY = 4;
-        shootSound = Sounds.pulseBlast;
-        bullet = new MultiBulletType() {{
-          shootEffect = hitEffect = smokeEffect = Fx.sparkShoot;
-          shake = 2f;
-          recoil = 2f;
-          range = rangeOverride = 160f;
-          bullets.add(
-            new ShrapnelBulletType() {{
-              damage = 36;
-              length = 160f;
-              fromColor = Pal.accent;
-              toColor = Color.gray;
-            }},
-            new BasicBulletType(2f, 0, "circle-bullet") {{
-              lifetime = 80f;
-              width = height = 10f;
-              bulletInterval = 10;
-              intervalBullets = 10;
-              intervalBullet = new LightningBulletType() {{
-                damage = 1;
-                lightningColor = hitColor = Pal.accent;
-                lightningLength = 5;
-                lightningLengthRand = 3;
-                lightningType = new BulletType(1.0E-4f, 0.0f) {{
-                  lifetime = Fx.lightning.lifetime;
-                  despawnEffect = Fx.none;
-                  hittable = false;
-                }};
-              }};
+      weapons.add(
+        new Weapon("sw-long-mortar") {{
+          x = y = 0f;
+          reload = 300f;
+          recoil = 0f;
+          recoilTime = 60f;
+          cooldownTime = 150f;
+          rotateSpeed = 0.5f;
+          shootY = 16f;
+          shootSound = Sounds.largeCannon;
+          rotate = true;
+          mirror = false;
+
+          parts.add(
+            new RegionPart("-cannon") {{
+              moveY = -2f;
+              outlineLayerOffset = 0f;
+              under = true;
+              progress = PartProgress.recoil.curve(Interp.bounceIn);
             }}
           );
-        }};
-      }});
+
+          bullet = new ArtilleryBulletType(2f, 1, "missile-large") {{
+            frontColor = Pal.missileYellow;
+            backColor = trailColor = hitColor = Pal.missileYellowBack;
+            splashDamage = 100f;
+            splashDamageRadius = 16f;
+            width = height = 16f;
+            lifetime = 400;
+						shrinkX = shrinkY = 0.5f;
+            trailWidth = 3f;
+            trailLength = 50;
+            collides = collidesTiles = collidesGround = true;
+            shootEffect = Fx.shootTitan;
+            smokeEffect = Fx.shootSmokeTitan;
+            trailEffect = Fx.none;
+            hitEffect = despawnEffect = new MultiEffect(Fx.titanSmoke, Fx.titanExplosion);
+            bullet.hitSound = bullet.despawnSound = Sounds.largeExplosion;
+          }};
+        }}
+      );
     }};
     tower = new TankUnitType("tower") {{
       health = 650;

@@ -115,6 +115,10 @@ public class SWUnitType extends UnitType {
     if (drawRotors) rotors.each(rotor -> rotor.draw(unit));
   }
 
+  @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
+    if (outlines) super.getRegionsToOutline(out);
+  }
+
   @Override
   public void init() {
     super.init();
