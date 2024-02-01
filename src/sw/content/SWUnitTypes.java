@@ -12,10 +12,7 @@ import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.type.ammo.*;
-import mindustry.type.unit.*;
 import sw.ai.*;
-import sw.entities.bullet.*;
 import sw.gen.*;
 import sw.type.*;
 import sw.world.recipes.*;
@@ -377,186 +374,159 @@ public class SWUnitTypes {
         }}
       );
     }};
-    tower = new TankUnitType("tower") {{
+    tower = new SWUnitType("tower") {{
       health = 650;
-      speed = 0.8f;
-      range = maxRange = 160f;
+      speed = 0.25f;
+      range = maxRange = 1000f;
       hitSize = 10f;
-      rotateSpeed = 3;
-      outlines = faceTarget = false;
+      rotateSpeed = 0.8f;
+	    outlines = faceTarget = false;
+	    targetAir = false;
+	    squareShape = true;
+	    omniMovement = false;
+	    rotateMoveFirst = true;
+	    aiController = MortarAI::new;
+
       treadFrames = 16;
       treadRects = new Rect[]{
         new Rect(-31, -21, 14, 56),
         new Rect(-13, -37, 13, 72)
       };
-      ammoType = new ItemAmmoType(Items.copper);
+
       constructor = TankUnit::create;
 
-			weapons.add(new Weapon("sw-tower-shotgun") {{
-        x = y = 0f;
-				reload = 60f;
-        range = 160f;
-        mirror = false;
-        rotate = true;
-        rotateSpeed = 5f;
-        shootSound = Sounds.shootAltLong;
-        bullet = new MultiBulletType() {{
-          range = rangeOverride = 160f;
-          shake = 3f;
-          shootEffect = Fx.shootBigColor;
-          smokeEffect = Fx.shootSmokeSquareSparse;
-          bullets.add(
-            new BasicBulletType(1f, 0) {{
-              lifetime = 1;
-              fragBullet = new BasicBulletType(4, 4) {{
-                lifetime = 20f;
-                knockback = 3f;
-                trailWidth = 6f;
-                trailLength = 3;
-                hitEffect = despawnEffect = Fx.hitSquaresColor;
-              }};
-              fragVelocityMax = fragVelocityMin = 1;
-              fragRandomSpread = 0;
-              fragSpread = 4f;
-              fragBullets = 15;
-            }},
-            new LaserBulletType(30) {{
-              length = 160;
-              width = 16f;
-              colors = new Color[]{Pal.accent, Pal.accent, Color.white};
-            }}
-          );
-        }};
-      }});
+			weapons.add(
+        new Weapon("sw-longer-mortar") {{
+				  x = y = 0f;
+				  reload = 450f;
+				  recoil = 0f;
+	  			recoilTime = 60f;
+		  		cooldownTime = 225f;
+			  	rotateSpeed = 0.4f;
+				  shootY = 26f;
+  				shootSound = Sounds.largeCannon;
+	  			rotate = true;
+		  		mirror = false;
+
+			  	parts.add(
+				  	new RegionPart("-cannon") {{
+				  		moveY = -4f;
+				  		outlineLayerOffset = 0f;
+				  		under = true;
+				  		progress = PartProgress.recoil.curve(Interp.bounceIn);
+				  	}}
+				  );
+
+				  bullet = new ArtilleryBulletType(2f, 1, "missile-large") {{
+				  	frontColor = Pal.missileYellow;
+				  	backColor = trailColor = hitColor = Pal.missileYellowBack;
+				  	splashDamage = 300f;
+				  	splashDamageRadius = 16f;
+				  	width = height = 18f;
+				  	lifetime = 500;
+				  	shrinkX = shrinkY = 0.5f;
+				  	trailWidth = 3f;
+				  	trailLength = 50;
+				  	collides = collidesTiles = collidesGround = true;
+				  	shootEffect = Fx.shootTitan;
+				  	smokeEffect = Fx.shootSmokeTitan;
+				  	trailEffect = Fx.none;
+				  	hitEffect = despawnEffect = new MultiEffect(Fx.titanSmoke, Fx.titanExplosion);
+				  	bullet.hitSound = bullet.despawnSound = Sounds.explosionbig;
+
+            bulletInterval = 15f;
+				  	intervalBullets = 2;
+            intervalSpread = 20f;
+            intervalRandomSpread = 0f;
+				  	intervalBullet = new BasicBulletType(1f, 10) {{
+              frontColor = Pal.missileYellow;
+              backColor = trailColor = hitColor = Pal.missileYellowBack;
+              trailWidth = 1f;
+              trailLength = 10;
+              homingPower = 0.4f;
+              homingRange = 40f;
+              lifetime = 20f;
+              hitSound = despawnSound = Sounds.explosion;
+				  	}};
+				  }};
+        }}
+      );
     }};
-    castle = new TankUnitType("castle") {{
+    castle = new SWUnitType("castle") {{
       health = 1400;
-      speed = 0.7f;
-      range = maxRange = 220f;
+      speed = 0.25f;
+      range = maxRange = 1200f;
       hitSize = 14f;
-      rotateSpeed = 2.5f;
-      outlines = false;
+      rotateSpeed = 0.7f;
+	    outlines = faceTarget = false;
+	    targetAir = false;
+	    squareShape = true;
+	    omniMovement = false;
+	    rotateMoveFirst = true;
+	    aiController = MortarAI::new;
+
       treadFrames = 16;
       treadRects = new Rect[]{
         new Rect(-34f, -20f, 14, 64),
         new Rect(-12f, -47f, 12, 95)
       };
+
       constructor = TankUnit::create;
 
-      weapons.add(new Weapon("sw-castle-gun") {{
+      weapons.add(new Weapon("sw-longest-mortal") {{
         x = y = 0f;
-        reload = 120f;
-        range = 220f;
-        shake = 5f;
-        shootY = 8f;
-        mirror = false;
+        reload = 600f;
+        recoil = 0f;
+        recoilTime = 60f;
+        cooldownTime = 225f;
+        rotateSpeed = 0.3f;
+        shootY = 34f;
+        shootSound = Sounds.largeCannon;
         rotate = true;
-        rotateSpeed = 3f;
-        shootSound = Sounds.pulseBlast;
-        bullet = new MultiBulletType() {{
-          range = rangeOverride = 220f;
-          shootEffect = smokeEffect = Fx.sparkShoot;
-          bullets.add(
-            new BulletType(10f, 0) {{
-              lifetime = 22f;
-              bulletInterval = 1;
-              intervalBullets = 10;
-              hitEffect = despawnEffect = Fx.none;
-              intervalBullet = new LightningBulletType() {{
-                damage = 5;
-                lightningColor = hitColor = Pal.accent;
-                lightningLength = 5;
-                lightningLengthRand = 3;
-                lightningType = new BulletType(1.0E-4f, 0.0f) {{
-                  lifetime = Fx.lightning.lifetime;
-                  despawnEffect = Fx.none;
-                  hittable = false;
-                }};
-              }};
-            }},
-            new LaserBulletType(300) {{
-              length = 220f;
-              lifetime = 22f;
-              colors = new Color[]{Pal.accent, Pal.accent, Color.white};
-            }}
-          );
+        mirror = false;
+
+        parts.add(
+          new RegionPart("-cannon") {{
+            moveY = -8.5f;
+            outlineLayerOffset = 0f;
+            under = true;
+            progress = PartProgress.recoil.curve(Interp.bounceIn);
+          }}
+        );
+
+        bullet = new ArtilleryBulletType(2f, 1, "missile-large") {{
+          frontColor = Pal.missileYellow;
+          backColor = trailColor = hitColor = Pal.missileYellowBack;
+          splashDamage = 600f;
+          splashDamageRadius = 16f;
+          width = height = 18f;
+          lifetime = 600;
+          shrinkX = shrinkY = 0.5f;
+          trailWidth = 3f;
+          trailLength = 50;
+          collides = collidesTiles = collidesGround = true;
+          shootEffect = Fx.shootTitan;
+          smokeEffect = Fx.shootSmokeTitan;
+          trailEffect = Fx.none;
+          hitEffect = despawnEffect = new MultiEffect(Fx.titanSmoke, Fx.titanExplosion);
+          hitSound = despawnSound = Sounds.explosionbig;
+
+          bulletInterval = 15f;
+          intervalBullets = 2;
+          intervalSpread = 20f;
+          intervalRandomSpread = 0f;
+          intervalBullet = new BasicBulletType(1f, 10) {{
+            frontColor = Pal.missileYellow;
+            backColor = trailColor = hitColor = Pal.missileYellowBack;
+            trailWidth = 1f;
+            trailLength = 10;
+            homingPower = 0.4f;
+            homingRange = 40f;
+            lifetime = 20f;
+            hitSound = despawnSound = Sounds.explosion;
+          }};
         }};
       }});
-    }};
-    stronghold = new TankUnitType("stronghold") {{
-      health = 9500;
-      hitSize = 16f;
-      speed = 0.6f;
-      rotateSpeed = 1.5f;
-      range = maxRange = 240f;
-
-      treadFrames = 12;
-      treadRects = new Rect[]{new Rect(-50f, -26f, 17, 53)};
-
-      outlines = false;
-
-      constructor = TankUnit::create;
-
-      weapons.add(
-        new Weapon("sw-stronghold-cannon") {{
-          x = 0f;
-          y = -4f;
-          reload = 120f;
-          recoil = 4f;
-          rotateSpeed = 1f;
-          inaccuracy = 3f;
-
-          rotate = true;
-          mirror = false;
-
-          shootSound = Sounds.mediumCannon;
-
-          bullet = new MultiBulletType() {{
-            range = rangeOverride = 240f;
-            shootEffect = Fx.shootTitan;
-            smokeEffect = Fx.shootSmokeTitan;
-
-            bullets.add(
-              new BasicBulletType(4, 100) {{
-                lifetime = 60f;
-                width = height = 15f;
-                splashDamage = 60f;
-                splashDamageRadius = 40f;
-
-                trailWidth = 4f;
-                trailLength = 8;
-
-                hitColor = backColor;
-                despawnEffect = new ExplosionEffect() {{
-                  smokeColor = Color.gray;
-                  waveColor = sparkColor = frontColor;
-                  waveStroke = 4f;
-                  waveRad = 40f;
-                }};
-              }},
-              new LaserBulletType(100) {{
-                length = 220f;
-                colors = new Color[]{Pal.accent, Pal.accent, Color.white};
-              }}
-            );
-          }};
-        }},
-        new Weapon("missiles-mount") {{
-          x = 9.5f;
-          y = 8.5f;
-          reload = 60;
-          inaccuracy = 2f;
-
-          rotate = true;
-
-          shootSound = Sounds.missile;
-
-          bullet = new MissileBulletType(2f, 30) {{
-            lifetime = 60f;
-            width = height = 8f;
-          }};
-        }}
-      );
     }};
     //endregion
     //region legs

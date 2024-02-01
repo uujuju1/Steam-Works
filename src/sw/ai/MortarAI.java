@@ -4,6 +4,7 @@ import arc.math.*;
 import mindustry.ai.*;
 import mindustry.ai.types.*;
 import mindustry.entities.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
@@ -51,6 +52,7 @@ public class MortarAI extends GroundAI {
 
 	@Override
 	public Teamc target(float x, float y, float range, boolean air, boolean ground){
-		return Units.closestTarget(unit.team, x, y, range, u -> false, t -> ground);
+		if(unit.team == Team.derelict) return null;
+		return Units.findEnemyTile(unit.team, x, y, range, t -> ground);
 	}
 }
