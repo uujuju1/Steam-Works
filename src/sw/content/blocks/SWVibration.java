@@ -23,7 +23,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWVibration {
 	public static Block
-		vibrationWire, vibrationDistributor,
+		vibrationWire, vibrationDistributor, vibrationJunction,
 		thermiteMixer, liquidCollector,
 		springHammer, windCollector,
 
@@ -31,18 +31,15 @@ public class SWVibration {
 
 	public static void load() {
 		vibrationWire = new VibrationWire("vibration-wire") {{
-			requirements(Category.power, with(
-				SWItems.denseAlloy, 1
-			));
+			requirements(Category.power, with());
 			health = 40;
-			vibrationConfig = new VibrationConfig() {{
-				range = 80f;
-			}};
 		}};
 		vibrationDistributor = new VibrationDistributor("vibration-distributor") {{
-			requirements(Category.power, with(
-				SWItems.denseAlloy, 5
-			));
+			requirements(Category.power, with());
+			health = 40;
+		}};
+		vibrationJunction = new VibrationJunction("vibration-junction") {{
+			requirements(Category.power, with());
 			health = 40;
 		}};
 

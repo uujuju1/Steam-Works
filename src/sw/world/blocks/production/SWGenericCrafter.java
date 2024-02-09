@@ -49,7 +49,6 @@ public class SWGenericCrafter extends GenericCrafter {
 
 	@Override public void drawOverlay(float x, float y, int rotation) {
 		if (forceConfig.outputsForce) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
-		if (vibrationConfig.outputsVibration) Drawf.dashCircle(x, y, forceConfig.range, Pal.accent);
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class SWGenericCrafter extends GenericCrafter {
 			vibrationConfig.acceptsVibration = false;
 			vibrationConfig.outputsVibration = false;
 		}
-		configurable = forceConfig.outputsForce || vibrationConfig.outputsVibration;
+		configurable = forceConfig.outputsForce;
 	}
 
 	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasForce, HasVibration{
@@ -81,7 +80,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		@Override public VibrationModule vibration() {
 			return vibration;
 		}
-		@Override public VibrationConfig vConfig() {
+		@Override public VibrationConfig vibrationConfig() {
 			return vibrationConfig;
 		}
 
@@ -89,7 +88,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void updateTile() {
 			if (outputVibration instanceof StaticFrequency frequency) {
 				StaticFrequency f = new StaticFrequency(efficiency > 0, frequency.min, frequency.max);
-				vGraph().addFrequency(f);
+				vibrationGraph().addFrequency(f);
 			}
 			rotation += speed() * Time.delta;
 			if (Math.abs(rotation) > maxRotation && clampRotation) {
@@ -103,48 +102,43 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			if (outputSpeed >= 0) force().speed = outputSpeed;
-			if (outputVibration != null && !(outputVibration instanceof StaticFrequency)) vGraph().addFrequency(outputVibration);
+			if (outputVibration != null && !(outputVibration instanceof StaticFrequency)) vibrationGraph().addFrequency(outputVibration);
 		}
 
 		@Override
 		public void draw() {
 			super.draw();
 			drawBelt();
-			drawLink();
 		}
 		@Override
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
 			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
-//			getVibrationLinks().each(build -> {
-//				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
-//			});
 			Draw.reset();
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().addBuild(this);
+			vibrationGraph().addBuild(this);
 			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> vGraph().removeLink(link));
-			vGraph().removeBuild(this, false);
+			vibrationGraph().removeBuild(this, true);
 			force().links.each(link -> fGraph().removeLink(link));
 			fGraph().removeBuild(this, false);
 		}
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+			vibrationGraph().removeBuild(this, false);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureForceLink(other) && configVibrationLink(other);
+			return configureForceLink(other);
 		}
 
 		@Override

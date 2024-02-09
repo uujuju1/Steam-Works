@@ -438,7 +438,14 @@ public class SWBlocks {
 
 		// region turrets
 		flow = new ItemTurret("flow") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.nickel, 20,
+				Items.graphite, 25
+			));
+			researchCost = with(
+				SWItems.nickel, 100,
+				Items.graphite, 100
+			);
 			size = 1;
 			scaledHealth = 200;
 			reload = 60f;
@@ -482,7 +489,11 @@ public class SWBlocks {
 			);
 		}};
 		trail = new ItemTurret("trail") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.nickel, 40,
+				SWItems.iron, 45,
+				Items.graphite, 20
+			));
 			size = 2;
 			scaledHealth = 200;
 			reload = 30f;
@@ -524,7 +535,14 @@ public class SWBlocks {
 			);
 		}};
 		vniz = new ItemTurret("vniz") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.nickel, 25,
+				Items.graphite, 20
+			));
+			researchCost = with(
+				SWItems.nickel, 100,
+				Items.graphite, 100
+			);
 			size = 1;
 			scaledHealth = 200;
 			reload = 90f;
@@ -573,7 +591,11 @@ public class SWBlocks {
 			);
 		}};
 		rozpad = new ItemTurret("rozpad") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.nickel, 45,
+				SWItems.iron, 40,
+				Items.graphite, 20
+			));
 			size = 2;
 			scaledHealth = 200;
 			reload = 60f;
@@ -627,6 +649,7 @@ public class SWBlocks {
 				}}
 			);
 		}};
+
 		artyleriya = new ItemTurret("artyleriya") {{
 			researchCost = with(
 				SWItems.nickel, 200,

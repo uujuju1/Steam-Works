@@ -14,10 +14,10 @@ public class ConsumeVibration extends Consume {
 	}
 
 	@Override public float efficiency(Building build) {
-		return (build instanceof HasVibration hasBuild && hasBuild.vGraph().hasFrequency(frequency)) ? 1f : 0f;
+		return (build instanceof HasVibration hasBuild && hasBuild.vibrationGraph().hasFrequency(frequency)) ? 1f : 0f;
 	}
 	@Override public float efficiencyMultiplier(Building build) {
-		return (build instanceof HasVibration hasBuild && hasBuild.vGraph().hasFrequency(frequency)) ? 1f : 0f;
+		return (build instanceof HasVibration hasBuild && hasBuild.vibrationGraph().hasFrequency(frequency)) ? 1f : 0f;
 	}
 
 	@Override public void display(Stats stats) {

@@ -2,12 +2,9 @@ package sw.world.graph;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.io.*;
-import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import sw.gen.*;
@@ -17,8 +14,9 @@ public class VibrationGraph {
 	public final @Nullable VibrationGraphEntity entity;
 
 	public final Seq<HasVibration> builds = new Seq<>();
-	public final Seq<VibrationLink> links = new Seq<>();
-	public final Seq<Frequency> frequenci = new Seq<>();
+	public boolean changed = false;
+
+	public final Seq<Frequency> frequencies = new Seq<>();
 
 	public VibrationGraph() {
 		this(VibrationGraphEntity.create());
@@ -30,54 +28,42 @@ public class VibrationGraph {
 	}
 
 	/**
-	 * adds a build with flood
+	 * self-explanatory
 	 */
 	public void addBuild(HasVibration build) {
-		if (!builds.contains(build)) {
-			build.vGraph().removeBuild(build, false);
-			build.vibration().graph = this;
-			builds.addUnique(build);
-			for (VibrationLink forceLink : build.vibration().links) {
-				addLink(forceLink);
+		builds.addUnique(build);
+		build.vibration().graph = this;
+		for (HasVibration next : build.nextBuilds()) {
+			if (!builds.contains(next) && next.vibrationConfig().linksGraph) addBuild(next);
+		}
+		changed = true;
+	}
+	/**
+	 * @param erased when false will put the build in another graph.
+	 * Always make erased true when the build will be removed from the game
+	 */
+	public void removeBuild(HasVibration build, boolean erased) {
+		builds.remove(build);
+		if (!erased) {
+			build.vibration().graph = new VibrationGraph();
+			build.vibrationGraph().addBuild(build);
+		} else {
+			for (HasVibration next : build.nextBuilds()) {
+				removeBuild(next, false);
 			}
 		}
+		if (builds.isEmpty()) entity.remove();
+		changed = true;
 	}
-	/**
-	 * removes the build from this graph and adds it (or not) to another graph
-	 */
-	public void removeBuild(HasVibration build) {
-		removeBuild(build, true);
-	}
-	public void removeBuild(HasVibration build, boolean replace) {
-		builds.remove(build);
-		if (replace) new VibrationGraph().addBuild(build);
-		if (builds.isEmpty()) remove();
-	}
-	/**
-	 * adds a link and it's builds into the graph
-	 */
-	public void addLink(VibrationLink link) {
-		if (!link.valid()) return;
-		links.addUnique(link);
-		if (link.startBuild() != null) addBuild(link.startBuild());
-		if (link.endBuild() != null) addBuild(link.endBuild());
-	}
-	/**
-	 * removes a link and it's builds from the graph
-	 */
-	public void removeLink(VibrationLink link) {
-		links.remove(link);
-		removeBuild(link.startBuild(), link.startBuild() != null);
-		removeBuild(link.endBuild(), link.endBuild() != null);
-	}
+
 /**
  * adds a frequency
  */
 	public void addFrequency(Frequency frequency) {
-		if (!frequenci.contains(frequency)) {
-			frequenci.add(frequency);
+		if (!frequencies.contains(frequency)) {
+			frequencies.add(frequency);
 		} else {
-			frequenci.find(frequency1 -> frequency1.equals(frequency)).set(frequency);
+			frequencies.find(frequency1 -> frequency1.equals(frequency)).set(frequency);
 		}
 	}
 
@@ -85,7 +71,7 @@ public class VibrationGraph {
 	 * checks if this frequency exists in any of the frequencies on the graph
 	 */
 	public boolean hasFrequency(float frequency) {
-		for (Frequency f : frequenci) {
+		for (Frequency f : frequencies) {
 			if (f.valid(frequency)) {
 				return true;
 			}
@@ -96,14 +82,19 @@ public class VibrationGraph {
 	 * resistance used by DecayingFrequency
 	 */
 	public float resistance() {
-		return builds.sumf(b -> b.vConfig().resistance);
+		return builds.sumf(b -> b.vibrationConfig().resistance);
 	}
 
 	/**
 	 * method that constantly updates the graph and it's funcions
 	 */
 	public void update() {
-		frequenci.each(frequency -> frequency.update(this));
+		if (changed) {
+			builds.removeAll(build -> !build.isValid() || build.vibrationGraph() != this);
+			if (builds.isEmpty()) entity.remove();
+			changed = false;
+		}
+		frequencies.each(frequency -> frequency.update(this));
 	}
 
 	/**
@@ -114,71 +105,6 @@ public class VibrationGraph {
 	}
 	public void remove() {
 		entity.remove();
-	}
-
-	/**
-	 * io
-	 */
-	public void read(Reads read) {
-		short size = read.s();
-		for (int i = 0; i < size; i++) {
-			VibrationLink forceLink = new VibrationLink(-1, -1);
-			forceLink.read(read);
-			links.add(forceLink);
-		}
-	}
-	public void afterRead() {
-		links.each(this::addLink);
-	}
-	public void write(Writes write) {
-		write.s(links.size);
-		for (VibrationLink vibrationLink : links) {
-			vibrationLink.write(write);
-		}
-	}
-
-	public static class VibrationLink {
-		public int start, end;
-
-		public VibrationLink(int start, int end) {
-			this.start = start;
-			this.end = end;
-		}
-
-		public @Nullable HasVibration startBuild() {
-			return (HasVibration) Vars.world.build(start);
-		}
-		public @Nullable HasVibration endBuild() {
-			return (HasVibration) Vars.world.build(end);
-		}
-
-		public boolean has(HasVibration link) {
-			return link == startBuild() || link == endBuild();
-		}
-		public @Nullable HasVibration other(HasVibration link) {
-			return has(link) ? (link == endBuild() ? startBuild() : endBuild()) : null;
-		}
-		public boolean valid() {
-			return startBuild() != null && endBuild() != null;
-		}
-
-		@Override public boolean equals(Object obj) {
-			return obj instanceof VibrationLink vibrationLink &&
-				       (vibrationLink.start == start || vibrationLink.start == end) &&
-				       (vibrationLink.end == end || vibrationLink.end == start);
-		}
-		@Override public String toString() {
-			return "(link1: " + Point2.unpack(start) + "; link2: " + Point2.unpack(end) + ")";
-		}
-
-		public void write(Writes write) {
-			write.i(start);
-			write.i(end);
-		}
-		public void read(Reads read) {
-			start = read.i();
-			end = read.i();
-		}
 	}
 
 	public static abstract class Frequency {
@@ -204,7 +130,7 @@ public class VibrationGraph {
 		}
 
 		@Override public void update(VibrationGraph graph) {
-			if (!enabled) graph.frequenci.remove(this);
+			if (!enabled) graph.frequencies.remove(this);
 		}
 		@Override public boolean valid(float frequency) {
 			return min < frequency && frequency < max;
@@ -271,7 +197,7 @@ public class VibrationGraph {
 		@Override
 		public void update(VibrationGraph graph) {
 			decay -= graph.resistance() * Time.delta;
-			if (decay < 0) graph.frequenci.remove(this);
+			if (decay < 0) graph.frequencies.remove(this);
 		}
 		@Override boolean valid(float frequency) {
 			return min + decay < frequency && frequency < max + decay;

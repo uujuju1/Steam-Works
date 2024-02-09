@@ -67,7 +67,7 @@ public class SWConsumeTurret extends Turret {
 		@Override public VibrationModule vibration() {
 			return vibration;
 		}
-		@Override public VibrationConfig vConfig() {
+		@Override public VibrationConfig vibrationConfig() {
 			return vibrationConfig;
 		}
 
@@ -91,36 +91,30 @@ public class SWConsumeTurret extends Turret {
 		public void draw() {
 			super.draw();
 			drawBelt();
-			drawLink();
 		}
 		@Override
 		public void drawConfigure() {
 			drawOverlay(x, y, 0);
 			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
 			if (getForceLink() != null) SWDraw.square(Pal.place, getForceLink().x(), getForceLink().y(), getForceLink().block().size * 6f, 0f);
-			getVibrationLinks().each(build -> {
-				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
-			});
 			Draw.reset();
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().addBuild(this);
 			fGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> vGraph().removeLink(link));
-			vGraph().removeBuild(this, false);
+			vibrationGraph().removeBuild(this, false);
 			force().links.each(link -> fGraph().removeLink(link));
 			fGraph().removeBuild(this, false);
 		}
 
 		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configureForceLink(other) && configVibrationLink(other);
+			return configureForceLink(other);
 		}
 
 		@Override

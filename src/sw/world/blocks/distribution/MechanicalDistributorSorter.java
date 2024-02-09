@@ -12,6 +12,7 @@ public class MechanicalDistributorSorter extends Sorter {
 	public class MechanicalDistributorSorterBuild extends SorterBuild {
 		@Override
 		public Building getTileTarget(Item item, Building source, boolean flip) {
+			if (isSame(source)) return null;
 			if (sortItem == null) {
 				for (int i = 0; i < 4; i++) {
 					rotation = (rotation + 1) % 4;

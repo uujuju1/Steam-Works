@@ -1,21 +1,28 @@
 package sw.world.blocks.vibration;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.util.io.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import sw.util.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
+import static sw.util.SWDraw.*;
+
 public class VibrationWire extends Block {
 	public VibrationConfig vibrationConfig = new VibrationConfig();
+	public TextureRegion[] regions;
 
 	public VibrationWire(String name) {
 		super(name);
 		solid = destructible = update = sync = true;
+	}
+
+	@Override public void drawOverlay(float x, float y, int rotation) {
+		if (vibrationConfig.outputsVibration) Drawf.dashCircle(x, y, vibrationConfig.range, Pal.accent);
 	}
 
 	@Override
@@ -25,62 +32,54 @@ public class VibrationWire extends Block {
 	}
 
 	@Override
-	public void init() {
-		super.init();
-		configurable = vibrationConfig.outputsVibration;
-		clipSize = vibrationConfig.range;
-	}
-
-	@Override public void drawOverlay(float x, float y, int rotation) {
-		if (vibrationConfig.outputsVibration) Drawf.dashCircle(x, y, vibrationConfig.range, Pal.accent);
+	public void load() {
+		super.load();
+		regions = getRegions(Core.atlas.find(name + "-tiles"), 4, 1, 32);
 	}
 
 	public class VibrationWireBuild extends Building implements HasVibration {
 		VibrationModule vibration = new VibrationModule();
 
-		@Override public VibrationModule vibration() {
-			return vibration;
-		}
-		@Override public VibrationConfig vConfig() {
-			return vibrationConfig;
+		public int tiling;
+
+		@Override
+		public boolean connects(HasVibration to) {
+			return to instanceof VibrationWireBuild ?
+			  (front() == to || back() == to) && (to.front() == this || to.back() == this) :
+				to != null && (front() == to || back() == to) && to.connects(this);
 		}
 
 		@Override
 		public void draw() {
-			drawLink();
-			super.draw();
-		}
-		@Override
-		public void drawConfigure() {
-			drawOverlay(x, y, 0);
-			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			getVibrationLinks().each(build -> {
-				SWDraw.square(Pal.place, build.x(), build.y(), build.block().size * 6f, 0f);
-			});
-			Draw.reset();
-		}
-
-		@Override public boolean onConfigureBuildTapped(Building other) {
-			return configVibrationLink(other);
+			float rot = rotate ? (90 + rotdeg()) % 180 - 90 : 0;
+			Draw.rect(regions[tiling], x, y, rot);
 		}
 
 		@Override
 		public void onProximityAdded() {
 			super.onProximityAdded();
-			vGraph().addBuild(this);
+			vibrationGraph().addBuild(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			vibration().links.each(link -> {
-				removeVibrationLink(link.other(this));
-			});
-			vGraph().removeBuild(this, false);
+			vibrationGraph().removeBuild(this, true);
 		}
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-			if (getVibrationLink() != null) createVibrationLink(getVibrationLink());
+			vibrationGraph().removeBuild(this, false);
+			tiling = 0;
+			boolean inverted = rotation == 1 || rotation == 2;
+			if (front() instanceof HasVibration front && connects(front)) tiling |= inverted ? 2 : 1;
+			if (back() instanceof HasVibration back && connects(back)) tiling |= inverted ? 1 : 2;
+		}
+
+		@Override public VibrationModule vibration() {
+			return vibration;
+		}
+		@Override public VibrationConfig vibrationConfig() {
+			return vibrationConfig;
 		}
 
 		@Override
