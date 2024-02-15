@@ -39,8 +39,8 @@ public class SWUnitType extends UnitType {
 
   public float shieldStartAng = 0f;
   public float shieldEndAng = 180f;
-  public float shieldShootingStartAng = 0f;
-  public float shieldShootingEndAng = 180f;
+  public float shieldShootingStartAng = -90f;
+  public float shieldShootingEndAng = 90f;
 
   //rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
@@ -48,6 +48,9 @@ public class SWUnitType extends UnitType {
   public float rotateDeathSpeed = 1f;
   public boolean rotatesDeath = true;
   public boolean drawRotors = true;
+
+  //general unit stuff
+  public float outlineLayerOffset = 0f;
 
   public SWUnitType(String name) {
     super(name);
@@ -68,6 +71,14 @@ public class SWUnitType extends UnitType {
     super.draw(unit);
     if (unit instanceof Shieldedc u) drawShields(u);
     if (unit instanceof Copterc u) drawRotors(u);
+  }
+
+  @Override
+  public void drawOutline(Unit unit) {
+    float z = Draw.z();
+    Draw.z(z + outlineLayerOffset);
+    super.drawOutline(unit);
+    Draw.z(z);
   }
 
   @Override
@@ -96,9 +107,10 @@ public class SWUnitType extends UnitType {
         DrawPart.params.set(0, 0, 0, 0, 0, 0, u.x(), u.y(), u.rotation());
       }
       for(int i = 0; i < shields; i++) {
+        float place = i/Math.max(1f, shields - 1f);
         float ang = Mathf.lerp(
-          shieldStartAng + (u.rotation() - 90f + shieldEndAng/(shields - 1f) * i),
-          shieldShootingStartAng + (u.rotation() - 90f + shieldShootingEndAng /(shields - 1f) * i),
+          u.rotation() + Mathf.lerp(shieldStartAng, shieldEndAng, place),
+          u.rotation() + Mathf.lerp(shieldShootingStartAng, shieldShootingEndAng, place),
           shieldProgress.get(DrawPart.params)
         );
         Tmp.v1.trns(ang, shieldSeparateRadius).add(u);

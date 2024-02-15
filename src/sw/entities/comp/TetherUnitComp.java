@@ -6,6 +6,7 @@ import ent.anno.Annotations.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import sw.type.*;
 
 @EntityComponent
 abstract class TetherUnitComp implements Unitc {
@@ -15,6 +16,10 @@ abstract class TetherUnitComp implements Unitc {
 	//spawner unit cannot be read directly for technical reasons.
 	public transient @Nullable Unit tetherUnit;
 	public int tetherUnitID = -1;
+
+	@Override public SWUnitType type() {
+		return (SWUnitType) type;
+	}
 
 	@Override
 	public void update(){

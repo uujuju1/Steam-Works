@@ -21,8 +21,8 @@ import static mindustry.type.ItemStack.*;
 
 public class SWUnitTypes {
   @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
-  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask;
-  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot;
+  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask, mesoShield, paleoShield, cenoShield;
+  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot, meso, paleo, ceno;
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
   @EntityDef({BuildingTetherc.class, Unitc.class}) public static UnitType terra;
 
@@ -49,131 +49,6 @@ public class SWUnitTypes {
       controller = u -> new FillerAI();
     }};
 
-    //region attack
-		focus = new UnitType("focus") {{
-			health = 200;
-			speed = 0.5f;
-      range = maxRange = 104f;
-
-      constructor = MechUnit::create;
-
-			weapons.add(new Weapon("sw-mine-cannon") {{
-				x = y = 0f;
-				reload = 30f;
-        layerOffset = -0.01f;
-				mirror = false;
-        shootSound = Sounds.artillery;
-
-				bullet = new BasicBulletType(5.5f, 0, "large-bomb") {{
-          width = height = 16f;
-          shrinkY = 0f;
-          spin = 5f;
-          trailWidth = 2f;
-          trailLength = 10;
-
-          hitSound = Sounds.plasmaboom;
-
-					splashDamage = 16;
-          splashDamageRadius = 40f;
-          drag = 0.05f;
-          lifetime = 60;
-          collidesAir = false;
-				}};
-			}});
-		}};
-    precision = new UnitType("precision") {{
-      health = 600;
-      speed = 0.5f;
-      hitSize = 8f;
-      armor = 3;
-      range = maxRange = 240f;
-
-      constructor = MechUnit::create;
-
-      weapons.add(new Weapon("artillery") {{
-        x = 5.25f;
-        y = -0.25f;
-        reload = 60f;
-        shake = 2f;
-        ejectEffect = Fx.casing2;
-        shootSound = Sounds.artillery;
-
-				bullet = new ArtilleryBulletType(4, 40, "shell") {{
-          hitEffect = Fx.blastExplosion;
-          knockback = 0.8f;
-          lifetime = 60f;
-          width = height = 14f;
-          collides = collidesGround = collidesAir = collidesTiles = true;
-          splashDamageRadius = 35f;
-          splashDamage = 40f;
-          backColor = Pal.bulletYellowBack;
-          frontColor = Pal.bulletYellow;
-        }};
-      }});
-    }};
-    target = new UnitType("target") {{
-      health = 1000;
-      speed = 0.45f;
-      rotateSpeed = 2.5f;
-      armor = 9;
-      range = maxRange = 160f;
-
-      constructor = MechUnit::create;
-
-      weapons.add(
-        new Weapon("sw-frag-cannon") {{
-          x = 8f;
-          y = 0.75f;
-          reload = 60f;
-          layerOffset = -0.01f;
-          shootSound = Sounds.artillery;
-
-          bullet = new BasicBulletType(5.5f, 0, "large-bomb") {{
-            width = height = 16f;
-            shrinkY = 0f;
-            spin = 5f;
-            trailWidth = 2f;
-            trailLength = 10;
-
-            hitSound = Sounds.plasmaboom;
-
-            splashDamage = 16;
-            splashDamageRadius = 40f;
-            drag = 0.05f;
-            lifetime = 60;
-            collidesAir = false;
-
-            fragBullets = 9;
-            fragBullet = new BasicBulletType(2f, 5) {{
-              lifetime = 20f;
-              width = height = 4f;
-              frontColor = backColor = Color.white;
-            }};
-          }};
-        }},
-        new Weapon("sw-frag-cannon") {{
-          x = 5.75f;
-          y = 0.25f;
-          reload = 45f;
-          shootSound = Sounds.missile;
-
-          bullet = new MissileBulletType(4f, 40) {{
-            lifetime = 40f;
-            width = height = 12f;
-
-            fragBullets = 2;
-            fragRandomSpread = 0f;
-            fragVelocityMin = 1f;
-            fragBullet = new MissileBulletType(2f, 10) {{
-              lifetime = 20f;
-              width = height = 8f;
-            }};
-          }};
-        }}
-      );
-    }};
-
-    //endregion
     //region specialist
     recluse = new SWUnitType("recluse") {{
       speed = 1;
@@ -473,7 +348,7 @@ public class SWUnitTypes {
 
       constructor = TankUnit::create;
 
-      weapons.add(new Weapon("sw-longest-mortal") {{
+      weapons.add(new Weapon("sw-longest-mortar") {{
         x = y = 0f;
         reload = 600f;
         recoil = 0f;
@@ -841,7 +716,7 @@ public class SWUnitTypes {
           layerOffset = -0.01f;
           shootSound = Sounds.shootBig;
 
-          bullet = new BasicBulletType(4f, 10) {{
+          bullet = new BasicBulletType(4f, 25) {{
             frontColor = Pal.missileYellow;
             backColor = Pal.missileYellowBack;
             width = height = 12f;
@@ -851,6 +726,285 @@ public class SWUnitTypes {
       );
     }};
 		//endregion
+	  //region shields
+	  mesoShield = new SWUnitType("meso-shield") {{
+		  health = 100;
+		  speed = 2f;
+		  rotateSpeed = 3f;
+		  range = maxRange = 0f;
+			lightRadius = 0;
+			lightColor = engineColor = Pal.heal;
+
+		  engineOffset = 2f;
+
+		  flying = lowAltitude = hidden = true;
+		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
+
+		  controller = u -> new ShieldAI();
+		  constructor = UnitTetherUnit::create;
+	  }};
+	  paleoShield = new SWUnitType("paleo-shield") {{
+		  health = 100;
+		  speed = 2f;
+		  rotateSpeed = 3f;
+		  range = maxRange = 0f;
+		  engineSize = 3.5f;
+		  engineOffset = 4f;
+		  lightRadius = 0;
+		  lightColor = engineColor = Pal.heal;
+
+		  flying = lowAltitude = hidden = true;
+		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
+
+		  controller = u -> new ShieldAI();
+		  constructor = UnitTetherUnit::create;
+	  }};
+	  cenoShield = new SWUnitType("ceno-shield") {{
+		  health = 100;
+		  speed = 2f;
+		  rotateSpeed = 3f;
+		  range = maxRange = 0f;
+		  engineSize = 4f;
+		  engineOffset = 0f;
+		  lightRadius = 0;
+		  lightColor = engineColor = Pal.heal;
+
+		  flying = lowAltitude = hidden = true;
+		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
+
+		  controller = u -> new ShieldAI();
+		  constructor = UnitTetherUnit::create;
+	  }};
+
+	  meso = new SWUnitType("meso") {{
+		  health = 200f;
+		  speed = 0.7f;
+		  rotateSpeed = 2f;
+		  range = maxRange = 80f;
+		  lightOpacity = 0.3f;
+		  lightRadius = 40;
+		  lightColor = Pal.heal;
+		  outlines = false;
+
+		  shields = 5;
+
+		  shieldUnit = mesoShield;
+		  shieldSeparateRadius = 16f;
+		  shieldStartAng = -144;
+		  shieldEndAng = 144;
+
+		  legBaseOffset = 2f;
+		  legCount = 6;
+		  legExtension = 3f;
+		  legGroupSize = 3;
+		  legLength = 8f;
+		  lockLegBase = true;
+		  legContinuousMove = true;
+
+		  constructor = UnitLegsShielded::create;
+
+		  parts.add(new RegionPart("-cannon") {{
+			  moveY = -0.5f;
+			  heatColor = Pal.heal;
+			  progress = PartProgress.recoil;
+		  }});
+
+		  weapons.add(new Weapon() {{
+			  x = y = 0f;
+			  reload = 60f;
+			  recoilTime = 10f;
+			  mirror = false;
+			  shootSound = Sounds.lasershoot;
+
+			  shoot = new ShootAlternate() {{
+				  shots = 2;
+			  }};
+
+			  bullet = new BasicBulletType(2f, 9) {{
+				  lifetime = 40;
+				  trailLength = 10;
+				  trailWidth = 1f;
+				  frontColor = Color.white;
+				  backColor = trailColor = lightColor = Pal.heal;
+				  hitEffect = despawnEffect = Fx.hitLaser;
+			  }};
+		  }});
+	  }};
+	  paleo = new SWUnitType("paleo") {{
+		  health = 600f;
+		  hitSize = 8f;
+		  speed = 0.6f;
+		  rotateSpeed = 2f;
+		  range = maxRange = 120f;
+		  lightOpacity = 0.3f;
+		  lightRadius = 60;
+		  lightColor = Pal.heal;
+		  outlineLayerOffset = -0.002f;
+		  outlines = false;
+
+		  shields = 3;
+
+		  shieldUnit = paleoShield;
+		  shieldSeparateRadius = 16f;
+		  shieldStartAng = -120;
+		  shieldEndAng = 120;
+
+		  legBaseOffset = 2f;
+		  legCount = 4;
+		  legExtension = 4;
+		  legGroupSize = 2;
+		  legLength = 16f;
+		  legStraightness = 0.3f;
+		  legContinuousMove = true;
+		  lockLegBase = true;
+
+		  constructor = UnitLegsShielded::create;
+
+		  parts.add(
+			  new RegionPart("-cannon-back") {{
+				  x = -4.5f;
+				  y = -4.25f;
+				  moveX = moveY = 1f;
+				  layerOffset = -0.001f;
+				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv());
+				  mirror = under = true;
+			  }},
+			  new RegionPart("-cannon-top") {{
+				  x = -3.5f;
+				  y = 4.5f;
+				  moveX = 2f;
+				  moveY = 0.5f;
+				  layerOffset = -0.001f;
+				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv().curve(Interp.circleIn));;
+				  mirror = under = true;
+			  }}
+		  );
+
+		  weapons.add(new Weapon() {{
+			  x = y = 0;
+			  reload = 40;
+			  recoilTime = 10;
+			  minWarmup = 0.9f;
+			  shootY = 8f;
+			  mirror = false;
+			  shootSound = Sounds.release;
+
+			  shoot = new ShootHelix() {{
+				  shots = 2;
+			  }};
+
+			  bullet = new BasicBulletType(4f, 15) {{
+				  lifetime = 30;
+				  width = 8f;
+				  height = 10f;
+				  trailLength = 10;
+				  trailWidth = 1f;
+				  frontColor = Color.white;
+				  backColor = trailColor = lightColor = Pal.heal;
+				  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
+				  shootEffect = Fx.none;
+			  }};
+		  }});
+	  }};
+	  ceno = new SWUnitType("ceno") {{
+		  health = 1200f;
+		  hitSize = 10f;
+		  speed = 0.5f;
+		  rotateSpeed = 2f;
+		  range = maxRange = 200f;
+		  lightOpacity = 0.3f;
+		  lightRadius = 80;
+		  lightColor = Pal.heal;
+		  outlineLayerOffset = -0.002f;
+		  outlines = false;
+
+		  shields = 3;
+
+		  shieldUnit = cenoShield;
+		  shieldSeparateRadius = 26f;
+		  shieldStartAng = -120;
+		  shieldEndAng = 120;
+
+		  legBaseOffset = 2f;
+		  legCount = 8;
+		  legExtension = 4;
+		  legGroupSize = 4;
+		  legLength = 16f;
+		  legStraightness = 0.2f;
+		  legContinuousMove = true;
+		  lockLegBase = true;
+
+		  constructor = UnitLegsShielded::create;
+
+		  parts.add(
+			  new RegionPart("-big-cannon") {{
+				  y = 3.5f;
+					moveY = -2f;
+				  layerOffset = -0.001f;
+					progress = PartProgress.recoil;
+				  under = true;
+			  }},
+			  new RegionPart("-side-cannon") {{
+				  x = -4.75f;
+				  y = 2.75f;
+				  moveX = 3.25f;
+				  moveY = 2.5f;
+				  layerOffset = -0.001f;
+					moves.add(new PartMove(PartProgress.reload, -1.5f, -1, 0, 0, 0));
+				  mirror = under = true;
+			  }}
+		  );
+
+		  weapons.add(
+			  new Weapon() {{
+				  x = y = 0;
+				  reload = 80;
+				  minWarmup = 0.9f;
+				  shootY = 8f;
+				  mirror = false;
+				  shootSound = Sounds.release;
+
+					shoot = new ShootPattern() {{
+						shots = 2;
+						shotDelay = 40;
+					}};
+
+				  bullet = new LaserBulletType(50) {{
+					  width = 16f;
+					  length = 180f;
+						colors = new Color[]{Pal.heal, Color.white};
+					  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
+					  shootEffect = Fx.none;
+				  }};
+			  }},
+			  new Weapon() {{
+				  x = y = 0;
+				  reload = 90;
+				  recoilTime = 10;
+				  minWarmup = 0.9f;
+				  shootY = 0f;
+				  mirror = false;
+				  shootSound = Sounds.plasmaboom;
+
+					shoot = new ShootAlternate(12) {{
+						shots = 2;
+					}};
+
+				  bullet = new BasicBulletType(2f, 15) {{
+					  lifetime = 100;
+					  width = 8f;
+					  height = 10f;
+					  trailLength = 10;
+					  trailWidth = 1f;
+					  frontColor = Color.white;
+					  backColor = trailColor = lightColor = Pal.heal;
+					  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
+					  shootEffect = Fx.none;
+				  }};
+			  }}
+		  );
+	  }};
+	  //endregion
 
     deltaShield = new SWUnitType("delta-shield") {{
       health = 500;
@@ -861,7 +1015,7 @@ public class SWUnitTypes {
       engineOffset = 2f;
 
       flying = lowAltitude = hidden = true;
-      playerControllable = drawCell = targetable = false;
+      playerControllable = drawCell = targetable = isEnemy = false;
 
       controller = u -> new ShieldAI();
       constructor = UnitTetherUnit::create;
