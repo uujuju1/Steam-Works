@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -222,13 +223,16 @@ public class SWFx {
       Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
     }),
     soundImpact = new Effect(60f, e -> {
-      for (int i = 1; i < 5; i++) {
-        final int index = i;
-        e.scaled(15f * i, b -> {
-          Lines.stroke(3 * b.foutpow());
-          Lines.circle(e.x, e.y, 30 * index * b.finpow());
-        });
-      }
+	    rand.setSeed(e.id);
+
+	    Lines.stroke(3f * e.fout(), Color.gray);
+
+	    Lines.circle(e.x, e.y, 120f * e.finpow());
+
+	    Angles.randLenVectors(e.id, Mathf.round(30 * e.finpow()), 120f, (x, y) -> {
+		    Draw.color(Vars.world.floorWorld(e.x + x, e.y + y).mapColor);
+		    Fill.circle(e.x + x, e.y + y, e.fout() * (rand.random(2f) + 3f) * (1f - new Vec2().dst(x, y)/60f));
+	    });
     }),
 
     changeEffect = new Effect(30f, e -> {

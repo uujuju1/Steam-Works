@@ -186,8 +186,8 @@ public class SWVibration {
 				outputsVibration = false;
 			}};
 
-			shootType = new BasicBulletType(6f, 60, "sw-sound-wave") {{
-				width = height = 16f;
+			shootType = new BulletType(6f, 60) {{
+				hitSize = 16f;
 				lifetime = 40f;
 				trailInterval = 10f;
 				trailEffect = despawnEffect = SWFx.soundDecay;
@@ -218,11 +218,19 @@ public class SWVibration {
 			consume(new ConsumeVibration(250f));
 
 			drawer = new DrawTurret() {{
-				parts.add(new RegionPart("-hammer") {{
-					growX = growY = 1f;
-					outline = false;
-					growProgress = PartProgress.charge.curve(Interp.circleOut);
-				}});
+				parts.add(
+					new RegionPart("-hammer") {{
+						growX = growY = 1f;
+						outline = false;
+						growProgress = PartProgress.charge.curve(Interp.circleOut);
+					}},
+					new ShapePart() {{
+						circle = hollow = true;
+						stroke = 0f;
+						strokeTo = 3f;
+						radius = 120f;
+					}}
+				);
 			}};
 
 			vibrationConfig = new VibrationConfig() {{
