@@ -3,14 +3,15 @@ package sw.content;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import sw.util.*;
 
 public class SWFx {
   public static final Rand rand = new Rand();
+  public static final Vec2 temp = new Vec2();
 
   public static Effect
     sparks = new Effect(30f, e -> {
@@ -56,38 +57,46 @@ public class SWFx {
       });
     }),
 
-    nickelCraft = new Effect(30f, e -> {
-      Draw.color(Pal.accent);
-      Angles.randLenVectors(e.id + 1, 10, e.finpow() * 30f, (x, y) -> Fill.circle(e.x + x, e.y + y, e.fout() * 3f));
-    }),
-
     compoundCraft = new Effect(30f, e -> {
-      Draw.color(SWDraw.compoundMiddle, SWDraw.compoundBase, e.fin());
-      Angles.randLenVectors(e.id, 20, 20f * e.finpow(), (x, y) -> {
-        Fill.circle(
-          e.x + x,
-          e.y + y,
-          2f * e.fout()
-        );
+      rand.setSeed(e.id);
+      Draw.color(Color.valueOf("BEB5B2"));
+      float offset = rand.range(360f);
+      for(int i = 0; i < 4; i++) {
+        temp.trns((i * 90f + 360f * e.finpow()) + offset, 6f);
+
+        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 8f - 4f * e.foutpow(), temp.angle());
+        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 4f - 2f * e.foutpow(), temp.angle() + 180f);
+      }
+
+      Draw.z(Layer.effect);
+      Angles.randLenVectors(e.id, 30, 40f * e.finpow(), (x, y) -> {
+        Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.foutpow());
+      });
+      Draw.z(Layer.effect + 1);
+      Angles.randLenVectors(e.id + 1, 15, 40f * e.finpow(), (x, y) -> {
+        Draw.color(Color.gray);
+        Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.fout());
       });
     }),
     denseAlloyCraft = new Effect(30f, e -> {
       for(int i = 0; i < 4; i++) {
-        Tmp.v1.trns(i * 90f, 3.5f);
-        Drawf.tri(
-          e.x + Tmp.v1.x,
-          e.y + Tmp.v1.y,
-          8f * e.foutpow(), 16 * e.finpow(),
-          i * 90f
-        );
-        Angles.randLenVectors(e.id, 10, 40 * e.finpow(), i * 90, 15, (x, y) -> {
-          Fill.circle(
-            e.x + x + Tmp.v1.x,
-            e.y + y + Tmp.v1.y,
-            2 * e.foutpow()
-          );
-        });
+        Draw.color(Pal.accent);
+        temp.trns(i * 90f + 45f, 6f);
+
+        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 8f - 4f * e.foutpow(), temp.angle());
+        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 4f - 2f * e.foutpow(), temp.angle() + 180f);
       }
+
+      Draw.z(Layer.effect);
+      Angles.randLenVectors(e.id, 30, 40f * e.finpow(), (x, y) -> {
+        Lines.stroke(e.fout(), Pal.accent);
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
+      });
+      Draw.z(Layer.effect + 1);
+      Angles.randLenVectors(e.id + 1, 15, 40f * e.finpow(), (x, y) -> {
+        Lines.stroke(e.fout(), Color.gray.cpy().mul(0.5f));
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
+      });
     }),
     scorchCraft = new Effect(30f, e -> {
       Draw.blend(Blending.additive);

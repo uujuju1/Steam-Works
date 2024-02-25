@@ -56,9 +56,6 @@ public class SWTechTree {
           new Research(compoundSmelter)
         ), () -> {
           node(torquePump);
-          node(electricSpinner, () -> {
-//            node(pressureSpinner);
-          });
         });
       });
       // endregion
@@ -68,18 +65,10 @@ public class SWTechTree {
         node(suspensionConveyor);
         node(mechanicalTunnel);
         node(mechanicalDistributor, () -> {
-          node(mechanicalOverflowGate, () -> node(mechanicalUnderflowGate));
+          node(mechanicalGate);
           node(mechanicalUnloader);
         });
-        node(vibrationDistributor, with(new Research(windCollector)), () -> node(vibrationWire));
-        node(beltNode, with(new Research(electricSpinner)), () -> {
-          node(beltNodeLarge);
-          node(omniBelt, with(new Research(graphene)), () -> {});
-        });
       });
-      node(waterWheel, with(
-        new Research(beltNode)
-      ), () -> {});
       // endregion
 
       // region defense

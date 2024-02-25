@@ -21,6 +21,8 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.blocks.*;
+import sw.core.*;
+import sw.entities.bullet.*;
 import sw.util.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.distribution.*;
@@ -50,7 +52,6 @@ public class SWBlocks {
 		mechanicalConduit,
 
 		siliconBoiler,
-		oilDistiller,
 		compoundSmelter, densePress,
 
 		rebuilder,
@@ -60,7 +61,8 @@ public class SWBlocks {
 		burner,
 
 		flow, trail, vniz, rozpad,
-		artyleriya, curve, thermikos,
+		artyleriya,
+		curve, thermikos, sonar,
 
 		ironWall, ironWallLarge, nickelWall, nickelWallLarge,
     compoundWall, compoundWallLarge, denseWall, denseWallLarge,
@@ -214,18 +216,12 @@ public class SWBlocks {
 				SWItems.iron, 120,
 				Items.graphite, 80
 			));
-			researchCost = with(
-				SWItems.nickel, 1500,
-				Items.titanium, 1200,
-				Items.graphite, 800
-			);
 			size = 3;
 			health = 240;
 
-			craftTime = 90f;
+			craftTime = 180f;
 
-			consumeItems(with(Items.graphite, 2, Items.sand, 2));
-			consumePower(0.5f);
+			consumeItems(with(Items.graphite, 3, Items.sand, 3));
 			outputItems = with(Items.silicon, 3);
 
 			drawer = new DrawMulti(
@@ -234,22 +230,6 @@ public class SWBlocks {
 					flameRadius = 5f;
 				}}
 			);
-		}};
-
-		oilDistiller = new GenericCrafter("oil-distiller") {{
-			requirements(Category.crafting, with(
-				Items.graphite, 70,
-				Items.titanium, 50,
-				Items.copper, 120,
-				SWItems.nickel, 60
-			));
-			size = 2;
-			health = 160;
-			drawer = new DrawMulti(new DrawDefault(), new DrawFlame());
-			updateEffect = Fx.smeltsmoke;
-			consumeLiquid(Liquids.oil, 0.2f);
-			consumePower(2f);
-			outputLiquid = new LiquidStack(SWLiquids.fungi, 0.1f);
 		}};
 
 		compoundSmelter = new GenericCrafter("compound-smelter") {{
@@ -269,7 +249,7 @@ public class SWBlocks {
 			);
 
 			consumeItems(with(
-				Items.graphite, 1,
+				Items.silicon, 1,
 				SWItems.nickel, 2
 			));
 			outputItem = new ItemStack(SWItems.compound, 1);
@@ -283,12 +263,12 @@ public class SWBlocks {
 			));
 			size = 3;
 			health = 200;
-			craftTime = 120f;
+			craftTime = 60f;
 			craftEffect = SWFx.denseAlloyCraft;
 
 			consumeItems(with(
-				SWItems.iron, 3,
-				SWItems.nickel, 2
+				Items.silicon, 2,
+				SWItems.iron, 2
 			));
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
@@ -306,19 +286,24 @@ public class SWBlocks {
 			baseDrawer = new DrawMulti(new DrawRegion("-bottom"), new DrawDefault());
 		}};
 
-		pressModule = new MultiCrafterRecipe("press-module", rebuilder) {{
+		smelterModule = new MultiCrafterRecipe("smelter-module", rebuilder) {{
 			requirements(Category.crafting, with(
-				SWItems.graphene, 50,
+				SWItems.compound, 50,
 				Items.silicon, 50
 			));
 			recipe = new GenericRecipe() {{
-				consumeItems = with(Items.graphite, 4, Items.silicon, 2);
-				outputItems = with(SWItems.graphene, 3);
-				craftEffect = SWFx.grapheneCraft;
+				consumeItems = with(Items.silicon, 2, SWItems.nickel, 3);
+				outputItems = with(SWItems.compound, 2);
+				craftTime = 30f;
+				craftEffect = SWFx.compoundCraft;
 				drawer = new DrawMulti(
+					new DrawRegion("-bottom"),
 					new DrawDefault(),
-					new DrawRegion("-cap"),
-					new DrawRegion("-overlay-graphene")
+					new DrawFlame(SWDraw.compoundBase) {{
+						flameRadius = 5.5f;
+						flameRadiusIn = 3f;
+					}},
+					new DrawRegion("-compound")
 				);
 			}};
 		}};
@@ -328,19 +313,19 @@ public class SWBlocks {
 				Items.silicon, 50
 			));
 			recipe = new GenericRecipe() {{
-				consumeItems = with(SWItems.nickel, 2, SWItems.iron, 3);
+				consumeItems = with(Items.silicon, 3, SWItems.iron, 3);
 				outputItems = with(SWItems.denseAlloy, 3);
-				craftTime = 60f;
+				craftTime = 45f;
 				craftEffect = SWFx.denseAlloyCraft;
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
 					new DrawDefault(),
-					new DrawRegion("-cap-batch"),
-					new DrawRegion("-overlay-dense-alloy")
+					new DrawRegion("-cover-impact"),
+					new DrawRegion("-dense-alloy")
 				);
 			}};
 		}};
-		smelterModule = new MultiCrafterRecipe("smelter-module", rebuilder) {{
+		pressModule = new MultiCrafterRecipe("press-module", rebuilder) {{
 			requirements(Category.crafting, with(
 				SWItems.compound, 50,
 				Items.silicon, 50
@@ -350,7 +335,6 @@ public class SWBlocks {
 				outputItems = with(SWItems.compound, 2);
 				craftEffect = SWFx.compoundCraft;
 				drawer = new DrawMulti(
-					new DrawRegion("-bottom"),
 					new DrawDefault(),
 					new DrawFlame(SWDraw.compoundBase) {{
 						flameRadius = 5.5f;
@@ -656,47 +640,73 @@ public class SWBlocks {
 				Items.graphite, 240
 			);
 		}};
-		curve = new ItemTurret("curve") {{
-			requirements(Category.turret, with(
-				SWItems.nickel, 150,
-				SWItems.iron, 120,
-				Items.silicon, 80
-			));
-			researchCost = with(
-				SWItems.nickel, 1500,
-				Items.titanium, 1200,
-				Items.silicon, 800
-			);
+		curve = new SWConsumeTurret("curve") {{
+			requirements(Category.turret, with());
 			size = 3;
 			scaledHealth = 220f;
-			reload = 45f;
-			range = 150f;
-			shootY = 0f;
-			shootSound = Sounds.missileSmall;
-			shoot = new ShootBarrel() {{
-				shots = 2;
-				barrels = new float[]{
-					6f, 8f, 15f,
-					-6f, 8f, -15f
-				};
+			reload = 15f;
+			shootY = 12f;
+			range = 240f;
+			shootSound = Sounds.shootBig;
+
+			consumeItem(Items.silicon, 1);
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-cannon") {{
+						mirror = false;
+						under = true;
+						moveX = 2f;
+						moveY = -1f;
+						layerOffset = -0.001f;
+						outlineLayerOffset = -0.03f;
+						progress = PartProgress.reload.curve(Interp.circle).inv();
+					}},
+					new RegionPart("-cannon") {{
+						mirror = false;
+						under = true;
+						x = 2f;
+						y = -1f;
+						moveX = -2f;
+						moveY = -1f;
+						layerOffset = -0.003f;
+						outlineLayerOffset = -0.03f;
+						progress = PartProgress.reload.curve(Interp.circle).inv();
+					}},
+					new RegionPart("-cannon") {{
+						mirror = false;
+						under = true;
+						y = -2f;
+						moveX = -2f;
+						moveY = 1f;
+						layerOffset = -0.002f;
+						outlineLayerOffset = -0.03f;
+						progress = PartProgress.reload.curve(Interp.circle).inv();
+					}},
+					new RegionPart("-cannon") {{
+						mirror = false;
+						under = true;
+						x = -2f;
+						y = -1f;
+						moveX = 2f;
+						moveY = 1f;
+						outlineLayerOffset = -0.03f;
+						progress = PartProgress.reload.curve(Interp.circle).inv();
+					}}
+				);
 			}};
-			ammo(
-				Items.silicon, new BasicBulletType(3f, 40) {{
-					homingPower = 0.08f;
-					shrinkY = 0f;
-					width = 14f;
-					height = 14f;
-					hitSound = Sounds.explosion;
-					lifetime = 50f;
-				}}
-			);
+			shootType = new BasicBulletType(3f, 20) {{
+				shrinkY = 0f;
+				width = 8f;
+				height = 8f;
+				trailWidth = 4f;
+				trailLength = 5;
+				hitSound = Sounds.explosion;
+				lifetime = 80f;
+			}};
 		}};
 		thermikos = new SWConsumeTurret("thermikos") {{
-			requirements(Category.turret, with(
-				Items.silicon, 200,
-				Items.titanium, 150,
-				SWItems.denseAlloy, 220
-			));
+			requirements(Category.turret, with());
 			size = 3;
 			scaledHealth = 220f;
 			range = 240f;
@@ -732,6 +742,37 @@ public class SWBlocks {
 
 				shootEffect = SWFx.shootFirery;
 				chargeEffect = SWFx.chargeFiery;
+			}};
+		}};
+		sonar = new SWConsumeTurret("sonar") {{
+			requirements(Category.turret, with());
+			size = 2;
+			scaledHealth = 220;
+			reload = 90f;
+			range = 160f;
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-back") {{
+						moveY = 2f;
+						under = true;
+					}},
+					new RegionPart("-side") {{
+						moveX = -1f;
+						moveY = 1f;
+						mirror = true;
+						under = true;
+					}}
+				);
+			}};
+
+			shootY = 0f;
+			shootSound = ModSounds.sonarShoot;
+			shootType = new SoundLaserBulletType() {{
+				damage = 30f;
+				width = 16f;
+				length = 160f;
+				colors = new Color[]{Color.white};
 			}};
 		}};
 		// endregion

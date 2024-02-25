@@ -6,6 +6,7 @@ import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import sw.content.*;
+import sw.core.*;
 import sw.world.*;
 
 import java.util.*;
@@ -71,6 +72,7 @@ public class SWVars implements Loadable {
 		 *  ModTechTree.load()
 		 * */
 		public static void loadContent() {
+			ModSounds.load();
 			SWItems.load();
 			SWLiquids.load();
 //			SWEntityMapping.load();
