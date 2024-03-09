@@ -5,6 +5,8 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.ui.fragments.*;
+import sw.audio.*;
+import sw.graphics.*;
 
 public class ModEventHandler {
 	public static void init() {

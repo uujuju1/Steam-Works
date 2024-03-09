@@ -1,4 +1,4 @@
-package sw.core;
+package sw.audio;
 
 import arc.audio.*;
 import arc.struct.*;

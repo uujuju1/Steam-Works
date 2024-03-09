@@ -2,19 +2,18 @@ package sw;
 
 import arc.assets.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
-import mindustry.content.*;
 import mindustry.ctype.*;
+import mindustry.ui.fragments.*;
+import sw.audio.*;
 import sw.content.*;
-import sw.core.*;
+import sw.graphics.*;
 import sw.world.*;
 
 import java.util.*;
 
 public class SWVars implements Loadable {
-	public static final float maxHeatGlow = 100;
-
-	public static FluidArea fluidArea = new FluidArea(50, 50, 25, Liquids.water);
 	public static Seq<FluidArea> fluidAreas = new Seq<>();
 
   public static void init() {
@@ -58,28 +57,36 @@ public class SWVars implements Loadable {
 			}
 		});
 	}
+	/**This is where you initialize your content lists. But do not forget about correct order.
+	 *  correct order:
+	 *  ModItems.load()
+	 *  ModStatusEffects.load()
+	 *  ModLiquids.load()
+	 *  ModBullets.load()
+	 *  ModUnitTypes.load()
+	 *  ModBlocks.load()
+	 *  ModPlanets.load()
+	 *  ModSectorPresets.load()
+	 *  ModTechTree.load()
+	**/
+	public static void loadContent() {
+		ModSounds.load();
+		SWItems.load();
+		SWLiquids.load();
+//		SWEntityMapping.load();
+		SWUnitTypes.load();
+		SWBlocks.load();
+		SWPlanets.load();
+		SWSectorPresets.load();
+		SWTechTree.load();
+	}
 
-		/**This is where you initialize your content lists. But do not forget about correct order.
-		 *  correct order:
-		 *  ModItems.load()
-		 *  ModStatusEffects.load()
-		 *  ModLiquids.load()
-		 *  ModBullets.load()
-		 *  ModUnitTypes.load()
-		 *  ModBlocks.load()
-		 *  ModPlanets.load()
-		 *  ModSectorPresets.load()
-		 *  ModTechTree.load()
-		 * */
-		public static void loadContent() {
-			ModSounds.load();
-			SWItems.load();
-			SWLiquids.load();
-//			SWEntityMapping.load();
-			SWUnitTypes.load();
-			SWBlocks.load();
-			SWPlanets.load();
-			SWSectorPresets.load();
-			SWTechTree.load();
+	public static SWMenuRenderer getMenuRenderer() {
+		try{
+			return Reflect.get(MenuFragment.class, Vars.ui.menufrag, "renderer");
+		}catch(Exception ex){
+			Log.err("Failed to return renderer", ex);
+			return new SWMenuRenderer();
 		}
+	}
 }
