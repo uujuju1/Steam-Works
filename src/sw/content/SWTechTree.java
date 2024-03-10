@@ -10,8 +10,6 @@ import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.SWUnitTypes.*;
-import static sw.content.blocks.SWForce.*;
-import static sw.content.blocks.SWVibration.*;
 
 public class SWTechTree {
   public static TechNode root;
@@ -30,7 +28,6 @@ public class SWTechTree {
       node(mechanicalBore, () -> {
         node(hydraulicDrill);
         node(mechanicalCrusher, with(new OnSector(cLake)), () -> {});
-        node(excavator, with(new Research(waterWheel)), () -> {});
       });
       // endregion
       
@@ -41,22 +38,14 @@ public class SWTechTree {
       ), () -> {
         node(compoundSmelter, with(new OnSector(shore)), () -> {
           node(smelterModule);
-          node(bismuthCrystalizer, () -> {
-            node(crystalizerModule);
-          });
         });
         node(densePress, with(new OnSector(path)), () -> {
           node(impactPressModule);
-          node(thermiteMixer, () -> {
-            node(mixerModule);
-          });
         });
         node(rebuilder, with(
           new Research(densePress),
           new Research(compoundSmelter)
-        ), () -> {
-          node(torquePump);
-        });
+        ), () -> {});
       });
       // endregion
 
@@ -91,12 +80,6 @@ public class SWTechTree {
           new Produce(Items.silicon)
         ), () -> {});
         node(thermikos);
-        node(mortar, with(new Research(windmill)), () -> {
-          node(incend, () -> {});
-        });
-        node(sonus, with(new Research(windCollector)), () -> {
-          node(impacto);
-        });
       });
 //      });
       // endregion
@@ -107,8 +90,6 @@ public class SWTechTree {
         new Produce(iron)
       ), () -> {
         node(powerWire);
-        node(windCollector);
-        node(windmill);
       });
       node(filler, () -> node(terra));
       // endregion
