@@ -1,15 +1,9 @@
 package sw.content;
 
-import mindustry.content.*;
-import mindustry.game.Objectives.*;
-
-import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
-import static sw.content.SWSectorPresets.*;
-import static sw.content.SWUnitTypes.*;
 
 public class SWTechTree {
   public static TechNode root;
@@ -21,108 +15,6 @@ public class SWTechTree {
         nodeProduce(steam, () -> nodeProduce(fungi, () -> {}));
         nodeProduce(compound, () -> nodeProduce(bismuth, () -> nodeProduce(graphene, () -> {})));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
-      });
-      // endregion
-
-      // region production
-      node(mechanicalBore, () -> {
-        node(hydraulicDrill);
-        node(mechanicalCrusher, with(new OnSector(cLake)), () -> {});
-      });
-      // endregion
-      
-      // region crafting
-      node(siliconBoiler, with(
-        new OnSector(cLake),
-        new Produce(SWItems.iron)
-      ), () -> {
-        node(compoundSmelter, with(new OnSector(shore)), () -> {
-          node(smelterModule);
-        });
-        node(densePress, with(new OnSector(path)), () -> {
-          node(impactPressModule);
-        });
-        node(rebuilder, with(
-          new Research(densePress),
-          new Research(compoundSmelter)
-        ), () -> {});
-      });
-      // endregion
-
-      // region distribution
-      node(resistantConveyor, () -> {
-        node(suspensionConveyor);
-        node(mechanicalTunnel);
-        node(mechanicalDistributor, () -> {
-          node(mechanicalGate);
-          node(mechanicalUnloader);
-        });
-      });
-      // endregion
-
-      // region defense
-      node(nickelWall, () -> {
-        node(nickelWallLarge);
-        node(ironWall, () -> {
-          node(ironWallLarge);
-          node(compoundWall, () -> node(compoundWallLarge));
-          node(denseWall, () -> node(denseWallLarge));
-        });
-      });
-      // endregion
-
-      // region turrets
-//      node(bolt, () -> {
-//        node(light);
-      node(artyleriya, () -> {
-        node(curve, with(
-          new OnSector(cLake),
-          new Produce(Items.silicon)
-        ), () -> {});
-        node(thermikos);
-      });
-//      });
-      // endregion
-
-      // region power
-      node(burner, with(
-        new OnSector(cLake),
-        new Produce(iron)
-      ), () -> {
-        node(powerWire);
-      });
-      node(filler, () -> node(terra));
-      // endregion
-
-      // region units
-      node(constructor, with(new OnSector(industry)), () -> {
-        node(upgrader);
-        node(recluse, () -> {
-          node(retreat, with(new Research(upgrader)), () -> {
-            node(evade);
-          });
-        });
-        node(sentry, () -> {
-          node(tower, with(new Research(upgrader)), () -> {
-            node(castle);
-          });
-        });
-        node(fly, () -> {
-          node(spin, with(new Research(upgrader)), () -> {
-            node(gyro);
-          });
-        });
-      });
-      // endregion
-
-      // region maps
-      node(anthill, () -> {
-        node(cLake, with(new SectorComplete(anthill)), () -> {
-          node(path, with(new SectorComplete(cLake)), () -> {
-            node(industry, with(new SectorComplete(path)), () -> {});
-          });
-          node(shore, with(new SectorComplete(cLake)), () -> {});
-        });
       });
       // endregion
     });
