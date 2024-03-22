@@ -12,8 +12,11 @@ public class TensionGraph {
 	public float getPull() {
 		return builds.sumf(HasTension::tensionMobile);
 	}
+	public float getStaticTension() {
+		return builds.sumf(HasTension::tensionStatic);
+	}
 	public float getOverallTension() {
-		return builds.sumf(HasTension::tensionStatic) + getPull();
+		return builds.sumf(b -> b.tensionStatic() + b.tensionMobile());
 	}
 
 	/**

@@ -66,6 +66,8 @@ public class SWBlocks {
 	public static void load() {
 		SWEnvironment.load();
 		SWDistribution.load();
+		SWCrafting.load();
+		SWPower.load();
 
 		// region production
 		mechanicalBore = new BeamDrill("mechanical-bore") {{
