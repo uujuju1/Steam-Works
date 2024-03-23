@@ -858,11 +858,6 @@ public class SWBlocks {
 			));
 			size = 3;
 			itemCapacity = 200;
-			entries.addAll(
-				new Block[]{SWEnvironment.deepChloro, Blocks.darkPanel3},
-				new Block[]{SWEnvironment.chloro, Blocks.darkPanel3},
-				new Block[]{SWEnvironment.shallowChloro, Blocks.darkPanel3}
-			);
 			consumeItems(with(Items.silicon, 10, Items.sand, 10));
 			consumePower(1f);
 		}};

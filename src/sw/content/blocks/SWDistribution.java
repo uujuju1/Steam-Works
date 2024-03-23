@@ -63,11 +63,6 @@ public class SWDistribution {
 				SWItems.iron, 5
 			));
 			health = 100;
-			floors.put(SWEnvironment.charoite, -1);
-			floors.put(SWEnvironment.charoiteCraters, 2);
-			floors.put(SWEnvironment.grime, -1);
-			floors.put(SWEnvironment.scorched, -1);
-			floors.put(SWEnvironment.scorchedCrater, 2);
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
 			requirements(Category.distribution, with(
