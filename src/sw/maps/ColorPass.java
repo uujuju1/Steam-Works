@@ -45,7 +45,7 @@ public abstract class ColorPass {
 		public Color color(Vec3 pos, float height) {
 			pos = new Vec3(pos).add(offset);
 			float noise = Simplex.noise3d(seed, octaves, persistence, scale, pos.x, pos.y, pos.z) * magnitude;
-			if (min < noise && noise < max) return out;
+			if (min <= noise && noise <= max) return out;
 			return null;
 		}
 	}
@@ -58,7 +58,7 @@ public abstract class ColorPass {
 
 		@Override
 		public Color color(Vec3 pos, float height) {
-			if (min < height && height < max) return out;
+			if (min <= height && height <= max) return out;
 			return null;
 		}
 	}
