@@ -2,11 +2,13 @@ package sw;
 
 import mindustry.mod.*;
 import sw.core.*;
+import sw.dream.*;
 import sw.gen.*;
 
 public class ModLoader extends Mod {
   public ModLoader() {
     ModEventHandler.init();
+    new DreamCore();
   }
 
   @Override
