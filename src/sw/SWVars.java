@@ -42,6 +42,7 @@ public class SWVars implements Loadable {
 	  Vars.mods.getScripts().runConsole("importModClass(\"sw.dream.events\")");
 	  Vars.mods.getScripts().runConsole("importModClass(\"sw.maps\")");
 	  Vars.mods.getScripts().runConsole("importModClass(\"sw.maps.generators\")");
+    Vars.mods.getScripts().runConsole("importModClass(\"sw.graphics\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
     Vars.mods.getScripts().runConsole("importModClass(\"sw.world.graph\")");
 	}

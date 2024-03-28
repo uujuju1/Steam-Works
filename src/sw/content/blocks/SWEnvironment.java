@@ -1,27 +1,47 @@
 package sw.content.blocks;
 
+import mindustry.content.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import sw.content.*;
 
 public class SWEnvironment {
 	public static Block
 	spinyTree, deadSpinyTree,
 
-	ash, fineAsh, ashWall,
+	oreNickel, oreIron,
+
+	ash, fineAsh, ashWall, ashGraphite,
 	fauna, denseFauna, faunaWall,
 	deadFauna, denseDeadFauna, deadFaunaWall,
 	biomass, folliage, biomassWall,
 	gravel, flatGravel, gravelWall,
 	roots, tangledRoots, rootsWall,
 	soil, clay, soilWall,
-	marble, roughMarble, marbleWall, marbleBoulder,
+	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder,
+
+	solvent, shallowSolvent, shallowerSolvent,
+
 	plate, plateCross, plateVent, plateWall;
 
 	public static void load() {
 		spinyTree = new TreeBlock("spiny-tree");
 		deadSpinyTree = new TreeBlock("dead-spiny-tree");
 
+
+		oreNickel = new OreBlock(SWItems.nickel) {{
+			variants = 4;
+		}};
+		oreIron = new OreBlock(SWItems.iron) {{
+			variants = 4;
+		}};
+
+
 		ashWall = new StaticWall("ash-wall");
+		ashGraphite = new StaticWall("ash-graphite") {{
+			itemDrop = Items.graphite;
+		}};
 		ash = new Floor("ash", 4) {{
 			wall = ashWall;
 		}};
@@ -78,6 +98,9 @@ public class SWEnvironment {
 		}};
 
 		marbleWall = new StaticWall("marble-wall");
+		marbleGraphite = new StaticWall("marble-graphite") {{
+			itemDrop = Items.graphite;
+		}};
 		marbleBoulder = new Prop("marble-boulder") {{
 			variants = 2;
 		}};
@@ -89,6 +112,21 @@ public class SWEnvironment {
 			wall = marbleWall;
 			decoration = marbleBoulder;
 		}};
+
+
+		solvent = new Floor("solvent", 0) {{
+			cacheLayer = CacheLayer.water;
+//			liquidDrop = SWLiquids.solvent
+		}};
+		shallowSolvent = new Floor("shallow-solvent") {{
+			cacheLayer = CacheLayer.water;
+//			liquidDrop = SWLiquids.solvent
+		}};
+		shallowerSolvent = new Floor("shallower-solvent") {{
+			cacheLayer = CacheLayer.water;
+//			liquidDrop = SWLiquids.solvent
+		}};
+
 
 		plateWall = new StaticWall("plate-wall");
 		plate = new Floor("plate", 4) {{
