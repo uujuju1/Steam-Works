@@ -6,6 +6,7 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
+import sw.content.blocks.*;
 import sw.maps.*;
 import sw.maps.generators.*;
 
@@ -19,8 +20,9 @@ public class SWPlanets {
 			sectorSeed = 2;
 			allowWaves = true;
 			hasAtmosphere = true;
-			allowLaunchToNumbered = false;
+			allowLaunchToNumbered = updateLighting = drawOrbit = false;
 			alwaysUnlocked = true;
+			orbitRadius = 12831f;
 
 			ruleSetter = r -> {
 				r.waveTeam = Team.crux;
@@ -90,6 +92,31 @@ public class SWPlanets {
 						heightOffset = -2;
 					}},
 					new HeightPass.ClampHeight(-0.7f, 1f)
+				);
+				baseColor = SWEnvironment.soil.mapColor;
+				colors.addAll(
+					new ColorPass.NoiseColorPass() {{
+						offset.set(100, 220, 50442);
+						seed = 5;
+						scale = 1;
+						octaves = 7;
+						persistence = 0.5;
+						magnitude = 2;
+						out = SWEnvironment.fauna.mapColor;
+					}},
+					new ColorPass.NoiseColorPass() {{
+						offset.set(100, 220, 50442);
+						seed = 2;
+						scale = 1;
+						octaves = 7;
+						persistence = 0.5;
+						magnitude = 2;
+						out = SWEnvironment.roots.mapColor;
+					}},
+					new ColorPass.FlatColorPass() {{
+						min = max = -0.7f;
+						out = SWEnvironment.solvent.mapColor;
+					}}
 				);
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISAEAKJ5FQg=");
 			}};

@@ -12,12 +12,12 @@ public class SWEnvironment {
 
 	oreNickel, oreIron,
 
-	ash, fineAsh, ashWall, ashGraphite,
-	fauna, denseFauna, faunaWall,
-	deadFauna, denseDeadFauna, deadFaunaWall,
-	biomass, folliage, biomassWall,
-	gravel, flatGravel, gravelWall,
-	roots, tangledRoots, rootsWall,
+	ash, fineAsh, ashWall, ashGraphite, scorchedTreeTrunk,
+	fauna, denseFauna, faunaWall, leaflets,
+	deadFauna, denseDeadFauna, deadFaunaWall, deadLeaflets,
+	biomass, folliage, biomassWall, clumps,
+	gravel, flatGravel, gravelWall, flint,
+	roots, tangledRoots, rootsWall, tumbleweed,
 	soil, clay, soilWall,
 	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder,
 
@@ -38,41 +38,64 @@ public class SWEnvironment {
 		}};
 
 
+		scorchedTreeTrunk = new Prop("scorched-tree-trunk") {{
+			variants = 2;
+		}};
 		ashWall = new StaticWall("ash-wall");
 		ashGraphite = new StaticWall("ash-graphite") {{
 			itemDrop = Items.graphite;
 		}};
 		ash = new Floor("ash", 4) {{
 			wall = ashWall;
+			decoration = scorchedTreeTrunk;
 		}};
 		fineAsh = new Floor("fine-ash", 3) {{
 			wall = ashWall;
+			decoration = scorchedTreeTrunk;
 		}};
 
+		leaflets = new Prop("leaflets") {{
+			variants = 2;
+		}};
 		faunaWall = new StaticWall("fauna-wall");
 		fauna = new Floor("fauna", 4) {{
 			wall = faunaWall;
+			decoration = leaflets;
 		}};
 		denseFauna = new Floor("dense-fauna", 3) {{
 			wall = faunaWall;
+			decoration = leaflets;
 		}};
 
+		deadLeaflets = new Prop("dead-leaflets") {{
+			variants = 2;
+		}};
 		deadFaunaWall = new StaticWall("dead-fauna-wall");
 		deadFauna = new Floor("dead-fauna", 4) {{
 			wall = deadFauna;
+			decoration = deadLeaflets;
 		}};
 		denseDeadFauna = new Floor("dense-dead-fauna", 3) {{
 			wall = deadFauna;
+			decoration = deadLeaflets;
 		}};
 
+		clumps = new Prop("clumps") {{
+			variants = 2;
+		}};
 		biomassWall = new StaticWall("biomass-wall");
 		biomass = new Floor("biomass", 4) {{
 			wall = biomassWall;
+			decoration = clumps;
 		}};
 		folliage = new Floor("folliage", 3) {{
 			wall = biomassWall;
+			decoration = clumps;
 		}};
 
+		flint = new OverlayFloor("flint") {{
+			variants = 4;
+		}};
 		gravelWall = new StaticWall("gravel-wall");
 		gravel = new Floor("gravel", 4) {{
 			wall = gravelWall;
@@ -81,12 +104,17 @@ public class SWEnvironment {
 			wall = gravelWall;
 		}};
 
+		tumbleweed = new Prop("tumbleweed") {{
+			variants = 2;
+		}};
 		rootsWall = new StaticWall("roots-wall");
 		roots = new Floor("roots", 4) {{
 			wall = rootsWall;
+			decoration = tumbleweed;
 		}};
 		tangledRoots = new Floor("tangled-roots", 3) {{
 			wall = rootsWall;
+			decoration = tumbleweed;
 		}};
 
 		soilWall = new StaticWall("soil-wall");
