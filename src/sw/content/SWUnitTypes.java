@@ -21,10 +21,11 @@ import static mindustry.type.ItemStack.*;
 
 public class SWUnitTypes {
   @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
-  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType deltaShield, protMask, mesoShield, paleoShield, cenoShield;
-  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType delta, prot, meso, paleo, ceno;
+  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType protMask, mesoShield, paleoShield, cenoShield;
+  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType prot, meso, paleo, ceno;
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
   @EntityDef({BuildingTetherc.class, Unitc.class}) public static UnitType terra;
+	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
   public static UnitType
 		focus, precision, target,
@@ -1006,83 +1007,41 @@ public class SWUnitTypes {
 	  }};
 	  //endregion
 
-    deltaShield = new SWUnitType("delta-shield") {{
-      health = 500;
-      speed = 2f;
-      rotateSpeed = 3f;
-      range = maxRange = 0f;
+    lambda = new UnitType("lambda") {{
+			health = 300;
+			speed = 1;
+			hitSize = 8f;
+			range = maxRange = 100;
+			engineSize = engineOffset = shadowElevationScl = 0f;
+			fallSpeed = buildSpeed = 1f;
+	    coreUnitDock = lowAltitude = true;
+			//shocking
+			flying = true;
 
-      engineOffset = 2f;
+			legCount = 8;
+			legGroupSize = 2;
+			legLength = 15f;
+			legForwardScl = 0f;
+			legContinuousMove = true;
 
-      flying = lowAltitude = hidden = true;
-      playerControllable = drawCell = targetable = isEnemy = false;
-
-      controller = u -> new ShieldAI();
-      constructor = UnitTetherUnit::create;
-    }};
-    delta = new SWUnitType("delta") {{
-      health = 650f;
-      hitSize = 8f;
-      speed = 1f;
-      rotateSpeed = 2f;
-      range = maxRange = 80f;
-
-      shields = 4;
-      shieldSeparateRadius = 24f;
-      shieldStartAng = -45f;
-      shieldEndAng = 270f;
-      shieldShootingStartAng = 40f;
-      shieldShootingEndAng = 100f;
-
-      shieldUnit = deltaShield;
-
-      legCount = 4;
-      legGroupSize = 2;
-      legLength = 18f;
-      legBaseOffset = 2f;
-      legExtension = 2f;
-      lockLegBase = true;
-      legContinuousMove = true;
-
-      canBoost = true;
-      boostMultiplier = 5f;
-      engineSize = 0f;
-      mineTier = 2;
-      mineSpeed = 10f;
-
-      buildSpeed = 0.75f;
-
-      constructor = UnitLegsShielded::create;
-
-			parts.add(
-				new RegionPart("-spine") {{
-          x = 4.5f;
-          y = -2.5f;
-          moveRot = -22.5f;
-          mirror = under = true;
-          layerOffset = -0.01f;
-          moves.add(new PartMove(PartProgress.reload, 0, 0, -22.5f));
-        }},
-        new RegionPart("-weapon") {{
-          x = y = 0;
-          moveY = -1f;
-          progress = PartProgress.reload;
-        }}
-			);
+			constructor = UnitLegsIntangible::create;
 
 			weapons.add(
-				new Weapon() {{
-					x = y = 0f;
-					reload = 60f;
-					shootY = 8f;
+				new Weapon("sw-lambda-weapon") {{
+					x = 4.75f;
+					y = 2.5f;
+					reload = 60;
+					layerOffset = -0.001f;
+					shootSound = Sounds.shootAlt;
+					shoot = new ShootPattern() {{
+						shots = 3;
+						shotDelay = 5;
+					}};
 
-					mirror = false;
-
-          shootSound = Sounds.bolt;
-					bullet = new LaserBulletType(20) {{
-						length = 80f;
-						shootEffect = Fx.shockwave;
-						colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
+					bullet = new BasicBulletType(2f, 7) {{
+						lifetime = 50f;
+						trailLength = 10;
+						trailWidth = 1f;
 					}};
 				}}
 			);

@@ -165,6 +165,7 @@ public class SWEnvironment {
 		}};
 		plateCross = new Floor("plate-cross", 0) {{
 			wall = plateWall;
+			blendGroup = plate;
 		}};
 	}
 }

@@ -839,14 +839,10 @@ public class SWBlocks {
 
 		// region storage
 		coreScaffold = new CoreBlock("core-scaffold") {{
-			requirements(Category.effect, with(
-				SWItems.nickel, 2000,
-				Items.graphite, 1000
-			));
-			size = 4;
+			size = 3;
 			health = 2000;
 			alwaysUnlocked = true;
-			unitType = SWUnitTypes.delta;
+			unitType = SWUnitTypes.lambda;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
 		}};
