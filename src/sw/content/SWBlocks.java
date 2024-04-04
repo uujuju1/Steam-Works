@@ -81,7 +81,7 @@ public class SWBlocks {
 			health = 160;
 			glowIntensity = pulseIntensity = 0f;
 			drillTime = 160f;
-			tier = 3;
+			tier = 1;
 			range = 5;
 			boostHeatColor = Color.black;
 			optionalBoostIntensity = 1f;
@@ -113,7 +113,7 @@ public class SWBlocks {
 			);
 			size = 2;
 			health = 160;
-			tier = 3;
+			tier = 2;
 			drillTime = 400;
 		}};
 		// endregion

@@ -1014,14 +1014,18 @@ public class SWUnitTypes {
 			range = maxRange = 100;
 			engineSize = engineOffset = shadowElevationScl = 0f;
 			fallSpeed = buildSpeed = 1f;
+			mineTier = 1;
+			mineSpeed = 5;
 	    coreUnitDock = lowAltitude = true;
 			//shocking
 			flying = true;
 
 			legCount = 8;
 			legGroupSize = 2;
-			legLength = 15f;
 			legForwardScl = 0f;
+	    legBaseOffset = 4f;
+	    legExtension = -2f;
+	    legLength = 14f;
 			legContinuousMove = true;
 
 			constructor = UnitLegsIntangible::create;

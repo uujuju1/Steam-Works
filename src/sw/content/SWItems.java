@@ -10,8 +10,12 @@ public class SWItems {
     denseAlloy, thermite, scorch;
 
   public static void load() {
-    nickel = new Item("nickel", Color.valueOf("CCD4D9"));
-    iron = new Item("iron", Color.valueOf("646485"));
+    nickel = new Item("nickel", Color.valueOf("CCD4D9")) {{
+      hardness = 1;
+    }};
+    iron = new Item("iron", Color.valueOf("646485")) {{
+      hardness = 2;
+    }};
     arsenic = new Item("arsenic", Color.valueOf("857164"));
 
     compound = new Item("compound", Color.valueOf("515151"));
