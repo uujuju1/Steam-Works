@@ -10,7 +10,6 @@ import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
@@ -50,9 +49,6 @@ public class SWBlocks {
 		artyleriya,
 		curve, thermikos, sonar,
 
-		ironWall, ironWallLarge, nickelWall, nickelWallLarge,
-    compoundWall, compoundWallLarge, denseWall, denseWallLarge,
-
     subFactory,
 		crafterFactory, structuraFactory,
 		constructor,
@@ -64,6 +60,7 @@ public class SWBlocks {
 		allSource;
 
 	public static void load() {
+		SWDefense.load();
 		SWEnvironment.load();
 		SWDistribution.load();
 		SWCrafting.load();
@@ -713,49 +710,6 @@ public class SWBlocks {
 
 			itemDuration = 60f;
 			powerProduction = 0.5f;
-		}};
-		// endregion
-
-		// region walls
-		compoundWall = new Wall("compound-wall") {{
-			requirements(Category.defense, with(SWItems.compound, 6));
-			health = 110 * 4;
-		}};
-		compoundWallLarge = new Wall("compound-wall-large") {{
-			requirements(Category.defense, mult(compoundWall.requirements, 4));
-			size = 2;
-			health = 110 * 4 * 4;
-		}};
-		denseWall = new Wall("dense-wall") {{
-			requirements(Category.defense, with(SWItems.denseAlloy, 6));
-			health = 110 * 4;
-			absorbLasers = true;
-		}};
-		denseWallLarge = new Wall("dense-wall-large") {{
-			requirements(Category.defense, mult(denseWall.requirements, 4));
-			size = 2;
-			health = 110 * 4 * 4;
-			absorbLasers = true;
-		}};
-		nickelWall = new Wall("nickel-wall") {{
-			requirements(Category.defense, with(SWItems.nickel, 6));
-			health = 90 * 4;
-		}};
-		nickelWallLarge = new Wall("nickel-wall-large") {{
-			requirements(Category.defense, mult(nickelWall.requirements, 4));
-			size = 2;
-			health = 90 * 4 * 4;
-		}};
-		ironWall = new Wall("iron-wall") {{
-			requirements(Category.defense, with(SWItems.iron, 6));
-			health = 100 * 4;
-			absorbLasers = true;
-		}};
-		ironWallLarge = new Wall("iron-wall-large") {{
-			requirements(Category.defense, mult(ironWall.requirements, 4));
-			size = 2;
-			health = 100 * 4 * 4;
-			absorbLasers = true;
 		}};
 		// endregion
 
