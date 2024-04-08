@@ -9,6 +9,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.*;
+import mindustry.audio.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -21,8 +22,11 @@ public class WisdomDream extends DreamEvent {
 	public Block unlockBlock = SWBlocks.rebuilder;
 	public Vec2 pos = new Vec2();
 	public Sound loop = ModSounds.awareness;
+	public SoundLoop soundLoop = new SoundLoop(ModSounds.awareness, 1f);
 	public String text = "follow";
 	public Font font = Fonts.tech;
+
+	boolean sounds = true;
 
 	@Override
 	public void draw() {
@@ -80,14 +84,14 @@ public class WisdomDream extends DreamEvent {
 	@Override
 	public void update() {
 		Vars.control.sound.stop();
-		loop.loop(Mathf.clamp(Mathf.map(
+		soundLoop.update(pos.x, pos.y, sounds, Mathf.clamp(Mathf.map(
 			Vars.player.unit().dst(pos),
 			40, 200f,
 			1, 0
 		)));
 		if (Vars.state.isMenu()) {
 			unlockBlock.unlock();
-			loop.stop();
+			soundLoop.stop();
 			DreamCore.instance.event(null);
 		}
 		if (Vars.state.isPaused()) return;
@@ -96,7 +100,7 @@ public class WisdomDream extends DreamEvent {
 				u.impulse(Tmp.v1.trns(u.angleTo(pos), 50f));
 			} else {
 				unlockBlock.unlock();
-				loop.stop();
+				soundLoop.stop();
 				DreamCore.instance.event(null);
 			}
 		});
