@@ -102,7 +102,7 @@ public class SWPlanets {
 						octaves = 7;
 						persistence = 0.5;
 						magnitude = 2;
-						out = SWEnvironment.fauna.mapColor;
+						out = SWEnvironment.gravel.mapColor;
 					}},
 					new ColorPass.NoiseColorPass() {{
 						offset.set(100, 220, 50442);

@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.scene.ui.layout.*;
 import mindustry.content.*;
 import mindustry.world.*;
+import sw.content.blocks.*;
 
 import static mindustry.Vars.*;
 
@@ -29,7 +30,7 @@ public class MenuBackgroundSheet extends MenuBackground {
 		Tiles tiles = world.resize(width, height);
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
-				Block floor = Blocks.metalFloor;
+				Block floor = SWEnvironment.plate;
 				Block ore = Blocks.air;
 				Block wall = Blocks.air;
 
