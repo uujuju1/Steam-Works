@@ -4,6 +4,7 @@ import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 
 public class SWEnvironment {
@@ -23,7 +24,7 @@ public class SWEnvironment {
 
 	solvent, shallowSolvent, shallowerSolvent,
 
-	plate, plateCross, plateVent, plateWall;
+	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall;
 
 	public static void load() {
 		spinyTree = new TreeBlock("spiny-tree");
@@ -41,7 +42,9 @@ public class SWEnvironment {
 		scorchedTreeTrunk = new Prop("scorched-tree-trunk") {{
 			variants = 2;
 		}};
-		ashWall = new StaticWall("ash-wall");
+		ashWall = new StaticWall("ash-wall") {{
+			attributes.set(Attribute.sand, 1);
+		}};
 		ashGraphite = new StaticWall("ash-graphite") {{
 			itemDrop = Items.graphite;
 		}};
@@ -96,7 +99,9 @@ public class SWEnvironment {
 		flint = new OverlayFloor("flint") {{
 			variants = 4;
 		}};
-		gravelWall = new StaticWall("gravel-wall");
+		gravelWall = new StaticWall("gravel-wall") {{
+			attributes.set(Attribute.sand, 0.5f);
+		}};
 		gravel = new Floor("gravel", 4) {{
 			wall = gravelWall;
 		}};
@@ -117,7 +122,9 @@ public class SWEnvironment {
 			decoration = tumbleweed;
 		}};
 
-		soilWall = new StaticWall("soil-wall");
+		soilWall = new StaticWall("soil-wall") {{
+			attributes.set(Attribute.sand, 1);
+		}};
 		soil = new Floor("soil", 4) {{
 			wall = soilWall;
 		}};
@@ -164,6 +171,16 @@ public class SWEnvironment {
 			wall = plateWall;
 		}};
 		plateCross = new Floor("plate-cross", 0) {{
+			wall = plateWall;
+			blendGroup = plate;
+		}};
+		plateDamaged = new Floor("plate-damaged", 4) {{
+			wall = plateWall;
+		}};
+		plateVentDamaged = new Floor("plate-vent-damaged", 0) {{
+			wall = plateWall;
+		}};
+		plateCrossDamaged = new Floor("plate-cross-damaged", 0) {{
 			wall = plateWall;
 			blendGroup = plate;
 		}};

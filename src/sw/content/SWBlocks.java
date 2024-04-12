@@ -77,11 +77,13 @@ public class SWBlocks {
 			size = 2;
 			health = 160;
 			glowIntensity = pulseIntensity = 0f;
-			drillTime = 160f;
+			optionalBoostIntensity = 1f;
+			drillTime = 480f;
 			tier = 1;
 			range = 5;
 			boostHeatColor = Color.black;
-			optionalBoostIntensity = 1f;
+			ambientSound = Sounds.drill;
+			ambientSoundVolume = 0.04f;
 		}};
 		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
 			requirements(Category.production, with(
@@ -94,7 +96,7 @@ public class SWBlocks {
 			);
 			size = 2;
 			health = 160;
-			drillTime = 110f;
+			drillTime = 120f;
 			output = Items.sand;
 			ambientSound = Sounds.drill;
 			ambientSoundVolume = 0.04f;
@@ -111,7 +113,7 @@ public class SWBlocks {
 			size = 2;
 			health = 160;
 			tier = 2;
-			drillTime = 400;
+			drillTime = hardnessDrillMultiplier = 240;
 		}};
 		// endregion
 
