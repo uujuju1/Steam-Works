@@ -27,8 +27,12 @@ public class SWEnvironment {
 	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall;
 
 	public static void load() {
-		spinyTree = new TreeBlock("spiny-tree");
-		deadSpinyTree = new TreeBlock("dead-spiny-tree");
+		spinyTree = new TreeBlock("spiny-tree") {{
+			attributes.set(Attribute.steam, 1);
+		}};
+		deadSpinyTree = new TreeBlock("dead-spiny-tree") {{
+			attributes.set(Attribute.steam, 0.25f);
+		}};
 
 
 		oreNickel = new OreBlock(SWItems.nickel) {{

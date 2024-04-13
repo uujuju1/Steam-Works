@@ -33,9 +33,6 @@ import static mindustry.world.blocks.units.UnitFactory.*;
 
 public class SWBlocks {
 	public static Block
-
-		mechanicalBore, mechanicalCrusher, hydraulicDrill,
-
 		siliconBoiler,
 		compoundSmelter, densePress,
 
@@ -60,62 +57,12 @@ public class SWBlocks {
 		allSource;
 
 	public static void load() {
-		SWDefense.load();
 		SWEnvironment.load();
+		SWProduction.load();
+		SWDefense.load();
 		SWDistribution.load();
 		SWCrafting.load();
 		SWPower.load();
-
-		// region production
-		mechanicalBore = new BeamDrill("mechanical-bore") {{
-			requirements(Category.production, with(
-				SWItems.nickel, 25
-			));
-			researchCost = with(
-				SWItems.nickel, 100
-			);
-			size = 2;
-			health = 160;
-			glowIntensity = pulseIntensity = 0f;
-			optionalBoostIntensity = 1f;
-			drillTime = 480f;
-			tier = 1;
-			range = 5;
-			boostHeatColor = Color.black;
-			ambientSound = Sounds.drill;
-			ambientSoundVolume = 0.04f;
-		}};
-		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
-			requirements(Category.production, with(
-				SWItems.nickel, 25,
-				Items.graphite, 25
-			));
-			researchCost = with(
-				SWItems.nickel, 100,
-				Items.graphite, 100
-			);
-			size = 2;
-			health = 160;
-			drillTime = 120f;
-			output = Items.sand;
-			ambientSound = Sounds.drill;
-			ambientSoundVolume = 0.04f;
-		}};
-		hydraulicDrill = new Drill("hydraulic-drill") {{
-			requirements(Category.production, with(
-				SWItems.nickel, 40,
-				Items.graphite, 50
-			));
-			researchCost = with(
-				SWItems.nickel, 160,
-				Items.graphite, 200
-			);
-			size = 2;
-			health = 160;
-			tier = 2;
-			drillTime = hardnessDrillMultiplier = 240;
-		}};
-		// endregion
 
 		// region crafting
 		siliconBoiler = new GenericCrafter("silicon-boiler") {{
