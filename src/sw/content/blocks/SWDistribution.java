@@ -4,10 +4,10 @@ import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
 import sw.content.*;
 import sw.world.blocks.distribution.*;
-import sw.world.blocks.liquids.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -22,7 +22,9 @@ public class SWDistribution {
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
 
-		mechanicalConduit,
+
+		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction,
+
 
 		lowWire, coatedWire,
 		wireAdapter,
@@ -34,7 +36,6 @@ public class SWDistribution {
 		wireJunction;
 
 	public static void load() {
-
 		// region distribution
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
 			requirements(Category.distribution, with(SWItems.nickel, 1));
@@ -102,12 +103,20 @@ public class SWDistribution {
 		//endregion
 
 		//region liquids
-		mechanicalConduit = new MechanicalConduit("mechanical-conduit") {{
+		mechanicalConduitRouter = new LiquidRouter("mechanical-conduit-router") {{
 			requirements(Category.liquid, with());
-			health = 100;
+		}};
+		mechanicalConduitJunction = new LiquidJunction("mechanical-conduit-junction") {{
+			requirements(Category.liquid, with());
+		}};
+		mechanicalConduit = new Conduit("mechanical-conduit") {{
+			requirements(Category.liquid, with());
+			leaks = false;
+			junctionReplacement = mechanicalConduitJunction;
 		}};
 		//endregion
 
+		//region tension
 		lowWire = new TensionWire("low-tier-wire") {{
 			requirements(Category.power, with());
 			tensionConfig = new TensionConfig() {{
@@ -160,5 +169,6 @@ public class SWDistribution {
 		wireJunction = new TensionJunction("wire-junction") {{
 			requirements(Category.power, with());
 		}};
+		//endregion
 	}
 }
