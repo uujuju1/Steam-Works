@@ -155,15 +155,18 @@ public class SWEnvironment {
 
 		solvent = new Floor("solvent", 0) {{
 			cacheLayer = CacheLayer.water;
-//			liquidDrop = SWLiquids.solvent
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
 		}};
 		shallowSolvent = new Floor("shallow-solvent") {{
 			cacheLayer = CacheLayer.water;
-//			liquidDrop = SWLiquids.solvent
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
 		}};
 		shallowerSolvent = new Floor("shallower-solvent") {{
 			cacheLayer = CacheLayer.water;
-//			liquidDrop = SWLiquids.solvent
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
 		}};
 
 

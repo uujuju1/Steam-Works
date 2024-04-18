@@ -13,7 +13,10 @@ import sw.world.blocks.production.*;
 import static mindustry.type.ItemStack.*;
 
 public class SWProduction {
-	public static Block mechanicalBore, mechanicalCrusher, hydraulicDrill, dehydrator;
+	public static Block
+		mechanicalBore, mechanicalCrusher, hydraulicDrill, dehydrator,
+
+		liquidCollector;
 
 	public static void load() {
 		mechanicalBore = new BeamDrill("mechanical-bore") {{
@@ -70,7 +73,14 @@ public class SWProduction {
 			attribute = Attribute.steam;
 			hasLiquids = true;
 
-			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.3f);
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.1f);
+		}};
+
+		liquidCollector = new Pump("liquid-collector") {{
+			requirements(Category.production, with(
+				SWItems.iron, 20,
+				Items.silicon, 10
+			));
 		}};
 	}
 }

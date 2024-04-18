@@ -12,7 +12,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
@@ -65,68 +64,7 @@ public class SWBlocks {
 		SWPower.load();
 
 		// region crafting
-		siliconBoiler = new GenericCrafter("silicon-boiler") {{
-			requirements(Category.crafting, with(
-				SWItems.nickel, 150,
-				SWItems.iron, 120,
-				Items.graphite, 80
-			));
-			size = 3;
-			health = 240;
 
-			craftTime = 180f;
-
-			consumeItems(with(Items.graphite, 3, Items.sand, 3));
-			outputItems = with(Items.silicon, 3);
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame() {{
-					flameRadius = 5f;
-				}}
-			);
-		}};
-
-		compoundSmelter = new GenericCrafter("compound-smelter") {{
-			requirements(Category.crafting, with(
-				SWItems.iron, 80,
-				SWItems.nickel, 200,
-				Items.silicon, 150,
-				Items.graphite, 160
-			));
-			size = 3;
-			health = 200;
-			craftTime = 30f;
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame(Color.valueOf("BEB5B2"))
-			);
-
-			consumeItems(with(
-				Items.silicon, 1,
-				SWItems.nickel, 2
-			));
-			outputItem = new ItemStack(SWItems.compound, 1);
-		}};
-		densePress = new GenericCrafter("dense-press") {{
-			requirements(Category.crafting, with(
-				SWItems.iron, 160,
-				SWItems.nickel, 200,
-				Items.silicon, 80,
-				Items.graphite, 160
-			));
-			size = 3;
-			health = 200;
-			craftTime = 60f;
-			craftEffect = SWFx.denseAlloyCraft;
-
-			consumeItems(with(
-				Items.silicon, 2,
-				SWItems.iron, 2
-			));
-			outputItem = new ItemStack(SWItems.denseAlloy, 2);
-		}};
 
 		rebuilder = new MultiCrafter("rebuilder") {{
 			requirements(Category.crafting, with(
