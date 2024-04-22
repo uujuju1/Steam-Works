@@ -11,7 +11,7 @@ public class SWEntityMapping {
   public static int customUnits;
   public static ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
   public static Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] entities = new Entry[]{
-    entry(CrafterUnit.class, CrafterUnit::new)
+
   };
 
   private static <T extends Entityc> Entry<Class<T>, Prov<T>> entry(Class<T> name, Prov<T> prov) {

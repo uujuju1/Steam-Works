@@ -12,24 +12,21 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
-import mindustry.world.blocks.environment.*;
-import mindustry.world.meta.*;
 import sw.gen.*;
 import sw.world.meta.*;
-import sw.world.recipes.*;
-
-import static mindustry.Vars.*;
 
 public class SWUnitType extends UnitType {
   // Submarine stuff
   public boolean submerges = false;
   public float vulnerabilityTime = 60f;
-  public float minSubmergeAlpha = 0.1f;
 
-  // Crafter unit stuff
-  public GenericRecipe recipe;
+  // revealable units
+  public float revealSpeed = 0.03f;
+	public float revealedAt = 0.2f;
+  public float hiddenAlpha = 0.1f;
+  public boolean canHide = true;
 
-  // shield unit stuff
+  // region shield unit stuff
   public UnitType shieldUnit;
   public DrawPart.PartProgress shieldProgress = DrawPart.PartProgress.warmup;
   public int shields = 5;
@@ -41,13 +38,15 @@ public class SWUnitType extends UnitType {
   public float shieldEndAng = 180f;
   public float shieldShootingStartAng = -90f;
   public float shieldShootingEndAng = 90f;
+  // endregion
 
-  //rotor unit stuff
+  // region rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
   public float rotorSlowDown = 0.014f;
   public float rotateDeathSpeed = 1f;
   public boolean rotatesDeath = true;
   public boolean drawRotors = true;
+  // endregion
 
   //general unit stuff
   public float outlineLayerOffset = 0f;
@@ -58,9 +57,9 @@ public class SWUnitType extends UnitType {
 
   @Override
   public void applyColor(Unit unit) {
-    if (submerges && unit instanceof Submarinec u) {
-      Draw.mixcol(Pal.shadow, 0.6f * (1f - u.submergeTime()/vulnerabilityTime));
-      Draw.alpha(Math.max(minSubmergeAlpha, (1f - u.submergeTime()/vulnerabilityTime)));
+    if (canHide && unit instanceof Revealc u) {
+      Draw.mixcol(Pal.shadow, 1f - u.revealTime());
+      Draw.alpha(Math.max(hiddenAlpha, u.revealTime()));
     } else {
       super.applyColor(unit);
     }
@@ -74,28 +73,23 @@ public class SWUnitType extends UnitType {
   }
 
   @Override
+  public void drawCell(Unit unit) {
+    applyColor(unit);
+
+    Draw.color(cellColor(unit));
+    if (canHide && unit instanceof Revealc u) {
+      Draw.alpha(Math.max(hiddenAlpha, u.revealTime()));
+    }
+    Draw.rect(cellRegion, unit.x, unit.y, unit.rotation - 90);
+    Draw.reset();
+  }
+
+  @Override
   public void drawOutline(Unit unit) {
     float z = Draw.z();
     Draw.z(z + outlineLayerOffset);
     super.drawOutline(unit);
     Draw.z(z);
-  }
-
-  @Override
-  public void drawShadow(Unit unit) {
-    if (submerges && unit instanceof Submarinec u) {
-      float e = Mathf.clamp(unit.elevation, shadowElevation, 1f) * shadowElevationScl * (1f - unit.drownTime) * (u.submergeTime()/vulnerabilityTime);
-      float x = unit.x + shadowTX * e, y = unit.y + shadowTY * e;
-      Floor floor = world.floorWorld(x, y);
-
-      float dest = floor.canShadow ? 1f : 0f;
-      //yes, this updates state in draw()... which isn't a problem, because I don't want it to be obvious anyway
-      unit.shadowAlpha = unit.shadowAlpha < 0 ? dest : Mathf.approachDelta(unit.shadowAlpha, dest, 0.11f);
-      Draw.color(Pal.shadow, Pal.shadow.a * unit.shadowAlpha);
-
-      Draw.rect(shadowRegion, unit.x + shadowTX * e, unit.y + shadowTY * e, unit.rotation - 90);
-      Draw.color();
-    } else super.drawShadow(unit);
   }
 
   public void drawShields(Shieldedc u) {
@@ -146,14 +140,6 @@ public class SWUnitType extends UnitType {
   @Override
   public void setStats() {
     super.setStats();
-    if (recipe != null) {
-      stats.add(Stat.input, t -> {
-        for (ItemStack stack : recipe.consumeItems) t.add(new ItemImage(stack)).pad(3f);
-      });
-      stats.add(Stat.output, t -> {
-        for (ItemStack stack : recipe.outputItems) t.add(new ItemImage(stack)).pad(3f);
-      });
-    }
     if (shieldUnit != null) {
       stats.add(SWStat.shield, table -> {
         table.row();
@@ -179,7 +165,7 @@ public class SWUnitType extends UnitType {
 
   @Override
   public boolean targetable(Unit unit, Team from) {
-    if (submerges && unit instanceof Submarinec u) return !u.submerged();
+    if (canHide && unit instanceof Revealc u) return u.revealTime() >= revealedAt && super.targetable(unit, from);
     return super.targetable(unit, from);
   }
 

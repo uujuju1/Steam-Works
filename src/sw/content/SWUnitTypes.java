@@ -15,40 +15,21 @@ import mindustry.type.*;
 import sw.ai.*;
 import sw.gen.*;
 import sw.type.*;
-import sw.world.recipes.*;
-
-import static mindustry.type.ItemStack.*;
 
 public class SWUnitTypes {
-  @EntityDef({Submarinec.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
+  @EntityDef({Revealc.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
   @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType protMask, mesoShield, paleoShield, cenoShield;
   @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType prot, meso, paleo, ceno;
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
-  @EntityDef({BuildingTetherc.class, Unitc.class}) public static UnitType terra;
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
   public static UnitType
 		focus, precision, target,
 
-    sentry, tower, castle, stronghold,
-		existence, remembered, presence,
-    bakler, structura;
+    sentry, tower, castle,
+		existence, remembered, presence;
 
   public static void load() {
-    terra = new UnitType("terra") {{
-      health = 250;
-      speed = 3f;
-      flying = lowAltitude = true;
-      playerControllable = useUnitCap = false;
-      rotateSpeed = 10f;
-      engineOffset = 8.5f;
-      engineSize = 5;
-      setEnginesMirror(new UnitEngine(8.5f, 0, 5, 0));
-      engines.add(new UnitEngine(0, 8.5f, 5, 90));
-
-      constructor = UnitBuildingTether::create;
-      controller = u -> new FillerAI();
-    }};
 
     //region specialist
     recluse = new SWUnitType("recluse") {{
@@ -61,7 +42,7 @@ public class SWUnitTypes {
       range = maxRange = 40f;
       submerges = true;
 
-      constructor = UnitWaterMoveSubmarine::create;
+      constructor = UnitWaterMoveReveal::create;
 
       weapons.add(new Weapon("sw-recluse-weapon") {{
         x = 3.75f;
@@ -88,7 +69,7 @@ public class SWUnitTypes {
       submerges = true;
       vulnerabilityTime = 150f;
 
-      constructor = UnitWaterMoveSubmarine::create;
+      constructor = UnitWaterMoveReveal::create;
 
       weapons.add(new Weapon("sw-retreat-weapon") {{
         x = y = 0f;
@@ -122,7 +103,7 @@ public class SWUnitTypes {
       submerges = true;
       vulnerabilityTime = 240f;
 
-      constructor = UnitWaterMoveSubmarine::create;
+      constructor = UnitWaterMoveReveal::create;
 
       weapons.add(
         new Weapon() {{
@@ -876,7 +857,7 @@ public class SWUnitTypes {
 				  moveX = 2f;
 				  moveY = 0.5f;
 				  layerOffset = -0.001f;
-				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv().curve(Interp.circleIn));;
+				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv().curve(Interp.circleIn));
 				  mirror = under = true;
 			  }}
 		  );
@@ -1049,51 +1030,6 @@ public class SWUnitTypes {
 					}};
 				}}
 			);
-    }};
-
-    bakler = new SWUnitType("bakler") {{
-      health = 1500;
-      speed = 2f;
-      hitSize = 8f;
-      payloadCapacity = 256f;
-      useUnitCap = false;
-      flying = true;
-
-      engineOffset = 9f;
-      engineSize = 3f;
-      setEnginesMirror(new UnitEngine(7, -2, 3, -45));
-
-      recipe = new GenericRecipe() {{
-        consumeItems = with(Items.coal, 6, Items.sand, 10);
-        craftTime = 60f;
-        outputItems = with(Items.silicon, 10);
-        craftEffect = SWFx.baklerSiliconCraft;
-        updateEffect = Fx.smoke;
-      }};
-
-      constructor = UnitEntity::create;
-    }};
-    structura = new SWUnitType("structura") {{
-      health = 1500;
-      speed = 2f;
-      hitSize = 8f;
-      payloadCapacity = 256f;
-      useUnitCap = false;
-      flying = true;
-
-      engineOffset = 9f;
-      engineSize = 3f;
-      setEnginesMirror(new UnitEngine(7, -2, 3, -45));
-
-      recipe = new GenericRecipe() {{
-        consumeItems = with(SWItems.nickel, 5, Items.copper, 10);
-        craftTime = 60f;
-        outputItems = with(SWItems.compound, 7);
-        craftEffect = SWFx.baklerSiliconCraft;
-        updateEffect = Fx.smoke;
-      }};
-
-      constructor = UnitEntity::create;
     }};
   }
 }
