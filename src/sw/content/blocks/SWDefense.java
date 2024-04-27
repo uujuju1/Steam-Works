@@ -1,10 +1,12 @@
 package sw.content.blocks;
 
+import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import sw.content.*;
 import sw.world.blocks.units.*;
+import sw.world.consumers.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -13,9 +15,10 @@ public class SWDefense {
 		ironWall, ironWallLarge, nickelWall, nickelWallLarge,
 		compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
-		waveRadar;
+		waveRadar, unitScanner;
 
 	public static void load() {
+		// region walls
 		nickelWall = new Wall("nickel-wall") {{
 			requirements(Category.defense, with(SWItems.nickel, 6));
 			health = 90 * 4;
@@ -56,10 +59,26 @@ public class SWDefense {
 			health = 110 * 4 * 4;
 			absorbLasers = true;
 		}};
+		// endregion
 
 		waveRadar = new WaveRadar("wave-radar") {{
-			requirements(Category.effect, with());
+			requirements(Category.effect, with(
+				SWItems.iron, 20,
+				Items.silicon, 20
+			));
 			health = 160;
+		}};
+
+		unitScanner = new UnitScanner("unit-scanner") {{
+			requirements(Category.effect, with(
+				SWItems.compound, 10,
+				SWItems.iron, 30,
+				Items.silicon, 40
+			));
+			health = 160;
+			size = 3;
+
+			consume(new ConsumeTension(10, 20));
 		}};
 	}
 }
