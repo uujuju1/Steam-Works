@@ -115,7 +115,7 @@ public class SWPlanets {
 					}},
 					new ColorPass.FlatColorPass() {{
 						min = max = -0.7f;
-						out = SWEnvironment.solvent.mapColor;
+						out = SWEnvironment.solventRegular.mapColor;
 					}}
 				);
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISAEAKJ5FQg=");

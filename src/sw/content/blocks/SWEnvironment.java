@@ -22,7 +22,7 @@ public class SWEnvironment {
 	soil, clay, soilWall,
 	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder,
 
-	solvent, shallowSolvent, shallowerSolvent,
+	solventRegular, shallowSolvent, shallowerSolvent,
 
 	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall;
 
@@ -153,7 +153,7 @@ public class SWEnvironment {
 		}};
 
 
-		solvent = new Floor("solvent", 0) {{
+		solventRegular = new Floor("solvent-regular", 0) {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;

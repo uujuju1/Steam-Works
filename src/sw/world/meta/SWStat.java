@@ -12,6 +12,7 @@ public class SWStat {
 
   public static final Stat
     maxTension = new Stat("sw-max-tension", tension),
-    staticTension = new Stat("sw-static-tension", tension);
+    staticTension = new Stat("sw-static-tension", tension),
+    requiredTension = new Stat("sw-required-tension", tension);
 
 }
