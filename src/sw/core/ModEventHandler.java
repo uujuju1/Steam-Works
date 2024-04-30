@@ -7,6 +7,7 @@ import mindustry.game.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.graphics.*;
+import sw.ui.*;
 
 public class ModEventHandler {
 	public static void init() {
@@ -17,6 +18,7 @@ public class ModEventHandler {
 				Log.err("Failed to replace renderer", ex);
 			}
 			ModSettings.load();
+			Vars.ui.hints.hints.add(EventHints.values());
 		});
 		Events.on(EventType.MusicRegisterEvent.class, e -> ModMusic.load());
 	}
