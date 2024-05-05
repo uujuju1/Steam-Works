@@ -68,7 +68,11 @@ public class SWProduction {
 		}};
 
 		dehydrator = new WallGenericCrafter("dehydrator") {{
-			requirements(Category.production, with());
+			requirements(Category.production, with(
+				SWItems.nickel, 50,
+				SWItems.iron, 35,
+				Items.silicon, 45
+			));
 			size = 3;
 			attribute = Attribute.steam;
 			hasLiquids = true;

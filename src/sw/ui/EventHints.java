@@ -10,16 +10,20 @@ import sw.content.blocks.*;
 
 public enum EventHints implements Hint {
 	tension(
-		() -> Core.settings.getBool("sw-tension-hint-done", false),
+		() -> true,
 		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWDistribution.lowWire).size > 0
 	),
 	coatedTension(
-		() -> Core.settings.getBool("sw-coatedTension-hint-done", false),
+		() -> true,
 		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWDistribution.coatedWire).size > 0,
 		tension
 	),
 	rebuilder(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWBlocks.rebuilder).size > 0 || Core.settings.getBool("sw-rebuilder-hint-done", false)
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWBlocks.rebuilder).size > 0
+	),
+	dehydrator(
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.dehydrator).size > 0,
+		() -> SWProduction.dehydrator.unlocked()
 	);
 
 	Boolp complete, shown = () -> true;
@@ -43,7 +47,7 @@ public enum EventHints implements Hint {
 	}
 
 	@Override public boolean complete() {
-		return complete.get();
+		return complete.get() && Core.settings.getBool(prefix + name() + "-hint-done", false);
 	}
 
 	@Override
