@@ -20,7 +20,7 @@ public class SWEnvironment {
 	gravel, flatGravel, gravelWall, flint,
 	roots, tangledRoots, rootsWall, tumbleweed,
 	soil, clay, soilWall,
-	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder,
+	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder, marbleSpike,
 
 	solventRegular, shallowSolvent, shallowerSolvent,
 
@@ -142,6 +142,9 @@ public class SWEnvironment {
 		}};
 		marbleBoulder = new Prop("marble-boulder") {{
 			variants = 2;
+		}};
+		marbleSpike = new TallBlock("marble-spike") {{
+			variants = 4;
 		}};
 		marble = new Floor("marble", 4) {{
 			decoration = marbleBoulder;

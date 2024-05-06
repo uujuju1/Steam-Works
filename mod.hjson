@@ -3,6 +3,6 @@ name: "sw"
 author: "Uujuju"
 main: "sw.ModLoader"
 description: "A thing."
-version: 1.0.Alpha
+version: 1.0.Alpha1
 minGameVersion: 142
 java: true
