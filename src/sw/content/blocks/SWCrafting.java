@@ -14,8 +14,8 @@ import static mindustry.type.ItemStack.*;
 public class SWCrafting {
 	public static Block
 		siliconBoiler,
-		compoundSmelter, thermiteMixer,
-		densePress;
+		compoundSmelter, chalkSeparator,
+		densePress, thermiteMixer;
 
 	public static void load() {
 		siliconBoiler = new GenericCrafter("silicon-boiler") {{
@@ -64,6 +64,27 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
+		chalkSeparator = new GenericCrafter("chalk-separator") {{
+			requirements(Category.crafting, with(
+
+			));
+			size = 2;
+			health = 160;
+			craftTime = 120f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawDefault(),
+				new DrawRegion("-top")
+			);
+
+			consumeItems(with(
+				Items.sand, 1,
+				SWItems.compound, 2
+			));
+
+			outputItem = new ItemStack(SWItems.chalk, 2);
+		}};
 
 		densePress = new GenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
@@ -86,7 +107,11 @@ public class SWCrafting {
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
 		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.iron, 50,
+				SWItems.denseAlloy, 35,
+				Items.silicon, 30
+			));
 
 			size = 2;
 			health = 160;
