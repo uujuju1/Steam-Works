@@ -74,6 +74,9 @@ public class SWCrafting {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
+				new DrawWarmupRegion() {{
+					sinMag = 0f;
+				}},
 				new DrawDefault(),
 				new DrawRegion("-top")
 			);

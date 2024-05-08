@@ -1,10 +1,12 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import sw.content.*;
+import sw.world.blocks.defense.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 
@@ -15,7 +17,7 @@ public class SWDefense {
 		ironWall, ironWallLarge, nickelWall, nickelWallLarge,
 		compoundWall, compoundWallLarge, denseWall, denseWallLarge,
 
-		waveRadar, unitScanner;
+		waveRadar, unitScanner, distributionMender;
 
 	public static void load() {
 		// region walls
@@ -77,6 +79,19 @@ public class SWDefense {
 			));
 			health = 160;
 			size = 3;
+
+			consume(new ConsumeTension(10, 20));
+		}};
+
+		distributionMender = new TensionMender("distribution-mender") {{
+			requirements(Category.effect, with());
+			size = 2;
+			health = 180;
+
+			baseColor = phaseColor = Color.valueOf("BF92F8");
+			range = 80f;
+			healPercent = 8;
+			phaseBoost = phaseRangeBoost = 0f;
 
 			consume(new ConsumeTension(10, 20));
 		}};
