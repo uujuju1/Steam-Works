@@ -238,6 +238,7 @@ public class SWTurrets {
 				}}
 			);
 		}};
+
 		curve = new SWConsumeTurret("curve") {{
 			requirements(Category.turret, with());
 			size = 3;
@@ -309,6 +310,9 @@ public class SWTurrets {
 			scaledHealth = 220f;
 			range = 240f;
 			reload = 120f;
+			recoil = 0f;
+			rotateSpeed = 1f;
+			moveWhileCharging = true;
 
 			shootY = 8f;
 			shoot = new ShootPattern() {{
@@ -338,8 +342,8 @@ public class SWTurrets {
 
 				collides = collidesAir = collidesGround = true;
 
-				shootEffect = SWFx.shootFirery;
-				chargeEffect = SWFx.chargeFiery;
+				shootEffect = SWFx.thermiteShoot;
+				chargeEffect = SWFx.thermiteCharge;
 			}};
 		}};
 		sonar = new SWConsumeTurret("sonar") {{

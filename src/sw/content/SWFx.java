@@ -163,32 +163,27 @@ public class SWFx {
       Fill.circle(e.x - x, e.y - y, 2 * e.fout());
     })),
 
-    shootFirery = new Effect(30f, e -> {
-      for (int i = 0; i < 3; i++) {
-        e.scaled((10 * i), b -> {
-          Draw.blend(Blending.additive);
-          float fin = Interp.pow2.apply(b.fin());
+    thermiteShoot = new Effect(20f, e -> {
+      rand.setSeed(e.id);
 
-          Draw.color(Color.gray);
-          Draw.alpha(0.8f);
-          Angles.randLenVectors(e.id, 5, 50 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
-          });
-          Draw.color(Pal.turretHeat);
-          Draw.alpha(0.7f);
-          Angles.randLenVectors(e.id + 1, 7, 40 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
-          });
-          Draw.color(Pal.accent);
-          Draw.alpha(0.6f);
-          Angles.randLenVectors(e.id + 2, 10, 30 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * (1 - fin));
-          });
-          Draw.blend();
+      Draw.blend(Blending.additive);
+      for(int i : Mathf.signs) {
+        temp.trns(e.rotation - 90f, -6f * i, -15.75f).add(e.x, e.y);
+
+        Angles.randLenVectors(e.id + i, 10, 8f * e.finpow(), e.rotation + 180f + 45f * i, 15f, (x, y) -> {
+          Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
+          Fill.circle(Tmp.v1.x + x, Tmp.v1.y + y, 2f * e.fout());
         });
       }
+
+      Tmp.v1.trns(e.rotation, -1).add(e.x, e.y);
+      Angles.randLenVectors(e.id, 15, 32f * e.finpow(), e.rotation, 15f, (x, y) -> {
+        Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
+        Fill.circle(Tmp.v1.x + x, Tmp.v1.y + y, 5f * e.fout());
+      });
+      Draw.blend();
     }),
-    chargeFiery = new Effect(60f, e -> {
+    thermiteCharge = new Effect(60f, e -> {
       for (int i = 0; i < 6; i++) {
         int in = i;
         e.scaled((10 * i), b -> {
