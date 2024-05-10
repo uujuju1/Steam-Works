@@ -172,14 +172,14 @@ public class SWFx {
 
         Angles.randLenVectors(e.id + i, 10, 8f * e.finpow(), e.rotation + 180f + 45f * i, 15f, (x, y) -> {
           Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
-          Fill.circle(Tmp.v1.x + x, Tmp.v1.y + y, 2f * e.fout());
+          Fill.circle(temp.x + x, temp.y + y, 2f * e.fout());
         });
       }
 
       Tmp.v1.trns(e.rotation, -1).add(e.x, e.y);
       Angles.randLenVectors(e.id, 15, 32f * e.finpow(), e.rotation, 15f, (x, y) -> {
         Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
-        Fill.circle(Tmp.v1.x + x, Tmp.v1.y + y, 5f * e.fout());
+        Fill.circle(temp.x + x, temp.y + y, 5f * e.fout());
       });
       Draw.blend();
     }),
