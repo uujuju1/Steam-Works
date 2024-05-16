@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
@@ -22,8 +23,8 @@ import static mindustry.type.ItemStack.*;
 public class SWTurrets {
 	public static Block
 		flow, trail, vniz, rozpad,
-		curve, thermikos, sonar,
-		push;
+		curve, sonar,
+		push, thermikos, swing;
 
 	public static void load() {
 		flow = new ItemTurret("flow") {{
@@ -304,48 +305,6 @@ public class SWTurrets {
 				lifetime = 80f;
 			}};
 		}};
-		thermikos = new SWConsumeTurret("thermikos") {{
-			requirements(Category.turret, with());
-			size = 3;
-			scaledHealth = 220f;
-			range = 240f;
-			reload = 120f;
-			recoil = 0f;
-			rotateSpeed = 1f;
-			moveWhileCharging = true;
-
-			shootY = 8f;
-			shoot = new ShootPattern() {{
-				firstShotDelay = 30f;
-			}};
-
-			shootSound = Sounds.cannon;
-			chargeSound = Sounds.lasercharge2;
-
-			consumeItems(with(Items.graphite, 2, SWItems.thermite, 3));
-
-			drawer = new DrawTurret() {{
-				parts.add(
-					new RegionPart("-cannon") {{
-						under = true;
-						moveY = -4f;
-						progress = PartProgress.heat.curve(Interp.bounceIn);
-					}}
-				);
-			}};
-
-			shootType = new ArtilleryBulletType(4f, 200f) {{
-				splashDamage = 200f;
-				splashDamageRadius = 16f;
-				lifetime = 40f;
-				width = height = 20f;
-
-				collides = collidesAir = collidesGround = true;
-
-				shootEffect = SWFx.thermiteShoot;
-				chargeEffect = SWFx.thermiteCharge;
-			}};
-		}};
 		sonar = new SWConsumeTurret("sonar") {{
 			requirements(Category.turret, with());
 			size = 2;
@@ -384,6 +343,7 @@ public class SWTurrets {
 			scaledHealth = 220f;
 			range = 240f;
 			reload = 120f;
+			rotateSpeed = 1f;
 
 			drawer = new DrawTurret() {{
 				parts.addAll(
@@ -413,6 +373,125 @@ public class SWTurrets {
 				hitEffect = despawnEffect = trailEffect = SWFx.soundDecay;
 				trailRotation = true;
 				pierce = pierceBuilding = true;
+			}};
+		}};
+		thermikos = new SWConsumeTurret("thermikos") {{
+			requirements(Category.turret, with());
+			size = 3;
+			scaledHealth = 220f;
+			range = 240f;
+			reload = 120f;
+			recoil = 0f;
+			rotateSpeed = 1f;
+			moveWhileCharging = false;
+
+			shootY = 9f;
+			shoot = new ShootPattern() {{
+				firstShotDelay = 30f;
+			}};
+
+			shootSound = Sounds.cannon;
+			chargeSound = Sounds.lasercharge2;
+
+			consumeItems(with(Items.graphite, 2, SWItems.thermite, 3));
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-cannon") {{
+						under = true;
+						moveY = -4f;
+						progress = PartProgress.heat.curve(Interp.bounceIn);
+					}}
+				);
+			}};
+
+			shootType = new ArtilleryBulletType(4f, 200f) {{
+				splashDamage = 200f;
+				splashDamageRadius = 16f;
+				lifetime = 40f;
+				width = height = 20f;
+
+				collides = collidesAir = collidesGround = true;
+
+				shootEffect = SWFx.thermiteShoot;
+				chargeEffect = SWFx.thermiteCharge;
+			}};
+		}};
+		swing = new SWConsumeTurret("swing") {{
+			requirements(Category.turret, with());
+			size = 3;
+			scaledHealth = 220f;
+			range = 200f;
+			reload = 180f;
+			recoil = 4f;
+			rotateSpeed = 1f;
+			cooldownTime = 90f;
+
+			shootY = 6f;
+			shoot = new ShootAlternate(12f) {{
+				firstShotDelay = 90f;
+				shots = 2;
+			}};
+
+			shootSound = Sounds.shootAlt;
+
+			consumeItem(SWItems.compound, 3);
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-floor") {{
+						under = true;
+						layerOffset = -0.001f;
+					}},
+					new RegionPart("-shoot") {{
+						progress = PartProgress.charge.curve(Interp.sineIn);
+						moveRot = 2.75f * 360f;
+						outlineLayerOffset = -1f;
+						under = true;
+
+						moves.add(new PartMove(PartProgress.heat.curve(Interp.circleOut), 0f, 0f, 270f));
+
+						children.add(new RegionPart("-payload") {{
+							progress = PartProgress.heat;
+							outlineLayerOffset = -1f;
+							under = true;
+
+							colorTo = new Color(1f, 1f, 1f, 0f);
+							color = Color.white;
+						}});
+					}},
+					new RegionPart("-shoot") {{
+						progress = PartProgress.charge.curve(Interp.sineIn);
+						moveRot = -2.75f * 360f;
+						outlineLayerOffset = -1f;
+						under = true;
+
+						moves.add(new PartMove(PartProgress.heat.curve(Interp.circleOut), 0f, 0f, -270f));
+
+						children.add(new RegionPart("-payload") {{
+							progress = PartProgress.heat;
+							outlineLayerOffset = -1f;
+							under = true;
+
+							colorTo = new Color(1f, 1f, 1f, 0f);
+							color = Color.white;
+						}});
+					}}
+				);
+			}};
+
+			shootType = new BasicBulletType(4f, 25f, "sw-round-bullet") {{
+				width = height = 8f;
+				shrinkY = 0f;
+				lifetime = 50f;
+				splashDamage = 75f;
+				splashDamageRadius = 24f;
+				shootEffect = SWFx.accelSparks;
+				hitEffect = despawnEffect = new ExplosionEffect() {{
+					waveRad = 24f;
+					sparkRad = smokeRad = 33f;
+				}};
+				hitSound = despawnSound = Sounds.explosion;
 			}};
 		}};
 	}
