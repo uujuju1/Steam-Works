@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -176,7 +175,7 @@ public class SWFx {
         });
       }
 
-      Tmp.v1.trns(e.rotation, -1).add(e.x, e.y);
+      Tmp.v1.trns(e.rotation - 90f, 0, 1f).add(e.x, e.y);
       Angles.randLenVectors(e.id, 15, 32f * e.finpow(), e.rotation, 15f, (x, y) -> {
         Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
         Fill.circle(temp.x + x, temp.y + y, 5f * e.fout());
@@ -211,23 +210,20 @@ public class SWFx {
         });
       }
     }),
-
     soundDecay = new Effect(60f, e -> {
       Draw.mixcol(Color.black, e.finpow());
       Tmp.v1.trns(e.rotation, 40f * e.finpow());
       Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
     }),
-    soundImpact = new Effect(60f, e -> {
-	    rand.setSeed(e.id);
+    accelSparks = new Effect(20f, e -> {
 
-	    Lines.stroke(3f * e.fout(), Color.gray);
+      for(int i : Mathf.signs) {
+        Tmp.v1.trns(e.rotation - 90, 6 * i, 4).add(e.x, e.y);
 
-	    Lines.circle(e.x, e.y, 120f * e.finpow());
-
-	    Angles.randLenVectors(e.id, Mathf.round(30 * e.finpow()), 120f, (x, y) -> {
-		    Draw.color(Vars.world.floorWorld(e.x + x, e.y + y).mapColor);
-		    Fill.circle(e.x + x, e.y + y, e.fout() * (rand.random(2f) + 3f) * (1f - new Vec2().dst(x, y)/60f));
-	    });
+        Angles.randLenVectors(e.id + i, 2, 10 * e.finpow(), e.rotation, 15, (x, y) -> {
+          Lines.lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), 4 * e.foutpow());
+        });
+      }
     }),
 
     changeEffect = new Effect(30f, e -> {
