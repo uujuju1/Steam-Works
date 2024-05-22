@@ -104,7 +104,7 @@ public class Filler extends Block {
 				}
 			}
 			
-            Log.info("Target Coordinates: (@, @)", targetX, targetY);
+            // Log.info("Target Coordinates: (@, @)", targetX, targetY);
 		}
 
 		@Override
