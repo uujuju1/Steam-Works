@@ -51,18 +51,22 @@ public class Filler extends Block {
 	}
 
 	public class FillerBuild extends Building {
-		public float time, totalTime,
-		targetX = x, targetY = y;
+		public float time, totalTime, targetX = x, targetY = y;
 
 		public Seq<Tile> targets() {
 			Seq<Tile> out = new Seq<>();
 			for(int i = -targetArea/2; i < targetArea/2 + 2; i++) {
 				for(int j = -targetArea/2; j < targetArea/2 + 2; j++) {
-					out.add(tile.nearby(i, j));
+					Tile nearbyTile = tile.nearby(i, j);
+					if (nearbyTile != null) {
+						out.add(nearbyTile);
+					}
 				}
 			}
 			return out.removeAll(b -> {
-				for (Block[] entry: entries) if (b.floor() == entry[0]) return false;
+				for (Block[] entry: entries) { 
+					if (b.floor() == entry[0]) return false;
+				}
 				return true;
 			});
 		}
@@ -86,7 +90,7 @@ public class Filler extends Block {
 			if (!targets.isEmpty()) {
 				target = targets.first();
 				targetX = Mathf.approachDelta(targetX, target.worldx(), armSpeed);
-				targetY = Mathf.approachDelta(targetY, target.worldx(), armSpeed);
+				targetY = Mathf.approachDelta(targetY, target.worldy(), armSpeed);
 			} else {
 				targetX = Mathf.approachDelta(targetX, x, armSpeed);
 				targetY = Mathf.approachDelta(targetY, y, armSpeed);
@@ -99,6 +103,8 @@ public class Filler extends Block {
 					time %= 1f;
 				}
 			}
+			
+            Log.info("Target Coordinates: (@, @)", targetX, targetY);
 		}
 
 		@Override
