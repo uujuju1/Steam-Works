@@ -362,6 +362,7 @@ public class SWTurrets {
 
 			consume(new ConsumeTension(10, 20));
 
+			shootY = 9f;
 			shootSound = Sounds.shootSmite;
 			shootType = new BasicBulletType(3f, 30, "sw-sound-wave") {{
 				width = 16;
