@@ -197,36 +197,6 @@ public class SWBlocks {
 		}};
 		// endregion
 
-		// region power
-		powerWire = new PowerNode("power-wire") {{
-			requirements(Category.power, with(
-				SWItems.iron, 10,
-				SWItems.nickel, 5
-			));
-			size = 2;
-			health = 80;
-			maxNodes = 3;
-			maxRange = 80f;
-		}};
-		burner = new ConsumeGenerator("burner") {{
-			requirements(Category.power, with(
-				SWItems.iron, 50,
-				SWItems.nickel, 80
-			));
-			researchCost = with(
-				Items.titanium, 500,
-				SWItems.nickel, 800
-			);
-			size = 2;
-			health = 160;
-
-			consumeItem(Items.graphite, 1);
-
-			itemDuration = 60f;
-			powerProduction = 0.5f;
-		}};
-		// endregion
-
 		// region units
 		subFactory = new UnitFactory("submarine-factory") {{
 			requirements(Category.units, with(
