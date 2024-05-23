@@ -1,5 +1,6 @@
 package sw.ui;
 
+import arc.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -42,21 +43,21 @@ public class SWTables {
         }).height(144f);
       }).margin(20f).row();
 			menu.table(heat -> {
-				heat.add("Heat" + ": ");
+				heat.add(Core.bundle.get("sw-heat") + ": ");
 				heat.field("" + con.heatValue, floatsOnly, s -> {
 					con.heatValue = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(staticTension -> {
-				staticTension.add("Static Tension" + ": ");
+				staticTension.add(Core.bundle.get("sw-static-tension") + ": ");
 				staticTension.field("" + con.sTension, floatsOnly, s -> {
 					con.sTension = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(mobileTension -> {
-				mobileTension.add("Mobile Tension" + ": ");
+				mobileTension.add(Core.bundle.get("sw-mobile-tension") + ": ");
 				mobileTension.field("" + con.mTension, floatsOnly, s -> {
 					con.mTension = Strings.parseFloat(s, 0);
 					run.run();

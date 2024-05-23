@@ -16,8 +16,8 @@ import sw.graphics.*;
 public class ModSettings {
   public static void load() {
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.pref(new ButtonSetting("Erase Mod progress", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
-      table.pref(new MenuSetting("sw-current-menu"));
+      table.pref(new ButtonSetting(Core.bundle.get("sw-erase-mod-progress"), () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
+      table.pref(new MenuSetting((Core.bundle.get("sw-current-menu"))));
     });
   }
 
@@ -47,7 +47,7 @@ public class ModSettings {
       Table current = new Table(Styles.black5);
       current.add(SWMenuRenderer.find(SWVars.getMenuRenderer().currentMenuBackground, SWMenuRenderer.menus[0]).name);
       table.table(((TextureRegionDrawable)Tex.whiteui).tint(Pal.darkerGray), menu -> {
-        menu.add("Menu Selector").padBottom(10).color(Pal.accent).row();
+        menu.add((Core.bundle.get("sw-menu-selector"))).padBottom(10).color(Pal.accent).row();
         menu.pane(Styles.smallPane, menus -> {
           for (SWMenuRenderer.MenuProv prov : SWMenuRenderer.menus) {
             menus.button(prov.name, () -> {
