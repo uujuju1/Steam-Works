@@ -52,7 +52,7 @@ public class SWTechTree {
           node(mechanicalGate);
           node(mechanicalUnloader);
         });
-        node(resistantConveyor);
+        node(suspensionConveyor);
         node(mechanicalConduit, () -> {
           node(mechanicalConduitJunction);
           node(mechanicalConduitRouter);
