@@ -145,6 +145,7 @@ public class SWEnvironment {
 		}};
 		marbleSpike = new TallBlock("marble-spike") {{
 			cacheLayer = CacheLayer.normal;
+			destructible = true;
 			variants = 4;
 		}};
 		marble = new Floor("marble", 4) {{
