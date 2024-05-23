@@ -18,7 +18,7 @@ public class ModEventHandler {
 				Log.err("Failed to replace renderer", ex);
 			}
 			ModSettings.load();
-			Vars.ui.hints.hints.add(EventHints.values());
+			EventHints.initHints();
 		});
 		Events.on(EventType.MusicRegisterEvent.class, e -> ModMusic.load());
 	}

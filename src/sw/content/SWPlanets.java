@@ -33,7 +33,7 @@ public class SWPlanets {
 			iconColor = atmosphereColor = Color.valueOf("469662");
 			atmosphereRadIn = -0.1f;
 			atmosphereRadOut = 0.25f;
-			startSector = 1;
+			startSector = 69;
 
 			itemWhitelist.addAll(
 				SWItems.nickel,

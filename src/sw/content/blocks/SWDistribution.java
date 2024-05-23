@@ -9,7 +9,6 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
 import sw.content.*;
 import sw.world.blocks.distribution.*;
-import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -24,20 +23,11 @@ public class SWDistribution {
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
 
 
-		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction,
+		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction;
 
-
-		lowWire, coatedWire,
-		wireAdapter,
-
-		lowRouter, coatedRouter,
-
-		lowBridge, coatedBridge,
-
-		wireJunction;
 
 	public static void load() {
-		// region distribution
+		// region items
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
 			requirements(Category.distribution, with(SWItems.nickel, 1));
 			health = 100;
@@ -123,81 +113,6 @@ public class SWDistribution {
 			leaks = false;
 			junctionReplacement = mechanicalConduitJunction;
 			botColor = Color.white;
-		}};
-		//endregion
-
-		//region tension
-		lowWire = new TensionWire("low-tier-wire") {{
-			requirements(Category.power, with(
-				SWItems.compound, 3
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 2.5f;
-			}};
-		}};
-		coatedWire = new TensionWire("coated-tier-wire") {{
-			requirements(Category.power, with(
-				SWItems.chalk, 3
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 2.5f;
-				tier = 1;
-			}};
-		}};
-		wireAdapter = new TensionWire("wire-adapter") {{
-			requirements(Category.power, with(
-				SWItems.compound, 5,
-				Items.silicon, 5
-			));
-			tensionConfig = new TensionConfig() {{
-				tier = -1;
-				staticTension = 5;
-			}};
-		}};
-
-		lowRouter = new TensionRouter("low-tier-wire-router") {{
-			requirements(Category.power, with(
-				SWItems.compound, 5
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 5;
-			}};
-		}};
-		coatedRouter = new TensionRouter("coated-tier-wire-router") {{
-			requirements(Category.power, with(
-				SWItems.chalk, 5
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 5;
-				tier = 1;
-			}};
-		}};
-
-		lowBridge = new TensionBridge("low-tier-wire-bridge") {{
-			requirements(Category.power, with(
-				SWItems.compound, 6,
-				Items.graphite, 3
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 5;
-			}};
-		}};
-		coatedBridge = new TensionBridge("coated-tier-wire-bridge") {{
-			requirements(Category.power, with(
-				SWItems.chalk, 6,
-				Items.graphite, 3
-			));
-			tensionConfig = new TensionConfig() {{
-				staticTension = 5;
-				tier = 1;
-			}};
-		}};
-
-		wireJunction = new TensionJunction("wire-junction") {{
-			requirements(Category.power, with(
-				SWItems.compound, 3,
-				Items.silicon, 3
-			));
 		}};
 		//endregion
 	}
