@@ -1,9 +1,16 @@
 package sw.content;
 
+import mindustry.content.*;
+import sw.content.blocks.*;
+
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
-import static sw.content.SWLiquids.*;
+import static sw.content.SWSectorPresets.*;
+import static sw.content.blocks.SWDefense.*;
+import static sw.content.blocks.SWDistribution.*;
+import static sw.content.blocks.SWProduction.*;
+import static sw.content.blocks.SWTurrets.*;
 
 public class SWTechTree {
   public static TechNode root;
@@ -12,11 +19,52 @@ public class SWTechTree {
     root = nodeRoot("Steam Works", coreScaffold, () -> {
       // region items
       nodeProduce(nickel, () -> {
-        nodeProduce(steam, () -> nodeProduce(fungi, () -> {}));
-        nodeProduce(compound, () -> nodeProduce(bismuth, () -> nodeProduce(graphene, () -> {})));
-        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(scorch, () -> {})));
+        nodeProduce(iron, () -> {
+          nodeProduce(Items.silicon, () -> {});
+        });
       });
       // endregion
+      // region defense
+      node(nickelWall, () -> {
+        node(nickelWallLarge);
+        node(ironWall, () -> {
+          node(ironWallLarge);
+        });
+
+        node(flow, () -> {
+          node(trail);
+          node(vniz, () -> {
+            node(rozpad);
+          });
+        });
+      });
+      // endregion
+      // region production
+      node(mechanicalBore, () -> {
+        node(mechanicalCrusher);
+        node(hydraulicDrill);
+      });
+      // endregion
+      // region transportation
+      node(resistantConveyor, () -> {
+        node(mechanicalDistributor, () -> {
+          node(mechanicalTunnel);
+          node(mechanicalGate);
+          node(mechanicalUnloader);
+        });
+        node(resistantConveyor);
+        node(mechanicalConduit, () -> {
+          node(mechanicalConduitJunction);
+          node(mechanicalConduitRouter);
+        });
+      });
+      // endregion
+      // region crafting
+      node(SWCrafting.siliconBoiler);
+      // endregion
+	    // region sectors
+	    node(intro, () -> {});
+	    // endreigon
     });
     SWPlanets.wendi.techTree = root;
   }

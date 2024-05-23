@@ -2,6 +2,7 @@ package sw.ui;
 
 import arc.*;
 import arc.func.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ui.fragments.HintsFragment.*;
@@ -11,11 +12,11 @@ import sw.content.blocks.*;
 public enum EventHints implements Hint {
 	tension(
 		() -> true,
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWDistribution.lowWire).size > 0
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWPower.lowWire).size > 0
 	),
 	coatedTension(
 		() -> true,
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWDistribution.coatedWire).size > 0,
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWPower.coatedWire).size > 0,
 		tension
 	),
 	rebuilder(
@@ -34,6 +35,10 @@ public enum EventHints implements Hint {
 
 	static final String prefix = "sw-";
 
+	public static void initHints() {
+		Vars.ui.hints.hints.add(Seq.with(values()).removeAll(hint -> Core.settings.getBool(prefix + hint.name() + "-hint-done", false)));
+	}
+
 	EventHints(Boolp complete) {
 		this.complete = complete;
 	}
@@ -47,7 +52,7 @@ public enum EventHints implements Hint {
 	}
 
 	@Override public boolean complete() {
-		return complete.get() && Core.settings.getBool(prefix + name() + "-hint-done", false);
+		return complete.get();
 	}
 
 	@Override
