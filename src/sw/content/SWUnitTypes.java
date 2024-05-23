@@ -21,13 +21,9 @@ public class SWUnitTypes {
   @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType protMask, mesoShield, paleoShield, cenoShield;
   @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType prot, meso, paleo, ceno;
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
-	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
+  @EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
-  public static UnitType
-		focus, precision, target,
-
-    sentry, tower, castle,
-		existence, remembered, presence;
+  public static UnitType focus, precision, target, sentry, tower, castle,existence, remembered, presence;
 
   public static void load() {
 

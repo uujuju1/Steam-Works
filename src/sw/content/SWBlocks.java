@@ -44,6 +44,7 @@ public class SWBlocks {
 		SWDistribution.load();
 		SWCrafting.load();
 		SWPower.load();
+		SWUnitTypes.load();
 
 		// region crafting
 
