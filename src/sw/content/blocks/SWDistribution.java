@@ -73,6 +73,7 @@ public class SWDistribution {
 			solid = false;
 			underBullets = true;
 			regionRotated1 = 1;
+			allowCoreUnload = true;
 		}};
 
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
