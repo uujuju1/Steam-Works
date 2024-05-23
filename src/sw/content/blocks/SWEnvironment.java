@@ -145,8 +145,6 @@ public class SWEnvironment {
 		}};
 		marbleSpike = new Prop("marble-spike") {{
 			cacheLayer = CacheLayer.normal;
-			destructible = true;
-			solid = false;
 			variants = 4;
 		}};
 		marble = new Floor("marble", 4) {{
