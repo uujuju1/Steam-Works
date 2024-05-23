@@ -217,7 +217,7 @@ public class SWBlocks {
 			size = 3;
 			health = 200;
 			plans.add(
-				new UnitPlan(SWUnitTypes.focus, 60 * Time.toSeconds, with(Items.silicon, 15, SWItems.nickel, 10)),
+				//new UnitPlan(SWUnitTypes.focus, 60 * Time.toSeconds, with(Items.silicon, 15, SWItems.nickel, 10)),
 				new UnitPlan(SWUnitTypes.fly, 40 * Time.toSeconds, with(Items.silicon, 15, SWItems.iron, 10)),
 				new UnitPlan(SWUnitTypes.sentry, 80 * Time.toSeconds, with(Items.silicon, 25, SWItems.denseAlloy, 10)),
 				new UnitPlan(SWUnitTypes.recluse, 80 * Time.toSeconds, with(Items.silicon, 15, SWItems.compound, 20))
@@ -237,8 +237,8 @@ public class SWBlocks {
 			health = 320;
 			constructTime = 10 * 60f;
 			upgrades.addAll(
-				new UnitType[]{SWUnitTypes.focus, SWUnitTypes.precision},
-				new UnitType[]{SWUnitTypes.precision, SWUnitTypes.target},
+				//new UnitType[]{SWUnitTypes.focus, SWUnitTypes.precision},
+				//new UnitType[]{SWUnitTypes.precision, SWUnitTypes.target},
 				new UnitType[]{SWUnitTypes.fly, SWUnitTypes.spin},
 				new UnitType[]{SWUnitTypes.spin, SWUnitTypes.gyro},
 				new UnitType[]{SWUnitTypes.sentry, SWUnitTypes.tower},

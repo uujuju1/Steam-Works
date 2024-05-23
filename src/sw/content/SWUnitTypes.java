@@ -18,12 +18,15 @@ import sw.type.*;
 
 public class SWUnitTypes {
   @EntityDef({Revealc.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
+  @EntityDef({Tankc.class, Unitc.class}) public static UnitType sentry, tower, castle;
   @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType protMask, mesoShield, paleoShield, cenoShield;
+  @EntityDef({Legsc.class, Unitc.class}) public static UnitType existence, remembered, presence;
   @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType prot, meso, paleo, ceno;
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
+  //@EntityDef({Unitc.class}) public static UnitType focus, precision, target;
   @EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
-  public static UnitType focus, precision, target, sentry, tower, castle,existence, remembered, presence;
+  public static UnitType focus, precision, target;
 
   public static void load() {
 
