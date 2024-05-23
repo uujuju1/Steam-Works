@@ -42,21 +42,21 @@ public class SWTables {
         }).height(144f);
       }).margin(20f).row();
 			menu.table(heat -> {
-				heat.add("heat" + ": ");
+				heat.add("sw-heat" + ": ");
 				heat.field("" + con.heatValue, floatsOnly, s -> {
 					con.heatValue = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(staticTension -> {
-				staticTension.add("static-tension" + ": ");
+				staticTension.add("sw-static-tension" + ": ");
 				staticTension.field("" + con.sTension, floatsOnly, s -> {
 					con.sTension = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(mobileTension -> {
-				mobileTension.add("mobile-tension" + ": ");
+				mobileTension.add("sw-mobile-tension" + ": ");
 				mobileTension.field("" + con.mTension, floatsOnly, s -> {
 					con.mTension = Strings.parseFloat(s, 0);
 					run.run();
