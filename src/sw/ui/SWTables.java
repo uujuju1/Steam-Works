@@ -35,28 +35,28 @@ public class SWTables {
 						Button button = liquids.button(new TextureRegionDrawable(Vars.content.liquids().get(i).uiIcon), style, () -> {
 							con.liquidBits.flip(id);
 							run.run();
-						}).size(36).margin(2).grow().tooltip(Vars.content.items().get(i).localizedName).get();
+						}).size(36).margin(2).grow().tooltip(Vars.content.liquids().get(i).localizedName).get();
 						button.setChecked(con.liquidBits.get(i));
 						if ((i + 1) % 4 == 0) liquids.row();
 					}
         }).height(144f);
       }).margin(20f).row();
 			menu.table(heat -> {
-				heat.add("Heat: ");
+				heat.add(Core.bundle.get("heat") + ": ");
 				heat.field("" + con.heatValue, floatsOnly, s -> {
 					con.heatValue = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(staticTension -> {
-				staticTension.add("Static Tension: ");
+				staticTension.add(Core.bundle.get("static-tension") + ": ");
 				staticTension.field("" + con.sTension, floatsOnly, s -> {
 					con.sTension = Strings.parseFloat(s, 0);
 					run.run();
 				}).growX();
       }).growX().row();
 			menu.table(mobileTension -> {
-				mobileTension.add("Mobile Tension: ");
+				mobileTension.add(Core.bundle.get("mobile-tension") + ": ");
 				mobileTension.field("" + con.mTension, floatsOnly, s -> {
 					con.mTension = Strings.parseFloat(s, 0);
 					run.run();

@@ -26,8 +26,6 @@ public class SWBlocks {
 		rebuilder,
 		pressModule, smelterModule, arcSmelterModule, impactPressModule, mixerModule, crystalizerModule,
 
-		powerWire,
-		burner,
 
     subFactory,
 		constructor,
