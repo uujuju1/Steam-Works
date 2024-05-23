@@ -17,7 +17,7 @@ import sw.util.*;
 public class Filler extends Block {
 	public Seq<Block[]> entries = new Seq<>();
 	public TextureRegion topRegion, armRegion;
-	public float armSpeed = 0.014f;
+	public float armSpeed = 0.14f;
 	public float constructTime = 150f;
 	public int targetArea = 8;
 
@@ -85,6 +85,12 @@ public class Filler extends Block {
 
 		@Override
 		public void updateTile() {
+			if (targetX == 0 && targetY == 0) {
+				targetX = x;
+				targetY = y;
+			}
+			
+			
 			Seq<Tile> targets = targets();
 			Tile target = null;
 			if (!targets.isEmpty()) {
@@ -104,7 +110,7 @@ public class Filler extends Block {
 				}
 			}
 			
-            // Log.info("Target Coordinates: (@, @)", targetX, targetY);
+            Log.info("Target Coordinates: (@, @)", targetX, targetY);
 		}
 
 		@Override
