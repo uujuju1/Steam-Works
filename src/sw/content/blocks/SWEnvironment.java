@@ -143,9 +143,10 @@ public class SWEnvironment {
 		marbleBoulder = new Prop("marble-boulder") {{
 			variants = 2;
 		}};
-		marbleSpike = new TallBlock("marble-spike") {{
+		marbleSpike = new Prop("marble-spike") {{
 			cacheLayer = CacheLayer.normal;
 			destructible = true;
+			solid = true;
 			variants = 4;
 		}};
 		marble = new Floor("marble", 4) {{
