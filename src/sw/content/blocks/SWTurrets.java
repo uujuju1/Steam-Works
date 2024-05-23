@@ -306,11 +306,16 @@ public class SWTurrets {
 			}};
 		}};
 		sonar = new SWConsumeTurret("sonar") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.nickel, 100,
+				SWItems.iron, 125,
+				Items.graphite, 80
+			));
 			size = 2;
-			scaledHealth = 220;
+			scaledHealth = 220f;
 			reload = 90f;
 			range = 160f;
+			rotateSpeed = 2f;
 
 			drawer = new DrawTurret() {{
 				parts.add(
@@ -326,6 +331,8 @@ public class SWTurrets {
 					}}
 				);
 			}};
+			
+			consume(new ConsumeTension(10, 20));
 
 			shootY = 0f;
 			shootSound = ModSounds.sonarShoot;
