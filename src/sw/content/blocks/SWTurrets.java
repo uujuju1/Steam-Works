@@ -307,9 +307,9 @@ public class SWTurrets {
 		}};
 		sonar = new SWConsumeTurret("sonar") {{
 			requirements(Category.turret, with(
-				SWItems.nickel, 100,
-				SWItems.iron, 125,
-				Items.graphite, 80
+				SWItems.compound, 25,
+				Items.silicon, 50,
+				Items.graphite, 50
 			));
 			size = 2;
 			scaledHealth = 220f;
