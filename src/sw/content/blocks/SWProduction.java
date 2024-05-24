@@ -81,7 +81,7 @@ public class SWProduction {
 		}};
 
 		liquidCollector = new Pump("liquid-collector") {{
-			requirements(Category.production, with(
+			requirements(Category.liquid, with(
 				SWItems.iron, 20,
 				Items.silicon, 10
 			));

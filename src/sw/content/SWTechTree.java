@@ -53,10 +53,12 @@ public class SWTechTree {
           node(mechanicalUnloader);
         });
         node(suspensionConveyor);
-        node(mechanicalConduit, () -> {
-          node(mechanicalConduitJunction);
-          node(mechanicalConduitRouter);
-        });
+		node(liquidCollector, () -> {
+          node(mechanicalConduit, () -> {
+            node(mechanicalConduitJunction);
+            node(mechanicalConduitRouter);
+          });
+		});
       });
       // endregion
       // region crafting
