@@ -27,7 +27,7 @@ public class SWTechTree {
 			nodeProduce(Items.silicon, () -> {
                 nodeProduce(compound, () -> {
 					nodeProduce(chalk, () -> {});
-					nodeProduce(dense-alloy, () -> {
+					nodeProduce(denseAlloy, () -> {
 						nodeProduce(thermite, () -> {});
 					});
 				});
