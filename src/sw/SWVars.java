@@ -9,6 +9,7 @@ import mindustry.ui.fragments.*;
 import mindustry.game.Team;
 import mindustry.type.Planet;
 import mindustry.world.meta.Stat;
+import mindustry.content.TechTree;
 import sw.audio.*;
 import sw.content.*;
 import sw.graphics.*;
@@ -51,6 +52,8 @@ public class SWVars implements Loadable {
 	}
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
+		TechTree.TechNode root = SWTechTree.root;
+		resetTechTree(root);
 		Vars.content.each(content -> {
 			if (content instanceof UnlockableContent c && content.minfo.mod != null) {
 				if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
@@ -78,6 +81,11 @@ public class SWVars implements Loadable {
             }
         }
     }
+	
+	private static void resetTechTree(TechTree.TechNode node) {
+    node.reset();
+    node.children.forEach(SWVars::resetTechTree);
+	}
 	
 	/**cheating privileges*/
 	public static void unlockModContent() {
