@@ -79,7 +79,7 @@ public class SWDistribution {
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
 			requirements(Category.units, with(
 				Items.silicon, 10,
-				Items.titanium, 10,
+				Items.graphite, 10,
 				SWItems.nickel, 10
 			));
 			canOverdrive = false;
@@ -87,7 +87,7 @@ public class SWDistribution {
 		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
 			requirements(Category.units, with(
 				Items.silicon, 10,
-				Items.titanium, 10,
+				Items.graphite, 10,
 				SWItems.nickel, 10
 			));
 			canOverdrive = false;
