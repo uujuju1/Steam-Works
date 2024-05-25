@@ -91,5 +91,35 @@ public class MechanicalConveyor extends Conveyor {
 				Draw.rect(item.fullIcon, ix, iy, itemSize, itemSize);
 			}
 		}
-	}
+        @Override
+        public void damage(float damage) {
+            if (!armored || damage >= this.health) {
+                super.damage(damage);
+            }
+        }
+
+        @Override
+        public void damagePierce(float damage) {
+            if (!armored || damage >= this.health) {
+                super.damagePierce(damage);
+            }
+        }
+
+        @Override
+        public void damageContinuous(float damage) {
+            if (!armored || damage >= this.health) {
+                super.damageContinuous(damage);
+            }
+        }
+
+        @Override
+        public boolean collision(Bullet bullet) {
+            if (!armored || bullet.damage() >= this.health) {
+                return super.collision(bullet);
+            } else {
+                bullet.remove();
+                return true;
+            }
+        }
+    }
 }
