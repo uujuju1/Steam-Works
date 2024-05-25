@@ -118,6 +118,9 @@ public class SWTechTree {
 	  // endregion
 	  // region Units
 	  node(SWBlocks.constructor, () -> {
+		  node(mechanicalPayloadConveyor, () -> {
+			  node(mechanicalPayloadRouter);
+		  });
 		  node(SWBlocks.upgrader);
 	  });
 	  //endregion
