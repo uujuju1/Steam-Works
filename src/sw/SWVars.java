@@ -6,6 +6,9 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.ui.fragments.*;
+import mindustry.game.Team;
+import mindustry.type.Planet;
+import mindustry.world.meta.Stat;
 import sw.audio.*;
 import sw.content.*;
 import sw.graphics.*;
@@ -53,7 +56,29 @@ public class SWVars implements Loadable {
 				if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
 			}
 		});
-	}
+		
+        /** code to erase progress on planet */
+        Planet wendi = SWPlanets.wendi;
+        if (wendi != null) {
+            resetPlanet(wendi);
+        }
+    }
+
+    private static void resetPlanet(Planet planet) {
+        for (var sector : planet.sectors) {
+            if (sector.save != null) {
+                sector.save.delete();
+                sector.save = null;
+            }
+        }
+
+        for (var slot : Vars.control.saves.getSaveSlots().copy()) {
+            if (slot.isSector() && slot.getSector().planet == planet) {
+                slot.delete();
+            }
+        }
+    }
+	
 	/**cheating privileges*/
 	public static void unlockModContent() {
 		Vars.content.each(content -> {
