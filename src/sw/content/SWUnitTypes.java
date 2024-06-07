@@ -15,12 +15,15 @@ import mindustry.type.*;
 import sw.ai.*;
 import sw.gen.*;
 import sw.type.*;
+import sw.type.units.*;
 
 public class SWUnitTypes {
   @EntityDef({Revealc.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
-  @EntityDef({TetherUnitc.class, Unitc.class}) public static UnitType protMask, mesoShield, paleoShield, cenoShield;
-  @EntityDef({Shieldedc.class, Legsc.class, Unitc.class}) public static UnitType prot, meso, paleo, ceno;
+
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
+
+	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea;
+
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
   public static UnitType
@@ -30,7 +33,6 @@ public class SWUnitTypes {
 		existence, remembered, presence;
 
   public static void load() {
-
     //region specialist
     recluse = new SWUnitType("recluse") {{
       speed = 1;
@@ -483,61 +485,6 @@ public class SWUnitTypes {
         }}
       );
     }};
-    protMask = new SWUnitType("prot-mask") {{
-      health = 2300;
-      speed = 2f;
-      rotateSpeed = 3f;
-      range = maxRange = 0f;
-
-      engineOffset = 2f;
-
-      flying = lowAltitude = hidden = true;
-      playerControllable = targetable = false;
-
-      controller = u -> new ShieldAI();
-      constructor = UnitTetherUnit::create;
-    }};
-    prot = new SWUnitType("prot") {{
-      health = 2300;
-      hitSize = 16f;
-      speed = 1f;
-      rotateSpeed = 1f;
-      range = maxRange = 160f;
-
-      shieldSeparateRadius = 24f;
-      shieldStartAng = -54f;
-      shieldEndAng = 288f;
-      shieldShootingStartAng = 40f;
-      shieldShootingEndAng = 100f;
-
-      shieldUnit = protMask;
-
-      legCount = 6;
-      legGroupSize = 3;
-      legLength = 30f;
-      legBaseOffset = 10f;
-			legExtension = 15f;
-
-      constructor = UnitLegsShielded::create;
-
-      weapons.add(new Weapon("sw-prot-weapon") {{
-				x = 12.75f;
-				y = 0;
-				shootY = 11f;
-				reload = 60f;
-				recoil = 2f;
-
-				top = false;
-
-				shootSound = Sounds.artillery;
-
-				bullet = new LaserBulletType(250) {{
-					length = 160f;
-					shootEffect = Fx.shockwave;
-					colors = new Color[]{Color.valueOf("ec7458aa"), Color.valueOf("ff9c5a"), Color.white};
-				}};
-			}});
-    }};
     //endregion
 	  //region copter
     fly = new SWUnitType("fly") {{
@@ -708,283 +655,53 @@ public class SWUnitTypes {
       );
     }};
 		//endregion
-	  //region shields
-	  mesoShield = new SWUnitType("meso-shield") {{
-		  health = 100;
-		  speed = 2f;
-		  rotateSpeed = 3f;
-		  range = maxRange = 0f;
-			lightRadius = 0;
-			lightColor = engineColor = Pal.heal;
-
-		  engineOffset = 2f;
-
-		  flying = lowAltitude = hidden = true;
-		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
-
-		  controller = u -> new ShieldAI();
-		  constructor = UnitTetherUnit::create;
-	  }};
-	  paleoShield = new SWUnitType("paleo-shield") {{
-		  health = 100;
-		  speed = 2f;
-		  rotateSpeed = 3f;
-		  range = maxRange = 0f;
-		  engineSize = 3.5f;
-		  engineOffset = 4f;
-		  lightRadius = 0;
-		  lightColor = engineColor = Pal.heal;
-
-		  flying = lowAltitude = hidden = true;
-		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
-
-		  controller = u -> new ShieldAI();
-		  constructor = UnitTetherUnit::create;
-	  }};
-	  cenoShield = new SWUnitType("ceno-shield") {{
-		  health = 100;
-		  speed = 2f;
-		  rotateSpeed = 3f;
-		  range = maxRange = 0f;
-		  engineSize = 4f;
-		  engineOffset = 0f;
-		  lightRadius = 0;
-		  lightColor = engineColor = Pal.heal;
-
-		  flying = lowAltitude = hidden = true;
-		  playerControllable = drawCell = targetable = isEnemy = useUnitCap = false;
-
-		  controller = u -> new ShieldAI();
-		  constructor = UnitTetherUnit::create;
-	  }};
-
-	  meso = new SWUnitType("meso") {{
-		  health = 200f;
-		  speed = 0.7f;
-		  rotateSpeed = 2f;
-		  range = maxRange = 80f;
-		  lightOpacity = 0.3f;
-		  lightRadius = 40;
-		  lightColor = Pal.heal;
+	  //region grasshopper
+	  cinerea = new GrassHopperUnitType("cinerea") {{
 		  outlines = false;
 
-		  shields = 5;
+			health = 250f;
+			drag = 0.1f;
+			speed = 0.55f;
+			range = maxRange = 80f;
 
-		  shieldUnit = mesoShield;
-		  shieldSeparateRadius = 16f;
-		  shieldStartAng = -144;
-		  shieldEndAng = 144;
+			engineSize = engineOffset = 0f;
 
-		  legBaseOffset = 2f;
-		  legCount = 6;
-		  legExtension = 3f;
-		  legGroupSize = 3;
-		  legLength = 8f;
-		  lockLegBase = true;
 		  legContinuousMove = true;
-
-		  constructor = UnitLegsShielded::create;
-
-		  parts.add(new RegionPart("-cannon") {{
-			  moveY = -0.5f;
-			  heatColor = Pal.heal;
-			  progress = PartProgress.recoil;
-		  }});
-
-		  weapons.add(new Weapon() {{
-			  x = y = 0f;
-			  reload = 60f;
-			  recoilTime = 10f;
-			  mirror = false;
-			  shootSound = Sounds.lasershoot;
-
-			  shoot = new ShootAlternate() {{
-				  shots = 2;
-			  }};
-
-			  bullet = new BasicBulletType(2f, 9) {{
-				  lifetime = 40;
-				  trailLength = 10;
-				  trailWidth = 1f;
-				  frontColor = Color.white;
-				  backColor = trailColor = lightColor = Pal.heal;
-				  hitEffect = despawnEffect = Fx.hitLaser;
-			  }};
-		  }});
-	  }};
-	  paleo = new SWUnitType("paleo") {{
-		  health = 600f;
-		  hitSize = 8f;
-		  speed = 0.6f;
-		  rotateSpeed = 2f;
-		  range = maxRange = 120f;
-		  lightOpacity = 0.3f;
-		  lightRadius = 60;
-		  lightColor = Pal.heal;
-		  outlineLayerOffset = -0.002f;
-		  outlines = false;
-
-		  shields = 3;
-
-		  shieldUnit = paleoShield;
-		  shieldSeparateRadius = 16f;
-		  shieldStartAng = -120;
-		  shieldEndAng = 120;
-
 		  legBaseOffset = 2f;
-		  legCount = 4;
-		  legExtension = 4;
-		  legGroupSize = 2;
-		  legLength = 16f;
-		  legStraightness = 0.3f;
-		  legContinuousMove = true;
-		  lockLegBase = true;
+			legCount = 4;
+		  legExtension = 4f;
+			legGroupSize = 2;
+		  legLength = 6f;
+			legStraightness = 0.25f;
 
-		  constructor = UnitLegsShielded::create;
+			wings.add(new GrassHopperWing("-wing", 3f, -0.5f) {{
+				moveRotation = 15f;
+				mag = 15f;
+				scl = 2f;
+				shineScl = 4f;
+				shineMag = 15f;
 
-		  parts.add(
-			  new RegionPart("-cannon-back") {{
-				  x = -4.5f;
-				  y = -4.25f;
-				  moveX = moveY = 1f;
-				  layerOffset = -0.001f;
-				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv());
-				  mirror = under = true;
-			  }},
-			  new RegionPart("-cannon-top") {{
-				  x = -3.5f;
-				  y = 4.5f;
-				  moveX = 2f;
-				  moveY = 0.5f;
-				  layerOffset = -0.001f;
-				  progress = PartProgress.warmup.mul(PartProgress.recoil.inv().curve(Interp.circleIn));
-				  mirror = under = true;
-			  }}
-		  );
+				blurs = 3;
+				blurOffset = 8f;
+			}});
 
-		  weapons.add(new Weapon() {{
-			  x = y = 0;
-			  reload = 40;
-			  recoilTime = 10;
-			  minWarmup = 0.9f;
-			  shootY = 8f;
-			  mirror = false;
-			  shootSound = Sounds.release;
+			weapons.add(new Weapon("sw-cinerea-mouth") {{
+				mirror = false;
+				x = 0f;
+				y = 5f;
+				layerOffset = -0.001f;
+				reload = 30f;
+				inaccuracy = 15f;
+				shootSound = Sounds.spark;
 
-			  shoot = new ShootHelix() {{
-				  shots = 2;
-			  }};
+				bullet = new BasicBulletType(0.2f, 10) {{
+					keepVelocity = false;
 
-			  bullet = new BasicBulletType(4f, 15) {{
-				  lifetime = 30;
-				  width = 8f;
-				  height = 10f;
-				  trailLength = 10;
-				  trailWidth = 1f;
-				  frontColor = Color.white;
-				  backColor = trailColor = lightColor = Pal.heal;
-				  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
-				  shootEffect = Fx.none;
-			  }};
-		  }});
-	  }};
-	  ceno = new SWUnitType("ceno") {{
-		  health = 1200f;
-		  hitSize = 10f;
-		  speed = 0.5f;
-		  rotateSpeed = 2f;
-		  range = maxRange = 200f;
-		  lightOpacity = 0.3f;
-		  lightRadius = 80;
-		  lightColor = Pal.heal;
-		  outlineLayerOffset = -0.002f;
-		  outlines = false;
-
-		  shields = 3;
-
-		  shieldUnit = cenoShield;
-		  shieldSeparateRadius = 26f;
-		  shieldStartAng = -120;
-		  shieldEndAng = 120;
-
-		  legBaseOffset = 2f;
-		  legCount = 8;
-		  legExtension = 4;
-		  legGroupSize = 4;
-		  legLength = 16f;
-		  legStraightness = 0.2f;
-		  legContinuousMove = true;
-		  lockLegBase = true;
-
-		  constructor = UnitLegsShielded::create;
-
-		  parts.add(
-			  new RegionPart("-big-cannon") {{
-				  y = 3.5f;
-					moveY = -2f;
-				  layerOffset = -0.001f;
-					progress = PartProgress.recoil;
-				  under = true;
-			  }},
-			  new RegionPart("-side-cannon") {{
-				  x = -4.75f;
-				  y = 2.75f;
-				  moveX = 3.25f;
-				  moveY = 2.5f;
-				  layerOffset = -0.001f;
-					moves.add(new PartMove(PartProgress.reload, -1.5f, -1, 0, 0, 0));
-				  mirror = under = true;
-			  }}
-		  );
-
-		  weapons.add(
-			  new Weapon() {{
-				  x = y = 0;
-				  reload = 80;
-				  minWarmup = 0.9f;
-				  shootY = 8f;
-				  mirror = false;
-				  shootSound = Sounds.release;
-
-					shoot = new ShootPattern() {{
-						shots = 2;
-						shotDelay = 40;
-					}};
-
-				  bullet = new LaserBulletType(50) {{
-					  width = 16f;
-					  length = 180f;
-						colors = new Color[]{Pal.heal, Color.white};
-					  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
-					  shootEffect = Fx.none;
-				  }};
-			  }},
-			  new Weapon() {{
-				  x = y = 0;
-				  reload = 90;
-				  recoilTime = 10;
-				  minWarmup = 0.9f;
-				  shootY = 0f;
-				  mirror = false;
-				  shootSound = Sounds.plasmaboom;
-
-					shoot = new ShootAlternate(12) {{
-						shots = 2;
-					}};
-
-				  bullet = new BasicBulletType(2f, 15) {{
-					  lifetime = 100;
-					  width = 8f;
-					  height = 10f;
-					  trailLength = 10;
-					  trailWidth = 1f;
-					  frontColor = Color.white;
-					  backColor = trailColor = lightColor = Pal.heal;
-					  hitEffect = despawnEffect = smokeEffect = Fx.hitLaser;
-					  shootEffect = Fx.none;
-				  }};
-			  }}
-		  );
+					drag = -0.05f;
+					homingPower = 1f;
+					homingRange = 40f;
+				}};
+			}});
 	  }};
 	  //endregion
 

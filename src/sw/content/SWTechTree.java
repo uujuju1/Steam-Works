@@ -1,12 +1,12 @@
 package sw.content;
 
 import mindustry.content.*;
-import sw.content.blocks.*;
 
 import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWSectorPresets.*;
+import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWProduction.*;
@@ -60,11 +60,11 @@ public class SWTechTree {
       });
       // endregion
       // region crafting
-      node(SWCrafting.siliconBoiler);
+      node(siliconBoiler);
       // endregion
 	    // region sectors
 	    node(intro, () -> {});
-	    // endreigon
+	    // endregion
     });
     SWPlanets.wendi.techTree = root;
   }
