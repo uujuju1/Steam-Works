@@ -5,15 +5,11 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.entities.part.*;
-import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import sw.gen.*;
-import sw.world.meta.*;
 
 public class SWUnitType extends UnitType {
   // Submarine stuff
@@ -25,19 +21,6 @@ public class SWUnitType extends UnitType {
 	public float revealedAt = 0.2f;
   public float hiddenAlpha = 0.1f;
   public boolean canHide = true;
-
-  // region shield unit stuff
-  public UnitType shieldUnit;
-  public DrawPart.PartProgress shieldProgress = DrawPart.PartProgress.warmup;
-  public int shields = 5;
-
-  public float shieldConstructTime = 120f;
-  public float shieldSeparateRadius = -1f;
-
-  public float shieldStartAng = 0f;
-  public float shieldEndAng = 180f;
-  public float shieldShootingStartAng = -90f;
-  public float shieldShootingEndAng = 90f;
   // endregion
 
   // region rotor unit stuff
@@ -68,7 +51,6 @@ public class SWUnitType extends UnitType {
   @Override
   public void draw(Unit unit) {
     super.draw(unit);
-    if (unit instanceof Shieldedc u) drawShields(u);
     if (unit instanceof Copterc u) drawRotors(u);
   }
 
@@ -92,31 +74,6 @@ public class SWUnitType extends UnitType {
     Draw.z(z);
   }
 
-  public void drawShields(Shieldedc u) {
-    Draw.draw(Draw.z(), () -> {
-      if (u.mounts().length > 0) {
-        WeaponMount first = u.mounts()[0];
-        DrawPart.params.set(first.warmup, first.reload / weapons.first().reload, first.smoothReload, first.heat, first.recoil, first.charge, u.x(), u.y(), u.rotation());
-      } else {
-        DrawPart.params.set(0, 0, 0, 0, 0, 0, u.x(), u.y(), u.rotation());
-      }
-      for(int i = 0; i < shields; i++) {
-        float place = i/Math.max(1f, shields - 1f);
-        float ang = Mathf.lerp(
-          u.rotation() + Mathf.lerp(shieldStartAng, shieldEndAng, place),
-          u.rotation() + Mathf.lerp(shieldShootingStartAng, shieldShootingEndAng, place),
-          shieldProgress.get(DrawPart.params)
-        );
-        Tmp.v1.trns(ang, shieldSeparateRadius).add(u);
-        try {
-          if (u.units().get(i).dead()) Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress(), 1f, u.progress() * shieldConstructTime);
-        } catch (IndexOutOfBoundsException e) {
-          Drawf.construct(Tmp.v1.x, Tmp.v1.y, shieldUnit.fullIcon, Tmp.v1.angleTo(u) + 90, u.progress(), 1f, u.progress() * shieldConstructTime);
-        }
-      }
-    });
-  }
-
   public void drawRotors(Copterc unit) {
     if (drawRotors) rotors.each(rotor -> rotor.draw(unit));
   }
@@ -126,41 +83,9 @@ public class SWUnitType extends UnitType {
   }
 
   @Override
-  public void init() {
-    super.init();
-    if (shieldSeparateRadius == -1) shieldSeparateRadius = hitSize;
-  }
-
-  @Override
   public void load() {
     super.load();
     rotors.each(rotor -> rotor.load(this));
-  }
-
-  @Override
-  public void setStats() {
-    super.setStats();
-    if (shieldUnit != null) {
-      stats.add(SWStat.shield, table -> {
-        table.row();
-        table.table(Styles.grayPanel, t -> {
-          if(shieldUnit.isBanned()){
-            t.image(Icon.cancel).color(Pal.remove).size(40);
-            return;
-          }
-
-          if(shieldUnit.unlockedNow()){
-            t.image(shieldUnit.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit);
-            t.table(info -> {
-              info.add(shieldUnit.localizedName).left();
-            }).left();
-          }else{
-            t.image(Icon.lock).color(Pal.darkerGray).size(40);
-          }
-        }).growX().pad(5);
-        table.row();
-      });
-    }
   }
 
   @Override

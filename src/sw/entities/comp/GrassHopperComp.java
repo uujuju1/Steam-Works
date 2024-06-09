@@ -206,7 +206,7 @@ abstract class GrassHopperComp implements Unitc {
 			} else {
 				Tmp.v1.trns(legAngle(i), legLength/2f).add(legOffset(Tmp.v2, i)).add(x, y);
 				l.joint.lerpDelta(Tmp.v1, 0.6f);
-				l.base.lerpDelta(Tmp.v3, 0.6f);
+				l.base.lerpDelta(Tmp.v1, 0.6f);
 			}
 		}
 	}

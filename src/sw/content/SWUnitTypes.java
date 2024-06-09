@@ -22,7 +22,7 @@ public class SWUnitTypes {
 
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
 
-	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea;
+	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea, robinia;
 
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
@@ -703,6 +703,78 @@ public class SWUnitTypes {
 				}};
 			}});
 	  }};
+		robinia = new GrassHopperUnitType("robinia") {{
+			outlines = false;
+
+			health = 600;
+			drag = 0.1f;
+			speed = 0.55f;
+			range = maxRange = 144f;
+
+			engineSize = engineOffset = 0f;
+
+			legContinuousMove = true;
+			legCount = 4;
+			legBaseOffset = 4f;
+			legExtension = 4f;
+			legGroupSize = 2;
+			legLength = 16f;
+			legMaxLength = 1.75f;
+			legStraightness = 0.25f;
+
+			parts.add(new RegionPart("-salvo") {{
+				mirror = true;
+				x = 3.75f;
+				moveRot = 45f;
+
+				progress = PartProgress.warmup.add(PartProgress.heat.mul(2f)).clamp();
+			}});
+
+			wings.add(new GrassHopperWing("-wing", 4, 0.25f) {{
+				moveRotation = 45f;
+				scl = 4f;
+				mag = 30f;
+				shineScl = 8f;
+				shineMag = 30f;
+				blurs = 4;
+				blurOffset = 8f;
+			}});
+
+			weapons.add(
+				new Weapon() {{
+					reload = 240f;
+					x = 4f;
+					y = -4f;
+					baseRotation = -45f;
+					shootCone = 90f;
+					minWarmup = 0.9f;
+
+					shoot = new ShootBarrel() {{
+						barrels = new float[]{
+							-2f, 1f, 0f,
+							0f, 1f, 0f,
+							2f, 2f, 0f
+						};
+						shots = 3;
+						shotDelay = 10f;
+					}};
+
+					bullet = new BasicBulletType();
+				}},
+				new Weapon() {{
+					mirror = false;
+
+					x = 0f;
+					y = 6f;
+
+					reload = 120f;
+
+					shootSound = Sounds.shotgun;
+
+					bullet = new BasicBulletType();
+				}}
+			);
+		}};
 	  //endregion
 
     lambda = new UnitType("lambda") {{
