@@ -225,6 +225,15 @@ public class SWFx {
         });
       }
     }),
+    shootShockwaveColor = new Effect(60f, e -> {
+      for(int i = 0; i < 3; i++) {
+        e.scaled(30f + i * 10f, b -> {
+          Draw.mixcol(e.color, Color.black, b.fin());
+          Tmp.v1.trns(e.rotation, 30f * b.finpow() - 60f * b.fin());
+          Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16f + 16f * b.finpow(), 10f * b.fout(), 90f + e.rotation);
+        });
+      }
+    }).followParent(false).rotWithParent(false),
 
     changeEffect = new Effect(30f, e -> {
       if (!(e.data instanceof Block block)) return;

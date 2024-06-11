@@ -665,6 +665,7 @@ public class SWUnitTypes {
 			range = maxRange = 80f;
 
 			engineSize = engineOffset = 0f;
+			boostMultiplier = 2f;
 
 		  legContinuousMove = true;
 		  legBaseOffset = 2f;
@@ -694,12 +695,43 @@ public class SWUnitTypes {
 				inaccuracy = 15f;
 				shootSound = Sounds.spark;
 
-				bullet = new BasicBulletType(0.2f, 10) {{
+				bullet = new BasicBulletType(0.01f, 10) {{
 					keepVelocity = false;
 
-					drag = -0.05f;
-					homingPower = 1f;
-					homingRange = 40f;
+					drag = -0.1f;
+					lifetime = 70f;
+
+					homingRange = 20f;
+					homingPower = 0.2f;
+					homingDelay = 60f;
+
+					splashDamage = 5f;
+					splashDamageRadius = 24f;
+					scaledSplashDamage = false;
+
+					width = 8f;
+					height = 8f;
+					frontColor = trailColor = backColor = Pal.heal;
+
+					trailWidth = 2f;
+					trailLength = 10;
+
+					hitSound = despawnSound = Sounds.lasershoot;
+
+					shootEffect = new WaveEffect() {{
+						lifetime = 30f;
+						sizeFrom = 24f;
+						sizeTo = 0f;
+						strokeFrom = 0f;
+						strokeTo = 2f;
+						colorFrom = Pal.heal.cpy();
+						followParent = false;
+					}};
+					hitEffect = despawnEffect = new WaveEffect() {{
+						sizeTo = 24f;
+						colorFrom = Pal.heal.cpy();
+						followParent = false;
+					}};
 				}};
 			}});
 	  }};
@@ -712,6 +744,7 @@ public class SWUnitTypes {
 			range = maxRange = 144f;
 
 			engineSize = engineOffset = 0f;
+			boostMultiplier = 2f;
 
 			legContinuousMove = true;
 			legCount = 4;
@@ -759,7 +792,20 @@ public class SWUnitTypes {
 						shotDelay = 10f;
 					}};
 
-					bullet = new BasicBulletType();
+					shootSound = Sounds.missile;
+
+					bullet = new BasicBulletType(2f, 15f, "missile") {{
+						lifetime = 60f;
+						trailInterval = 5f;
+						weaveScale = 10f;
+						weaveMag = 1f;
+						weaveRandom = false;
+						homingPower = 0.05f;
+
+						shootEffect = Fx.shootSmallColor;
+
+						frontColor = backColor = trailColor = Pal.heal;
+					}};
 				}},
 				new Weapon() {{
 					mirror = false;
@@ -769,9 +815,17 @@ public class SWUnitTypes {
 
 					reload = 120f;
 
-					shootSound = Sounds.shotgun;
+					shootSound = Sounds.release;
 
-					bullet = new BasicBulletType();
+					bullet = new ShrapnelBulletType() {{
+						layer = Layer.blockOver;
+						length = 94f;
+						damage = 30f;
+
+						toColor = fromColor = hitColor = Pal.heal;
+
+						shootEffect = SWFx.shootShockwaveColor;
+					}};
 				}}
 			);
 		}};
