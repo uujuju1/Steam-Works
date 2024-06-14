@@ -22,7 +22,7 @@ public class SWUnitTypes {
 
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
 
-	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea, robinia;
+	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea, robinia, gregarea;
 
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
@@ -739,6 +739,7 @@ public class SWUnitTypes {
 			outlines = false;
 
 			health = 600;
+			hitSize = 8f;
 			drag = 0.1f;
 			speed = 0.55f;
 			range = maxRange = 144f;
@@ -828,6 +829,284 @@ public class SWUnitTypes {
 					}};
 				}}
 			);
+		}};
+		gregarea = new GrassHopperUnitType("gregarea") {{
+			outlines = false;
+			outlineLayerOffset = -0.002f;
+
+			health = 1500f;
+			hitSize = 13f;
+			drag = 0.1f;
+			speed = 0.55f;
+			range = maxRange = 160f;
+
+			engineSize = engineOffset = 0f;
+			boostMultiplier = 2f;
+
+			legContinuousMove = true;
+			legCount = 4;
+			legBaseOffset = 4f;
+			legExtension = 4f;
+			legGroupSize = 2;
+			legLength = 16f;
+			legMaxLength = 1.75f;
+			legStraightness = 0.25f;
+
+			parts.add(
+				new RegionPart("-cannon") {{
+					mirror = true;
+
+					progress = DrawPart.PartProgress.warmup;
+					x = 4.75f;
+					y = -9.75f;
+					layerOffset = -0.001f;
+
+					moveX = 0;
+					moveY = 2;
+					moveRot = -45f;
+				}},
+				new RegionPart("-swarmer") {{
+					mirror = true;
+
+					progress = DrawPart.PartProgress.warmup;
+
+					x = 3.75f;
+					y = 7.75f;
+					layerOffset = -0.001f;
+
+					moveX = 1f;
+					moveY = 1f;
+					moveRot = 45f;
+
+				}}
+			);
+
+			weapons.add(
+				// mirrored manualy because it was doing a funni
+				new Weapon() {{
+					mirror = false;
+
+					x = 4.75f;
+					y = -8.75f;
+					baseRotation = -135f;
+					shootCone = 361f;
+					minWarmup = 0.9f;
+
+					reload = 180f;
+
+					shootSound = Sounds.plasmadrop;
+					shoot = new ShootPattern() {{
+						shots = 2;
+						shotDelay = 30f;
+					}};
+
+					bullet = new BasicBulletType(3f, 0, "circle-bullet") {{
+						collides = collidesAir = collidesGround = false;
+
+						lifetime = 60f;
+						drag = 0.05f;
+
+						shrinkY = 0f;
+
+						width = height = 8f;
+						trailWidth = 4f;
+						trailLength = 5;
+
+						hitSound = despawnSound = Sounds.plasmaboom;
+						hitEffect = despawnEffect = new WaveEffect() {{
+							sizeTo = 24f;
+							colorFrom = Pal.heal.cpy();
+							followParent = false;
+						}};
+
+						frontColor = backColor = trailColor =  Pal.heal;
+
+						fragBullets = 3;
+						fragRandomSpread = 0f;
+						fragAngle = 180f;
+						fragSpread = 10f;
+						fragVelocityMax = fragVelocityMin = 1f;
+						fragBullet = new BasicBulletType(2f, 10, "missile") {{
+							frontColor = backColor = trailColor = Pal.heal;
+
+							hitEffect = despawnEffect = new WaveEffect() {{
+								sizeTo = 8f;
+								colorFrom = Pal.heal.cpy();
+								followParent = false;
+							}};
+
+							trailInterval = 10f;
+							trailWidth = 2f;
+							trailLength = 5;
+
+							lifetime = 120;
+
+							homingPower = 0.05f;
+							homingRange = 160f;
+
+							weaveScale = 5f;
+							weaveMag = 5f;
+						}};
+					}};
+				}},
+				new Weapon() {{
+					mirror = false;
+
+					x = -4.75f;
+					y = -8.75f;
+					baseRotation = 135f;
+					shootCone = 361f;
+					minWarmup = 0.9f;
+
+					reload = 180f;
+
+					shootSound = Sounds.plasmadrop;
+					shoot = new ShootPattern() {{
+						shots = 2;
+						shotDelay = 30f;
+					}};
+
+					bullet = new BasicBulletType(3f, 0, "circle-bullet") {{
+						collides = collidesAir = collidesGround = false;
+
+						lifetime = 60f;
+						drag = 0.05f;
+
+						shrinkY = 0f;
+
+						width = height = 8f;
+						trailWidth = 4f;
+						trailLength = 5;
+
+						hitSound = despawnSound = Sounds.plasmaboom;
+
+						hitEffect = despawnEffect = new WaveEffect() {{
+							sizeTo = 24f;
+							colorFrom = Pal.heal.cpy();
+							followParent = false;
+						}};
+
+						frontColor = backColor = trailColor =  Pal.heal;
+
+						fragBullets = 3;
+						fragRandomSpread = 0f;
+						fragAngle = 180f;
+						fragSpread = 10f;
+						fragVelocityMax = fragVelocityMin = 1f;
+						fragBullet = new BasicBulletType(2f, 10, "missile") {{
+							frontColor = backColor = trailColor = hitColor = Pal.heal;
+
+							hitEffect = despawnEffect = new WaveEffect() {{
+								sizeTo = 8f;
+								colorFrom = Pal.heal.cpy();
+								followParent = false;
+							}};
+
+							trailInterval = 10f;
+							trailWidth = 2f;
+							trailLength = 5;
+
+							lifetime = 120;
+
+							homingPower = 0.05f;
+							homingRange = 160f;
+
+							weaveScale = 5f;
+							weaveMag = 5f;
+						}};
+					}};
+				}},
+
+				new Weapon() {
+					// too lazy to make a new class just for this
+					@Override
+					public void flip() {
+						super.flip();
+						bullet = bullet.copy();
+						bullet.weaveMag *= -1;
+					}
+				{
+					x = 4.75f;
+					y = 8.75f;
+					baseRotation = -45f;
+					minWarmup = 0.9f;
+					shootCone = 90f;
+					reload = 90f;
+
+					shootSound = Sounds.shootAlt;
+					shoot = new ShootBarrel() {{
+						shots = 6;
+						shotDelay = 5f;
+						barrels = new float[] {
+							1f, 0f, 0f,
+							1f, 0f, 0f,
+							1f, 0f, 0f,
+							-1f, 0f, 0f,
+							-1f, 0f, 0f,
+							-1f, 0f, 0f
+						};
+					}};
+
+					bullet = new BasicBulletType(3f, 20) {{
+						frontColor = backColor = trailColor = hitColor = Pal.heal;
+
+						shootEffect = SWFx.shootShockwaveColor;
+						hitEffect = despawnEffect = new WaveEffect() {{
+							sizeTo = 8f;
+							colorFrom = Pal.heal.cpy();
+							followParent = false;
+						}};
+
+						width = height = 8f;
+
+						shrinkY = 0f;
+
+						homingPower = 0.05f;
+
+						trailLength = 10;
+						trailWidth = 1f;
+
+						lifetime = 60;
+
+						weaveScale = 100f;
+						weaveMag = 1.5f;
+						weaveRandom = false;
+					}};
+				}},
+				new Weapon() {{
+					mirror = false;
+					continuous = alwaysContinuous = true;
+
+					x = 0f;
+					y = 10f;
+					reload = 60f;
+
+					shootSound = Sounds.smelter;
+					bullet = new ContinuousFlameBulletType(10) {{
+						flareLength = 20f;
+						length = 120f;
+
+						flareColor = hitColor = Pal.heal;
+						colors = new Color[]{
+							Pal.heal.cpy().a(0.5f),
+							Pal.heal.cpy().a(0.6f),
+							Pal.heal.cpy().a(0.7f),
+							Pal.heal.cpy(),
+							Color.white.cpy()
+						};
+					}};
+				}}
+			);
+
+			wings.add(new GrassHopperWing("-wing", 5.25f, 3.75f) {{
+				moveRotation = 70f;
+				scl = 3f;
+				mag = 25f;
+				shineMag = 25f;
+				shineScl = 6f;
+				blurs = 4;
+				blurOffset = Mathf.PI * 5f;
+			}});
 		}};
 	  //endregion
 
