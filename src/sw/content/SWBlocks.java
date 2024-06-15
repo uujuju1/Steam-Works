@@ -11,7 +11,6 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import sw.content.blocks.*;
 import sw.util.*;
-import sw.world.blocks.environment.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.sandbox.*;
 import sw.world.blocks.units.*;
@@ -34,7 +33,6 @@ public class SWBlocks {
 		upgrader,
 
 		coreScaffold,
-		filler,
 
 		allSource;
 
@@ -288,17 +286,6 @@ public class SWBlocks {
 			unitType = SWUnitTypes.lambda;
 			itemCapacity = 5000;
 			unitCapModifier = 12;
-		}};
-		filler = new Filler("filler") {{
-			requirements(Category.effect, with(
-				Items.titanium, 340,
-				Items.silicon, 270,
-				SWItems.compound, 200
-			));
-			size = 3;
-			itemCapacity = 200;
-			consumeItems(with(Items.silicon, 10, Items.sand, 10));
-			consumePower(1f);
 		}};
 		// endregion
 

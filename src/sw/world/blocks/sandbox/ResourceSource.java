@@ -3,6 +3,7 @@ package sw.world.blocks.sandbox;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.io.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.heat.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
@@ -53,9 +54,13 @@ public class ResourceSource extends PowerGenerator {
 		TensionModule tension = new TensionModule();
 
 		@Override public void buildConfiguration(Table table) {
-			SWTables.buildSandboxSelector(table, con, () -> {
+			SWTables.resourceSourceSelector(table.table(Styles.black6).get(), con, () -> {
 				configure(con);
 			});
+		}
+
+		@Override public Config config() {
+			return con;
 		}
 
 		@Override
@@ -67,7 +72,7 @@ public class ResourceSource extends PowerGenerator {
 			return 1;
 		}
 		@Override public float heat(){
-			return con.heatValue;
+			return 1000;
 		}
 
 		@Override
