@@ -1,6 +1,7 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -11,7 +12,7 @@ import sw.content.*;
 import sw.world.blocks.production.*;
 
 import static mindustry.type.ItemStack.*;
-
+//reminder to myself to use portals for the dream sequence in a glitchy thing orbiting wendi
 public class SWProduction {
 	public static Block
 		mechanicalBore, mechanicalCrusher, hydraulicDrill, dehydrator,
@@ -52,7 +53,7 @@ public class SWProduction {
 			ambientSound = Sounds.drill;
 			ambientSoundVolume = 0.04f;
 		}};
-		hydraulicDrill = new Drill("hydraulic-drill") {{
+		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(
 				SWItems.nickel, 40,
 				Items.graphite, 50
@@ -65,6 +66,7 @@ public class SWProduction {
 			health = 160;
 			tier = 2;
 			drillTime = hardnessDrillMultiplier = 240;
+			mineRect = new Rect(0, 0, 4, 4);
 		}};
 
 		dehydrator = new WallGenericCrafter("dehydrator") {{
