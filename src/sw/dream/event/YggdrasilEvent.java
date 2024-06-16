@@ -14,13 +14,11 @@ import static mindustry.Vars.*;
 public class YggdrasilEvent extends DreamEvent {
 	public Seq<TriggerBox> trigger = new Seq<>();
 
-	@Override
-	public void draw() {
+	@Override public void draw() {
 		trigger.each(trigger -> trigger.draw(player.unit()));
 	}
 
-	@Override
-	public void update() {
+	@Override public void update() {
 		trigger.each(trigger -> trigger.act(player.unit()));
 	}
 
