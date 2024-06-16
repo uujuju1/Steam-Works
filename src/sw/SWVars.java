@@ -8,6 +8,7 @@ import mindustry.ctype.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.content.*;
+import sw.dream.*;
 import sw.graphics.*;
 import sw.world.*;
 
@@ -84,6 +85,8 @@ public class SWVars implements Loadable {
 		SWPlanets.load();
 		SWSectorPresets.load();
 		SWTechTree.load();
+
+		DreamContent.load();
 	}
 
 	public static SWMenuRenderer getMenuRenderer() {
