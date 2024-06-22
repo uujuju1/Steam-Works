@@ -22,6 +22,7 @@ public class DreamCore implements ApplicationListener {
 	}
 
 	public void event(@Nullable DreamEvent event) {
+		if (currentEvent != null) currentEvent.end();
 		currentEvent = event;
 		if (event != null) event.init();
 	}

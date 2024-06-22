@@ -11,7 +11,7 @@ import sw.maps.*;
 import sw.maps.generators.*;
 
 public class SWPlanets {
-	public static Planet wendi;
+	public static Planet wendi, unknown;
 
 	public static void load() {
 		wendi = new Planet("wendi", Planets.sun, 1f, 2) {{
@@ -121,5 +121,8 @@ public class SWPlanets {
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISAEAKJ5FQg=");
 			}};
 		}};
+//		unknown = new Planet("unknown", wendi, 1f, 2) {{
+//
+//		}};
 	}
 }
