@@ -1,10 +1,12 @@
 package sw.dream.event;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.content.*;
@@ -15,7 +17,7 @@ import static mindustry.Vars.*;
 public class YggdrasilEvent extends DreamEvent {
 	public float minZoom;
 	public float maxZoom;
-	public boolean canLeave, change1, change2;
+	public boolean canLeave, change;
 
 	public Seq<TriggerBox> trigger = new Seq<>();
 
@@ -27,12 +29,22 @@ public class YggdrasilEvent extends DreamEvent {
 	public void end() {
 		renderer.minZoom = minZoom;
 		renderer.maxZoom = maxZoom;
+		enableDarkness = true;
+		Sounds.windhowl.stop();
+		Sounds.rain.stop();
+		SWBlocks.rebuilder.unlock();
 	}
 
 	@Override
 	public void init() {
 		minZoom = renderer.minZoom;
 		maxZoom = renderer.maxZoom;
+		enableDarkness = false;
+		state.rules.lighting = true;
+		state.rules.ambientLight = Color.valueOf("FFF8E3");
+
+		Sounds.windhowl.loop(0.5f);
+		Sounds.rain.loop(0.5f);
 
 		//region portals
 		//hallway
@@ -168,6 +180,13 @@ public class YggdrasilEvent extends DreamEvent {
 				endY = 30.5f * 8;
 			}}
 		);
+		trigger.add(new Portal() {{
+			area.setSize(8f, 16f);
+			x = 0f * 8;
+			y = 30.5f * 8;
+			endX = 24.5f * 8;
+			endY = 30.5f * 8;
+		}});
 		//endregion
 		//region zooms
 		trigger.add(
@@ -186,11 +205,11 @@ public class YggdrasilEvent extends DreamEvent {
 		);
 		trigger.add(
 			new Zoom() {{
-				area.setCentered(53.5f * 8, 31.5f * 8, 8f, 80f);
+				area.setCentered(52.5f * 8, 31.5f * 8, 64f);
 				zoom = 8f;
 			}},
 			new Zoom() {{
-				area.setCentered(55f * 8, 36.5f * 8, 16f, 8f);
+				area.setCentered(52.5f * 8, 36f * 8, 64f, 8f);
 				zoom = 24f;
 			}},
 			new Zoom() {{
@@ -248,20 +267,30 @@ public class YggdrasilEvent extends DreamEvent {
 				};
 			}}
 		);
-		//timer
+		//endregion
 	}
 
-	@Override public void update() {
+	@Override
+	public void update() {
 		trigger.each(trigger -> trigger.act(player.unit()));
-		if (player.unit().stack.amount > 0 && !change1) {
+		if (player.unit().stack.amount > 0 && !change) {
 			((Portal) trigger.get(10)).x = 39.5f * 8f;
-			change1 = true;
+			((Portal) trigger.get(17)).x = 25.5f * 8f;
+			change = true;
 		}
-		if (state.rules.defaultTeam.items().get(SWItems.nickel) > 0 && !change2) {
+		if (change) {
+			player.unit().stack.amount = 1;
+			player.unit().stack.item = SWItems.nickel;
+			player.unit().mineTile = null;
+		}
+		if (state.rules.defaultTeam.items().get(SWItems.nickel) > 0) {
 			state.rules.defaultTeam.core().kill();
-			change2 = true;
+			player.unit().kill();
 			DreamCore.instance.event(null);
+			Sounds.unlock.at(player.unit());
+			Core.settings.put("sw-dream-lore", 1);
 		}
+		Vars.control.sound.stop();
 	}
 
 	abstract static class TriggerBox {

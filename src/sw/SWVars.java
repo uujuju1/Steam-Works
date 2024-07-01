@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
+import mindustry.type.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.content.*;
@@ -16,6 +17,7 @@ import java.util.*;
 
 public class SWVars implements Loadable {
 	public static Seq<FluidArea> fluidAreas = new Seq<>();
+	public static SectorPreset lastSectorPreset;
 
   public static void init() {
     // glenn stuff
@@ -63,6 +65,11 @@ public class SWVars implements Loadable {
 			}
 		});
 	}
+
+	public static boolean isOnSector(Sector sector) {
+		return Vars.state.getSector() == sector;
+	}
+
 	/**This is where you initialize your content lists. But do not forget about correct order.
 	 *  correct order:
 	 *  ModItems.load()

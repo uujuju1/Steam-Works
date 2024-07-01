@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import ent.anno.Annotations.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -12,9 +13,10 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.blocks.storage.*;
 import sw.gen.*;
 import sw.world.blocks.environment.*;
+import sw.world.blocks.logic.*;
 
 public class DreamContent {
-	public static @EntityDef (value = {Mechc.class, Unitc.class}, serialize = false) UnitType brutalistUnit;
+	public static @EntityDef (value = {ElevationMovec.class, Unitc.class}, serialize = false) UnitType brutalistUnit;
 	public static Block
 		concrete, concreteWall,
 		voidTile, voidTileWall,
@@ -23,14 +25,17 @@ public class DreamContent {
 
 	public static void load() {
 		brutalistUnit = new UnitType("brutalist-unit") {{
-			constructor = UnitMech::create;
+			constructor = UnitElevationMove::create;
 			drawCell = false;
+			drawMinimap = false;
 			speed = 0.55f;
 			lightRadius = 20f;
 			mineTier = 1;
 			mineSpeed = 0.5f;
 			mineRange = 20f;
-			mechFrontSway = mechSideSway = 0;
+			itemCapacity = 1;
+			deathExplosionEffect = Fx.none;
+			deathSound = Sounds.none;
 		}};
 
 		concrete = new Floor("concrete", 0);
@@ -72,6 +77,12 @@ public class DreamContent {
 			size = 2;
 			lightRadius = 50f;
 			drawTeamOverlay = solid = false;
+			destroySound = Sounds.none;
+			destroyEffect = Fx.none;
+		}};
+
+		lore = new LoreBlock("lore") {{
+			size = 2;
 		}};
 	}
 }
