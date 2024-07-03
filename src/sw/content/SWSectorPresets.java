@@ -1,6 +1,7 @@
 package sw.content;
 
 import arc.*;
+import mindustry.*;
 import mindustry.game.*;
 import mindustry.type.*;
 import sw.dream.*;
@@ -20,11 +21,7 @@ public class SWSectorPresets {
 		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.wendi, 0);
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			DreamCore.instance.event(null);
-		});
-		Events.on(EventType.SectorLaunchEvent.class, e -> {
-			if (e.sector.preset == yggdrasil) {
-				DreamCore.instance.event(new YggdrasilEvent());
-			}
+			if (Vars.state.getSector() == yggdrasil.sector) DreamCore.instance.event(new YggdrasilEvent());
 		});
 	}
 }

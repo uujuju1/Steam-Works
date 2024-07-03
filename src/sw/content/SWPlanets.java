@@ -7,6 +7,7 @@ import mindustry.game.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
 import sw.content.blocks.*;
+import sw.dream.*;
 import sw.maps.*;
 import sw.maps.generators.*;
 
@@ -121,8 +122,13 @@ public class SWPlanets {
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgYWBhZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISAEAKJ5FQg=");
 			}};
 		}};
-//		unknown = new Planet("unknown", wendi, 1f, 2) {{
-//
+//		unknown = new Planet("unknown", null, 0.12f) {{
+//			defaultCore = DreamContent.brutalistCore;
+//			hasAtmosphere = false;
+//			sectors.add(new Sector(this, PlanetGrid.Ptile.empty));
+//			meshLoader = () -> new HexMesh(this, 1);
+//			generator = new UnknownPlanetGenerator();
+//			orbitRadius = 4;
 //		}};
 	}
 }
