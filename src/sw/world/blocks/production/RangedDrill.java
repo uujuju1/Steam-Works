@@ -239,19 +239,26 @@ public class RangedDrill extends Block {
 							float lx = (dx - dsx)/dst * j + dsx, ly = (dy - dsy)/dst * j + dsy;
 
 							Draw.rect(boreRegion, lx, ly, (rotdeg() + 90f) % 180f - 90f);
-							if (lastItem != null) Draw.color(lastItem.color);
-							Draw.rect(itemBoreRegion, lx, ly);
-							Draw.color();
+							if (lastItem != null) {
+								Draw.color(lastItem.color);
+								Draw.rect(itemBoreRegion, lx, ly);
+								Draw.color();
+							}
 						}
 					}
+
+					if (rotation == 1 || rotation == 2) Draw.yscl = -1;
 					Draw.rect(endBoreRegion, dx, dy, (rotdeg() + 90f) % 180f - 90f);
+					Draw.yscl = 1;
 					Draw.reset();
 				}
 			}
 
-			if (lastItem != null) Draw.color(lastItem.color);
-			Draw.rect(itemRegion, x, y);
-			Draw.color();
+			if (lastItem != null) {
+				Draw.color(lastItem.color);
+				Draw.rect(itemRegion, x, y);
+				Draw.color();
+			}
 
 			Draw.reset();
 		}

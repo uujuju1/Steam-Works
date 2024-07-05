@@ -11,7 +11,7 @@ public class SWEnvironment {
 	public static Block
 	spinyTree, deadSpinyTree,
 
-	oreNickel, oreIron,
+	oreNickel, oreIron, fissure, oreGraphite,
 
 	ash, fineAsh, ashWall, ashGraphite, scorchedTreeTrunk,
 	fauna, denseFauna, faunaWall, leaflets,
@@ -39,6 +39,14 @@ public class SWEnvironment {
 			variants = 4;
 		}};
 		oreIron = new OreBlock(SWItems.iron) {{
+			variants = 4;
+		}};
+		fissure = new OreBlock("fissure", Items.sand) {{
+			wallOre = true;
+			variants = 4;
+		}};
+		oreIron = new OreBlock(Items.graphite) {{
+			wallOre = true;
 			variants = 4;
 		}};
 
