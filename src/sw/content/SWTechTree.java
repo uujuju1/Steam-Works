@@ -41,7 +41,6 @@ public class SWTechTree {
       // endregion
       // region production
       node(mechanicalBore, () -> {
-        node(mechanicalCrusher);
         node(hydraulicDrill);
       });
       // endregion

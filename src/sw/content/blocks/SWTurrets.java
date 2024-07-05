@@ -370,6 +370,7 @@ public class SWTurrets {
 				trailInterval = 10;
 				knockback = 8f;
 				pierceCap = 5;
+				smokeEffect = shootEffect = Fx.none;
 				hitEffect = despawnEffect = trailEffect = SWFx.soundDecay;
 				trailRotation = true;
 				pierce = pierceBuilding = true;

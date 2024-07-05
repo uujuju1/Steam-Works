@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.graphics.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -12,15 +11,15 @@ import sw.content.*;
 import sw.world.blocks.production.*;
 
 import static mindustry.type.ItemStack.*;
-//reminder to myself to use portals for the dream sequence in a glitchy thing orbiting wendi
+
 public class SWProduction {
 	public static Block
-		mechanicalBore, mechanicalCrusher, hydraulicDrill, dehydrator,
+		mechanicalBore, hydraulicDrill, dehydrator,
 
 		liquidCollector;
 
 	public static void load() {
-		mechanicalBore = new BeamDrill("mechanical-bore") {{
+		mechanicalBore = new RangedDrill("mechanical-bore") {{
 			requirements(Category.production, with(
 				SWItems.nickel, 25
 			));
@@ -29,28 +28,10 @@ public class SWProduction {
 			);
 			size = 2;
 			health = 160;
-			glowIntensity = pulseIntensity = 0f;
-			optionalBoostIntensity = 1f;
 			drillTime = 480f;
 			tier = 1;
 			range = 5;
-			boostHeatColor = Color.black;
-			ambientSound = Sounds.drill;
-			ambientSoundVolume = 0.04f;
-		}};
-		mechanicalCrusher = new WallCrafter("mechanical-crusher") {{
-			requirements(Category.production, with(
-				SWItems.nickel, 25,
-				Items.graphite, 25
-			));
-			researchCost = with(
-				SWItems.nickel, 100,
-				Items.graphite, 100
-			);
-			size = 2;
-			health = 160;
-			drillTime = 120f;
-			ambientSound = Sounds.drill;
+			ambientSound = Sounds.combustion;
 			ambientSoundVolume = 0.04f;
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
@@ -62,10 +43,14 @@ public class SWProduction {
 				SWItems.nickel, 160,
 				Items.graphite, 200
 			);
+			liquidBoostIntensity = 1f;
 			size = 2;
 			health = 160;
 			tier = 2;
 			drillTime = hardnessDrillMultiplier = 240;
+			drillEffect = SWFx.groundCrack;
+			drillEffectRnd = 0f;
+			ambientSound = Sounds.drillCharge;
 			mineRect = new Rect(0, 0, 4, 4);
 		}};
 
@@ -83,7 +68,7 @@ public class SWProduction {
 		}};
 
 		liquidCollector = new Pump("liquid-collector") {{
-			requirements(Category.production, with(
+			requirements(Category.liquid, with(
 				SWItems.iron, 20,
 				Items.silicon, 10
 			));

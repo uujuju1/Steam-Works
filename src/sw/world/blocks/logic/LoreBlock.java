@@ -39,8 +39,8 @@ public class LoreBlock extends Block {
 				}
 				Draw.color(colors.getFrac(Mathf.random()));
 				Draw.alpha(0.5f);
+				Fill.polyEnd();
 			}
-			Fill.polyEnd();
 			Draw.blend();
 		}
 

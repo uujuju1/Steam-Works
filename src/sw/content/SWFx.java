@@ -14,25 +14,6 @@ public class SWFx {
   public static final Vec2 temp = new Vec2();
 
   public static Effect
-    sparks = new Effect(30f, e -> {
-      Draw.color(Pal.accent);
-      for (int i = 0; i < 4; i++) {
-        float angle = i * 90f + 45f;
-        Tmp.v1.trns(angle, 12).add(e.x, e.y);
-        Angles.randLenVectors(e.id + i, 2, 8f * e.finpow(), 180f + angle, 15f, (x, y) -> {
-          Lines.lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), 4 * e.foutpow());
-        });
-      }
-    }),
-    longShootFlame = new Effect(30f, e -> {
-      for (int i = 0; i < 4; i++) {
-        Draw.color(Pal.lightFlame, Pal.darkFlame, Color.gray, Math.max(i/4f, e.fin()));
-        Angles.randLenVectors(e.id + i, 10, 92f * e.finpow(), e.rotation, 10f, (x, y) -> {
-          Fill.circle(e.x + x, e.y + y, 1f + 1.5f * e.fout());
-        });
-      }
-    }),
-
     gasVent = new Effect(60f, e -> {
       Draw.color(e.color, Color.black, e.fin());
       Draw.alpha(e.fslope() * 0.6f);
@@ -41,21 +22,33 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, 10 * Interp.sine.apply(e.fin() * 1.2f));
       });
     }).layer(Layer.darkness - 1),
-    steamCollect = new Effect(60f, e -> {
-      Draw.alpha(e.fslope() * 0.6f);
-      rand.setSeed(e.id);
-      Angles.randLenVectors(e.id, 3, 40f * e.fout(), e.fin() * 360f, e.fout() * 360f, (x, y) -> {
-        Fill.circle(e.x + x, e.y + y, 10f * Interp.sine.apply(e.fout() * 1.2f));
+
+    boreMine = new Effect(60f, 48f, e -> {
+      Draw.color(e.color);
+      Angles.randLenVectors(e.id, 5, 24f * e.finpow(), e.rotation + 180f, 30f, (x, y) -> {
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
+      });
+      e.scaled(15f, b -> {
+        Lines.stroke(b.foutpow());
+        Lines.circle(e.x, e.y, 4f * b.finpow());
       });
     }),
-    fungiCollect = new Effect(60f, e -> {
-      Draw.color(Color.valueOf("9AC49A"));
-      Draw.alpha(e.fslope() * 0.6f);
+    groundCrack = new Effect(60f, 64f, e -> {
       rand.setSeed(e.id);
-      Angles.randLenVectors(e.id, 3, 40f * e.fout(), e.fin() * 360f, e.fout() * 360f, (x, y) -> {
-        Fill.circle(e.x + x, e.y + y, 10f * Interp.sine.apply(e.fout() * 1.2f));
-      });
-    }),
+      Draw.color(e.color, Color.grays(0.2f), Interp.exp10Out.apply(e.fout()));
+      for(int j = 0; j < 5; j++) {
+        Vec2 lastPos = new Vec2(e.x, e.y);
+        float lastRot = rand.random(360);
+
+        for(int i = 0; i < 8; i++) {
+          temp.trns(lastRot, 4).add(lastPos);
+          Lines.stroke((1.5f - 1f/8f * i) * Interp.exp5Out.apply(e.fout()));
+          Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
+          lastRot += rand.range(90);
+          lastPos.set(temp);
+        }
+      }
+    }).layer(Layer.block - 1),
 
     compoundCraft = new Effect(30f, e -> {
       rand.setSeed(e.id);
@@ -141,27 +134,6 @@ public class SWFx {
     });
     }),
 
-    graphiteCraft = new Effect(30f, e -> {
-      Draw.color(Pal.accent, Color.gray, e.fin());
-      Angles.randLenVectors(e.id, 10, e.finpow() * 30f, (x, y) -> Lines.lineAngle(e.x + x, e.y + y, Angles.angle(x, y), 5f * e.foutpow()));
-    }),
-    graphiteStackCraft = new Effect(30f, e ->{
-      if (e.time < 2) Effect.shake(3, 3, e.x, e.y);
-      for (int i = 0; i < 4; i++) {
-        Tmp.v1.trns(i * 90, 5.75f);
-        Draw.color(Pal.accent);
-        Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 8 * e.foutpow(), 8 + e.foutpow(), i * 90);
-        Draw.color();
-        Drawf.tri(e.x + Tmp.v1.x, e.y + Tmp.v1.y, 4 * e.foutpow(), 4 + e.foutpow(), i * 90);
-      }
-    }),
-    baklerSiliconCraft = new Effect(30f, e -> Angles.randLenVectors(e.id, 15, 40 * e.finpow(), (x, y) -> {
-      Draw.color(Pal.accent);
-      Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 10 * e.foutpow());
-      Draw.color(Color.darkGray);
-      Fill.circle(e.x - x, e.y - y, 2 * e.fout());
-    })),
-
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);
 
@@ -175,10 +147,9 @@ public class SWFx {
         });
       }
 
-      Tmp.v1.trns(e.rotation - 90f, 0, 1f).add(e.x, e.y);
       Angles.randLenVectors(e.id, 15, 32f * e.finpow(), e.rotation, 15f, (x, y) -> {
         Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
-        Fill.circle(temp.x + x, temp.y + y, 5f * e.fout());
+        Fill.circle(e.x + x, e.y + y, 5f * e.fout());
       });
       Draw.blend();
     }),
@@ -216,14 +187,9 @@ public class SWFx {
       Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
     }),
     accelSparks = new Effect(20f, e -> {
-
-      for(int i : Mathf.signs) {
-        Tmp.v1.trns(e.rotation - 90, 6 * i, 4).add(e.x, e.y);
-
-        Angles.randLenVectors(e.id + i, 2, 10 * e.finpow(), e.rotation, 15, (x, y) -> {
-          Lines.lineAngle(Tmp.v1.x + x, Tmp.v1.y + y, Mathf.angle(x, y), 4 * e.foutpow());
-        });
-      }
+      Angles.randLenVectors(e.id, 2, 10 * e.finpow(), e.rotation, 15, (x, y) -> {
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4 * e.foutpow());
+      });
     }),
     shootShockwaveColor = new Effect(60f, e -> {
       for(int i = 0; i < 3; i++) {

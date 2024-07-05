@@ -1,9 +1,11 @@
 package sw.world.blocks.production;
 
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -13,6 +15,9 @@ import static mindustry.Vars.*;
 
 public class AreaDrill extends Drill {
 	public Rect mineRect = new Rect();
+
+	public Sound drillSound = Sounds.drillImpact;
+	public float drillSoundVolume = 1;
 
 	public AreaDrill(String name) {
 		super(name);
@@ -88,9 +93,20 @@ public class AreaDrill extends Drill {
 			mineRect.width * tilesize,
 			mineRect.height * tilesize
 		);
+		Drawf.dashRect(
+			Pal.accent,
+			x - size/2f * tilesize,
+			y - size/2f * tilesize,
+			size * tilesize,
+			size * tilesize
+		);
 	}
 
 	public class AreaDrillBuild extends DrillBuild {
+		@Override public float ambientVolume() {
+			return super.ambientVolume() * warmup;
+		}
+
 		@Override
 		public void drawSelect() {
 			super.drawSelect();
@@ -98,17 +114,19 @@ public class AreaDrill extends Drill {
 		}
 
 		@Override
-		public void updateTile(){
+		public void updateTile() {
 			countOre(tile);
+			dominantItem = returnItem;
+			dominantItems = returnCount;
+
 			if(timer(timerDump, dumpTime)) dump(dominantItem != null && items.has(dominantItem) ? dominantItem : null);
 
+			timeDrilled += warmup * delta();
 			if(dominantItem == null) {
 				lastDrillSpeed = 0f;
 				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
 				return;
 			}
-
-			timeDrilled += warmup * delta();
 
 			float delay = getDrillTime(dominantItem);
 
@@ -128,8 +146,9 @@ public class AreaDrill extends Drill {
 
 			if(dominantItems > 0 && progress >= delay && items.total() < itemCapacity){
 				offload(dominantItem);
+				drillSound.at(x, y, 1f, drillSoundVolume);
 				progress %= delay;
-				if(wasVisible && Mathf.chanceDelta(updateEffectChance * warmup)) drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
+				if(wasVisible) drillEffect.at(x + Mathf.range(drillEffectRnd), y + Mathf.range(drillEffectRnd), dominantItem.color);
 			}
 		}
 	}
