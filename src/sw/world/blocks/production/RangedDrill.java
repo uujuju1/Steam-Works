@@ -248,7 +248,7 @@ public class RangedDrill extends Block {
 					}
 
 					if (rotation == 1 || rotation == 2) Draw.yscl = -1;
-					Draw.rect(endBoreRegion, dx, dy, (rotdeg() + 90f) % 180f - 90f);
+					Draw.rect(endBoreRegion, dx, dy, rotdeg());
 					Draw.yscl = 1;
 					Draw.reset();
 				}
