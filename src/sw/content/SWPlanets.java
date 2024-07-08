@@ -7,7 +7,6 @@ import mindustry.game.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
 import sw.content.blocks.*;
-import sw.dream.*;
 import sw.maps.*;
 import sw.maps.generators.*;
 
@@ -31,9 +30,8 @@ public class SWPlanets {
 				r.showSpawns = false;
 			};
 
-			iconColor = atmosphereColor = Color.valueOf("469662");
-			atmosphereRadIn = -0.1f;
-			atmosphereRadOut = 0.25f;
+			iconColor = Color.valueOf("469662");
+			hasAtmosphere = false;
 			startSector = 69;
 
 			itemWhitelist.addAll(
