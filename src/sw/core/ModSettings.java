@@ -19,7 +19,10 @@ public class ModSettings {
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
       table.pref(new ButtonSetting("sw-erase", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
       table.pref(new ButtonSetting("sw-erase-hints", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-hints-confirm"), EventHints::resetHints)));
-      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)));
+      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
+        title = Core.bundle.get("sw-menu-enabled");
+        description = Core.bundle.get("sw-menu-enabled-description");
+      }});
     });
   }
 

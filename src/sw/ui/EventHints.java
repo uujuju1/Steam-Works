@@ -35,7 +35,7 @@ public enum EventHints implements Hint {
 	}
 	public static void resetHints() {
 		for(EventHints hint : values()) {
-			Core.settings.put(prefix + hint.name() + "hint-done", false);
+			Core.settings.put(prefix + hint.name() + "-hint-done", false);
 			Vars.ui.hints.hints.addUnique(hint);
 		}
 	}
