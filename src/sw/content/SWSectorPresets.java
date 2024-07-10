@@ -9,15 +9,16 @@ import sw.dream.event.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		intro, piedmont, trinity, light,
+		intro, ashTray, trinity, light,
 		yggdrasil;
 
 	public static void load() {
 		intro = new SectorPreset("intro", SWPlanets.wendi, 69) {{
 			captureWave = 10;
 			alwaysUnlocked = true;
+			addStartingItems = true;
 		}};
-		piedmont = new SectorPreset("piedmont", SWPlanets.wendi, 12) {{
+		ashTray = new SectorPreset("ash-tray", SWPlanets.wendi, 12) {{
 			captureWave = 15;
 		}};
 		trinity = new SectorPreset("trinity", SWPlanets.wendi, 87) {{

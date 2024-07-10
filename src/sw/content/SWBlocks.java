@@ -280,6 +280,7 @@ public class SWBlocks {
 
 		// region storage
 		coreScaffold = new CoreBlock("core-scaffold") {{
+			requirements(Category.effect, with(SWItems.nickel, 1000, Items.graphite, 800));
 			size = 3;
 			health = 2000;
 			alwaysUnlocked = true;

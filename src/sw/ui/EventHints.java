@@ -10,6 +10,10 @@ import sw.content.*;
 import sw.content.blocks.*;
 
 public enum EventHints implements Hint {
+	hydraulicDrill(
+		() -> false,
+		() -> false
+	),
 	tension(
 		() -> true,
 		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWPower.lowWire).size > 0

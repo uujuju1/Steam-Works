@@ -50,7 +50,7 @@ public class SWTechTree {
           node(mechanicalGate);
           // node(mechanicalUnloader);
         });
-        node(resistantConveyor);
+        node(suspensionConveyor);
         node(mechanicalConduit, with(new Produce(Items.silicon)), () -> {
           node(mechanicalConduitJunction);
           node(mechanicalConduitRouter);
@@ -93,7 +93,7 @@ public class SWTechTree {
       // endregion
 	    // region sectors
 	    node(intro, () -> {
-        node(piedmont, with(new SectorComplete(intro)), () -> {
+        node(ashTray, with(new SectorComplete(intro)), () -> {
           node(trinity, with(new Produce(Items.silicon)), () -> {});
           node(light, with(new Produce(Items.silicon)), () -> {});
         });
