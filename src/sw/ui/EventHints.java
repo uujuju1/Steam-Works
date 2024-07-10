@@ -6,29 +6,20 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ui.fragments.HintsFragment.*;
-import sw.content.*;
 import sw.content.blocks.*;
 
 public enum EventHints implements Hint {
 	hydraulicDrill(
-		() -> false,
-		() -> false
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.hydraulicDrill).size > 0,
+		() -> Vars.control.input.block == SWProduction.hydraulicDrill
 	),
-	tension(
-		() -> true,
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWPower.lowWire).size > 0
-	),
-	coatedTension(
-		() -> true,
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWPower.coatedWire).size > 0,
-		tension
-	),
-	rebuilder(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWBlocks.rebuilder).size > 0
+	mechanicalBore(
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.mechanicalBore).size > 0,
+		() -> Vars.control.input.block == SWProduction.mechanicalBore
 	),
 	dehydrator(
 		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.dehydrator).size > 0,
-		() -> SWProduction.dehydrator.unlocked()
+		() -> Vars.control.input.block == SWProduction.dehydrator
 	);
 
 	Boolp complete, shown = () -> true;
@@ -41,6 +32,12 @@ public enum EventHints implements Hint {
 
 	public static void initHints() {
 		Vars.ui.hints.hints.add(Seq.with(values()).removeAll(hint -> Core.settings.getBool(prefix + hint.name() + "-hint-done", false)));
+	}
+	public static void resetHints() {
+		for(EventHints hint : values()) {
+			Core.settings.put(prefix + hint.name() + "hint-done", false);
+			Vars.ui.hints.hints.addUnique(hint);
+		}
 	}
 
 	EventHints(Boolp complete) {

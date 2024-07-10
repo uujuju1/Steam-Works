@@ -12,12 +12,14 @@ import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import sw.*;
 import sw.graphics.*;
+import sw.ui.*;
 
 public class ModSettings {
   public static void load() {
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.pref(new ButtonSetting("Erase Mod progress", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
-      table.pref(new MenuSetting("sw-current-menu"));
+      table.pref(new ButtonSetting("sw-erase", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
+      table.pref(new ButtonSetting("sw-erase-hints", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-hints-confirm"), EventHints::resetHints)));
+      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)));
     });
   }
 
@@ -33,7 +35,7 @@ public class ModSettings {
 
     @Override
     public void add(SettingsTable table) {
-      table.button(name, listener).margin(14).width(240f).pad(6f);
+      table.button(b -> b.add(Core.bundle.get(name, name)), SWStyles.settingButton, listener).margin(14).width(240f).pad(6f);
       table.row();
     }
   }
