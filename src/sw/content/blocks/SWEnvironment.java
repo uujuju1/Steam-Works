@@ -1,30 +1,45 @@
 package sw.content.blocks;
 
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import sw.content.*;
+import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
 	spinyTree, deadSpinyTree,
 
+
 	oreNickel, oreIron, fissure, oreGraphite,
 
+
 	ash, fineAsh, ashWall, ashGraphite, scorchedTreeTrunk,
+
 	fauna, denseFauna, faunaWall, leaflets,
+
 	deadFauna, denseDeadFauna, deadFaunaWall, deadLeaflets,
+
 	biomass, folliage, biomassWall, clumps,
+
 	gravel, flatGravel, gravelWall, flint,
-	roots, tangledRoots, rootsWall, tumbleweed,
+
+	roots, tangledRoots, rootsWall, tumbleweed, rootVent,
+
 	soil, clay, soilWall,
+
 	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder, marbleSpike,
+
 
 	solventRegular, shallowSolvent, shallowerSolvent,
 
-	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall;
+
+	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall,
+
+	multiFloor, multiOverlay, multiWall;
 
 	public static void load() {
 		spinyTree = new TreeBlock("spiny-tree") {{
@@ -35,6 +50,7 @@ public class SWEnvironment {
 		}};
 
 
+		// region ores
 		oreNickel = new OreBlock(SWItems.nickel) {{
 			variants = 4;
 		}};
@@ -45,12 +61,14 @@ public class SWEnvironment {
 			wallOre = true;
 			variants = 4;
 		}};
-		oreIron = new OreBlock(Items.graphite) {{
+		oreGraphite = new OreBlock(Items.graphite) {{
 			wallOre = true;
 			variants = 4;
 		}};
+		// endregion
 
 
+		// region ash
 		scorchedTreeTrunk = new Prop("scorched-tree-trunk") {{
 			variants = 2;
 		}};
@@ -68,6 +86,7 @@ public class SWEnvironment {
 			wall = ashWall;
 			decoration = scorchedTreeTrunk;
 		}};
+		// endregion
 
 		leaflets = new Prop("leaflets") {{
 			variants = 2;
@@ -108,6 +127,7 @@ public class SWEnvironment {
 			decoration = clumps;
 		}};
 
+		// region gravel
 		flint = new OverlayFloor("flint") {{
 			variants = 4;
 		}};
@@ -120,7 +140,9 @@ public class SWEnvironment {
 		flatGravel = new Floor("flat-gravel", 3) {{
 			wall = gravelWall;
 		}};
+		// endregion
 
+		// region roots
 		tumbleweed = new Prop("tumbleweed") {{
 			variants = 2;
 		}};
@@ -133,7 +155,20 @@ public class SWEnvironment {
 			wall = rootsWall;
 			decoration = tumbleweed;
 		}};
+		rootVent = new GasVent("root-vent") {{
+			density = tile -> {
+				int next = 0;
+				for(Point2 point : Geometry.d4) {
+					if (tile.nearby(point).overlay() == this) next++;
+				}
+				return Math.max(0, next - 1);
+			};
+			maxDensity = 4;
+			variants = 4;
+		}};
+		// endregion
 
+		// region soil
 		soilWall = new StaticWall("soil-wall") {{
 			attributes.set(Attribute.sand, 1);
 		}};
@@ -143,7 +178,9 @@ public class SWEnvironment {
 		clay = new Floor("clay", 3) {{
 			wall = soilWall;
 		}};
+		// endregion
 
+		// region marble
 		marbleWall = new StaticWall("marble-wall");
 		marbleGraphite = new StaticWall("marble-graphite") {{
 			itemDrop = Items.graphite;
@@ -163,8 +200,10 @@ public class SWEnvironment {
 			wall = marbleWall;
 			decoration = marbleBoulder;
 		}};
+		// endregion
 
 
+		// region solvent
 		solventRegular = new Floor("solvent-regular", 0) {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
@@ -180,8 +219,10 @@ public class SWEnvironment {
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
 		}};
+		// endregion
 
 
+		// region plate
 		plateWall = new StaticWall("plate-wall");
 		plate = new Floor("plate", 4) {{
 			wall = plateWall;
@@ -203,5 +244,19 @@ public class SWEnvironment {
 			wall = plateWall;
 			blendGroup = plate;
 		}};
+		// endregion
+
+		multiFloor = new MultiFloor("multi-floor");
+
+
+
+		multiOverlay = new MultiOverlayFloor("multi-overlay");
+
+
+
+		multiWall = new MultiStaticWall("multi-wall");
+
+
+
 	}
 }

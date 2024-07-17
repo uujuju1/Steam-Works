@@ -1,86 +1,65 @@
 package sw.world.blocks.environment;
 
-import arc.graphics.*;
+import arc.*;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.entities.*;
-import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.*;
-import sw.*;
 import sw.content.*;
+import sw.util.*;
 import sw.world.*;
+import sw.world.MultiShape.*;
 
-import static mindustry.Vars.*;
+public class GasVent extends MultiOverlayFloor {
+	public Intf<Tile> density = tile -> 0;
+	public int maxDensity = 0;
 
-// TODO silly class name
-public class GasVent extends Floor {
-	public Liquid fluid = Liquids.water;
-	public int range = 10;
+	public Effect smokeEffect = SWFx.gasVent;
+	public float smokeEffectInterval = 20f;
 
-	public Block parent = Blocks.stone;
-	public Effect cloudEffect = SWFx.gasVent;
-	public Color cloudEffectColor = fluid.color;
-	public float cloudEffectSpacing = 10f;
-
-	public static final Point2[] offsets = {
-		new Point2(0, 0),
-		new Point2(1, 0),
-		new Point2(1, 1),
-		new Point2(0, 1),
-		new Point2(-1, 1),
-		new Point2(-1, 0),
-		new Point2(-1, -1),
-		new Point2(0, -1),
-		new Point2(1, -1),
-	};
-
-	static{
-		for(var p : offsets){
-			p.sub(1, 1);
-		}
-	}
+	public TextureRegion[] densityVariants;
 
 	public GasVent(String name) {
 		super(name);
-		variants = 0;
+		hasShadow = false;
+		multiShapeBuild = GasVentBuild::new;
+	}
+
+	@Override
+	public void load() {
+		super.load();
+		if (maxDensity > 0) {
+			densityVariants = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), variants, maxDensity, 32);
+		} else densityVariants = variantRegions;
 	}
 
 	@Override
 	public void drawBase(Tile tile) {
-		parent.drawBase(tile);
-		if (checkAdjacent(tile)) {
-			Mathf.rand.setSeed(tile.pos());
-			Draw.rect(variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))], tile.worldx() - tilesize, tile.worldy() - tilesize);
+		if (maxDensity > 0) {
+			Draw.rect(
+				densityVariants[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1)) + variants * Math.min(maxDensity - 1, density.get(tile))],
+				tile.worldx(),
+				tile.worldy()
+			);
+		} else if(variants > 0) {
+			Draw.rect(variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))], tile.worldx(), tile.worldy());
+		} else {
+			Draw.rect(region, tile.worldx(), tile.worldy());
 		}
 	}
 
-	@Override public boolean updateRender(Tile tile) {
-		return checkAdjacent(tile);
-	}
+	public class GasVentBuild extends MultiShapeBuild {
+		public float effectTime = 0;
 
-	@Override
-	public void renderUpdate(UpdateRenderState state) {
-		FluidArea area = new FluidArea(state.tile.x - 1, state.tile.y - 1, range, fluid);
-		SWVars.fluidAreas.remove(area);
-
-		if(state.tile.nearby(-1, -1).block() == Blocks.air) {
-			SWVars.fluidAreas.addUnique(area);
-			if((state.data += Time.delta) >= cloudEffectSpacing) {
-				cloudEffect.at(state.tile.x * tilesize - tilesize, state.tile.y * tilesize - tilesize, cloudEffectColor);
-				state.data = 0f;
+		@Override
+		public void update(MultiShape shape) {
+			effectTime += Time.delta;
+			if (effectTime > smokeEffectInterval) {
+				smokeEffect.at(shape.centerX(), shape.centerY(), 0, shape);
+				effectTime %= 1f;
 			}
 		}
-	}
-
-	public boolean checkAdjacent(Tile tile) {
-		for (Point2 offset : offsets) {
-			Tile other = tile.nearby(offset);
-			if (other == null || other.floor() != this) return false;
-		}
-		return true;
 	}
 }

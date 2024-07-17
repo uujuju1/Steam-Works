@@ -8,20 +8,39 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import sw.world.*;
 
 public class SWFx {
   public static final Rand rand = new Rand();
   public static final Vec2 temp = new Vec2();
 
   public static Effect
-    gasVent = new Effect(60f, e -> {
-      Draw.color(e.color, Color.black, e.fin());
-      Draw.alpha(e.fslope() * 0.6f);
+    gasVent = new Effect(120f, e -> {
+      if (!(e.data instanceof MultiShape shape)) return;
       rand.setSeed(e.id);
-      Angles.randLenVectors(e.id, 3, 20f * e.fin(), (x, y) -> {
-        Fill.circle(e.x + x, e.y + y, 10 * Interp.sine.apply(e.fin() * 1.2f));
+      shape.tiles.each(tile -> {
+        if (rand.chance(0.5d)) {
+          Draw.color(Color.valueOf("E3D8B6"), e.fout() / 2f);
+          e.scaled(30, b -> {
+            Angles.randLenVectors(tile.pos() + e.id, 5, 4f * b.fin(), (x, y) -> {
+              Fill.circle(
+                tile.worldx() + x + Angles.trnsx(Mathf.angle(x, y), 4f),
+                tile.worldy() + y + Angles.trnsy(Mathf.angle(x, y), 4f),
+                3f * b.fout()
+              );
+            });
+          });
+          if (tile.block().isAir()) {
+            float angle = rand.random(360f);
+            Fill.circle(
+              tile.worldx() + Angles.trnsx(angle, 4f * e.fin()),
+              tile.worldy() + Angles.trnsy(angle, 4f * e.fin()),
+              5f * Interp.circle.apply(Mathf.slope(e.fin()))
+            );
+          }
+        }
       });
-    }).layer(Layer.darkness - 1),
+    }).layer(Layer.blockUnder),
 
     boreMine = new Effect(60f, 48f, e -> {
       Draw.color(e.color);

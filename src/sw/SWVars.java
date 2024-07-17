@@ -9,6 +9,7 @@ import mindustry.type.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.content.*;
+import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
 import sw.world.*;
@@ -19,35 +20,14 @@ public class SWVars implements Loadable {
 	public static Seq<FluidArea> fluidAreas = new Seq<>();
 	public static SectorPreset lastSectorPreset;
 
+	public static EnvProcess envProcess;
+
   public static void init() {
-    // glenn stuff
-	  Vars.mods.getScripts().runConsole("importPackage(Packages.rhino)");
-    Vars.mods.getScripts().runConsole(
-	    """
-				function importModClass(name){
+		dev();
 
-				let constr = Class.forName("rhino.NativeJavaPackage").getDeclaredConstructor(java.lang.Boolean.TYPE, java.lang.String, ClassLoader);
-				constr.setAccessible(true);
-
-				let p = constr.newInstance(true, name, Vars.mods.mainLoader());
-
-				let scope = Reflect.get(Vars.mods.getScripts(), "scope");
-				Reflect.invoke(ScriptableObject, p, "setParentScope", [scope], [Scriptable]);
-
-				importPackage(p);\s
-
-				}"""
-    );
-    Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
-    Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
-	  Vars.mods.getScripts().runConsole("importModClass(\"sw.content.blocks\")");
-	  Vars.mods.getScripts().runConsole("importModClass(\"sw.dream\")");
-	  Vars.mods.getScripts().runConsole("importModClass(\"sw.dream.events\")");
-	  Vars.mods.getScripts().runConsole("importModClass(\"sw.maps\")");
-	  Vars.mods.getScripts().runConsole("importModClass(\"sw.maps.generators\")");
-    Vars.mods.getScripts().runConsole("importModClass(\"sw.graphics\")");
-    Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
-    Vars.mods.getScripts().runConsole("importModClass(\"sw.world.graph\")");
+		if (!Vars.headless) {
+			envProcess = new EnvProcess();
+		}
 	}
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
@@ -66,8 +46,37 @@ public class SWVars implements Loadable {
 		});
 	}
 
-	public static boolean isOnSector(Sector sector) {
-		return Vars.state.getSector() == sector;
+	/**
+	 * makes it so that i can access things with console
+	 */
+	public static void dev() {
+		Vars.mods.getScripts().runConsole("importPackage(Packages.rhino)");
+		Vars.mods.getScripts().runConsole(
+			"""
+				function importModClass(name){
+
+				let constr = Class.forName("rhino.NativeJavaPackage").getDeclaredConstructor(java.lang.Boolean.TYPE, java.lang.String, ClassLoader);
+				constr.setAccessible(true);
+
+				let p = constr.newInstance(true, name, Vars.mods.mainLoader());
+
+				let scope = Reflect.get(Vars.mods.getScripts(), "scope");
+				Reflect.invoke(ScriptableObject, p, "setParentScope", [scope], [Scriptable]);
+
+				importPackage(p);\s
+
+				}"""
+		);
+		Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.content.blocks\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.dream\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.dream.events\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps.generators\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.graphics\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.world.graph\")");
 	}
 
 	/**This is where you initialize your content lists. But do not forget about correct order.
