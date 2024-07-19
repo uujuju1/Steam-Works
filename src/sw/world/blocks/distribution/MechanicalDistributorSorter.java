@@ -3,6 +3,7 @@ package sw.world.blocks.distribution;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.distribution.*;
+import sw.world.blocks.distribution.MechanicalTunnel.*;
 
 public class MechanicalDistributorSorter extends Sorter {
 	public MechanicalDistributorSorter(String name) {
@@ -12,7 +13,7 @@ public class MechanicalDistributorSorter extends Sorter {
 	public class MechanicalDistributorSorterBuild extends SorterBuild {
 		@Override
 		public Building getTileTarget(Item item, Building source, boolean flip) {
-			if (isSame(source)) return null;
+			if (isSame(source) || source instanceof MechanicalTunnelBuild) return null;
 			if (sortItem == null) {
 				for (int i = 0; i < 4; i++) {
 					rotation = (rotation + 1) % 4;

@@ -1,5 +1,6 @@
 package sw;
 
+import arc.*;
 import arc.assets.*;
 import arc.struct.*;
 import arc.util.*;
@@ -12,6 +13,7 @@ import sw.content.*;
 import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
+import sw.ui.dialog.*;
 import sw.world.*;
 
 import java.util.*;
@@ -21,21 +23,20 @@ public class SWVars implements Loadable {
 	public static SectorPreset lastSectorPreset;
 
 	public static EnvProcess envProcess;
+	public static TechtreeDialog techtreeDialog;
 
   public static void init() {
 		dev();
 
 		if (!Vars.headless) {
 			envProcess = new EnvProcess();
+			techtreeDialog = new TechtreeDialog();
 		}
 	}
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
-		Vars.content.each(content -> {
-			if (content instanceof UnlockableContent c && content.minfo.mod != null) {
-				if (Objects.equals(c.minfo.mod.name, Vars.mods.getMod("sw").name)) c.clearUnlock();
-			}
-		});
+		techtreeDialog.clearTree();
+		Core.settings.put("settings-sw-techtree-category", -1);
 	}
 	/**cheating privileges*/
 	public static void unlockModContent() {
