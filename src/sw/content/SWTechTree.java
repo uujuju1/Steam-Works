@@ -149,7 +149,7 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(combustionTensionGenerator, with(new Produce(compound)), () -> {
+    root.add(node(combustionTensionGenerator, () -> {
       node(lowWire, () -> {
         node(lowRouter);
         node(lowBridge);
