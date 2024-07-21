@@ -1,8 +1,8 @@
 package sw.content;
 
-import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.game.*;
+import mindustry.graphics.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
 import sw.content.blocks.*;
@@ -29,8 +29,10 @@ public class SWPlanets {
 				r.showSpawns = false;
 			};
 
-			iconColor = Color.valueOf("469662");
-			hasAtmosphere = false;
+			iconColor = Pal.lancerLaser;
+			atmosphereColor = Pal.lancerLaser.cpy().mul(0.3f);
+			atmosphereRadIn = 0f;
+			atmosphereRadOut = 0.2f;
 			startSector = 69;
 
 			itemWhitelist.addAll(
