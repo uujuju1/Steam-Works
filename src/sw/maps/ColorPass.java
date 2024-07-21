@@ -86,6 +86,7 @@ public abstract class ColorPass {
 	}
 	/**
 	 * A pass that paints regions whose height is within a boundary.
+	 * @see HeightPass.ClampHeight ClampHeight
 	 */
 	public static class FlatColorPass extends ColorPass {
 		public float min = 0f, max = 1f;
