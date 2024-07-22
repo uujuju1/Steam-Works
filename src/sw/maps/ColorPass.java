@@ -13,7 +13,7 @@ public abstract class ColorPass {
 	 * A pass that paints points inside a sphere.
 	 * @see HeightPass.SphereHeight SphereHeight
 	 */
-	public static class CraterColorPass extends ColorPass {
+	public static class SphereColorPass extends ColorPass {
 		/**
 		 * Position of the sphere relative to the planet.
 		 */
@@ -27,7 +27,7 @@ public abstract class ColorPass {
 		 */
 		public Color out;
 
-		public CraterColorPass(Vec3 pos, float radius, Color out) {
+		public SphereColorPass(Vec3 pos, float radius, Color out) {
 			this.pos = pos;
 			this.radius = radius;
 			this.out = out;

@@ -99,11 +99,10 @@ public class SWVars implements Loadable {
 //		SWEntityMapping.load();
 		SWUnitTypes.load();
 		SWBlocks.load();
+		DreamContent.load();
 		SWPlanets.load();
 		SWSectorPresets.load();
 		SWTechTree.load();
-
-		DreamContent.load();
 	}
 
 	public static SWMenuRenderer getMenuRenderer() {

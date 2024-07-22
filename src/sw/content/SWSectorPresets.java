@@ -27,7 +27,7 @@ public class SWSectorPresets {
 		light = new SectorPreset("light", SWPlanets.wendi, 40) {{
 			captureWave = 20;
 		}};
-		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.wendi, 0);
+		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.unknown, 0);
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			DreamCore.instance.event(null);
 			if (Vars.state.getSector() == yggdrasil.sector) DreamCore.instance.event(new YggdrasilEvent());
