@@ -5,7 +5,9 @@ import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import sw.content.*;
 import sw.util.*;
@@ -13,6 +15,7 @@ import sw.world.*;
 import sw.world.MultiShape.*;
 
 public class GasVent extends MultiOverlayFloor {
+	public Liquid ventOutput = Liquids.water;
 	public Intf<Tile> density = tile -> 0;
 	public int maxDensity = 0;
 
@@ -24,7 +27,11 @@ public class GasVent extends MultiOverlayFloor {
 	public GasVent(String name) {
 		super(name);
 		hasShadow = false;
-		multiShapeBuild = GasVentBuild::new;
+		multiShapeBuild = () -> {
+			GasVentBuild build = new GasVentBuild();
+			build.type = this;
+			return build;
+		};
 	}
 
 	@Override
@@ -51,6 +58,7 @@ public class GasVent extends MultiOverlayFloor {
 	}
 
 	public class GasVentBuild extends MultiShapeBuild {
+		public GasVent type;
 		public float effectTime = 0;
 
 		@Override

@@ -92,7 +92,7 @@ public class SWPlanets {
 		}};
 		unknown = new Planet("unknown", Planets.sun, 1f, 1) {{
 			defaultCore = DreamContent.brutalistCore;
-			hasAtmosphere = false;
+			hasAtmosphere = updateLighting = false;
 			clearSectorOnLose = true;
 			meshLoader = () -> new HexMesh(this, 7);
 			generator = new ModularPlanetGenerator() {{
@@ -105,8 +105,8 @@ public class SWPlanets {
 						offset = 0.5f;
 						set = true;
 					}});
+					colors.add(new ColorPass.SphereColorPass(new Vec3(sector.tile.v), 0.15f, DreamContent.concrete.mapColor));
 				});
-				colors.add(new ColorPass.SphereColorPass(new Vec3(0.5257311f, 0f, -0.85065067f), 0.15f, DreamContent.concrete.mapColor));
 			}};
 			drawOrbit = false;
 			orbitRadius = 1000f;
