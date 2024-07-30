@@ -27,9 +27,11 @@ public class SWEnvironment {
 
 	gravel, flatGravel, gravelWall, flint,
 
-	roots, tangledRoots, rootsWall, tumbleweed, rootVent,
+	rootsWall, tumbleweed, rootVent,
+	giantRoots, roots, tangledRoots,
 
-	soil, clay, soilWall,
+	concretion, soilBoulder, soilWall,
+	soil, clay, dryRiver,
 
 	marble, roughMarble, marbleWall, marbleGraphite, marbleBoulder, marbleSpike,
 
@@ -147,11 +149,15 @@ public class SWEnvironment {
 			variants = 2;
 		}};
 		rootsWall = new StaticWall("roots-wall");
+		giantRoots = new Floor("giant-roots", 4) {{
+			wall = rootsWall;
+			decoration = tumbleweed;
+		}};
 		roots = new Floor("roots", 4) {{
 			wall = rootsWall;
 			decoration = tumbleweed;
 		}};
-		tangledRoots = new Floor("tangled-roots", 3) {{
+		tangledRoots = new Floor("tangled-roots", 4) {{
 			wall = rootsWall;
 			decoration = tumbleweed;
 		}};
@@ -172,11 +178,25 @@ public class SWEnvironment {
 		soilWall = new StaticWall("soil-wall") {{
 			attributes.set(Attribute.sand, 1);
 		}};
+		soilBoulder = new Prop("soil-boulder") {{
+			variants = 2;
+		}};
+		concretion = new OverlayFloor("concretion") {{
+			variants = 4;
+		}};
+		dryRiver = new Floor("dry-river", 4) {{
+			wall = soilWall;
+			decoration = soilBoulder;
+		}};
 		soil = new Floor("soil", 4) {{
 			wall = soilWall;
+			decoration = soilBoulder;
+			blendGroup = dryRiver;
 		}};
-		clay = new Floor("clay", 3) {{
+		clay = new Floor("clay", 4) {{
 			wall = soilWall;
+			decoration = soilBoulder;
+			blendGroup = dryRiver;
 		}};
 		// endregion
 

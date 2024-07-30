@@ -37,7 +37,7 @@ public class SWTables {
 					def.liquidBits.flip(Vars.content.liquids().indexOf(liquid));
 					run.run();
 				}).tooltip(liquid.localizedName).size(32f).pad(2.5f).get();
-				button.setChecked(def.itemBits.get(Vars.content.liquids().indexOf(liquid)));
+				button.setChecked(def.liquidBits.get(Vars.content.liquids().indexOf(liquid)));
 				if ((Vars.content.liquids().indexOf(liquid) + 1) % 4 == 0) liquids.row();
       })).maxHeight(148f);
 		}).row();

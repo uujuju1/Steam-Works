@@ -229,5 +229,50 @@ public class SWFx {
       Draw.alpha(1f);
       Lines.stroke(4f * e.fout());
       Lines.square(e.x, e.y, block.size * 4f);
-    });
+    }),
+  
+    realityTear = new Effect(60f, e -> {
+      Color[] colors = new Color[]{Color.red, Color.green, Color.blue};
+
+      float p = Interp.exp10Out.apply(e.fout());
+      Draw.blend(Blending.additive);
+      for (Color value : colors) {
+        rand.setSeed(e.id);
+        float
+          dx = e.x + Mathf.random(-8f, 8f),
+          dy = e.y + Mathf.random(-8f, 8f);
+
+        Draw.color(value);
+        Fill.rect(dx, dy, e.rotation * p, e.rotation * p, rand.random(360f));
+        for (int i = 0; i < Mathf.floor(e.rotation / 16); i++) {
+          float
+            ox = dx + Angles.trnsx(rand.random(360f), rand.random(-e.rotation / 2f * p, e.rotation / 2f * p)),
+            oy = dy + Angles.trnsy(rand.random(360f), rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+          Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, rand.random(360f) + 90f);
+          Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, rand.random(360f) - 90f);
+
+          ox = dx + Angles.trnsx(rand.random(360f) + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+          oy = dy + Angles.trnsy(rand.random(360f) + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+          Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, rand.random(360f) - 90f);
+          Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, rand.random(360f) + 90f);
+        }
+      }
+      Draw.blend();
+      rand.setSeed(e.id);
+
+      Draw.color(Color.black);
+      Fill.rect(e.x, e.y, e.rotation * p, e.rotation * p, e.rotation);
+      for (int i = 0; i < Mathf.floor(e.rotation / 16); i++) {
+        float
+          ox = e.x + Angles.trnsx(e.rotation, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p)),
+          oy = e.y + Angles.trnsy(e.rotation, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation + 90f);
+        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation - 90f);
+
+        ox = e.x + Angles.trnsx(e.rotation + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+        oy = e.y + Angles.trnsy(e.rotation + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
+        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation - 90f);
+        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation + 90f);
+      }
+    }).layer(Layer.fogOfWar);
 }
