@@ -6,7 +6,6 @@ import mindustry.game.*;
 import mindustry.type.*;
 import sw.dream.*;
 import sw.dream.event.*;
-import sw.type.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
@@ -32,12 +31,6 @@ public class SWSectorPresets {
 		Events.on(EventType.WorldLoadEvent.class, e -> {
 			DreamCore.instance.event(null);
 			if (Vars.state.getSector() == yggdrasil.sector) DreamCore.instance.event(new YggdrasilEvent());
-		});
-
-		ScriptedSectorPreset.addScript("void", () -> {
-			if (!(DreamCore.instance.currentEvent instanceof VoidEvent) && !VoidEvent.isVoid) {
-				DreamCore.instance.event(new VoidEvent(Vars.state.rules.objectiveFlags.size));
-			}
 		});
 	}
 }
