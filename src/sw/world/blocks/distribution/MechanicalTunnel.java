@@ -16,7 +16,6 @@ import sw.util.*;
 
 public class MechanicalTunnel extends Block {
 	public TextureRegion[] regions = new TextureRegion[4];
-	public TextureRegion priorityRegion;
 
 	public int startMaxDistance = 10;
 	public ObjectIntMap<Block> floors = new ObjectIntMap<>();
@@ -39,7 +38,6 @@ public class MechanicalTunnel extends Block {
 		for (int i = 0; i < 4; i++) {
 			regions[i] = Core.atlas.find(name + "-rotation" + (i + 1));
 		}
-		priorityRegion = Core.atlas.find(name + "-priority");
 	}
 
 	@Override
@@ -75,6 +73,33 @@ public class MechanicalTunnel extends Block {
 
 	public class MechanicalTunnelBuild extends Building {
 
+		@Override
+		public boolean acceptItem(Building source, Item item) {
+			return this.items.get(item) < this.getMaximumAccepted(item) && getLink() != null && !getLink().isSending(item) && back() == source;
+		}
+
+		@Override
+		public boolean canDump(Building to, Item item) {
+			return super.canDump(to, item) && !isSending(item) && back() == to;
+		}
+
+		@Override
+		public void draw() {
+			Draw.rect(regions[rotation], x, y, 0);
+		}
+		@Override
+		public void drawSelect() {
+			Point2 end;
+			SWDraw.square(team.color, x, y, block.size * 6f, 0f);
+			if (getLink() == null) {
+				end = new Point2(maxDistance(tile, rotation) - 1, 0).rotate(rotation).add(tileX(), tileY());
+			} else {
+				end = new Point2(getLink().tileX(), getLink().tileY());
+				SWDraw.square(team.color, getLink().x, getLink().y, getLink().block.size * 6f, 0f);
+			}
+			SWDraw.linePoint(team.color, Pal.gray, x, y, end.x * 8f, end.y * 8f);
+		}
+
 		public @Nullable MechanicalTunnelBuild getLink() {
 			for (int i = 0; i < maxDistance(tile, rotation); i++) {
 				if (
@@ -88,36 +113,9 @@ public class MechanicalTunnel extends Block {
 		}
 
 		public boolean isSending(Item item) {
-			return back() != null && !back().acceptItem(this, item);
+			return back() != null && !(back() instanceof MechanicalTunnelBuild) && !back().acceptItem(this, item);
 		}
 
-		@Override
-		public void draw() {
-			Draw.rect(regions[rotation], x, y, 0);
-//			if (prioritized) Draw.rect(priorityRegion, x, y, rotdeg());
-		}
-		@Override
-		public void drawSelect() {
-			Point2 end;
-			SWDraw.square(Pal.accent, x, y, block.size * 6f, 0f);
-			if (getLink() == null) {
-				end = new Point2(maxDistance(tile, rotation), 0).rotate(rotation).add(tileX(), tileY());
-			} else {
-				end = new Point2(getLink().tileX(), getLink().tileY());
-				SWDraw.square(Pal.accent, getLink().x, getLink().y, getLink().block.size * 6f, 0f);
-			}
-			Drawf.dashLine(Pal.accent, x, y, end.x * 8f, end.y * 8f);
-		}
-
-		@Override
-		public boolean acceptItem(Building source, Item item) {
-			return this.items.get(item) < this.getMaximumAccepted(item) && getLink() != null && !getLink().isSending(item) && back() == source;
-		}
-
-		@Override
-		public boolean canDump(Building to, Item item) {
-			return super.canDump(to, item) && !isSending(item) && back() == to;
-		}
 
 		@Override
 		public void updateTile() {

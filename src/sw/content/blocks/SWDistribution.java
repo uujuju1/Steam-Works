@@ -16,7 +16,7 @@ public class SWDistribution {
 	public static Block
 
 		resistantConveyor, suspensionConveyor,
-		mechanicalDistributor, mechanicalTunnel,
+		mechanicalDistributor, mechanicalSorter, mechanicalTunnel,
 		mechanicalGate,
 		mechanicalUnloader,
 
@@ -44,10 +44,19 @@ public class SWDistribution {
 			displayedSpeed = 5f;
 			armored = true;
 		}};
-		mechanicalDistributor = new MechanicalDistributorSorter("mechanical-distributor") {{
-			requirements(Category.distribution, with(SWItems.nickel, 5));
+
+		mechanicalDistributor = new Router("mechanical-distributor") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 5
+			));
 			health = 100;
 			solid = false;
+		}};
+		mechanicalSorter = new MechanicalSorter("mechanical-sorter") {{
+			requirements(Category.distribution, with(
+				SWItems.nickel, 1,
+				Items.graphite, 1
+			));
 		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
 			requirements(Category.distribution, with(
