@@ -10,7 +10,6 @@ import static mindustry.content.TechTree.*;
 import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
-import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
@@ -25,8 +24,8 @@ public class SWTechTree {
     root = nodeRoot("Steam Works", coreScaffold, () -> {
       // region crafting
       node(siliconBoiler, () -> {
-        node(compoundSmelter, with(new OnSector(trinity)), () -> {});
-        node(densePress, with(new OnSector(light)), () -> {});
+        node(compoundSmelter, () -> {});
+        node(densePress, () -> {});
       });
       // endregion
       // region defense
@@ -94,12 +93,6 @@ public class SWTechTree {
       });
       // endregion
 	    // region sectors
-	    node(intro, () -> {
-        node(ashTray, with(new SectorComplete(intro)), () -> {
-          node(trinity, with(new Produce(Items.silicon)), () -> {});
-          node(light, with(new Produce(Items.silicon)), () -> {});
-        });
-      });
 	    // endregion
     });
     SWPlanets.wendi.techTree = root;
@@ -108,8 +101,8 @@ public class SWTechTree {
   public static void init(Seq<TechNode> root) {
     // region crafting
     root.add(node(siliconBoiler, () -> {
-      node(compoundSmelter, with(new OnSector(trinity)), () -> {});
-      node(densePress, with(new OnSector(light)), () -> {});
+      node(compoundSmelter, () -> {});
+      node(densePress, () -> {});
     }));
     root.peek().name = "crafting";
     root.peek().icon = Icon.crafting;
@@ -189,13 +182,6 @@ public class SWTechTree {
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
-    root.add(node(intro, () -> {
-      node(ashTray, with(new SectorComplete(intro)), () -> {
-        node(trinity, with(new Produce(Items.silicon)), () -> {});
-        node(light, with(new Produce(Items.silicon)), () -> {});
-      });
-    }));
-    root.peek().name = "maps";
     // endregion
   }
 }
