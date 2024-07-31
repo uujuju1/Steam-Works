@@ -128,9 +128,11 @@ public class SWTechTree {
     // region distribution
     root.add(node(resistantConveyor, () -> {
       node(mechanicalDistributor, () -> {
-        node(mechanicalTunnel);
+        node(mechanicalTunnel, () -> {
+          node(mechanicalUnloader);
+        });
         node(mechanicalGate);
-        // node(mechanicalUnloader);
+        node(mechanicalSorter);
       });
       node(suspensionConveyor);
       node(mechanicalConduit, with(new Produce(Items.silicon)), () -> {

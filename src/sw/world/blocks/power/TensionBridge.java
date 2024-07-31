@@ -1,4 +1,4 @@
-package sw.world.blocks.distribution;
+package sw.world.blocks.power;
 
 import arc.*;
 import arc.graphics.g2d.*;
@@ -53,6 +53,7 @@ public class TensionBridge extends Block {
 	@Override
 	public void changePlacementPath(Seq<Point2> points, int rotation){
 		Placement.calculateNodes(points, this, rotation, (point, other) -> Math.max(Math.abs(point.x - other.x), Math.abs(point.y - other.y)) <= range);
+		points.removeAll(point -> points.indexOf(point) > 1);
 	}
 
 	public void drawBridge(float x, float y, float ox, float oy) {

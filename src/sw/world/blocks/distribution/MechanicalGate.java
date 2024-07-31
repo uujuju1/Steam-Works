@@ -94,7 +94,7 @@ public class MechanicalGate extends OverflowGate {
 		public void tapped() {
 			configure(!invert);
 			changeSound.at(x, y);
-			changeEffect.at(x, y, 0, this);
+			changeEffect.at(x, y, 0, block);
 		}
 
 		@Override

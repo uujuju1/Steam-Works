@@ -40,14 +40,6 @@ public class MechanicalTunnel extends Block {
 	}
 
 	@Override
-	public void load() {
-		super.load();
-		for (int i = 0; i < 4; i++) {
-			regions[i] = Core.atlas.find(name + "-rotation" + (i + 1));
-		}
-	}
-
-	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
 		Point2 end = new Point2(maxDistance(Vars.world.tile(x, y), rotation) - 1, 0).rotate(rotation).add(x, y);
@@ -57,6 +49,15 @@ public class MechanicalTunnel extends Block {
 	public int getDistance(Block floor) {
 		return floors.get(floor, 0);
 	}
+
+	@Override
+	public void load() {
+		super.load();
+		for (int i = 0; i < 4; i++) {
+			regions[i] = Core.atlas.find(name + "-rotation" + (i + 1));
+		}
+	}
+
 	public int maxDistance(Tile from, int rotation) {
 		int distance = startMaxDistance;
 		int current = 1;

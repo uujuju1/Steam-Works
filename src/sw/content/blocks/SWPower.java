@@ -5,7 +5,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.world.blocks.distribution.*;
+import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.meta.*;
 

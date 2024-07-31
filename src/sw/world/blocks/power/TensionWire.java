@@ -1,4 +1,4 @@
-package sw.world.blocks.distribution;
+package sw.world.blocks.power;
 
 import arc.*;
 import arc.graphics.g2d.*;

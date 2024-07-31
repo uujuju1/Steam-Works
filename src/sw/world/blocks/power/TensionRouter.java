@@ -1,29 +1,22 @@
-package sw.world.blocks.distribution;
+package sw.world.blocks.power;
 
-import arc.struct.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.blocks.liquid.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class TensionJunction extends Block {
+public class TensionRouter extends Block {
 	public TensionConfig tensionConfig = new TensionConfig();
 
-	public TensionJunction(String name) {
+	public TensionRouter(String name) {
 		super(name);
 		destructible = solid = update = true;
 	}
 
 	@Override
 	public boolean canReplace(Block other) {
-		return other instanceof TensionBridge || other instanceof TensionRouter || other instanceof TensionWire || super.canReplace(other);
-	}
-
-	@Override public void init() {
-		tensionConfig.graphs = false;
-		tensionConfig.tier = -1;
+		return other instanceof TensionJunction || other instanceof TensionBridge || other instanceof TensionWire || super.canReplace(other);
 	}
 
 	@Override
@@ -39,22 +32,6 @@ public class TensionJunction extends Block {
 
 	public class TensionWireBuild extends Building implements HasTension {
 		public TensionModule tension = new TensionModule();
-
-		@Override
-		public HasTension getTensionDestination(HasTension source) {
-			if (!enabled) {
-				return this;
-			} else {
-				int dir = (source.relativeTo(this.tile.x, this.tile.y) + 4) % 4;
-				HasTension next = nearby(dir) instanceof HasTension ? nearby(dir).as() : null;
-				return (next != null && (next.connects(source) || next.block() instanceof LiquidJunction) ? next.getTensionDestination(this) : this);
-			}
-		}
-
-		@Override
-		public Seq<HasTension> nextBuilds() {
-			return Seq.with();
-		}
 
 		@Override public TensionModule tension() {
 			return tension;
