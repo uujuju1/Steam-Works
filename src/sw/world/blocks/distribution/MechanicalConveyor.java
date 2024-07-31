@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -45,6 +46,14 @@ public class MechanicalConveyor extends Conveyor {
 
 	@Override public TextureRegion[] icons() {
 		return new TextureRegion[]{region};
+	}
+
+	@Override
+	public void init(){
+		super.init();
+
+		if(junctionReplacement == Blocks.junction) junctionReplacement = null;
+		if(bridgeReplacement == Blocks.itemBridge) bridgeReplacement = null;
 	}
 
 	@Override

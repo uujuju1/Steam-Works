@@ -6,19 +6,19 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.distribution.*;
+import sw.content.*;
 
 import static mindustry.Vars.*;
 
 public class MechanicalGate extends OverflowGate {
 	public TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
-	public Effect changeEffect = Fx.doorclose;
+	public Effect changeEffect = SWFx.changeEffect;
 
 	public MechanicalGate(String name) {
 		super(name);

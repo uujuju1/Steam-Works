@@ -9,6 +9,7 @@ import mindustry.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
@@ -33,6 +34,12 @@ public class MechanicalTunnel extends Block {
 	}
 
 	@Override
+	public void changePlacementPath(Seq<Point2> points, int rotation) {
+		Placement.calculateNodes(points, this, rotation, (point, other) -> Math.max(Math.abs(point.x - other.x), Math.abs(point.y - other.y)) <= maxDistance(Vars.world.tile(points.first().x, points.first().y), rotation));
+		points.removeAll(point -> points.indexOf(point) > 1);
+	}
+
+	@Override
 	public void load() {
 		super.load();
 		for (int i = 0; i < 4; i++) {
@@ -43,8 +50,8 @@ public class MechanicalTunnel extends Block {
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
-		Point2 end = new Point2(maxDistance(Vars.world.tile(x, y), rotation), 0).rotate(rotation).add(x, y);
-		Drawf.dashLine(Pal.accent, x * 8f, y * 8f, end.x * 8f, end.y * 8f);
+		Point2 end = new Point2(maxDistance(Vars.world.tile(x, y), rotation) - 1, 0).rotate(rotation).add(x, y);
+		SWDraw.linePoint(Pal.accent, Pal.gray, x * 8f, y * 8f, end.x * 8f, end.y * 8f);
 	}
 
 	public int getDistance(Block floor) {
@@ -115,7 +122,6 @@ public class MechanicalTunnel extends Block {
 		public boolean isSending(Item item) {
 			return back() != null && !(back() instanceof MechanicalTunnelBuild) && !back().acceptItem(this, item);
 		}
-
 
 		@Override
 		public void updateTile() {

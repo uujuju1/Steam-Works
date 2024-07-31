@@ -2,6 +2,7 @@ package sw.world.blocks.distribution;
 
 import arc.*;
 import arc.audio.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.ui.layout.*;
@@ -19,6 +20,7 @@ public class MechanicalSorter extends Sorter {
 	public TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
 	public Effect changeEffect = SWFx.changeEffect;
+	public Color crossColor = Color.valueOf("2D2F39");
 
 	public MechanicalSorter(String name) {
 		super(name);
@@ -51,7 +53,10 @@ public class MechanicalSorter extends Sorter {
 
 		@Override
 		public void draw() {
-			super.draw();
+			Draw.color(sortItem == null ? crossColor : sortItem.color);
+			Draw.rect(cross, x, y);
+			Draw.color();
+			Draw.rect(region, x, y);
 			if (invert) Draw.rect(invertRegion, x, y);
 		}
 
