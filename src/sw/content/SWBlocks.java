@@ -5,8 +5,6 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.draw.*;
 import sw.content.blocks.*;
@@ -25,25 +23,21 @@ public class SWBlocks {
 		rebuilder,
 		pressModule, smelterModule, arcSmelterModule, impactPressModule, mixerModule, crystalizerModule,
 
-		powerWire,
-		burner,
-
     subFactory,
 		constructor,
 		upgrader,
 
-		coreScaffold,
-
 		allSource;
 
 	public static void load() {
-		SWEnvironment.load();
-		SWTurrets.load();
-		SWProduction.load();
+		SWCrafting.load();
 		SWDefense.load();
 		SWDistribution.load();
-		SWCrafting.load();
+		SWEnvironment.load();
+		SWProduction.load();
 		SWPower.load();
+		SWStorage.load();
+		SWTurrets.load();
 
 		// region crafting
 
@@ -195,36 +189,6 @@ public class SWBlocks {
 		}};
 		// endregion
 
-		// region power
-		powerWire = new PowerNode("power-wire") {{
-			requirements(Category.power, with(
-				SWItems.iron, 10,
-				SWItems.nickel, 5
-			));
-			size = 2;
-			health = 80;
-			maxNodes = 3;
-			maxRange = 80f;
-		}};
-		burner = new ConsumeGenerator("burner") {{
-			requirements(Category.power, with(
-				SWItems.iron, 50,
-				SWItems.nickel, 80
-			));
-			researchCost = with(
-				Items.titanium, 500,
-				SWItems.nickel, 800
-			);
-			size = 2;
-			health = 160;
-
-			consumeItem(Items.graphite, 1);
-
-			itemDuration = 60f;
-			powerProduction = 0.5f;
-		}};
-		// endregion
-
 		// region units
 		subFactory = new UnitFactory("submarine-factory") {{
 			requirements(Category.units, with(
@@ -275,18 +239,6 @@ public class SWBlocks {
 				new UnitType[]{SWUnitTypes.tower, SWUnitTypes.castle}
 			);
 			consumeItems(with(Items.silicon, 400));
-		}};
-		// endregion
-
-		// region storage
-		coreScaffold = new CoreBlock("core-scaffold") {{
-			requirements(Category.effect, with(SWItems.nickel, 1000, Items.graphite, 800));
-			size = 3;
-			health = 2000;
-			alwaysUnlocked = true;
-			unitType = SWUnitTypes.lambda;
-			itemCapacity = 5000;
-			unitCapModifier = 12;
 		}};
 		// endregion
 

@@ -7,7 +7,6 @@ import mindustry.gen.*;
 
 import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
-import static sw.content.SWBlocks.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.blocks.SWCrafting.*;
@@ -15,6 +14,7 @@ import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
+import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
 
 public class SWTechTree {

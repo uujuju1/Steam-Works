@@ -51,7 +51,7 @@ public class SWPlanets {
 				Items.silicon
 			);
 
-			defaultCore = SWBlocks.coreScaffold;
+			defaultCore = SWStorage.coreScaffold;
 
 			generator = new ModularPlanetGenerator() {{
 				heights.addAll(

@@ -35,7 +35,7 @@ public class MechanicalTunnel extends Block {
 
 	@Override
 	public void changePlacementPath(Seq<Point2> points, int rotation) {
-		Placement.calculateNodes(points, this, rotation, (point, other) -> Math.max(Math.abs(point.x - other.x), Math.abs(point.y - other.y)) <= maxDistance(Vars.world.tile(points.first().x, points.first().y), rotation));
+		Placement.calculateNodes(points, this, rotation, (point, other) -> Math.max(Math.abs(point.x - other.x), Math.abs(point.y - other.y)) <= maxDistance(Vars.world.tile(points.first().x, points.first().y), rotation) - 1);
 		points.removeAll(point -> points.indexOf(point) > 1);
 	}
 
