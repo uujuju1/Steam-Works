@@ -75,6 +75,7 @@ public class SWVars implements Loadable {
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.dream.events\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps.generators\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.math\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.graphics\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.util\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.world.graph\")");
@@ -96,7 +97,7 @@ public class SWVars implements Loadable {
 		ModSounds.load();
 		SWItems.load();
 		SWLiquids.load();
-//		SWEntityMapping.load();
+		SWWeathers.load();
 		SWUnitTypes.load();
 		SWBlocks.load();
 		DreamContent.load();

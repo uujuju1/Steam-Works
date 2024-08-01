@@ -1,5 +1,6 @@
 package sw.content;
 
+import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -8,6 +9,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import sw.math.*;
 import sw.world.*;
 
 public class SWFx {
@@ -230,9 +232,63 @@ public class SWFx {
       Lines.stroke(4f * e.fout());
       Lines.square(e.x, e.y, block.size * 4f);
     }),
-  
+
+    lightning = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+      Draw.color(Pal.accent);
+
+      for(int branch = 0; branch < 10; branch++) {
+        float branchElevationEnd = rand.random(0.1f, 0.2f);
+
+        temp.trns(rand.random(360f), 16f).add(e.x, e.y);
+        float endX = temp.x, endY = temp.y;
+
+        float lastX = 0, lastY = 0;
+        for(int i = 0; i < 4; i++) {
+          float
+            elevationS = Mathf.map(i/4f, 0f, 1f, 0f, branchElevationEnd),
+            elevationE = Mathf.map((i + 1f)/4f, 0f, 1f, 0f, branchElevationEnd);
+
+          temp.set(e.x, e.y).lerp(endX, endY, i/4f).add(lastX, lastY);
+          lastX = rand.range(i/4f * 8f);
+          lastY = rand.range(i/4f * 8f);
+          Tmp.v2.set(e.x, e.y).lerp(endX, endY, (i + 1f)/4f).add(lastX, lastY);
+
+          Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
+          Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
+
+          Lines.stroke(1);
+          Draw.alpha(Mathf.clamp((1f - i/4f) - e.finpow()));
+          Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
+        }
+      }
+
+      float lastX = 0, lastY = 0;
+      for(int i = 0; i < 12; i++) {
+        float elevationS = i/12f, elevationE = (i + 1f)/12f;
+
+        temp.set(e.x, e.y).add(lastX, lastY);
+        lastX = rand.range(i/12f * 8f);
+        lastY = rand.range(i/12f * 8f);
+        Tmp.v2.set(e.x, e.y).add(lastX, lastY);
+
+        Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
+        Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
+
+        Lines.stroke(3f * (1f - i/12f));
+        Draw.alpha(Mathf.clamp((1f - i/12f) - e.finpow()));
+        Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
+      }
+
+      Fill.circle(e.x, e.y, 8f * e.foutpow());
+
+      Lines.stroke(e.foutpow());
+      Lines.circle(e.x, e.y, 24f * e.finpow());
+    }),
     realityTear = new Effect(60f, e -> {
       Color[] colors = new Color[]{Color.red, Color.green, Color.blue};
+      rand.setSeed(e.id);
+      e.rotation = rand.random(24f);
 
       float p = Interp.exp10Out.apply(e.fout());
       Draw.blend(Blending.additive);
@@ -258,21 +314,5 @@ public class SWFx {
         }
       }
       Draw.blend();
-      rand.setSeed(e.id);
-
-      Draw.color(Color.black);
-      Fill.rect(e.x, e.y, e.rotation * p, e.rotation * p, e.rotation);
-      for (int i = 0; i < Mathf.floor(e.rotation / 16); i++) {
-        float
-          ox = e.x + Angles.trnsx(e.rotation, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p)),
-          oy = e.y + Angles.trnsy(e.rotation, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
-        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation + 90f);
-        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation - 90f);
-
-        ox = e.x + Angles.trnsx(e.rotation + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
-        oy = e.y + Angles.trnsy(e.rotation + 180f, rand.random(-e.rotation / 2f * p, e.rotation / 2f * p));
-        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation - 90f);
-        Drawf.tri(ox, oy, e.rotation / 8f * p, e.rotation * p, e.rotation + 90f);
-      }
-    }).layer(Layer.fogOfWar);
+    });
 }
