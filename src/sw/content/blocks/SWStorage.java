@@ -22,6 +22,7 @@ public class SWStorage {
 			));
 			size = 2;
 			health = 500;
+			itemCapacity = 500;
 			coreMerge = false;
 		}};
 
@@ -34,7 +35,7 @@ public class SWStorage {
 			health = 2000;
 			alwaysUnlocked = true;
 			unitType = SWUnitTypes.lambda;
-			itemCapacity = 5000;
+			itemCapacity = 1000;
 			unitCapModifier = 12;
 		}};
 	}

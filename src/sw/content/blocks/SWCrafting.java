@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import arc.graphics.*;
 import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
@@ -40,7 +41,7 @@ public class SWCrafting {
 			);
 		}};
 
-		compoundSmelter = new GenericCrafter("compound-smelter") {{
+		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
 			requirements(Category.crafting, with(
 				SWItems.iron, 80,
 				SWItems.nickel, 200,
@@ -49,11 +50,18 @@ public class SWCrafting {
 			));
 			size = 3;
 			health = 200;
+
+			ambientSound = Sounds.torch;
 			craftTime = 30f;
+			craftEffect = SWFx.compoundCraft;
 
 			drawer = new DrawMulti(
 				new DrawDefault(),
-				new DrawFlame(Color.valueOf("BEB5B2"))
+				new DrawFlame(Color.valueOf("BEB5B2")) {{
+					flameRadiusInMag = flameRadiusMag = 5f;
+					flameRadius = 5;
+					flameRadiusIn = 2.5f;
+				}}
 			);
 
 			consumeItems(with(
@@ -89,7 +97,7 @@ public class SWCrafting {
 			outputItem = new ItemStack(SWItems.chalk, 2);
 		}};
 
-		densePress = new GenericCrafter("dense-press") {{
+		densePress = new SWGenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
 				SWItems.iron, 160,
 				SWItems.nickel, 200,
@@ -98,8 +106,12 @@ public class SWCrafting {
 			));
 			size = 3;
 			health = 200;
+
+			ambientSound = Sounds.grinding;
 			craftTime = 60f;
 			craftEffect = SWFx.denseAlloyCraft;
+			craftSound = Sounds.dullExplosion;
+			craftSoundVolume = 0.1f;
 
 			consumeItems(with(
 				Items.silicon, 2,

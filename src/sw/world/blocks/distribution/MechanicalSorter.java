@@ -22,13 +22,18 @@ public class MechanicalSorter extends Sorter {
 	public Effect changeEffect = SWFx.changeEffect;
 	public Color crossColor = Color.valueOf("2D2F39");
 
+	private boolean wasInverted = false;
+
 	public MechanicalSorter(String name) {
 		super(name);
-		saveConfig = copyConfig = true;
 	}
 
 	@Override public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list) {
-		if (plan.config == Boolean.TRUE) Draw.rect(invertRegion, plan.drawx(), plan.drawy(), 0);
+		if (wasInverted) Draw.rect(invertRegion, plan.drawx(), plan.drawy(), 0);
+	}
+
+	@Override protected TextureRegion[] icons() {
+		return new TextureRegion[]{Core.atlas.find("sw-mechanical-conduit-router-bottom"), region};
 	}
 
 	@Override
@@ -38,7 +43,7 @@ public class MechanicalSorter extends Sorter {
 	}
 
 	public class MechanicalSorterBuild extends SorterBuild {
-		public boolean invert = false;
+		public boolean invert = wasInverted;
 
 		@Override
 		public void buildConfiguration(Table table){
@@ -47,7 +52,7 @@ public class MechanicalSorter extends Sorter {
 			table.table(Styles.black6, t -> t.check("@sw-sorter-inverted", invert, c -> {
 				changeSound.at(x, y);
 				changeEffect.at(x, y, 0f, block);
-				invert = c;
+				invert = wasInverted = c;
 			})).growX();
 		}
 

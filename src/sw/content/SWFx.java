@@ -74,14 +74,6 @@ public class SWFx {
     compoundCraft = new Effect(30f, e -> {
       rand.setSeed(e.id);
       Draw.color(Color.valueOf("BEB5B2"));
-      float offset = rand.range(360f);
-      for(int i = 0; i < 4; i++) {
-        temp.trns((i * 90f + 360f * e.finpow()) + offset, 6f);
-
-        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 8f - 4f * e.foutpow(), temp.angle());
-        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 4f - 2f * e.foutpow(), temp.angle() + 180f);
-      }
-
       Draw.z(Layer.effect);
       Angles.randLenVectors(e.id, 30, 40f * e.finpow(), (x, y) -> {
         Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.foutpow());

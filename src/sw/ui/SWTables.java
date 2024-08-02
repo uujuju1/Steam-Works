@@ -42,16 +42,16 @@ public class SWTables {
       })).maxHeight(148f);
 		}).row();
 		cont.image(whiteui).growX().padTop(10f).padBottom(10f).row();
-		cont.table(tension -> {
-			tension.add(Core.bundle.get("category.power") + ": ");
-			tension.field(def.power + "", TextField.TextFieldFilter.floatsOnly, s -> {
+		cont.table(t -> {
+			t.add(Core.bundle.get("category.power") + ": ");
+			t.field(def.power + "", TextField.TextFieldFilter.floatsOnly, s -> {
 				def.power = Strings.parseFloat(s, 0f);
 				run.run();
 			});
 		}).row();
-		cont.table(tension -> {
-			tension.add(Core.bundle.get("category.heat") + ": ");
-			tension.field(def.heat + "", TextField.TextFieldFilter.floatsOnly, s -> {
+		cont.table(t -> {
+			t.add(Core.bundle.get("bar.heat") + ": ");
+			t.field(def.heat + "", TextField.TextFieldFilter.floatsOnly, s -> {
 				def.heat = Strings.parseFloat(s, 0f);
 				run.run();
 			});
