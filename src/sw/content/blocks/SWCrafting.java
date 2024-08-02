@@ -121,8 +121,6 @@ public class SWCrafting {
 
 			consumeItem(SWItems.denseAlloy, 1);
 			consumeLiquid(SWLiquids.steam, 0.1f);
-			consumeTension(10, 10);
-			consumeTension(0, 20).staticTension();
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),

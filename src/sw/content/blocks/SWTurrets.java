@@ -16,7 +16,6 @@ import sw.audio.*;
 import sw.content.*;
 import sw.entities.bullet.*;
 import sw.world.blocks.defense.*;
-import sw.world.consumers.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -359,8 +358,6 @@ public class SWTurrets {
 					}}
 				);
 			}};
-
-			consume(new ConsumeTension(10, 20));
 
 			shootSound = Sounds.shootSmite;
 			shootType = new BasicBulletType(3f, 30, "sw-sound-wave") {{

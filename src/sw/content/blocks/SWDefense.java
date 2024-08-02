@@ -1,14 +1,11 @@
 package sw.content.blocks;
 
-import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import sw.content.*;
-import sw.world.blocks.defense.*;
 import sw.world.blocks.units.*;
-import sw.world.consumers.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -71,6 +68,7 @@ public class SWDefense {
 			health = 160;
 		}};
 
+		/*
 		unitScanner = new UnitScanner("unit-scanner") {{
 			requirements(Category.effect, with(
 				SWItems.compound, 10,
@@ -95,5 +93,7 @@ public class SWDefense {
 
 			consume(new ConsumeTension(10, 20));
 		}};
+
+		 */
 	}
 }

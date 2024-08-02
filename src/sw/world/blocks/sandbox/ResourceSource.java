@@ -8,17 +8,10 @@ import mindustry.world.blocks.heat.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.meta.*;
 import sw.ui.*;
-import sw.world.interfaces.*;
-import sw.world.meta.*;
-import sw.world.modules.*;
 
 import static mindustry.Vars.*;
 
 public class ResourceSource extends PowerGenerator {
-	public TensionConfig tensionConfig = new TensionConfig() {{
-		tier = -1;
-	}};
-
 	public ResourceSource(String name) {
 		super(name);
 		hasItems = hasLiquids = hasPower = true;
@@ -49,9 +42,8 @@ public class ResourceSource extends PowerGenerator {
 		removeBar("liquid");
 	}
 
-	public class ResourceSourceBuild extends GeneratorBuild implements HasTension, HeatBlock {
+	public class ResourceSourceBuild extends GeneratorBuild implements HeatBlock {
 		Config con = new Config();
-		TensionModule tension = new TensionModule();
 
 		@Override public void buildConfiguration(Table table) {
 			SWTables.resourceSourceSelector(table.table(Styles.black6).get(), con, () -> {
@@ -65,14 +57,14 @@ public class ResourceSource extends PowerGenerator {
 
 		@Override
 		public float getPowerProduction(){
-			return enabled ? 1000000 : 0f;
+			return enabled ? con.power : 0f;
 		}
 
 		@Override public float heatFrac(){
 			return 1;
 		}
 		@Override public float heat(){
-			return 1000;
+			return con.heat;
 		}
 
 		@Override
@@ -81,35 +73,8 @@ public class ResourceSource extends PowerGenerator {
 			for (int i = 0; i < content.items().size; i++) if (read.bool()) con.itemBits.set(i);
 			for (int i = 0; i < content.liquids().size; i++) if (read.bool()) con.liquidBits.set(i);
 			con.heatValue = read.f();
-			con.sTension = read.f();
-			con.mTension = read.f();
-		}
-
-		@Override
-		public TensionModule tension() {
-			return tension;
-		}
-		@Override
-		public TensionConfig tensionConfig() {
-			return tensionConfig;
-		}
-
-		@Override public float tensionMobile() {
-			return con.mTension;
-		}
-		@Override public float tensionStatic() {
-			return con.sTension;
-		}
-
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityAdded();
-			tensionGraph().removeBuild(this, true);
-		}
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			tensionGraph().removeBuild(this, false);
+			con.power = read.f();
+			con.heat = read.f();
 		}
 
 		@Override
@@ -131,8 +96,8 @@ public class ResourceSource extends PowerGenerator {
 			for (int i = 0; i < content.items().size; i++) write.bool(con.itemBits.get(i));
 			for (int i = 0; i < content.liquids().size; i++) write.bool(con.liquidBits.get(i));
 			write.f(con.heatValue);
-			write.f(con.sTension);
-			write.f(con.mTension);
+			write.f(con.power);
+			write.f(con.heat);
 		}
 	}
 
@@ -140,6 +105,6 @@ public class ResourceSource extends PowerGenerator {
 		public Bits
 			itemBits = new Bits(content.items().size),
 			liquidBits = new Bits(content.liquids().size);
-		public float heatValue, sTension, mTension;
+		public float heatValue, power, heat;
 	}
 }

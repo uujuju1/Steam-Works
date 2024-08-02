@@ -12,7 +12,6 @@ import static sw.content.SWLiquids.*;
 import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
-import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
 import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
@@ -59,18 +58,6 @@ public class SWTechTree {
       });
       // endregion
       //region power
-      node(combustionTensionGenerator, with(new Produce(compound)), () -> {
-        node(lowWire, () -> {
-          node(lowRouter);
-          node(lowBridge);
-          node(wireAdapter, with(new Research(coatedWire)), () -> {});
-          node(coatedWire, with(new Produce(chalk)), () -> {
-            node(coatedRouter);
-            node(coatedBridge);
-          });
-        });
-        node(distributionMender);
-      });
       //endregion
       // region production
       node(mechanicalBore, () -> {
@@ -144,25 +131,14 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(combustionTensionGenerator, () -> {
-      node(lowWire, () -> {
-        node(lowRouter);
-        node(lowBridge);
-        node(wireAdapter, with(new Research(coatedWire)), () -> {});
-        node(coatedWire, with(new Produce(chalk)), () -> {
-          node(coatedRouter);
-          node(coatedBridge);
-        });
-      });
-      node(distributionMender);
-    }));
-    root.peek().name = "power";
-    root.peek().icon = Icon.power;
+//    root.add(node(distributionMender));
+//    root.peek().name = "power";
+//    root.peek().icon = Icon.power;
     //endregion
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill);
-      node(liquidCollector, () -> node(dehydrator, with(new Research(combustionTensionGenerator)), () -> {}));
+      node(liquidCollector, () -> node(dehydrator));
     }));
     root.peek().name = "production";
     root.peek().icon = Icon.production;

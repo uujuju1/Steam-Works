@@ -8,15 +8,10 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
-import sw.world.interfaces.*;
-import sw.world.meta.*;
-import sw.world.modules.*;
 
 import static mindustry.Vars.*;
 
 public class WallGenericCrafter extends WallCrafter {
-	public TensionConfig tensionConfig = new TensionConfig();
-
 	public ItemStack[] outputItems = new ItemStack[]{};
 	public LiquidStack[] outputLiquids = new LiquidStack[]{};
 
@@ -70,32 +65,11 @@ public class WallGenericCrafter extends WallCrafter {
 	public void setStats() {
 		super.setStats();
 		stats.remove(Stat.output);
-
 		if(outputItems != null) stats.add(Stat.output, StatValues.items(60f / drillTime * size, outputItems));
 		if(outputLiquids != null) stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
 	}
 
-	public class WallGenericCrafterBuild extends WallCrafterBuild implements HasTension {
-		public TensionModule tension = new TensionModule();
-
-		@Override public TensionModule tension() {
-			return tension;
-		}
-		@Override public TensionConfig tensionConfig() {
-			return tensionConfig;
-		}
-
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityAdded();
-			tensionGraph().removeBuild(this, true);
-		}
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			tensionGraph().removeBuild(this, false);
-		}
-
+	public class WallGenericCrafterBuild extends WallCrafterBuild {
 		@Override
 		public void updateTile() {
 			boolean cons = shouldConsume();
