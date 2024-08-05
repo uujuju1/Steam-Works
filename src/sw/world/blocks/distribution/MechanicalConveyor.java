@@ -59,8 +59,8 @@ public class MechanicalConveyor extends Conveyor {
 	@Override
 	public void load() {
 		super.load();
-		tiles = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 1, 32);
-		frames = SWDraw.getRegions(Core.atlas.find(name + "-frames"), 4, 1, 32);
+		tiles = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 1, 32, 32);
+		frames = SWDraw.getRegions(Core.atlas.find(name + "-frames"), 4, 1, 32, 32);
 	}
 
 	public class MechanicalConveyorBuild extends ConveyorBuild {

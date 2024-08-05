@@ -68,7 +68,7 @@ public class SWBlocks {
 				drawer = new DrawMulti(
 					new DrawRegion("-bottom"),
 					new DrawDefault(),
-					new DrawFlame(SWDraw.compoundBase) {{
+					new DrawFlame(Color.valueOf("81726D")) {{
 						flameRadius = 5.5f;
 						flameRadiusIn = 3f;
 					}},
@@ -105,7 +105,7 @@ public class SWBlocks {
 				craftEffect = SWFx.compoundCraft;
 				drawer = new DrawMulti(
 					new DrawDefault(),
-					new DrawFlame(SWDraw.compoundBase) {{
+					new DrawFlame(Color.valueOf("81726D")) {{
 						flameRadius = 5.5f;
 						flameRadiusIn = 3f;
 					}},

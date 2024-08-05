@@ -2,41 +2,19 @@ package sw.util;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.util.*;
 import mindustry.graphics.*;
 
 public class SWDraw {
-  public static final Color
-    heatPal = Pal.accent.cpy(),
-    denseAlloyBase = Color.valueOf("565666"),
-    denseAlloyMiddle = Color.valueOf("989AA4"),
-    denseAlloySerration = Color.valueOf("6E7080"),
-    compoundBase = Color.valueOf("81726D"),
-    compoundMiddle = Color.valueOf("BEB5B2"),
-    compoundSerration = Color.valueOf("A69A96");
+//  public static final Color;
 
-  public static TextureRegion[] getRegions(TextureRegion base, int width, int height, int size) {
-    int arraySize = width * height;
+  public static TextureRegion[] getRegions(TextureRegion base, int rows, int columns, int width, int height) {
+    int arraySize = rows * columns;
     TextureRegion[] out = new TextureRegion[arraySize];
-    for (int i = 0; i < arraySize; i++) {
-      TextureRegion n = new TextureRegion(base);
-      float ix = i % width;
-      float iy = Mathf.floor((float) i/width);
+    for (int i = 0; i < rows; i++) for (int j = 0; j < columns; j++) {
 
-      n.width = n.height = size;
-      n.u = Mathf.map(ix + 0.02f, 0, width, base.u, base.u2);
-      n.u2 = Mathf.map(ix + 0.98f, 0, width, base.u, base.u2);
-      n.v = Mathf.map(iy + 0.02f, 0, height, base.v, base.v2);
-      n.v2 = Mathf.map(iy + 0.98f, 0, height, base.v, base.v2);
-
-      out[i] = n;
+      out[i + j * rows] = new TextureRegion(base, i * width, j * height, width, height);
     }
     return out;
-  }
-  public static TextureRegion getRegion(TextureRegion base, int width, int height, int size, int index) {
-    return getRegions(base, width, height, size)[index];
   }
 
   public static void square(Color color, float x, float y, float rad, float rot) {
@@ -61,34 +39,11 @@ public class SWDraw {
     Lines.line(x + rad*2f, y +  rad*2f, x, y +  rad*2f);
     Lines.line(x, y +  rad*2f, x, y);
   }
-  public static void line(Color color, float x, float y, float angle, float length) {
-    float oldStroke = Lines.getStroke();
-    Lines.stroke(Lines.getStroke() * 3f, Pal.gray);
-    Lines.lineAngle(x, y, angle, length);
-    Lines.stroke(oldStroke, color);
-    Lines.lineAngle(x, y, angle, length);
-  }
   public static void linePoint(Color middle, Color base, float x, float y, float x2, float y2) {
     float oldStroke = Lines.getStroke();
     Lines.stroke(Lines.getStroke() * 3f, base);
     Lines.line(x, y, x2, y2);
     Lines.stroke(oldStroke, middle);
     Lines.line(x, y, x2, y2);
-  }
-  public static void beltLine(Color serration, Color base, Color middle, float x, float y, float x2, float y2, float rot) {
-    Vec2 p1 = new Vec2(x, y), p2 = new Vec2(x2, y2);
-    int serrations = Mathf.round(p1.dst(p2) / 8);
-    float
-      time = 20f * serrations,
-      angle = Tmp.v1.set(p2).sub(p1).angle();
-
-    SWDraw.linePoint(middle, base, p1.x, p1.y, p2.x, p2.y);
-    Draw.color(serration);
-
-    for(int i = 0; i < serrations; i++) {
-      float progress = (rot/time + i/(float) serrations) % 1;
-      Tmp.v1.set(p1).lerp(p2, progress);
-      Drawf.tri(Tmp.v1.x, Tmp.v1.y, 3, 3, angle);
-    }
   }
 }

@@ -38,7 +38,7 @@ public class GasVent extends MultiOverlayFloor {
 	public void load() {
 		super.load();
 		if (maxDensity > 0) {
-			densityVariants = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), variants, maxDensity, 32);
+			densityVariants = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), variants, maxDensity, 32, 32);
 		} else densityVariants = variantRegions;
 	}
 
