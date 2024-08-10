@@ -15,11 +15,18 @@ public interface HasGas extends Buildingc {
 	}
 
 	/**
+	 * Returns true if this accepts gas from another gas building, does not mean that the other gas building will output.
+	 */
+	default boolean acceptsGas(HasGas from, float amount) {
+		return getGas() + amount <= from.getGas() - amount;
+	}
+
+	/**
 	 * Method indicating if this building connects to another gas building.
 	 * @apiNote Liz, do not make this method call itself on another instance.
 	 */
 	default boolean connectTo(HasGas other) {
-		return true;
+		return gasConfig().hasGas;
 	}
 
 	GasModule gas();
@@ -31,8 +38,22 @@ public interface HasGas extends Buildingc {
 	default float getGas() {
 		return gas().amount;
 	}
+	/**
+	 * Returns the pressure inside a block, lower than gas amount if less than gas capacity, more than gas amount if greater than gasCapacity.
+	 */
 	default float getGasPressure() {
 		return gas().amount * (gas().amount/gasConfig().gasCapacity);
+	}
+
+	/**
+	 * Transfer gas from a building to another, provided that this building accepts, and the source outputs.
+	 * @param force forces the transfer to happen regardless of previous conditions.
+	 */
+	default void handleGas(HasGas source, float amount, boolean force) {
+		if ((source.outputsGas(this, amount) && acceptsGas(source, amount)) || force) {
+			source.gas().subAmount(amount);
+			gas().addAmount(amount);
+		}
 	}
 
 	/**
@@ -47,5 +68,16 @@ public interface HasGas extends Buildingc {
 	 */
 	default void onGasGraphUpdate() {
 
+	}
+
+	/**
+	 * Returns true if this can output gas to another gas building. Does not mean that the other gas building will accept.
+	 */
+	default boolean outputsGas(HasGas to, float amount) {
+		return to.getGas() + amount <= getGas() - amount;
+	}
+
+	default void updateGas() {
+		if (getGasPressure() > gasConfig().maxPressure) damage(gasConfig().overpressureDamage);
 	}
 }

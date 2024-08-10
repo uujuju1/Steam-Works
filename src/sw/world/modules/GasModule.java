@@ -13,9 +13,21 @@ public class GasModule extends BlockModule {
 
 	public GasGraph graph = new GasGraph();
 
+	public void addAmount(float value) {
+		amount += value;
+	}
+
 	@Override
 	public void read(Reads read) {
 		amount = read.f();
+	}
+
+	public void setAmount(float value) {
+		amount = value;
+	}
+
+	public void subAmount(float value) {
+		amount -= value;
 	}
 
 	@Override

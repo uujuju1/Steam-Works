@@ -16,6 +16,14 @@ public class SWFx {
   public static final Rand rand = new Rand();
   public static final Vec2 temp = new Vec2();
 
+
+  protected static final Rect[] rects = new Rect[]{
+    new Rect(0, 0, 24, 16),
+    new Rect(16, 0, 16, 24),
+    new Rect(8, 16, 24, 16),
+    new Rect(0, 8, 16, 24)
+  };
+
   public static Effect
     gasVent = new Effect(120f, e -> {
       if (!(e.data instanceof MultiShape shape)) return;
@@ -224,6 +232,28 @@ public class SWFx {
       Lines.stroke(4f * e.fout());
       Lines.square(e.x, e.y, block.size * 4f);
     }),
+
+    fragment = new Effect(60f, e -> {
+      if (!(e.data instanceof Block block)) return;
+      TextureRegion region = block.region;
+      rand.setSeed(e.id);
+      Vec2[] offsets = new Vec2[]{
+        new Vec2(-1f, 2f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
+        new Vec2(2f, 1f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
+        new Vec2(1f, -2f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
+        new Vec2(-2f, -1f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow())
+      };
+
+      Draw.z(Layer.bullet - 1);
+      Draw.alpha(Interp.exp10Out.apply(e.fout()));
+
+      for(int i = 0; i < 4; i++) {
+        Draw.rect(
+          new TextureRegion(region, (int) rects[i].x, (int) rects[i].y, (int) rects[i].width, (int) rects[i].height),
+          e.x + offsets[i].x, e.y + offsets[i].y, rand.random(720f) * e.finpow()
+        );
+      }
+    }).layer(Layer.block),
 
     lightning = new Effect(60f, e -> {
       rand.setSeed(e.id);

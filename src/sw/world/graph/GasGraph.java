@@ -18,6 +18,9 @@ public class GasGraph {
 	 */
 	public final Seq<HasGas> builds = new Seq<>();
 
+	public static float delta = 1;
+	public static int runs = 1;
+
 	/**
 	 * Adds a build to this graph, and removes the build from its older graph.
 	 */
@@ -71,5 +74,14 @@ public class GasGraph {
 	 * Called every frame by the updater.
 	 */
 	public void update() {
+		for (int i = 0; i < runs; i++) {
+			builds.each(build -> {
+				var others = build.nextBuilds().retainAll(b -> b.acceptsGas(build, 0) && build.outputsGas(b, 0));
+				others.each(other -> {
+					float transferAmount = (build.getGas() - other.getGas())/2f;
+					other.handleGas(build, transferAmount, false);
+				});
+			});
+		}
 	}
 }

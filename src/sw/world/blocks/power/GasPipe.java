@@ -1,10 +1,17 @@
 package sw.world.blocks.power;
 
 import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
+import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.entities.effect.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
+import sw.content.*;
 import sw.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -19,12 +26,56 @@ public class GasPipe extends Block {
 	public GasPipe(String name) {
 		super(name);
 		update = true;
+		var a = this;
+		destroyEffect = new MultiEffect(
+			new WrapEffect(Fx.dynamicExplosion, Color.white, 1f),
+			new WrapEffect(SWFx.fragment, Color.white, 1f) {
+				@Override
+				public void create(float x, float y, float rotation, Color color, Object data) {
+					effect.create(x, y, this.rotation, this.color, a);
+				}
+			}
+		);
+	}
+
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		Draw.rect(getPlanRegion(plan, list), plan.drawx(), plan.drawy());
+	}
+
+	@Override
+	public TextureRegion getPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		var current = new Object() {
+			public int tiling;
+		};
+		for (int i = 0; i < 4; i++) {
+			int finalI = i;
+			list.each(other -> {
+				if (new Point2(plan.x, plan.y).add(Geometry.d4(finalI)).equals(other.x, other.y)) {
+					if (other.block instanceof GasPipe) current.tiling |= 1 << finalI;
+				}
+			});
+		}
+		return regions[current.tiling];
 	}
 
 	@Override
 	public void load() {
 		super.load();
-		regions = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 4, 32, 32);
+		if (Core.atlas.find(name + "-tiles").found()) {
+			regions = SWDraw.getRegions(Core.atlas.find(name + "-tiles"), 4, 4, 32, 32);
+		} else {
+			regions = new TextureRegion[16];
+			for (int i = 0; i < regions.length; i++) {
+				regions[i] = Core.atlas.find("error");
+			}
+		}
+	}
+
+	@Override
+	public void setBars() {
+		super.setBars();
+		gasConfig.addBars(this);
 	}
 
 	public class GasPipeBuild extends Building implements HasGas {
@@ -34,7 +85,7 @@ public class GasPipe extends Block {
 
 		@Override
 		public boolean connectTo(HasGas other) {
-			return other instanceof GasPipeBuild && other.team() == team;
+			return HasGas.super.connectTo(other) && other.team() == team;
 		}
 
 		@Override
@@ -64,7 +115,7 @@ public class GasPipe extends Block {
 
 			tiling = 0;
 			for (int i = 0; i < 4; i++) {
-				if (nearby(i) instanceof GasPipeBuild && nearby(i).team == team) {
+				if (nearby(i) instanceof HasGas gas && HasGas.connects(this, gas)) {
 					tiling |= 1 << i;
 				}
 			}
@@ -74,6 +125,11 @@ public class GasPipe extends Block {
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 			gasGraph().remove(this, true);
+		}
+
+		@Override
+		public void updateTile() {
+			updateGas();
 		}
 
 		@Override
