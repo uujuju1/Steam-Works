@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.entities.units.*;
 import sw.util.*;
 import sw.world.interfaces.*;
+import sw.world.meta.*;
 
 public class GasPump extends GasPipe {
 	public float pumpSpeed = 0.1f;
@@ -57,6 +58,12 @@ public class GasPump extends GasPipe {
 		topRegion = Core.atlas.find(name + "-top");
 	}
 
+	@Override
+	public void setStats() {
+		super.setStats();
+		stats.add(SWStat.gasTranfer, Strings.fixed(pumpSpeed, 2), SWStat.gasSecond);
+	}
+
 	public class GasPumpBuild extends GasPipeBuild {
 		@Override public boolean acceptsGas(HasGas from, float amount) {
 			return false;
@@ -96,7 +103,8 @@ public class GasPump extends GasPipe {
 			));
 			if (
 				front() instanceof HasGas front && front.gasConfig().hasGas &&
-				back() instanceof HasGas back && back.gasConfig().hasGas && back.getGas() > 0
+				back() instanceof HasGas back && back.gasConfig().hasGas && back.getGas() > 0 &&
+				HasGas.connects(this, front) && HasGas.connects(this, back)
 			) {
 				front.handleGas(back, Mathf.clamp(pumpSpeed * Time.delta, 0, back.getGas()), true);
 			}

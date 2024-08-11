@@ -1,5 +1,6 @@
 package sw.world.interfaces;
 
+import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.gen.*;
 import sw.world.graph.*;
@@ -23,10 +24,10 @@ public interface HasGas extends Buildingc {
 
 	/**
 	 * Method indicating if this building connects to another gas building.
-	 * @apiNote Liz, do not make this method call itself on another instance.
+	 * @apiNote Liz, do not make this method call itself on another instance, and do not make this null, ever.
 	 */
 	default boolean connectTo(HasGas other) {
-		return gasConfig().hasGas;
+		return gasConfig().hasGas && other.team() == team() && (gasConfig().connections.isEmpty() || gasConfig().connections.contains(new Point2(other.tileX(), other.tileY()).sub(tileX(), tileY())));
 	}
 
 	GasModule gas();

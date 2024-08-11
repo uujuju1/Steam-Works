@@ -3,13 +3,19 @@ package sw.content.blocks;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.draw.*;
 import sw.content.*;
+import sw.util.*;
 import sw.world.blocks.power.*;
+import sw.world.blocks.production.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWPower {
-	public static Block gasPipe, gasPump;
+	public static Block
+		gasPipe, gasPump,
+	boiler;
 
 	public static void load() {
 		gasPipe = new GasPipe("gas-pipe") {{
@@ -24,6 +30,36 @@ public class SWPower {
 				Items.silicon, 3
 			));
 			health = 80;
+		}};
+
+		boiler = new SWGenericCrafter("boiler") {{
+			requirements(Category.power, with(
+				SWItems.iron, 20,
+				SWItems.compound, 40,
+				Items.silicon, 35
+			));
+			size = 2;
+			health = 160;
+
+			gasConfig = new GasConfig() {{
+				overpressureDamage = 0.2f;
+				connections = BlockGeometry.half2;
+			}};
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawRegion("-rotator") {{
+					spinSprite = true;
+					rotateSpeed = 2f;
+				}}
+			);
+
+			consumeItem(Items.graphite, 1);
+			consumeLiquid(SWLiquids.solvent, 0.1f);
+			craftTime = 30;
+
+			outputGas = 4/60f;
+			outputGasContinuous = true;
 		}};
 	}
 }

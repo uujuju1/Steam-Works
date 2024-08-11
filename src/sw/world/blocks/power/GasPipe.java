@@ -78,15 +78,16 @@ public class GasPipe extends Block {
 		gasConfig.addBars(this);
 	}
 
+	@Override
+	public void setStats() {
+		super.setStats();
+		gasConfig.addStats(stats);
+	}
+
 	public class GasPipeBuild extends Building implements HasGas {
 		public GasModule gas = new GasModule();
 
 		public int tiling = 0;
-
-		@Override
-		public boolean connectTo(HasGas other) {
-			return HasGas.super.connectTo(other) && other.team() == team;
-		}
 
 		@Override
 		public void draw() {
@@ -101,8 +102,8 @@ public class GasPipe extends Block {
 		}
 
 		@Override
-		public void read(Reads read) {
-			super.read(read);
+		public void read(Reads read, byte revision) {
+			super.read(read, revision);
 			gas.read(read);
 		}
 

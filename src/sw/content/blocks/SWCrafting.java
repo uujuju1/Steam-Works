@@ -8,7 +8,9 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.util.*;
 import sw.world.blocks.production.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -127,12 +129,15 @@ public class SWCrafting {
 				SWItems.denseAlloy, 35,
 				Items.silicon, 30
 			));
-
 			size = 2;
 			health = 160;
 
+			gasConfig = new GasConfig() {{
+				connections = BlockGeometry.sides2;
+			}};
+
 			consumeItem(SWItems.denseAlloy, 1);
-			consumeLiquid(SWLiquids.steam, 0.1f);
+			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),

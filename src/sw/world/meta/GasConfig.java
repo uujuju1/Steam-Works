@@ -3,6 +3,8 @@ package sw.world.meta;
 import arc.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -31,6 +33,11 @@ public class GasConfig {
 	 */
 	public float overpressureDamage = 0.1f;
 
+	/**
+	 * List of possible positions whene a building can connect to. If null, everywhere is allowed.
+	 */
+	public Seq<Point2> connections = new Seq<>();
+
 	public Color barColor = Pal.lancerLaser, barColorTo = Pal.turretHeat;
 
 	public void addBars(Block block) {
@@ -46,5 +53,7 @@ public class GasConfig {
 	}
 	public void addStats(Stats stats) {
 		if (!hasGas) return;
+		stats.add(SWStat.gasCapacity, Strings.fixed(gasCapacity, 2), SWStat.gasUnit);
+		stats.add(SWStat.maxPressure, Strings.fixed(maxPressure, 2), SWStat.pressureUnit);
 	}
 }
