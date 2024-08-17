@@ -74,7 +74,7 @@ public class SWPower {
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 			craftTime = 30;
 
-			outputGas = 4/60f;
+			outputGas = 0.2f;
 			outputGasContinuous = true;
 		}};
 	}

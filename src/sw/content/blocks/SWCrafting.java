@@ -74,13 +74,16 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
-		chalkSeparator = new GenericCrafter("chalk-separator") {{
+		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
 			requirements(Category.crafting, with(
 
 			));
 			size = 2;
 			health = 160;
-			craftTime = 120f;
+
+			gasConfig = new GasConfig() {{
+				connections = BlockGeometry.sides2;
+			}};
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -91,10 +94,12 @@ public class SWCrafting {
 				new DrawRegion("-top")
 			);
 
+			craftTime = 120f;
 			consumeItems(with(
 				Items.sand, 1,
 				SWItems.compound, 2
 			));
+			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
 
 			outputItem = new ItemStack(SWItems.chalk, 2);
 		}};
