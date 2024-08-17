@@ -1,23 +1,36 @@
 package sw.world.blocks.power;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.gen.*;
+import sw.content.*;
 import sw.util.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
-public class GasPump extends GasPipe {
+public class GasValve extends GasPipe {
 	public float pumpSpeed = 0.1f;
+	public float pumpOpenTime = 60f;
+
+	public Effect pumpEffect = SWFx.valveElevation;
+	public float pumpEffectChance = 0.8f;
+
+	public Effect swapEffect = Fx.hitBulletColor;
+
+	public Sound swapSound = Sounds.door;
+	public float swapSoundVolume = 1f;
 
 	public TextureRegion topRegion;
 
-	public GasPump(String name) {
+	public GasValve(String name) {
 		super(name);
-		rotate = true;
 	}
 
 	@Override
@@ -35,7 +48,7 @@ public class GasPump extends GasPipe {
 			int finalI = i;
 			list.each(other -> {
 				if (new Point2(plan.x, plan.y).add((Geometry.d4((((plan.rotation + 1) % 2 - 1 + finalI) + 4) % 4))).equals(other.x, other.y)) {
-					if (other.block instanceof GasPipe && !(other.block instanceof GasPump)) current.tiling |= 1 << finalI /2;
+					if (other.block instanceof GasPipe) current.tiling |= 1 << finalI /2;
 				}
 			});
 		}
@@ -64,19 +77,18 @@ public class GasPump extends GasPipe {
 		stats.add(SWStat.gasTranfer, Strings.fixed(pumpSpeed, 2), SWStat.gasSecond);
 	}
 
-	public class GasPumpBuild extends GasPipeBuild {
-		@Override public boolean acceptsGas(HasGas from, float amount) {
-			return false;
-		}
+	public class GasValveBuild extends GasPipeBuild {
+		public boolean open;
+		public float openTimer = 0;
 
 		@Override public boolean connectTo(HasGas other) {
-			return super.connectTo(other) && (other == front() || other == back()) && !(other instanceof GasPumpBuild);
+			return super.connectTo(other) && (other == front() || other == back());
 		}
 
 		@Override
 		public void draw() {
 			Draw.rect(regions[tiling], x, y, (rotdeg() + 90) % 180 - 90f);
-			Draw.rect(topRegion, x, y, rotdeg());
+			Draw.rect(topRegion, x, y, (rotdeg() + (open ? 90f : 180f)) % 180 - 90f);
 		}
 
 		@Override
@@ -89,23 +101,29 @@ public class GasPump extends GasPipe {
 			}
 		}
 
-		@Override public boolean outputsGas(HasGas to, float amount) {
-			return false;
-		}
-
 		@Override
 		public void updateGas() {
-			gas().setAmount(Math.max(
-				front() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0,
-				back() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0
-			));
-			if (
-				front() instanceof HasGas front && front.gasConfig().hasGas &&
-				back() instanceof HasGas back && back.gasConfig().hasGas && back.getGas() > 0 &&
-				HasGas.connects(this, front) && HasGas.connects(this, back)
-			) {
-				front.handleGas(back, Mathf.clamp(pumpSpeed * Time.delta, 0, back.getGas()), true);
+			if (getGas() > gasConfig.gasCapacity) {
+				if (!open && openTimer <= 0) {
+					openTimer = pumpOpenTime;
+					swapEffect.at(x, y, (rotdeg() + (open ? 90f : 180f)) % 180 - 90f);
+					open = true;
+					swapSound.at(x, y, 1, swapSoundVolume);
+				}
+			} else {
+				if (open && openTimer <= 0) {
+					openTimer = pumpOpenTime;
+					swapEffect.at(x, y, (rotdeg() + (open ? 90f : 180f)) % 180 - 90f);
+					open = false;
+					swapSound.at(x, y, 1, swapSoundVolume);
+				}
 			}
+			if (open) {
+				gas().subAmount(Math.min(getGas(), pumpSpeed * Time.delta * (getGasPressure() / gasConfig.gasCapacity)));
+				if (Mathf.chance(pumpEffectChance)) pumpEffect.at(x, y, (rotdeg() + (open ? 90f : 180f)) % 180 - 90f);
+			}
+
+			if (openTimer > 0) openTimer -= Time.delta;
 			super.updateGas();
 		}
 	}

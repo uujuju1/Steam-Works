@@ -14,7 +14,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		gasPipe, gasPump, gasJunction,
+		gasPipe, gasPump, gasValve, gasJunction,
 	boiler;
 
 	public static void load() {
@@ -35,6 +35,13 @@ public class SWPower {
 			requirements(Category.power, with(
 				SWItems.compound, 2,
 				Items.silicon, 3
+			));
+			health = 80;
+		}};
+		gasValve = new GasValve("gas-valve") {{
+			requirements(Category.power, with(
+				SWItems.compound, 3,
+				Items.silicon, 2
 			));
 			health = 80;
 		}};

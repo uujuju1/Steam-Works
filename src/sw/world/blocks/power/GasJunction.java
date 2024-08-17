@@ -4,11 +4,17 @@ import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.entities.units.*;
+import mindustry.world.*;
 import sw.world.interfaces.*;
 
 public class GasJunction extends GasPipe {
 	public GasJunction(String name) {
 		super(name);
+	}
+
+	@Override
+	public boolean canReplace(Block other) {
+		return super.canReplace(other) || (other instanceof GasPipe pipe && pipe.junctionReplacement == this);
 	}
 
 	@Override public TextureRegion getPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {

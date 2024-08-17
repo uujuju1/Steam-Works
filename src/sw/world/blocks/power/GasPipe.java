@@ -43,7 +43,7 @@ public class GasPipe extends Block {
 
 	@Override
 	public boolean canReplace(Block other) {
-		return super.canReplace(other) && other == junctionReplacement;
+		return super.canReplace(other) || other == junctionReplacement;
 	}
 
 	@Override
@@ -116,18 +116,22 @@ public class GasPipe extends Block {
 		}
 
 		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-
-			new GasGraph().addBuild(this);
-			nextBuilds().each(build -> gasGraph().merge(build.gasGraph(), false));
-
+		public void onGasGraphUpdate() {
 			tiling = 0;
 			for (int i = 0; i < 4; i++) {
 				if (nearby(i) instanceof HasGas gas && HasGas.connects(this, gas.getGasDestination(this))) {
 					tiling |= 1 << i;
 				}
 			}
+		}
+
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+
+			new GasGraph().addBuild(this);
+			nextBuilds().each(build -> gasGraph().merge(build.gasGraph(), false));
+			onGasGraphUpdate();
 		}
 
 		@Override

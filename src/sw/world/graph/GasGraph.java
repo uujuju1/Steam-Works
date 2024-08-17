@@ -67,6 +67,7 @@ public class GasGraph {
 				p.gasGraph().merge(new GasGraph(), true);
 			});
 		}
+		builds.each(HasGas::onGasGraphUpdate);
 		checkEntity();
 	}
 

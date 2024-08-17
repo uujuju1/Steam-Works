@@ -172,6 +172,18 @@ public class SWFx {
       Fill.circle(temp.x, temp.y, (5 - 2 * e.fin()) * rand.random(0.75f, 1.25f));
 		}),
 
+    valveElevation = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+
+      Draw.alpha(Mathf.slope(e.fin()) * 0.5f);
+      for (int i : Mathf.signs) {
+        float minSize = rand.random(2f), maxSize = minSize + rand.random(6f);
+        temp.set(e.x, e.y + (rand.random(8f, 16f) * e.fin()) * i);
+        Parallax.getParallaxFrom(temp, Core.camera.position, 0.1f * e.fin());
+        Fill.circle(temp.x, temp.y, Mathf.map(e.fin(), 0f, 1f, minSize, maxSize));
+      }
+    }),
+
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);
 

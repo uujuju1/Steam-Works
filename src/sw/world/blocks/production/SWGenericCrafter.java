@@ -63,7 +63,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			craftSound.at(x, y, 1f, craftSoundVolume);
-			if (!outputGasContinuous) {
+			if (!outputGasContinuous && outputGas > 0) {
 				gas().addAmount(outputGas);
 			}
 		}
@@ -104,8 +104,8 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void updateTile() {
 			updateGas();
 			super.updateTile();
-			if (efficiency > 0 && outputGasContinuous) {
-				gas.addAmount(outputGas * Time.delta);
+			if (efficiency > 0) {
+				if (outputGasContinuous && outputGas > 0) gas.addAmount(outputGas * Time.delta);
 
 				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
 					updateEffectStatic.at(x, y);
