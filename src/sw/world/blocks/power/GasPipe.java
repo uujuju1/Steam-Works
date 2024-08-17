@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
@@ -20,6 +21,8 @@ import sw.world.modules.*;
 
 public class GasPipe extends Block {
 	public GasConfig gasConfig = new GasConfig();
+
+	public Block junctionReplacement;
 
 	public TextureRegion[] regions;
 
@@ -39,8 +42,8 @@ public class GasPipe extends Block {
 	}
 
 	@Override
-	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		Draw.rect(getPlanRegion(plan, list), plan.drawx(), plan.drawy());
+	public boolean canReplace(Block other) {
+		return super.canReplace(other) && other == junctionReplacement;
 	}
 
 	@Override
@@ -57,6 +60,11 @@ public class GasPipe extends Block {
 			});
 		}
 		return regions[current.tiling];
+	}
+
+	@Override
+	public Block getReplacement(BuildPlan req, Seq<BuildPlan> plans) {
+		return (junctionReplacement != null && req.tile().block() == this && req.tile().build.team == req.build().team()) ? junctionReplacement : this;
 	}
 
 	@Override
@@ -116,7 +124,7 @@ public class GasPipe extends Block {
 
 			tiling = 0;
 			for (int i = 0; i < 4; i++) {
-				if (nearby(i) instanceof HasGas gas && HasGas.connects(this, gas)) {
+				if (nearby(i) instanceof HasGas gas && HasGas.connects(this, gas.getGasDestination(this))) {
 					tiling |= 1 << i;
 				}
 			}

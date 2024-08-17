@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.math.*;
@@ -154,6 +155,22 @@ public class SWFx {
       );
     });
     }),
+
+    burnElevation = new Effect(120f, e -> {
+      Draw.z(Layer.darkness + 1f);
+
+      rand.setSeed(e.id);
+      Draw.color(Pal.darkestGray, Color.gray, e.finpow());
+      Draw.alpha(Mathf.slope(e.finpow()));
+
+      temp.set(0f, 0f);
+      Groups.weather.each(weather -> temp.add(Tmp.v1.set(weather.windVector).scl(weather.opacity)));
+      temp.scl(1f/Math.max(1f, Groups.weather.size()));
+      temp.scl(e.fin() * 30f).add(e.x, e.y);
+      Parallax.getParallaxFrom(temp, Core.camera.position, e.finpow() * 0.5f);
+
+      Fill.circle(temp.x, temp.y, (5 - 2 * e.fin()) * rand.random(0.75f, 1.25f));
+		}),
 
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);

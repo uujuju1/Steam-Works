@@ -1,8 +1,11 @@
 package sw.world.blocks.production;
 
 import arc.audio.*;
+import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -19,6 +22,8 @@ public class SWGenericCrafter extends GenericCrafter {
 
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
+
+	public Effect updateEffectStatic = Fx.none;
 
 	public SWGenericCrafter(String name) {
 		super(name);
@@ -101,6 +106,10 @@ public class SWGenericCrafter extends GenericCrafter {
 			super.updateTile();
 			if (efficiency > 0 && outputGasContinuous) {
 				gas.addAmount(outputGas * Time.delta);
+
+				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
+					updateEffectStatic.at(x, y);
+				}
 			}
 		}
 

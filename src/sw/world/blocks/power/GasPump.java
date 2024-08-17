@@ -98,8 +98,8 @@ public class GasPump extends GasPipe {
 		@Override
 		public void updateGas() {
 			gas().setAmount(Math.max(
-				front() instanceof HasGas gas && gas.gasConfig().hasGas ? gas.getGas() : 0,
-				back() instanceof HasGas gas && gas.gasConfig().hasGas ? gas.getGas() : 0
+				front() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0,
+				back() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0
 			));
 			if (
 				front() instanceof HasGas front && front.gasConfig().hasGas &&

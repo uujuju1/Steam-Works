@@ -14,7 +14,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		gasPipe, gasPump,
+		gasPipe, gasPump, gasJunction,
 	boiler;
 
 	public static void load() {
@@ -24,6 +24,13 @@ public class SWPower {
 			));
 			health = 40;
 		}};
+		gasJunction = new GasJunction("gas-junction") {{
+			requirements(Category.power, with(
+				SWItems.compound, 5
+			));
+			health = 40;
+		}};
+		((GasPipe) gasPipe).junctionReplacement = gasJunction;
 		gasPump = new GasPump("gas-pump") {{
 			requirements(Category.power, with(
 				SWItems.compound, 2,
@@ -53,6 +60,8 @@ public class SWPower {
 					rotateSpeed = 2f;
 				}}
 			);
+
+			updateEffectStatic = SWFx.burnElevation;
 
 			consumeItem(Items.graphite, 1);
 			consumeLiquid(SWLiquids.solvent, 0.1f);

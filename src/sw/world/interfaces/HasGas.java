@@ -1,5 +1,6 @@
 package sw.world.interfaces;
 
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.gen.*;
@@ -36,6 +37,10 @@ public interface HasGas extends Buildingc {
 		return gas().graph;
 	}
 
+	default HasGas getGasDestination(HasGas from) {
+		return this;
+	}
+
 	default float getGas() {
 		return gas().amount;
 	}
@@ -44,6 +49,13 @@ public interface HasGas extends Buildingc {
 	 */
 	default float getGasPressure() {
 		return gas().amount * (gas().amount/gasConfig().gasCapacity);
+	}
+
+	/**
+	 * Returns the amount of gas left to fill the block with a safe amount of gas.
+	 */
+	default float getMaximumAcceptedGas(float amount) {
+		return Mathf.clamp(getGas() + amount, 0, gasConfig().gasCapacity - getGas());
 	}
 
 	/**
@@ -61,7 +73,7 @@ public interface HasGas extends Buildingc {
 	 * Returns a seq with the gas buildings that this build can connect to.
 	 */
 	default Seq<HasGas> nextBuilds() {
-		return proximity().select(b -> b instanceof HasGas a && connects(this, a)).as();
+		return proximity().select(b -> b instanceof HasGas a && connects(this, a.getGasDestination(this))).map(a -> ((HasGas) a).getGasDestination(this));
 	}
 
 	/**
