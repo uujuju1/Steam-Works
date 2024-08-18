@@ -24,6 +24,7 @@ public class SWVars implements Loadable {
 
 	public static EnvProcess envProcess;
 	public static TechtreeDialog techtreeDialog;
+	public static SectorLaunchDialog sectorLaunchDialog;
 
   public static void init() {
 		dev();
@@ -31,6 +32,7 @@ public class SWVars implements Loadable {
 		if (!Vars.headless) {
 			envProcess = new EnvProcess();
 			techtreeDialog = new TechtreeDialog();
+			sectorLaunchDialog = new SectorLaunchDialog();
 		}
 	}
 	/** code to erase unlocked progress on this mod */
