@@ -26,6 +26,8 @@ public class SWVars implements Loadable {
 	public static TechtreeDialog techtreeDialog;
 	public static SectorLaunchDialog sectorLaunchDialog;
 
+	public static boolean showSectorLaunchDialog = true;
+
   public static void init() {
 		dev();
 

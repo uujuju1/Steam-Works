@@ -6,6 +6,7 @@
 #define DIVISION 0.1
 
 uniform float u_time;
+uniform float u_opacity;
 uniform vec2 u_position;
 uniform vec2 u_resolution;
 
@@ -28,5 +29,5 @@ void main() {
         mod(uv.y + STROKE/2.0, DIVISION) < STROKE
     ) col = vec3(0.1215);
 
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(col, u_opacity);
 }
