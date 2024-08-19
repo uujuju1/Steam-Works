@@ -6,7 +6,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.scene.*;
-import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -29,7 +28,7 @@ import sw.ui.*;
 
 public class SectorLaunchDialog extends BaseDialog {
 	private Planet lastPlanet = Planets.serpulo;
-	private SectorNode selected;
+	private @Nullable SectorNode selected;
 
 	public SectorView view;
 	public Table selectSector;
@@ -63,7 +62,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			new Table(t -> t.add(view = new SectorView())),
 			new Table(t -> t.add(selectSector = new Table(Styles.black6))).bottom(),
 			new Table(t -> t.add(titleTable).growX()).top(),
-			new Table(t -> t.add(buttons).growX()).bottom().right()
+			new Table(t -> t.add(buttons)).bottom().right()
 		).grow();
 
 		view.rebuild();
@@ -83,6 +82,7 @@ public class SectorLaunchDialog extends BaseDialog {
 		hidden(() -> {
 			Vars.ui.planet.state.planet = lastPlanet;
 			if (Vars.ui.planet.state.planet == SWPlanets.wendi) Vars.ui.planet.state.planet = Planets.serpulo;
+			if (Vars.state.getSector() != null) Vars.ui.planet.hide();
 		});
 		addToMenu();
 	}
@@ -90,8 +90,7 @@ public class SectorLaunchDialog extends BaseDialog {
 	public void addToMenu() {
 		Events.run(EventType.Trigger.update, () -> {
 			if (SWVars.showSectorLaunchDialog && Vars.ui.planet.state.planet == SWPlanets.wendi && Vars.ui.planet.isShown() && !SWVars.sectorLaunchDialog.isShown()) {
-				SWVars.sectorLaunchDialog.show(Core.scene, Actions.fadeIn(0f));
-				if (Vars.state.isPlaying()) Vars.ui.planet.hide();
+				SWVars.sectorLaunchDialog.show();
 			} else {
 				if (Vars.ui.planet.state.planet != SWPlanets.wendi) lastPlanet = Vars.ui.planet.state.planet;
 			}
@@ -102,18 +101,22 @@ public class SectorLaunchDialog extends BaseDialog {
 		if (to.sector.preset == null || to.parent == null) return true;
 		Rules rules = new Rules();
 		to.sector.preset.rules.get(rules);
-		if (to.parent.sector.isBeingPlayed()) {
-			for (ItemStack stack : rules.loadout) {
+		for (ItemStack stack : rules.loadout) {
+			if (!to.parent.sector.isBeingPlayed()) {
 				if (!to.parent.sector.items().has(stack.item, stack.amount)) return false;
+			} else {
+				if (!Vars.state.rules.defaultTeam.items().has(stack.item, stack.amount)) return false;
 			}
-		} else {
-			return Vars.state.rules.defaultTeam.items().has(rules.loadout.toArray());
 		}
 		return true;
 	}
 
-	public void rebuildSelector(SectorNode sector) {
+	public void rebuildSelector(@Nullable SectorNode sector) {
 		selectSector.clear();
+		if (sector == null) {
+			selectSector.margin(0);
+			return;
+		}
 		selectSector.margin(10f);
 		selectSector.table(Tex.underline, title -> {
 			title.left();
@@ -136,13 +139,18 @@ public class SectorLaunchDialog extends BaseDialog {
 				hide();
 			} else {
 				if (sector.parent != null) {
-					if (checkLoadout(sector)) Vars.control.playSector(sector.parent.sector, sector.sector);
-				} else Vars.control.playSector(sector.sector);
-				hide();
+					if (checkLoadout(sector)) {
+						Vars.control.playSector(sector.parent.sector, sector.sector);
+						hide();
+					}
+				} else {
+					Vars.control.playSector(sector.sector);
+					hide();
+				}
 			}
 		}).growX().size(200f, 50f).tooltip(t -> {
 			t.margin(10f);
-			t.setBackground(Tex.pane);
+			t.setBackground(Tex.paneSolid);
 			t.add("loadout:").row();
 			t.table(req -> {
 				if (sector.parent == null || sector.sector.preset == null) {
@@ -208,8 +216,12 @@ public class SectorLaunchDialog extends BaseDialog {
 				button.setSize(Scl.scl(nodeSize));
 				button.clicked(() -> {
 					if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
-						selected = sectorNode;
-						rebuildSelector(sectorNode);
+						if (selected != sectorNode) {
+							selected = sectorNode;
+						} else {
+							selected = null;
+						}
+						rebuildSelector(selected);
 					}
 				});
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
