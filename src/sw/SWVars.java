@@ -13,6 +13,7 @@ import sw.content.*;
 import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
+import sw.ui.*;
 import sw.ui.dialog.*;
 import sw.world.*;
 
@@ -32,6 +33,8 @@ public class SWVars implements Loadable {
 		dev();
 
 		if (!Vars.headless) {
+			SWStyles.load();
+			ModSettings.load();
 			envProcess = new EnvProcess();
 			techtreeDialog = new TechtreeDialog();
 			sectorLaunchDialog = new SectorLaunchDialog();

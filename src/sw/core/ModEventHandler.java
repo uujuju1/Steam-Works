@@ -13,7 +13,6 @@ import sw.ui.*;
 public class ModEventHandler {
 	public static void init() {
 		Events.on(EventType.ClientLoadEvent.class, e -> {
-			SWStyles.load();
 			if (Core.settings.getBool("sw-menu-enabled", true)) {
 				try {
 					Reflect.set(MenuFragment.class, Vars.ui.menufrag, "renderer", new SWMenuRenderer());
@@ -21,7 +20,6 @@ public class ModEventHandler {
 					Log.err("Failed to replace renderer", ex);
 				}
 			}
-			ModSettings.load();
 			EventHints.initHints();
 		});
 		Events.run(EventType.Trigger.update, () -> {

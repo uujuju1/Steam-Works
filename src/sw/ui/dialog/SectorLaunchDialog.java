@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.scene.*;
+import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -14,6 +15,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -23,6 +25,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.ui.layout.*;
 import sw.*;
 import sw.content.*;
+import sw.ui.*;
 
 public class SectorLaunchDialog extends BaseDialog {
 	private Planet lastPlanet = Planets.serpulo;
@@ -33,7 +36,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 	public static Seq<SectorNode> sectors = new Seq<>();
 
-	public static float nodeSize = 128f;
+	public static float nodeSize = 149f;
 
 	public SectorLaunchDialog() {
 		super("@sector.view");
@@ -46,6 +49,10 @@ public class SectorLaunchDialog extends BaseDialog {
 		titleTable.setBackground(Styles.black6);
 		titleTable.margin(10);
 
+		buttons.remove();
+		buttons.clear();
+		buttons.button("@techtree", Icon.tree, () -> SWVars.techtreeDialog.show()).size(200f, 54f).pad(2).bottom();
+
 		SWSectorPresets.init();
 		sectors.each(sectorNode -> {
 			sectorNode.requirements = sectors.select(a -> Seq.with(sectorNode.req).contains(a.sector));
@@ -55,7 +62,8 @@ public class SectorLaunchDialog extends BaseDialog {
 		cont.stack(
 			new Table(t -> t.add(view = new SectorView())),
 			new Table(t -> t.add(selectSector = new Table(Styles.black6))).bottom(),
-			new Table(t -> t.add(titleTable).growX()).top()
+			new Table(t -> t.add(titleTable).growX()).top(),
+			new Table(t -> t.add(buttons).growX()).bottom().right()
 		).grow();
 
 		view.rebuild();
@@ -82,19 +90,40 @@ public class SectorLaunchDialog extends BaseDialog {
 	public void addToMenu() {
 		Events.run(EventType.Trigger.update, () -> {
 			if (SWVars.showSectorLaunchDialog && Vars.ui.planet.state.planet == SWPlanets.wendi && Vars.ui.planet.isShown() && !SWVars.sectorLaunchDialog.isShown()) {
-				SWVars.sectorLaunchDialog.show();
+				SWVars.sectorLaunchDialog.show(Core.scene, Actions.fadeIn(0f));
+				if (Vars.state.isPlaying()) Vars.ui.planet.hide();
 			} else {
-				lastPlanet = Vars.ui.planet.state.planet;
+				if (Vars.ui.planet.state.planet != SWPlanets.wendi) lastPlanet = Vars.ui.planet.state.planet;
 			}
 		});
+	}
+
+	public boolean checkLoadout(SectorNode to) {
+		if (to.sector.preset == null || to.parent == null) return true;
+		Rules rules = new Rules();
+		to.sector.preset.rules.get(rules);
+		if (to.parent.sector.isBeingPlayed()) {
+			for (ItemStack stack : rules.loadout) {
+				if (!to.parent.sector.items().has(stack.item, stack.amount)) return false;
+			}
+		} else {
+			return Vars.state.rules.defaultTeam.items().has(rules.loadout.toArray());
+		}
+		return true;
 	}
 
 	public void rebuildSelector(SectorNode sector) {
 		selectSector.clear();
 		selectSector.margin(10f);
 		selectSector.table(Tex.underline, title -> {
-			title.image(Icon.map).left();
-			title.add(sector.sector.name(), Pal.accent).padRight(10f);
+			title.left();
+			Image i = title.image(Icon.map).padRight(10f).get();
+			i.touchable = Touchable.enabled;
+			i.clicked(() -> {
+				Log.info("uwu, pwease add sector descwiption hewe");
+			});
+			i.addListener(new IbeamCursorListener());
+			title.add(sector.sector.name(), Pal.accent);
 		}).growX().padBottom(10f).row();
 		selectSector.button("@play", Icon.play, new TextButton.TextButtonStyle() {{
 			font = Fonts.def;
@@ -106,10 +135,29 @@ public class SectorLaunchDialog extends BaseDialog {
 				Vars.ui.planet.hide();
 				hide();
 			} else {
-				Vars.control.playSector(sector.sector);
+				if (sector.parent != null) {
+					if (checkLoadout(sector)) Vars.control.playSector(sector.parent.sector, sector.sector);
+				} else Vars.control.playSector(sector.sector);
 				hide();
 			}
-		}).growX().size(200f, 50f);
+		}).growX().size(200f, 50f).tooltip(t -> {
+			t.margin(10f);
+			t.setBackground(Tex.pane);
+			t.add("loadout:").row();
+			t.table(req -> {
+				if (sector.parent == null || sector.sector.preset == null) {
+					req.add("Free!");
+				} else {
+					Rules rules = new Rules();
+					sector.sector.preset.rules.get(rules);
+					rules.loadout.each(stack -> {
+						req.image(stack.item.uiIcon).padRight(5);
+						req.add(UI.formatAmount(stack.amount)).row();
+					});
+					if (rules.loadout.isEmpty()) req.add("Free!").padTop(5f);
+				}
+			}).padTop(5f).left();
+		});
 	}
 
 	public class SectorView extends Group {
@@ -154,20 +202,30 @@ public class SectorLaunchDialog extends BaseDialog {
 						Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
 					);
 				}
-				ImageButton button = new ImageButton();
+				Table button = new Table();
+				button.touchable = Touchable.enabled;
+				button.addListener(new HandCursorListener());
 				button.setSize(Scl.scl(nodeSize));
 				button.clicked(() -> {
-					selected = sectorNode;
-					rebuildSelector(sectorNode);
+					if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
+						selected = sectorNode;
+						rebuildSelector(sectorNode);
+					}
 				});
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
-				if (hasPreview) {
-					button.replaceImage(new Image((Texture) Core.assets.get(
-						Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
-					)).setScaling(Scaling.fit));
+				Image tex;
+				if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
+					if (hasPreview) {
+						tex = new Image((Texture) Core.assets.get(
+							Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
+						));
+					} else {
+						tex = new Image(Icon.map);
+					}
 				} else {
-					button.replaceImage(new Image(Icon.map).setScaling(Scaling.fit));
+					tex = new Image(Icon.lock);
 				}
+				button.stack(tex, new Image(SWStyles.inventoryClear)).grow();
 				minx = Math.min(minx, button.x);
 				miny = Math.min(miny, button.y);
 				maxx = Math.max(maxx, button.x + button.getWidth());
@@ -182,35 +240,31 @@ public class SectorLaunchDialog extends BaseDialog {
 		public void draw() {
 			Draw.blit(background);
 
+			super.draw();
+
 			Draw.color();
 			if (!empty) {
 				Draw.alpha(parentAlpha);
 				style.under.draw(x + minx - Scl.scl(margin), y + miny - Scl.scl(margin), maxx - minx + Scl.scl(margin) * 2f, maxy - miny + Scl.scl(margin) * 2f);
 			}
 
-			sectors.each(sector -> {
-				Lines.stroke(Scl.scl(10), style.parentColor);
-				Draw.alpha(parentAlpha);
-				if (sector.parent != null) {
-					Lines.line(sector.x + x, sector.y + y, sector.parent.x + x, sector.parent.y + y);
-				}
-			});
-			sectors.each(sector -> {
-				Lines.stroke(Scl.scl(10), style.requirementColor);
-				Draw.alpha(parentAlpha);
-				sector.requirements.each(req -> {
-					Lines.line(sector.x + x, sector.y + y, req.x + x, req.y + y);
+			if (selected != null) {
+				Lines.stroke(Scl.scl(5));
+				selected.requirements.each(req -> {
+					Draw.color(req.sector.hasSave() ? style.selectedColorValid : style.selectedColorInvalid, parentAlpha);
+					Fill.circle(selected.x + x, selected.y + y, Scl.scl(10f));
+					Lines.line(selected.x + x, selected.y + y, req.x + x, req.y + y);
+					Fill.circle(req.x + x, req.y + y, Scl.scl(10f));
 				});
-			});
-
-			Lines.stroke(Scl.scl(10), style.selectedColorValid);
-			Draw.alpha(parentAlpha);
-			if (selected != null) selected.requirements.each(req -> {
-				Lines.line(selected.x + x, selected.y + y, req.x + x, req.y + y);
-			});
+				if (selected.parent != null) {
+					Draw.color(style.parentColor, parentAlpha);
+					Fill.circle(selected.x + x, selected.y + y, Scl.scl(10f));
+					Lines.line(selected.x + x, selected.y + y, selected.parent.x + x, selected.parent.y + y, false);
+					Fill.circle(selected.parent.x + x, selected.parent.y + y, Scl.scl(10f));
+				}
+			}
 
 			Draw.reset();
-			super.draw();
 		}
 
 		public class SectorViewStyle extends Style {
@@ -218,7 +272,6 @@ public class SectorLaunchDialog extends BaseDialog {
 
 			Color
 				parentColor = Pal.accent,
-				requirementColor = Pal.gray,
 				selectedColorValid = Pal.heal,
 				selectedColorInvalid = Pal.breakInvalid;
 		}

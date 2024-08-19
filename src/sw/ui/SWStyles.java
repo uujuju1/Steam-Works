@@ -1,10 +1,14 @@
 package sw.ui;
 
+import arc.*;
+import arc.scene.style.*;
 import arc.scene.ui.Button.*;
 import mindustry.gen.*;
 
 public class SWStyles {
 	public static ButtonStyle settingButton;
+
+	public static Drawable inventoryClear;
 
 	public static void load() {
 		settingButton = new ButtonStyle() {{
@@ -12,5 +16,7 @@ public class SWStyles {
 			down = Tex.buttonSideRightDown;
 			over = Tex.buttonSideRightOver;
 		}};
+
+		inventoryClear = Core.atlas.drawable("sw-inventory-clear");
 	}
 }
