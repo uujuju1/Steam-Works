@@ -3,7 +3,7 @@
 #define TIMESCL 600.0
 #define STROKE 0.015625
 #define STROKEIN 0.046875
-#define DIVISION 0.1
+#define DIVISION 0.2
 
 uniform float u_time;
 uniform float u_opacity;

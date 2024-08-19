@@ -29,10 +29,11 @@ public class SectorLaunchDialog extends BaseDialog {
 	private SectorNode selected;
 
 	public SectorView view;
+	public Table selectSector;
 
 	public static Seq<SectorNode> sectors = new Seq<>();
 
-	public static float nodeSize = 64f;
+	public static float nodeSize = 128f;
 
 	public SectorLaunchDialog() {
 		super("@sector.view");
@@ -42,7 +43,8 @@ public class SectorLaunchDialog extends BaseDialog {
 			up = Tex.buttonSideRightDown;
 			down = Tex.buttonSideRightOver;
 		}}, this::hide).size(210f, 48f);
-		titleTable.top();
+		titleTable.setBackground(Styles.black6);
+		titleTable.margin(10);
 
 		SWSectorPresets.init();
 		sectors.each(sectorNode -> {
@@ -52,7 +54,8 @@ public class SectorLaunchDialog extends BaseDialog {
 		cont.clear();
 		cont.stack(
 			new Table(t -> t.add(view = new SectorView())),
-			titleTable
+			new Table(t -> t.add(selectSector = new Table(Styles.black6))).bottom(),
+			new Table(t -> t.add(titleTable).growX()).top()
 		).grow();
 
 		view.rebuild();
@@ -84,6 +87,29 @@ public class SectorLaunchDialog extends BaseDialog {
 				lastPlanet = Vars.ui.planet.state.planet;
 			}
 		});
+	}
+
+	public void rebuildSelector(SectorNode sector) {
+		selectSector.clear();
+		selectSector.margin(10f);
+		selectSector.table(Tex.underline, title -> {
+			title.image(Icon.map).left();
+			title.add(sector.sector.name(), Pal.accent).padRight(10f);
+		}).growX().padBottom(10f).row();
+		selectSector.button("@play", Icon.play, new TextButton.TextButtonStyle() {{
+			font = Fonts.def;
+			up = Tex.buttonEdge1;
+			over = Tex.buttonEdgeOver1;
+			down = Tex.buttonEdgeDown1;
+		}}, () -> {
+			if (sector.sector.isBeingPlayed()) {
+				Vars.ui.planet.hide();
+				hide();
+			} else {
+				Vars.control.playSector(sector.sector);
+				hide();
+			}
+		}).growX().size(200f, 50f);
 	}
 
 	public class SectorView extends Group {
@@ -130,7 +156,10 @@ public class SectorLaunchDialog extends BaseDialog {
 				}
 				ImageButton button = new ImageButton();
 				button.setSize(Scl.scl(nodeSize));
-				button.clicked(() -> selected = sectorNode);
+				button.clicked(() -> {
+					selected = sectorNode;
+					rebuildSelector(sectorNode);
+				});
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
 				if (hasPreview) {
 					button.replaceImage(new Image((Texture) Core.assets.get(
@@ -154,7 +183,10 @@ public class SectorLaunchDialog extends BaseDialog {
 			Draw.blit(background);
 
 			Draw.color();
-			if (!empty) style.under.draw(x + minx - Scl.scl(margin), y + miny - Scl.scl(margin), maxx - minx + Scl.scl(margin) * 2f, maxy - miny + Scl.scl(margin) * 2f);
+			if (!empty) {
+				Draw.alpha(parentAlpha);
+				style.under.draw(x + minx - Scl.scl(margin), y + miny - Scl.scl(margin), maxx - minx + Scl.scl(margin) * 2f, maxy - miny + Scl.scl(margin) * 2f);
+			}
 
 			sectors.each(sector -> {
 				Lines.stroke(Scl.scl(10), style.parentColor);
@@ -166,7 +198,6 @@ public class SectorLaunchDialog extends BaseDialog {
 			sectors.each(sector -> {
 				Lines.stroke(Scl.scl(10), style.requirementColor);
 				Draw.alpha(parentAlpha);
-				Draw.alpha(0.5f);
 				sector.requirements.each(req -> {
 					Lines.line(sector.x + x, sector.y + y, req.x + x, req.y + y);
 				});
