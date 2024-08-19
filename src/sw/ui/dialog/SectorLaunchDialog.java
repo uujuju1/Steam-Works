@@ -139,7 +139,7 @@ public class SectorLaunchDialog extends BaseDialog {
 				hide();
 			} else {
 				if (sector.parent != null) {
-					if (checkLoadout(sector)) {
+					if (checkLoadout(sector) || sector.sector.hasSave()) {
 						Vars.control.playSector(sector.parent.sector, sector.sector);
 						hide();
 					}
@@ -160,7 +160,11 @@ public class SectorLaunchDialog extends BaseDialog {
 					sector.sector.preset.rules.get(rules);
 					rules.loadout.each(stack -> {
 						req.image(stack.item.uiIcon).padRight(5);
-						req.add(UI.formatAmount(stack.amount)).row();
+						req.add(
+							(sector.parent.sector.isBeingPlayed() ?
+								 UI.formatAmount(Math.min(stack.amount, Vars.state.rules.defaultTeam.items().get(stack.item))) :
+								 UI.formatAmount(Math.min(stack.amount, sector.parent.sector.items().get(stack.item)))
+							) +" / " + UI.formatAmount(stack.amount)).row();
 					});
 					if (rules.loadout.isEmpty()) req.add("Free!").padTop(5f);
 				}
