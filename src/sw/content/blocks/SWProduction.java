@@ -32,7 +32,6 @@ public class SWProduction {
 			tier = 1;
 			range = 5;
 			ambientSound = Sounds.combustion;
-			ambientSoundVolume = 0.04f;
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(

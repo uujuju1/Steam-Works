@@ -231,10 +231,8 @@ public class SectorLaunchDialog extends BaseDialog {
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
 				Image tex;
 				if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
-					if (hasPreview) {
-						tex = new Image((Texture) Core.assets.get(
-							Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
-						));
+					if (sectorNode.sector.hasSave()) {
+						tex = new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap"));
 					} else {
 						tex = new Image(Icon.map);
 					}
@@ -256,13 +254,12 @@ public class SectorLaunchDialog extends BaseDialog {
 		public void draw() {
 			Draw.blit(background);
 
-			super.draw();
-
-			Draw.color();
 			if (!empty) {
 				Draw.alpha(parentAlpha);
 				style.under.draw(x + minx - Scl.scl(margin), y + miny - Scl.scl(margin), maxx - minx + Scl.scl(margin) * 2f, maxy - miny + Scl.scl(margin) * 2f);
 			}
+
+			super.draw();
 
 			if (selected != null) {
 				Lines.stroke(Scl.scl(5));

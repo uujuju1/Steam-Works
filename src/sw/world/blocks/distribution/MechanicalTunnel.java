@@ -62,6 +62,7 @@ public class MechanicalTunnel extends Block {
 		int distance = startMaxDistance;
 		int current = 1;
 		while(current > 0) {
+			if (from == null) return 0;
 			Point2 tile = new Point2(distance, 0).rotate(rotation);
 			if (from.nearby(tile) != null) {
 				current --;

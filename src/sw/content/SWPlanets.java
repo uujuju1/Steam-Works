@@ -54,39 +54,7 @@ public class SWPlanets {
 			defaultCore = SWStorage.coreScaffold;
 
 			generator = new ModularPlanetGenerator() {{
-				heights.addAll(
-					new HeightPass.NoiseHeight() {{
-						offset.set(1000f, 0f, 0f);
-						octaves = 7;
-						persistence = 0.5;
-						magnitude = 2;
-						heightOffset = -1;
-					}},
-					new HeightPass.ClampHeight(0f, 1f)
-				);
 				baseColor = SWEnvironment.soil.mapColor;
-				colors.addAll(
-					new ColorPass.NoiseColorPass() {{
-						offset.set(100, 220, 50442);
-						seed = 5;
-						octaves = 7;
-						persistence = 0.5;
-						magnitude = 2;
-						out = SWEnvironment.roots.mapColor;
-					}},
-					new ColorPass.NoiseColorPass() {{
-						offset.set(100, 220, 50442);
-						seed = 4;
-						octaves = 7;
-						persistence = 0.5;
-						magnitude = 2;
-						out = SWEnvironment.marble.mapColor;
-					}},
-					new ColorPass.FlatColorPass() {{
-						min = max = 0f;
-						out = SWEnvironment.solventRegular.mapColor;
-					}}
-				);
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU=");
 			}};
 		}};
