@@ -24,10 +24,10 @@ public class SWEnvironment {
 	andesitePlate, andesiteBoulder, andesiteWall,
 	andesite, striatedAndesite,
 
-	solventRegular, shallowSolvent, shallowerSolvent,
+	solventShards, solventIceWall, solventIceBoulder,
+	solventRegular, shallowSolvent, shallowerSolvent, solventIce, solventSnow,
 
-
-	plate, plateCross, plateVent, plateDamaged, plateCrossDamaged, plateVentDamaged, plateWall,
+	plate, plateCross, plateVent, plateWall,
 
 	multiFloor, multiOverlay, multiWall;
 
@@ -118,20 +118,41 @@ public class SWEnvironment {
 		// endregion
 
 		// region solvent
+		solventIceWall = new StaticWall("solvent-ice-wall");
+		solventIceBoulder = new Prop("solvent-ice-boulder") {{
+			variants = 2;
+		}};
+		solventShards = new OverlayFloor("solvent-shards") {{
+			variants = 4;
+		}};
 		solventRegular = new Floor("solvent-regular", 0) {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+			wall = solventIceWall;
+			decoration = solventIceBoulder;
 		}};
 		shallowSolvent = new Floor("shallow-solvent") {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+			wall = solventIceWall;
+			decoration = solventIceBoulder;
 		}};
 		shallowerSolvent = new Floor("shallower-solvent") {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+			wall = solventIceWall;
+			decoration = solventIceBoulder;
+		}};
+		solventIce = new Floor("solvent-ice", 4) {{
+			wall = solventIceWall;
+			decoration = solventIceBoulder;
+		}};
+		solventSnow = new Floor("solvent-snow", 4) {{
+			wall = solventIceWall;
+			decoration = solventIceBoulder;
 		}};
 		// endregion
 
