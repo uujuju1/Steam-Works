@@ -30,6 +30,8 @@ import static mindustry.Vars.*;
 import static mindustry.content.TechTree.*;
 
 public class TechtreeDialog extends BaseDialog {
+	private float time;
+
 	public ShaderElement shader;
 	public TreeView view;
 	public ResourceDisplay resources;
@@ -76,19 +78,21 @@ public class TechtreeDialog extends BaseDialog {
 		}).maxWidth(320f).height(64f).get().setOverscroll(false, false);
 		buttons.center().bottom();
 
-		cont.stack(shader = new ShaderElement(new Shader(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/techtreeBackground.frag")) {
-			@Override
-			public void apply() {
-				setUniformf("u_resolution", Core.camera.width, Core.camera.height);
-				setUniformf("u_time", Time.time);
-			}
-		}), new Table(t -> {
-			t.addChild(view = new TreeView(Styles.black6));
-		}), new Table(t -> {
-			t.add(resources = new ResourceDisplay(SWPlanets.wendi)).bottom().left();
-		}).bottom().left(), new Table(t -> {
-			t.add(info = new NodeView());
-		}).right(), titleTable, buttons).grow();
+		cont.stack(
+			shader = new ShaderElement(new Shader(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/techtreeBackground.frag")) {
+				@Override
+				public void apply() {
+					setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+					setUniformf("u_opacity", parentAlpha);
+					setUniformf("u_time", time);
+				}
+			}),
+			new Table(t -> t.addChild(view = new TreeView(Styles.black6))),
+			new Table(t -> t.add(resources = new ResourceDisplay(SWPlanets.wendi)).bottom().left()).bottom().left(),
+			new Table(t -> t.add(info = new NodeView())).right(),
+			titleTable,
+			buttons
+		).grow();
 
 		addCloseListener();
 		Vars.ui.research.fill(t -> t.update(() -> {
@@ -98,16 +102,15 @@ public class TechtreeDialog extends BaseDialog {
 			}
 		}));
 
-		shown(resources::rebuild);
-	}
+		shown(() -> {
+			resources.rebuild();
+			currentRoot = Core.settings.getInt("settings-sw-techtree-category", -1);
+			if (currentRoot != -1) view.rebuild(roots.get(currentRoot));
+		});
 
-	@Override public void hide() {
-		hide(Actions.fadeOut(0f));
-	}
-	@Override public Dialog show() {
-		currentRoot = Core.settings.getInt("settings-sw-techtree-category", -1);
-		if (currentRoot != -1) view.rebuild(roots.get(currentRoot));
-		return show(Core.scene, Actions.fadeIn(0f));
+		update(() -> {
+			time += Time.delta;
+		});
 	}
 
 	public void spend(TechNode node) {
@@ -194,7 +197,7 @@ public class TechtreeDialog extends BaseDialog {
 		@Override
 		public void draw() {
 			Color color = this.color;
-			Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
+			Draw.color(color, color.a * parentAlpha);
 			background.draw(x, y, width, height);
 
 			drawConnections(layout);
@@ -206,6 +209,7 @@ public class TechtreeDialog extends BaseDialog {
 			if (from == null) return;
 			for(TechTreeNode next : from.children) {
 				Lines.stroke(4, Pal.accent);
+				Draw.alpha(parentAlpha);
 				Lines.line(
 					from.x + x + margin - start,
 					from.y + y + margin,

@@ -79,11 +79,12 @@ public class SectorLaunchDialog extends BaseDialog {
 		shown(() -> {
 			view.rebuild();
 			Core.settings.put("lastplanet", lastPlanet.name);
+			Vars.ui.planet.hide();
 		});
 		hidden(() -> {
 			Vars.ui.planet.state.planet = lastPlanet;
 			if (Vars.ui.planet.state.planet == SWPlanets.wendi) Vars.ui.planet.state.planet = Planets.serpulo;
-			if (Vars.state.getSector() != null) Vars.ui.planet.hide();
+			if (Vars.state.getSector() == null) Vars.ui.planet.show();
 		});
 		addToMenu();
 		update(() -> {
@@ -220,21 +221,20 @@ public class SectorLaunchDialog extends BaseDialog {
 					});
 				}
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
-				Stack stack = button.stack(new Image(Styles.black)).grow().get();
+				Stack stack = button.stack(new Image(Styles.black)).size(Scl.scl(nodeSize)).get();
 				if (sectorNode.visible.get(sectorNode)) {
 					stack.add(new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap")));
 				} else {
-					if (!sectorNode.lock.get(sectorNode)) {
+					if (sectorNode.lock.get(sectorNode)) {
 						stack.add(new Image(Icon.lock));
 					} else {
 						stack.add(new Image(Icon.map));
 					}
 				}
 				stack.add(new Image(SWStyles.inventoryClear));
-				if (sectorNode.top != null && sectorNode.visible.get(sectorNode)) {
-					stack.add(new Table(Styles.black3, t -> {
-						t.margin(5f);
-						t.image(sectorNode.top);
+				if (sectorNode.visible.get(sectorNode)) {
+					stack.add(new Table(t -> {
+						t.table(Styles.black6, sticker -> sticker.image(sectorNode.top).size(nodeSize/4f).pad(5f));
 					}));
 				}
 				minx = Math.min(minx, button.x);

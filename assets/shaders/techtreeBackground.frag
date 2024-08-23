@@ -3,6 +3,7 @@
 #define TIMESCL 2000.0
 
 uniform float u_time;
+uniform float u_opacity;
 uniform vec2 u_resolution;
 
 varying vec2 v_texCoords;
@@ -33,5 +34,5 @@ void main() {
     }
     if (dst < 0.1) col = vec3(1.0, 0.82, 0.5);
 
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(col, u_opacity);
 }
