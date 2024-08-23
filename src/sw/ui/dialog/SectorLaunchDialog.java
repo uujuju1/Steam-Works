@@ -1,7 +1,7 @@
 package sw.ui.dialog;
 
 import arc.*;
-import arc.assets.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
@@ -29,6 +29,7 @@ import sw.ui.*;
 public class SectorLaunchDialog extends BaseDialog {
 	private Planet lastPlanet = Planets.serpulo;
 	private @Nullable SectorNode selected;
+	private float time;
 
 	public SectorView view;
 	public Table selectSector;
@@ -85,6 +86,9 @@ public class SectorLaunchDialog extends BaseDialog {
 			if (Vars.state.getSector() != null) Vars.ui.planet.hide();
 		});
 		addToMenu();
+		update(() -> {
+			time += Time.delta;
+		});
 	}
 
 	public void addToMenu() {
@@ -187,7 +191,7 @@ public class SectorLaunchDialog extends BaseDialog {
 					setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
 					setUniformf("u_position", -x, -y);
 					setUniformf("u_opacity", parentAlpha);
-					setUniformf("u_time", Time.time);
+					setUniformf("u_time", time);
 				}
 			};
 			style = new SectorViewStyle();
@@ -199,47 +203,40 @@ public class SectorLaunchDialog extends BaseDialog {
 			maxx = maxy = Float.NEGATIVE_INFINITY;
 			empty = true;
 			sectors.each(sectorNode -> {
-				boolean hasPreview = Core.assets.isLoaded(
-					Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
-				);
-
-				if (!hasPreview && Vars.mapPreviewDirectory.child(
-					"save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png"
-				).exists()) {
-					Core.assets.load(new AssetDescriptor<>(
-						Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png"),
-						Texture.class
-					));
-					hasPreview = Core.assets.isLoaded(
-						Vars.mapPreviewDirectory.child("save_slot_sector-" + sectorNode.sector.planet.name + "-" + sectorNode.sector.id + ".png").path()
-					);
-				}
 				Table button = new Table();
-				button.touchable = Touchable.enabled;
-				button.addListener(new HandCursorListener());
-				button.setSize(Scl.scl(nodeSize));
-				button.clicked(() -> {
-					if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
-						if (selected != sectorNode) {
-							selected = sectorNode;
-						} else {
-							selected = null;
+				if (sectorNode.lock.get(sectorNode)) {
+					button.touchable = Touchable.enabled;
+					button.addListener(new HandCursorListener());
+					button.setSize(Scl.scl(nodeSize));
+					button.clicked(() -> {
+						if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
+							if (selected != sectorNode) {
+								selected = sectorNode;
+							} else {
+								selected = null;
+							}
+							rebuildSelector(selected);
 						}
-						rebuildSelector(selected);
-					}
-				});
-				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
-				Image tex;
-				if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
-					if (sectorNode.sector.hasSave()) {
-						tex = new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap"));
-					} else {
-						tex = new Image(Icon.map);
-					}
-				} else {
-					tex = new Image(Icon.lock);
+					});
 				}
-				button.stack(tex, new Image(SWStyles.inventoryClear)).grow();
+				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
+				Stack stack = button.stack(new Image(Styles.black)).grow().get();
+				if (sectorNode.visible.get(sectorNode)) {
+					stack.add(new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap")));
+				} else {
+					if (!sectorNode.lock.get(sectorNode)) {
+						stack.add(new Image(Icon.lock));
+					} else {
+						stack.add(new Image(Icon.map));
+					}
+				}
+				stack.add(new Image(SWStyles.inventoryClear));
+				if (sectorNode.top != null && sectorNode.visible.get(sectorNode)) {
+					stack.add(new Table(Styles.black3, t -> {
+						t.margin(5f);
+						t.image(sectorNode.top);
+					}));
+				}
 				minx = Math.min(minx, button.x);
 				miny = Math.min(miny, button.y);
 				maxx = Math.max(maxx, button.x + button.getWidth());
@@ -293,11 +290,22 @@ public class SectorLaunchDialog extends BaseDialog {
 	public static class SectorNode extends TreeLayout.TreeNode<SectorNode> {
 		public static SectorNode last = null;
 
+		public @Nullable Drawable top;
+
+		public Boolf<SectorNode>
+		lock = self -> {
+			for (SectorNode req : self.requirements) {
+				if (!req.lock.get(req) || !req.visible.get(req)) return false;
+			}
+			return (self.parent == null || self.parent.sector.hasSave());
+		},
+		visible = self -> self.sector.hasSave();
+
 		public Sector sector;
 		public Seq<Sector> req;
 		public Seq<SectorNode> requirements;
 
-		public SectorNode(Sector sector, float x, float y, Seq<Sector> requirements, Runnable run) {
+		public SectorNode(Sector sector, float x, float y, Seq<Sector> requirements, Cons<SectorNode> run) {
 			this.sector = sector;
 			this.x = Scl.scl(x);
 			this.y = Scl.scl(y);
@@ -306,7 +314,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 			SectorNode context = last;
 			last = this;
-			run.run();
+			run.get(this);
 			last = context;
 
 			sectors.add(this);
