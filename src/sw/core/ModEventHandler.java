@@ -7,7 +7,6 @@ import mindustry.game.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.graphics.*;
-import sw.type.*;
 import sw.ui.*;
 
 public class ModEventHandler {
@@ -22,9 +21,9 @@ public class ModEventHandler {
 			}
 			EventHints.initHints();
 		});
-		Events.run(EventType.Trigger.update, () -> {
-			ScriptedSectorPreset.scripts.get(Vars.state.map.name(), () -> {}).run();
-		});
+//		Events.run(EventType.Trigger.update, () -> {
+//			ScriptedSectorPreset.scripts.get(Vars.state.map.name(), () -> {}).run();
+//		});
 		Events.on(EventType.MusicRegisterEvent.class, e -> ModMusic.load());
 	}
 }

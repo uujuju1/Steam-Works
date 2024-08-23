@@ -12,7 +12,7 @@ import sw.ui.dialog.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		nowhere, anywhereTop, anywhereBottom,
+		nowhere, anemoia, anywhereBottom,
 		yggdrasil;
 
 	public static void load() {
@@ -21,7 +21,7 @@ public class SWSectorPresets {
 				rule.winWave = captureWave;
 			};
 		}};
-		anywhereTop = new SectorPreset("anywhere-t", SWPlanets.wendi, 1) {{
+		anemoia = new SectorPreset("anemoia", SWPlanets.wendi, 1) {{
 			rules = rule -> {
 				rule.winWave = captureWave;
 				rule.loadout.set(ItemStack.with(SWItems.nickel, 10));
@@ -43,7 +43,7 @@ public class SWSectorPresets {
 
 	public static void init() {
 		new SectorLaunchDialog.SectorNode(nowhere.sector, 0f, 0f, Seq.with(), () -> {
-			new SectorLaunchDialog.SectorNode(anywhereTop.sector, 149f, 0f, Seq.with(), () -> {
+			new SectorLaunchDialog.SectorNode(anemoia.sector, 149f, 0f, Seq.with(), () -> {
 				new SectorLaunchDialog.SectorNode(anywhereBottom.sector, 149f, 149f, Seq.with(nowhere.sector), () -> {});
 			});
 		});

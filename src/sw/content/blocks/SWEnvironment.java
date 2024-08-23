@@ -27,6 +27,12 @@ public class SWEnvironment {
 	solventShards, solventIceWall, solventIceBoulder,
 	solventRegular, shallowSolvent, shallowerSolvent, solventIce, solventSnow,
 
+	glacierWall,
+	glacier, glacierCrater, weatheredGlacier,
+
+	blueSolventIceWall,
+	blueSolventIce, blueSolventIceCrater, crystallineBlue,
+
 	plate, plateCross, plateVent, plateWall,
 
 	multiFloor, multiOverlay, multiWall;
@@ -153,6 +159,32 @@ public class SWEnvironment {
 		solventSnow = new Floor("solvent-snow", 4) {{
 			wall = solventIceWall;
 			decoration = solventIceBoulder;
+		}};
+		// endregion
+
+		// region glacier
+		glacierWall = new StaticWall("glacier-wall");
+		glacier = new Floor("glacier", 4) {{
+			wall = glacierWall;
+		}};
+		glacierCrater = new Floor("glacier-crater", 2) {{
+			wall = glacierWall;
+		}};
+		weatheredGlacier = new Floor("weathered-glacier", 4) {{
+			wall = glacierWall;
+		}};
+		// endregion
+
+		// region blue ice
+		blueSolventIceWall = new StaticWall("blue-solvent-ice-wall");
+		blueSolventIce = new Floor("blue-solvent-ice", 4) {{
+			wall = blueSolventIceWall;
+		}};
+		blueSolventIceCrater = new Floor("blue-solvent-ice-crater", 2) {{
+			wall = blueSolventIceWall;
+		}};
+		crystallineBlue = new Floor("crystalline-blue", 4) {{
+			wall = blueSolventIceWall;
 		}};
 		// endregion
 
