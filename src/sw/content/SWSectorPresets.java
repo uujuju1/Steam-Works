@@ -18,19 +18,16 @@ public class SWSectorPresets {
 
 	public static void load() {
 		nowhere = new SectorPreset("nowhere", SWPlanets.wendi, 0) {{
-			rules = rule -> {
-				rule.winWave = captureWave;
-			};
 		}};
 		anemoia = new SectorPreset("anemoia", SWPlanets.wendi, 1) {{
 			rules = rule -> {
-				rule.winWave = captureWave;
+				rule.winWave = 10;
 				rule.loadout.set(ItemStack.with(SWItems.nickel, 500));
 			};
 		}};
 		nostalgia = new SectorPreset("nostalgia", SWPlanets.wendi, 2) {{
 			rules = rule -> {
-				rule.winWave = captureWave;
+				rule.winWave = 20;
 				rule.loadout.set(ItemStack.with(SWItems.nickel, 500, Items.graphite, 500));
 			};
 		}};

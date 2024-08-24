@@ -208,7 +208,6 @@ public class SectorLaunchDialog extends BaseDialog {
 				if (sectorNode.lock.get(sectorNode)) {
 					button.touchable = Touchable.enabled;
 					button.addListener(new HandCursorListener());
-					button.setSize(Scl.scl(nodeSize));
 					button.clicked(() -> {
 						if ((sectorNode.parent == null || sectorNode.parent.sector.hasSave())) {
 							if (selected != sectorNode) {
@@ -220,19 +219,20 @@ public class SectorLaunchDialog extends BaseDialog {
 						}
 					});
 				}
+				button.setSize(nodeSize);
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
-				Stack stack = button.stack(new Image(Styles.black)).size(Scl.scl(nodeSize)).get();
+				Stack stack = button.stack(new Image(Styles.black)).size(nodeSize).get();
 				if (sectorNode.visible.get(sectorNode)) {
 					stack.add(new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap")));
 				} else {
-					if (sectorNode.lock.get(sectorNode)) {
+					if (!sectorNode.lock.get(sectorNode)) {
 						stack.add(new Image(Icon.lock));
 					} else {
 						stack.add(new Image(Icon.map));
 					}
 				}
 				stack.add(new Image(SWStyles.inventoryClear));
-				if (sectorNode.visible.get(sectorNode)) {
+				if (sectorNode.visible.get(sectorNode) && sectorNode.top != null) {
 					stack.add(new Table(t -> {
 						t.table(Styles.black6, sticker -> sticker.image(sectorNode.top).size(nodeSize/4f).pad(5f));
 					}));
