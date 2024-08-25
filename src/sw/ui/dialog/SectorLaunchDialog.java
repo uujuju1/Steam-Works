@@ -33,6 +33,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 	public SectorView view;
 	public Table selectSector;
+	public Table sectorList;
 
 	public static Seq<SectorNode> sectors = new Seq<>();
 
@@ -63,11 +64,9 @@ public class SectorLaunchDialog extends BaseDialog {
 			new Table(t -> t.add(view = new SectorView())),
 			new Table(t -> t.add(selectSector = new Table(Styles.black6))).bottom(),
 			new Table(t -> t.add(titleTable).growX()).top(),
+			new Table(t -> t.add(sectorList = new Table(Styles.black6).margin(10))).left(),
 			new Table(t -> t.add(buttons)).bottom().right()
 		).grow();
-
-		view.rebuild();
-
 		addCaptureListener(new ElementGestureListener() {
 			@Override
 			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY){
@@ -78,6 +77,7 @@ public class SectorLaunchDialog extends BaseDialog {
 		closeOnBack();
 		shown(() -> {
 			view.rebuild();
+			rebuildSectorList();
 			Core.settings.put("lastplanet", lastPlanet.name);
 			Vars.ui.planet.hide();
 		});
@@ -116,6 +116,10 @@ public class SectorLaunchDialog extends BaseDialog {
 		return true;
 	}
 
+	public void moveTo(SectorNode to) {
+		view.setPosition(cont.getWidth()/2f - to.x, cont.getHeight()/2f - to.y);
+	}
+
 	public void rebuildSelector(@Nullable SectorNode sector) {
 		selectSector.clear();
 		if (sector == null) {
@@ -125,12 +129,8 @@ public class SectorLaunchDialog extends BaseDialog {
 		selectSector.margin(10f);
 		selectSector.table(Tex.underline, title -> {
 			title.left();
-			Image i = title.image(Icon.map).padRight(10f).get();
-			i.touchable = Touchable.enabled;
-			i.clicked(() -> {
-				Log.info("uwu, pwease add sector descwiption hewe");
-			});
-			i.addListener(new IbeamCursorListener());
+			Image i = title.image(Icon.map).padRight(10f).tooltip(sector.sector.preset != null ? sector.sector.preset.description : "").get();
+			i.addListener(new HandCursorListener());
 			title.add(sector.sector.name(), Pal.accent);
 		}).growX().padBottom(10f).row();
 		selectSector.button("@play", Icon.play, new TextButton.TextButtonStyle() {{
@@ -175,6 +175,19 @@ public class SectorLaunchDialog extends BaseDialog {
 				}
 			}).padTop(5f).left();
 		});
+	}
+
+	public void rebuildSectorList() {
+		sectorList.clear();
+		sectorList.pane(Styles.smallPane, t -> {
+			sectors.each(s -> s.sector.hasSave(), s -> {
+				t.button(s.sector.name(), s.top, () -> {
+					moveTo(s);
+					selected = s;
+					rebuildSelector(selected);
+				}).size(200, 50).row();
+			});
+		}).maxHeight(300f);
 	}
 
 	public class SectorView extends Group {
@@ -223,7 +236,7 @@ public class SectorLaunchDialog extends BaseDialog {
 				button.setPosition(sectorNode.x - button.getWidth()/2f, sectorNode.y - button.getHeight()/2f);
 				Stack stack = button.stack(new Image(Styles.black)).size(nodeSize).get();
 				if (sectorNode.visible.get(sectorNode)) {
-					stack.add(new Image(Core.atlas.find("sw-sector-" + sectorNode.sector.id, "nomap")));
+					stack.add(new Image(sectorNode.getRegion()));
 				} else {
 					if (!sectorNode.lock.get(sectorNode)) {
 						stack.add(new Image(Icon.lock));
@@ -292,6 +305,8 @@ public class SectorLaunchDialog extends BaseDialog {
 
 		public @Nullable Drawable top;
 
+		public @Nullable String region;
+
 		public Boolf<SectorNode>
 		lock = self -> {
 			for (SectorNode req : self.requirements) {
@@ -318,6 +333,10 @@ public class SectorLaunchDialog extends BaseDialog {
 			last = context;
 
 			sectors.add(this);
+		}
+
+		public TextureRegion getRegion() {
+			return region == null ? Core.atlas.find("sw-sector-" + sector.id, "nomap") : Core.atlas.find(region, "nomap");
 		}
 	}
 }

@@ -13,7 +13,7 @@ import sw.ui.dialog.SectorLaunchDialog.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		nowhere, anemoia, nostalgia,
+		nowhere, anemoia, nostalgia, coast,
 		yggdrasil;
 
 	public static void load() {
@@ -31,6 +31,9 @@ public class SWSectorPresets {
 				rule.loadout.set(ItemStack.with(SWItems.nickel, 500, Items.graphite, 500));
 			};
 		}};
+		coast = new SectorPreset("coast", SWPlanets.wendi, 3) {{
+
+		}};
 
 		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.unknown, 0);
 		Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -46,12 +49,32 @@ public class SWSectorPresets {
 				anemoiaSec.top = Icon.waves;
 				new SectorNode(nostalgia.sector, 149f, 149f, Seq.with(), nostalgiaSec -> {
 					nostalgiaSec.top = Icon.waves;
+					new SectorNode(coast.sector, -149f, 149f, Seq.with(), coastSec -> {
+						coastSec.top = Icon.waves;
+					});
 				});
 			});
 		});
+
 		new SectorNode(getSector(4), 0f, 149f, Seq.with(getSector(0), getSector(2)), filler -> {
 			filler.lock = self -> false;
-			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) && !req.visible.get(req));
+			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
+			filler.region = "sw-sector-filler-1";
+		});
+		new SectorNode(getSector(4), -149f, 298f, Seq.with(getSector(3)), filler -> {
+			filler.lock = self -> false;
+			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
+			filler.region = "sw-sector-filler-2";
+		});
+		new SectorNode(getSector(4), -298f, 298f, Seq.with(getSector(3)), filler -> {
+			filler.lock = self -> false;
+			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
+			filler.region = "sw-sector-filler-3";
+		});
+		new SectorNode(getSector(4), -298f, 149f, Seq.with(getSector(3)), filler -> {
+			filler.lock = self -> false;
+			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
+			filler.region = "sw-sector-filler-4";
 		});
 	}
 

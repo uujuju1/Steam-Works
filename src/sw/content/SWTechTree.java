@@ -9,6 +9,7 @@ import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
+import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
@@ -42,10 +43,10 @@ public class SWTechTree {
         node(waveRadar);
       });
 
-      node(flow, () -> {
-        node(trail);
-        node(vniz, () -> {
-          node(rozpad);
+      node(flow, with(new OnSector(anemoia)), () -> {
+        node(trail, with(new OnSector(nostalgia)), () -> {});
+        node(vniz, with(new OnSector(anemoia)), () -> {
+          node(rozpad, with(new OnSector(nostalgia)), () -> {});
         });
       });
     }));
