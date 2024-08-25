@@ -19,18 +19,19 @@ import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
 
 public class SWTechTree {
-  public static TechNode root;
-
   public static void load() {
-    root = nodeRoot("Steam Works", coreScaffold, () -> {});
-    SWPlanets.wendi.techTree = root;
+	  SWPlanets.wendi.techTree = nodeRoot("Steam Works", coreScaffold, () -> {});
   }
 
   public static void init(Seq<TechNode> root) {
     // region crafting
-    root.add(node(siliconBoiler, () -> {
-      node(compoundSmelter, () -> {});
-      node(densePress, () -> {});
+    root.add(node(siliconBoiler, with(new OnSector(coast)), () -> {
+      node(compoundSmelter, () -> {
+        node(chalkSeparator, with(new Research(boiler)), () -> {});
+      });
+      node(densePress, () -> {
+        node(thermiteMixer, with(new Research(boiler)), () -> {});
+      });
     }));
     root.peek().name = "crafting";
     root.peek().icon = Icon.crafting;
@@ -67,12 +68,17 @@ public class SWTechTree {
         node(mechanicalConduitJunction);
         node(mechanicalConduitRouter);
       });
+      node(compactContainer);
     }));
     root.peek().name = "distribution";
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(boiler));
+    root.add(node(boiler, () -> {
+      node(gasPipe, () -> {
+        node(gasJunction);
+      });
+    }));
     root.peek().name = "power";
     root.peek().icon = Icon.power;
     //endregion

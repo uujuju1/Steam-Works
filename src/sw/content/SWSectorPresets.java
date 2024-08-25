@@ -32,7 +32,10 @@ public class SWSectorPresets {
 			};
 		}};
 		coast = new SectorPreset("coast", SWPlanets.wendi, 3) {{
-
+			rules = rule -> {
+				rule.winWave = 20;
+				rule.loadout.set(ItemStack.with(SWItems.iron, 500, SWItems.nickel, 200, Items.graphite, 300));
+			};
 		}};
 
 		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.unknown, 0);
