@@ -26,7 +26,7 @@ public class GasConfig {
 	/**
 	 * Maximum pressure that the block can handle.
 	 */
-	public float maxPressure = 200f;
+	public float maxPressure = 32f;
 
 	/**
 	 * Damage per tick applied to over pressurized builds.
@@ -38,7 +38,7 @@ public class GasConfig {
 	 */
 	public Seq<Point2> connections = new Seq<>();
 
-	public Color barColor = Pal.lancerLaser, barColorTo = Pal.turretHeat;
+	public Color barColor = Pal.lancerLaser, barColorTo = Color.white;
 
 	public void addBars(Block block) {
 		if (!hasGas) return;

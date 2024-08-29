@@ -32,7 +32,6 @@ public class YggdrasilEvent extends DreamEvent {
 		enableDarkness = true;
 		Sounds.windhowl.stop();
 		Sounds.rain.stop();
-		SWBlocks.rebuilder.unlock();
 	}
 
 	@Override

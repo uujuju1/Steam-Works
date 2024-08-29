@@ -10,9 +10,8 @@ import static sw.content.SWUnitTypes.*;
 
 public class SWWaveGeneration {
 	public static UnitType[][] ground = {
-		{focus, precision, target},
-		{sentry, tower, castle},
-		{existence, remembered, presence}
+		{cinerea, robinia, gregarea},
+		{sentry, tower, castle}
 	};
 	public static UnitType[][] naval = {
 		{recluse, retreat, evade}

@@ -40,13 +40,9 @@ public class SWPlanets {
 			itemWhitelist.addAll(
 				SWItems.nickel,
 				SWItems.iron,
-				SWItems.arsenic,
 				SWItems.compound,
 				SWItems.denseAlloy,
 				SWItems.thermite,
-				SWItems.bismuth,
-				SWItems.scorch,
-				SWItems.graphene,
 				Items.graphite,
 				Items.silicon
 			);

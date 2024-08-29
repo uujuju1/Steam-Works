@@ -5,18 +5,15 @@ import mindustry.type.*;
 import static arc.graphics.Color.*;
 
 public class SWLiquids {
-  public static Liquid steam, solvent, fungi, chloro;
+  public static Liquid steam, solvent, fluorane;
 
   public static void load() {
+    solvent = new Liquid("solvent", valueOf("98ADC1"));
     steam = new Liquid("steam", lightGray) {{
       gas = true;
     }};
-    solvent = new Liquid("solvent", valueOf("98ADC1"));
-    fungi = new Liquid("fungi", valueOf("91DE9B")) {{
+    fluorane = new Liquid("fluorane", valueOf("E3D8B6")) {{
       gas = true;
-      flammability = 1f;
-      explosiveness = 0.5f;
     }};
-    chloro = new Liquid("chloro", valueOf("C7CBB2"));
   }
 }

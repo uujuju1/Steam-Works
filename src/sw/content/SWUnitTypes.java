@@ -27,10 +27,7 @@ public class SWUnitTypes {
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
   public static UnitType
-		focus, precision, target,
-
-    sentry, tower, castle,
-		existence, remembered, presence;
+    sentry, tower, castle;
 
   public static void load() {
     //region specialist
@@ -386,104 +383,6 @@ public class SWUnitTypes {
           }};
         }};
       }});
-    }};
-    //endregion
-    //region legs
-    existence = new SWUnitType("existence") {{
-      health = 250;
-  		speed = 1.2f;
-	  	rotateSpeed = 3f;
-		  range = maxRange = 24f;
-
-	  	constructor = MechUnit::create;
-
-      weapons.add(new Weapon() {{
-        bullet = new ExplosionBulletType(150, 80);
-      }});
-    }};
-    remembered = new SWUnitType("remembered") {{
-      health = 600;
-	  	hitSize = 9f;
-	  	speed = 0.7f;
-	  	rotateSpeed = 3f;
-	  	range = maxRange = 80f;
-
-	  	constructor = LegsUnit::create;
-
-			weapons.add(
-				new Weapon("sw-bottom-gun") {{
-          x = 0f;
-          y = 5.75f;
-          reload = 120f;
-          mirror = false;
-          layerOffset = -0.01f;
-
-          bullet = new LaserBulletType(25) {{
-            length = 100f;
-          }};
-        }},
-				new Weapon("sw-top-gun") {{
-          x = 4.75f;
-          y = 2.25f;
-          reload = 60f;
-
-          bullet = new MissileBulletType(2, 14) {{
-            frontColor = Color.white;
-            backColor = hitColor = trailColor = Pal.lancerLaser;
-            lifetime = 40f;
-            width = height = 10f;
-          }};
-        }}
-			);
-    }};
-    presence = new SWUnitType("presence") {{
-      health = 1230;
-	  	hitSize = 11f;
-	  	speed = 0.7f;
-	  	rotateSpeed = 3f;
-	  	range = maxRange = 120f;
-
-			legCount = 6;
-			legLength = 16f;
-			legExtension = 2f;
-
-	  	constructor = LegsUnit::create;
-
-      weapons.add(
-	      new Weapon("sw-presence-cannon") {{
-		      x = 7.25f;
-		      y = 4f;
-		      range = 100f;
-		      reload = 60f;
-		      rotate = false;
-		      layerOffset = -0.01f;
-
-		      shootSound = Sounds.artillery;
-          shoot = new ShootBarrel() {{
-						shots = 2;
-            barrels = new float[] {
-              -1.5f, 1.5f, 0f,
-              2.5f, -2.5f, 0f
-            };
-          }};
-		      bullet = new BasicBulletType(4, 20) {{
-			      lifetime = 25f;
-			      width = height = 12f;
-		      }};
-	      }},
-        new Weapon("sw-laser-gun") {{
-          x = 7.5f;
-          y = -4.25f;
-          reload = 120f;
-          rotate = true;
-          alternate = false;
-
-          shootSound = Sounds.laser;
-          bullet = new LaserBulletType(20) {{
-            length = 120f;
-          }};
-        }}
-      );
     }};
     //endregion
 	  //region copter

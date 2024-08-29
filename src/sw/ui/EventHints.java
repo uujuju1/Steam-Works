@@ -12,20 +12,12 @@ public enum EventHints implements Hint {
 	hydraulicDrill(
 		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.hydraulicDrill).size > 0,
 		() -> Vars.control.input.block == SWProduction.hydraulicDrill
-	),
-	mechanicalBore(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.mechanicalBore).size > 0,
-		() -> Vars.control.input.block == SWProduction.mechanicalBore
-	),
-	dehydrator(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.dehydrator).size > 0,
-		() -> Vars.control.input.block == SWProduction.dehydrator
 	);
 
-	Boolp complete, shown = () -> true;
+	final Boolp complete, shown;
 	EventHints[] requirements;
 
-	int visibility = visibleAll;
+	final int visibility = visibleAll;
 	boolean cached, finished;
 
 	static final String prefix = "sw-";
@@ -39,12 +31,8 @@ public enum EventHints implements Hint {
 			Vars.ui.hints.hints.addUnique(hint);
 		}
 	}
-
-	EventHints(Boolp complete) {
-		this.complete = complete;
-	}
 	EventHints(Boolp complete, Boolp shown) {
-		this(complete);
+		this.complete = complete;
 		this.shown = shown;
 	}
 	EventHints(Boolp complete, Boolp shown, EventHints... requirements) {

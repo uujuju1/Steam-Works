@@ -85,7 +85,7 @@ public class SWTechTree {
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill);
-      node(liquidCollector, () -> node(dehydrator));
+      node(liquidCollector);
     }));
     root.peek().name = "production";
     root.peek().icon = Icon.production;
