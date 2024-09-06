@@ -13,7 +13,7 @@ import sw.ui.dialog.SectorLaunchDialog.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		nowhere, anemoia, nostalgia, coast,
+		nowhere, anemoia, nostalgia, coast, island,
 		yggdrasil;
 
 	public static void load() {
@@ -37,6 +37,12 @@ public class SWSectorPresets {
 				rule.loadout.set(ItemStack.with(SWItems.iron, 500, SWItems.nickel, 200, Items.graphite, 300));
 			};
 		}};
+		island = new SectorPreset("island", SWPlanets.wendi, 5) {{
+			rules = rule -> {
+				rule.winWave = 20;
+				rule.loadout.set(ItemStack.with(SWItems.iron, 500, SWItems.nickel, 200, Items.graphite, 300));
+			};
+		}};
 
 		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.unknown, 0);
 		Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -54,6 +60,9 @@ public class SWSectorPresets {
 					nostalgiaSec.top = Icon.waves;
 					new SectorNode(coast.sector, -149f, 149f, Seq.with(), coastSec -> {
 						coastSec.top = Icon.waves;
+						new SectorNode(island.sector, -298f, 298f, Seq.with(), islandSec -> {
+							islandSec.top = Icon.waves;
+						});
 					});
 				});
 			});
@@ -64,17 +73,12 @@ public class SWSectorPresets {
 			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
 			filler.region = "sw-sector-filler-1";
 		});
-		new SectorNode(getSector(4), -149f, 298f, Seq.with(getSector(3)), filler -> {
+		new SectorNode(getSector(4), -149f, 298f, Seq.with(getSector(3), getSector(5)), filler -> {
 			filler.lock = self -> false;
 			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
 			filler.region = "sw-sector-filler-2";
 		});
-		new SectorNode(getSector(4), -298f, 298f, Seq.with(getSector(3)), filler -> {
-			filler.lock = self -> false;
-			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
-			filler.region = "sw-sector-filler-3";
-		});
-		new SectorNode(getSector(4), -298f, 149f, Seq.with(getSector(3)), filler -> {
+		new SectorNode(getSector(4), -298f, 149f, Seq.with(getSector(3), getSector(5)), filler -> {
 			filler.lock = self -> false;
 			filler.visible = self -> !self.requirements.contains(req -> !req.lock.get(req) || !req.visible.get(req));
 			filler.region = "sw-sector-filler-4";

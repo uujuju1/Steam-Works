@@ -35,6 +35,8 @@ public class SWEnvironment {
 
 	plate, plateCross, plateVent, plateWall,
 
+	limiter,
+
 	multiFloor, multiOverlay, multiWall;
 
 	public static void load() {
@@ -202,6 +204,10 @@ public class SWEnvironment {
 			blendGroup = plate;
 		}};
 		// endregion
+
+
+		limiter = new Limiter("limiter");
+
 
 		multiFloor = new MultiFloor("multi-floor");
 
