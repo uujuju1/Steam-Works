@@ -52,7 +52,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 		buttons.remove();
 		buttons.clear();
-		buttons.button("@techtree", Icon.tree, () -> SWVars.techtreeDialog.show()).size(200f, 54f).pad(2).bottom();
+		buttons.button("@techtree", Icon.tree, () -> SWUI.techtreeDialog.show()).size(200f, 54f).pad(2).bottom();
 
 		SWSectorPresets.init();
 		sectors.each(sectorNode -> {
@@ -90,12 +90,14 @@ public class SectorLaunchDialog extends BaseDialog {
 		update(() -> {
 			time += Time.delta;
 		});
+
+		shouldPause = true;
 	}
 
 	public void addToMenu() {
 		Events.run(EventType.Trigger.update, () -> {
-			if (SWVars.showSectorLaunchDialog && Vars.ui.planet.state.planet == SWPlanets.wendi && Vars.ui.planet.isShown() && !SWVars.sectorLaunchDialog.isShown()) {
-				SWVars.sectorLaunchDialog.show();
+			if (SWVars.showSectorLaunchDialog && Vars.ui.planet.state.planet == SWPlanets.wendi && Vars.ui.planet.isShown() && !SWUI.sectorLaunchDialog.isShown()) {
+				SWUI.sectorLaunchDialog.show();
 			} else {
 				if (Vars.ui.planet.state.planet != SWPlanets.wendi) lastPlanet = Vars.ui.planet.state.planet;
 			}

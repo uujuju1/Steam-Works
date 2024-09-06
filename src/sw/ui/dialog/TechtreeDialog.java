@@ -22,7 +22,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.layout.*;
-import sw.*;
 import sw.content.*;
 import sw.ui.*;
 
@@ -98,7 +97,7 @@ public class TechtreeDialog extends BaseDialog {
 		Vars.ui.research.fill(t -> t.update(() -> {
 			if (Vars.ui.research.root.node == SWPlanets.wendi.techTree) {
 				Vars.ui.research.hide(Actions.fadeOut(0f));
-				SWVars.techtreeDialog.show();
+				SWUI.techtreeDialog.show();
 			}
 		}));
 
@@ -111,6 +110,8 @@ public class TechtreeDialog extends BaseDialog {
 		update(() -> {
 			time += Time.delta;
 		});
+
+		shouldPause = true;
 	}
 
 	public void spend(TechNode node) {

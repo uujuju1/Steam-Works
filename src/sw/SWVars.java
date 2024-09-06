@@ -24,8 +24,6 @@ public class SWVars implements Loadable {
 	public static SectorPreset lastSectorPreset;
 
 	public static EnvProcess envProcess;
-	public static TechtreeDialog techtreeDialog;
-	public static SectorLaunchDialog sectorLaunchDialog;
 
 	public static boolean showSectorLaunchDialog = true;
 
@@ -36,13 +34,12 @@ public class SWVars implements Loadable {
 			SWStyles.load();
 			ModSettings.load();
 			envProcess = new EnvProcess();
-			techtreeDialog = new TechtreeDialog();
-			sectorLaunchDialog = new SectorLaunchDialog();
+			SWUI.load();
 		}
 	}
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
-		techtreeDialog.clearTree();
+		SWUI.techtreeDialog.clearTree();
 		Core.settings.put("settings-sw-techtree-category", -1);
 	}
 	/**cheating privileges*/
