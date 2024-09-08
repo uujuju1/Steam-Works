@@ -12,6 +12,8 @@ public class SWEnvironment {
 	public static Block
 	spinyTree, deadSpinyTree,
 
+	cliff,
+
 
 	oreNickel, oreIron, fissure, oreGraphite,
 
@@ -46,6 +48,9 @@ public class SWEnvironment {
 		deadSpinyTree = new TreeBlock("dead-spiny-tree") {{
 			attributes.set(Attribute.steam, 0.25f);
 		}};
+
+
+		cliff = new SWCliff("cliff");
 
 
 		// region ores
