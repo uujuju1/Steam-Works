@@ -35,6 +35,12 @@ public class SWEnvironment {
 	blueSolventIceWall,
 	blueSolventIce, blueSolventIceCrater, crystallineBlue,
 
+	erosionWall, erosionBoulder,
+	erosion, erosionCrater,
+
+	meltStoneWall, meltStoneBoulder,
+	meltStone, meltPebbles,
+
 	plate, plateCross, plateVent, plateWall,
 
 	limiter,
@@ -51,6 +57,9 @@ public class SWEnvironment {
 
 
 		cliff = new SWCliff("cliff");
+
+
+		limiter = new Limiter("limiter");
 
 
 		// region ores
@@ -195,6 +204,36 @@ public class SWEnvironment {
 		}};
 		// endregion
 
+		//region erosion
+		erosionWall = new StaticWall("erosion-wall");
+		erosionBoulder = new Prop("erosion-boulder") {{
+			variants = 2;
+		}};
+		erosion = new Floor("erosion", 4) {{
+			wall = erosionWall;
+			decoration = erosionBoulder;
+		}};
+		erosionCrater = new Floor("erosion-crater", 2) {{
+			wall = erosionWall;
+			decoration = erosionCrater;
+		}};
+		//endregion
+
+		//region melt stone
+		meltStoneWall = new StaticWall("melt-stone-wall");
+		meltStoneBoulder = new Prop("melt-stone-boulder") {{
+			variants = 2;
+		}};
+		meltStone = new Floor("melt-stone", 4) {{
+			wall = meltStoneWall;
+			decoration = meltStoneBoulder;
+		}};
+		meltPebbles = new Floor("melt-pebbles", 4) {{
+			wall = meltStoneWall;
+			decoration = meltStoneBoulder;
+		}};
+		//endregion
+
 		// region plate
 		plateWall = new StaticWall("plate-wall");
 		plate = new Floor("plate", 4) {{
@@ -209,22 +248,5 @@ public class SWEnvironment {
 			blendGroup = plate;
 		}};
 		// endregion
-
-
-		limiter = new Limiter("limiter");
-
-
-		multiFloor = new MultiFloor("multi-floor");
-
-
-
-		multiOverlay = new MultiOverlayFloor("multi-overlay");
-
-
-
-		multiWall = new MultiStaticWall("multi-wall");
-
-
-
 	}
 }

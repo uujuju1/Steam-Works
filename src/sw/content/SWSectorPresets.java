@@ -1,20 +1,14 @@
 package sw.content;
 
-import arc.*;
 import arc.struct.*;
-import mindustry.*;
 import mindustry.content.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import sw.dream.*;
-import sw.dream.event.*;
 import sw.ui.dialog.SectorLaunchDialog.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		nowhere, anemoia, nostalgia, coast, island,
-		yggdrasil;
+		nowhere, anemoia, nostalgia, coast, island;
 
 	public static void load() {
 		nowhere = new SectorPreset("nowhere", SWPlanets.wendi, 0) {{
@@ -43,12 +37,6 @@ public class SWSectorPresets {
 				rule.loadout.set(ItemStack.with(SWItems.iron, 500, SWItems.nickel, 200, Items.graphite, 300));
 			};
 		}};
-
-		yggdrasil = new SectorPreset("yggdrasil", SWPlanets.unknown, 0);
-		Events.on(EventType.WorldLoadEvent.class, e -> {
-			DreamCore.instance.event(null);
-			if (Vars.state.getSector() == yggdrasil.sector) DreamCore.instance.event(new YggdrasilEvent());
-		});
 	}
 
 	public static void init() {
