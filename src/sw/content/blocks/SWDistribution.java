@@ -26,7 +26,6 @@ public class SWDistribution {
 
 		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction;
 
-
 	public static void load() {
 		// region items
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{

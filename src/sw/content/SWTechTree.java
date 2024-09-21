@@ -64,7 +64,7 @@ public class SWTechTree {
         node(mechanicalSorter);
       });
       node(suspensionConveyor);
-      node(mechanicalConduit, with(new Produce(Items.silicon)), () -> {
+      node(mechanicalConduit, with(new Produce(Items.silicon), new Research(liquidCollector)), () -> {
         node(mechanicalConduitJunction);
         node(mechanicalConduitRouter);
       });
