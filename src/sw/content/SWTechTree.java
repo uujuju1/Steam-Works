@@ -107,6 +107,12 @@ public class SWTechTree {
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
+    root.add(node(nowhere, () -> {
+      node(anemoia, () -> node(nostalgia));
+      node(coast, () -> node(island));
+    }));
+    root.peek().name = "sectors";
+    root.peek().icon = Icon.terrain;
     // endregion
   }
 }

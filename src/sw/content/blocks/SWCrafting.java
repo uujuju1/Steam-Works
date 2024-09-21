@@ -76,7 +76,9 @@ public class SWCrafting {
 		}};
 		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
 			requirements(Category.crafting, with(
-
+				SWItems.iron, 50,
+				SWItems.compound, 35,
+				Items.silicon, 30
 			));
 			size = 2;
 			health = 160;
