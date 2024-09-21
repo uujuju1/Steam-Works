@@ -33,7 +33,7 @@ public class SWTechTree {
         node(thermiteMixer, with(new Research(boiler)), () -> {});
       });
     }));
-    root.peek().name = "crafting";
+    root.peek().name = "sw-crafting";
     root.peek().icon = Icon.crafting;
     // endregion
     // region defense
@@ -51,7 +51,7 @@ public class SWTechTree {
         });
       });
     }));
-    root.peek().name = "defense";
+    root.peek().name = "sw-defense";
     root.peek().icon = Icon.turret;
     // endregion
     // region distribution
@@ -70,7 +70,7 @@ public class SWTechTree {
       });
       node(compactContainer);
     }));
-    root.peek().name = "distribution";
+    root.peek().name = "sw-distribution";
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
@@ -79,7 +79,7 @@ public class SWTechTree {
         node(gasJunction);
       });
     }));
-    root.peek().name = "power";
+    root.peek().name = "sw-power";
     root.peek().icon = Icon.power;
     //endregion
     // region production
@@ -87,7 +87,7 @@ public class SWTechTree {
       node(hydraulicDrill);
       node(liquidCollector);
     }));
-    root.peek().name = "production";
+    root.peek().name = "sw-production";
     root.peek().icon = Icon.production;
     // endregion
     // region resources
@@ -103,7 +103,7 @@ public class SWTechTree {
 //          nodeProduce(fluorane);
       });
     }));
-    root.peek().name = "resources";
+    root.peek().name = "sw-resources";
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
@@ -111,7 +111,7 @@ public class SWTechTree {
       node(anemoia, () -> node(nostalgia));
       node(coast, () -> node(island));
     }));
-    root.peek().name = "sectors";
+    root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;
     // endregion
   }
