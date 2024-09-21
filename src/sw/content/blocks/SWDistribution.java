@@ -20,6 +20,7 @@ public class SWDistribution {
 		mechanicalGate,
 		mechanicalUnloader,
 
+
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
 
 
@@ -61,21 +62,22 @@ public class SWDistribution {
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 5,
-				SWItems.iron, 5
+				Items.graphite, 5
 			));
 			health = 100;
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 5,
-				SWItems.iron, 3
+				Items.graphite, 3
 			));
 			health = 100;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
 			requirements(Category.distribution, with(
 				SWItems.nickel, 6,
-				SWItems.iron, 4
+				Items.silicon, 2,
+				Items.graphite, 4
 			));
 			health = 100;
 			speed = 2f;
@@ -83,7 +85,9 @@ public class SWDistribution {
 			underBullets = true;
 			regionRotated1 = 1;
 		}};
+		//endregion
 
+		//region payloads
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
 			requirements(Category.units, with(
 				Items.silicon, 10,
