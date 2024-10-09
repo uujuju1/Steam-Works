@@ -3,45 +3,15 @@ package sw.dream;
 import arc.graphics.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import ent.anno.Annotations.*;
-import mindustry.content.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.blocks.storage.*;
-import sw.gen.*;
 import sw.world.blocks.environment.*;
-import sw.world.blocks.logic.*;
 
 public class DreamContent {
-	public static @EntityDef (value = {ElevationMovec.class, Unitc.class}, serialize = false) UnitType brutalistUnit;
-	public static Block
-		concrete, concreteWall,
-		voidTile, voidTileWall,
-		spikes,
-		brutalistCore, lore;
+	public static Block voidTile, voidTileWall, spikes;
 
 	public static void load() {
-		brutalistUnit = new UnitType("brutalist-unit") {{
-			constructor = UnitElevationMove::create;
-			drawCell = false;
-			drawMinimap = false;
-			speed = 0.55f;
-			lightRadius = 20f;
-			mineTier = 1;
-			mineSpeed = 0.5f;
-			mineRange = 20f;
-			itemCapacity = 1;
-			deathExplosionEffect = Fx.none;
-			deathSound = Sounds.none;
-		}};
-
-		concrete = new Floor("concrete", 0);
-		concreteWall = new StaticWall("concrete-wall") {{
-			variants = 0;
-		}};
 		voidTile = new Floor("void-tile", 0);
 		voidTileWall =  new StaticWall("void-tile-wall") {{
 			variants = 0;
@@ -70,19 +40,6 @@ public class DreamContent {
 				  new Polygon(new float[] {-3f, 2.5f, 2f, 4f, -12f, -15f, -12f, -15f}), Color.gray
 				)
 			};
-		}};
-
-		brutalistCore = new CoreBlock("brutalist-core") {{
-			unitType = brutalistUnit;
-			size = 2;
-			lightRadius = 50f;
-			drawTeamOverlay = solid = false;
-			destroySound = Sounds.none;
-			destroyEffect = Fx.none;
-		}};
-
-		lore = new LoreBlock("lore") {{
-			size = 2;
 		}};
 	}
 }

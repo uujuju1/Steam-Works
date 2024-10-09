@@ -2,13 +2,12 @@ package sw;
 
 import mindustry.mod.*;
 import sw.core.*;
-import sw.dream.*;
 import sw.gen.*;
 
+@SuppressWarnings("unused")
 public class ModLoader extends Mod {
   public ModLoader() {
     ModEventHandler.init();
-    new DreamCore();
   }
 
   @Override
