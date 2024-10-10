@@ -27,7 +27,7 @@ public class SectorView extends Group {
 	public void draw() {
 		if (hasSectors) {
 			Draw.alpha(parentAlpha);
-			style.under.draw(minx + x, miny + y, maxx - minx, maxx - miny);
+			style.under.draw(minx + x, miny + y, maxx - minx, maxy - miny);
 		}
 
 		super.draw();
@@ -51,11 +51,11 @@ public class SectorView extends Group {
 				if (sector.accessible) {
 					stack.add(new Image(SWStyles.inventoryClear));
 					stack.add(new Table(t -> {
-						t.table(Styles.black6, img -> img.image(Icon.terrain)).margin(10f);
+						t.table(Styles.black6, img -> img.image(sector.icon.get())).margin(10f);
 					}));
 				}
 			} else {
-				button.stack(new Image(Styles.black), new Image(SWStyles.inventoryClear), new Image(Icon.map));
+				button.stack(new Image(Styles.black), new Image(SWStyles.inventoryClear), new Image(Icon.map)).size(sectorScale);
 			}
 
 			addChild(button);
@@ -63,7 +63,7 @@ public class SectorView extends Group {
 			minx = Math.min(minx, button.x);
 			miny = Math.min(miny, button.y);
 			maxx = Math.max(maxx, button.x + sectorScale);
-			maxy = Math.max(maxy, button.y + sectorScale * 3f);
+			maxy = Math.max(maxy, button.y + sectorScale);
 		}
 		if (sectors.isEmpty()) return;
 		minx -= margin;

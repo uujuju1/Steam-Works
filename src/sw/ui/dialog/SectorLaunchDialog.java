@@ -68,15 +68,13 @@ public class SectorLaunchDialog extends BaseDialog {
 			new Table(t -> t.add(sectorList = new Table(Styles.black6).margin(10))).left(),
 			new Table(t -> t.add(buttons)).bottom().right()
 		).grow();
-		dx = shader.x;
-		dy = shader.y;
 		addCaptureListener(new ElementGestureListener() {
 			@Override
 			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY){
 				view.x += deltaX;
 				view.y += deltaY;
-				dx += deltaX;
-				dy += deltaY;
+				dx -= deltaX;
+				dy -= deltaY;
 			}
 		});
 		closeOnBack();
@@ -85,6 +83,8 @@ public class SectorLaunchDialog extends BaseDialog {
 			rebuildSectorList(SWPlanets.wendi.sectors.select(s -> s.preset instanceof PositionSectorPreset).map(s -> (PositionSectorPreset) s.preset));
 			Core.settings.put("lastplanet", lastPlanet.name);
 			Vars.ui.planet.hide();
+			dx = shader.x;
+			dy = shader.y;
 		});
 		hidden(() -> {
 			Vars.ui.planet.state.planet = lastPlanet;
@@ -135,7 +135,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			i.addListener(new HandCursorListener());
 			title.add(sector.sector.name(), Pal.accent);
 		}).growX().padBottom(10f).row();
-		selectSector.button("@play", Icon.play, new TextButton.TextButtonStyle() {{
+		var button = selectSector.button("@play", Icon.play, new TextButton.TextButtonStyle() {{
 			font = Fonts.def;
 			up = Tex.buttonEdge1;
 			over = Tex.buttonEdgeOver1;
@@ -150,7 +150,8 @@ public class SectorLaunchDialog extends BaseDialog {
 					hide();
 				}
 			}
-		}).growX().size(200f, 50f).tooltip(t -> {
+		}).growX().size(200f, 50f);
+		if (!(sector.planet.startSector == sector.sector.id || sector.sector.hasSave())) button.tooltip(t -> {
 			t.margin(10f);
 			t.setBackground(Tex.paneSolid);
 			t.add("loadout:").row();
@@ -173,7 +174,7 @@ public class SectorLaunchDialog extends BaseDialog {
 		sectorList.clear();
 		sectorList.pane(Styles.smallPane, t -> {
 			sectors.each(s -> s.sector.hasSave(), s -> {
-				t.button(s.localizedName, Icon.terrain, () -> {
+				t.button(s.localizedName, s.icon.get(), () -> {
 					moveTo(s);
 					selected = s;
 					rebuildSelector(selected);

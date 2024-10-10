@@ -1,6 +1,7 @@
 package sw.type;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.struct.*;
@@ -14,7 +15,7 @@ public class PositionSectorPreset extends SectorPreset {
 	/**
 	 * Icon shown when the sector has a save. Disabled with accessible = false
 	 */
-	public Drawable icon = Icon.waves;
+	public Prov<Drawable> icon = () -> Icon.waves;
 
 	/**
 	 * require those sectors to have a save for it to be visible. Only works with accessible = false

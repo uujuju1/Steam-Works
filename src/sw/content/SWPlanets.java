@@ -32,7 +32,7 @@ public class SWPlanets {
 			atmosphereColor = Pal.lancerLaser.cpy().mul(0.3f);
 			atmosphereRadIn = 0f;
 			atmosphereRadOut = 0.2f;
-			startSector = 69;
+			startSector = 0;
 
 			itemWhitelist.addAll(
 				SWItems.nickel,
