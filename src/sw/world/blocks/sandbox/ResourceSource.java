@@ -27,7 +27,7 @@ public class ResourceSource extends PowerGenerator {
 		group = BlockGroup.transportation;
 
 		config(Config.class, (ResourceSourceBuild b, Config config) -> {
-			b.con = config;
+			b.con.set(config);
 		});
 		configClear((ResourceSourceBuild b) -> b.con = new Config());
 	}
@@ -72,7 +72,6 @@ public class ResourceSource extends PowerGenerator {
 			super.read(read, revision);
 			for (int i = 0; i < content.items().size; i++) if (read.bool()) con.itemBits.set(i);
 			for (int i = 0; i < content.liquids().size; i++) if (read.bool()) con.liquidBits.set(i);
-			con.heatValue = read.f();
 			con.power = read.f();
 			con.heat = read.f();
 		}
@@ -95,7 +94,6 @@ public class ResourceSource extends PowerGenerator {
 			super.write(write);
 			for (int i = 0; i < content.items().size; i++) write.bool(con.itemBits.get(i));
 			for (int i = 0; i < content.liquids().size; i++) write.bool(con.liquidBits.get(i));
-			write.f(con.heatValue);
 			write.f(con.power);
 			write.f(con.heat);
 		}
@@ -105,6 +103,13 @@ public class ResourceSource extends PowerGenerator {
 		public Bits
 			itemBits = new Bits(content.items().size),
 			liquidBits = new Bits(content.liquids().size);
-		public float heatValue, power, heat;
+		public float power, heat;
+
+		public void set(Config con) {
+			itemBits.set(con.itemBits);
+			liquidBits.set(con.liquidBits);
+			power = con.power;
+			heat = con.heat;
+		}
 	}
 }
