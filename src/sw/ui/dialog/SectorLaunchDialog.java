@@ -107,7 +107,7 @@ public class SectorLaunchDialog extends BaseDialog {
 	}
 
 	public boolean checkLoadout(PositionSectorPreset to) {
-		if (to.sector.preset == null) return true;
+		if (to.sector.preset == null || to.sector.id == to.planet.startSector) return true;
 		Rules rules = new Rules();
 		to.sector.preset.rules.get(rules);
 		for (ItemStack stack : rules.loadout) {
