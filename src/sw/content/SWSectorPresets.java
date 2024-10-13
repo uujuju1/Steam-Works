@@ -15,6 +15,7 @@ public class SWSectorPresets {
 		nowhere = new PositionSectorPreset("nowhere", SWPlanets.wendi, 0) {{
 			x = y = 0;
 			icon = () -> Icon.terrain;
+			alwaysUnlocked = true;
 		}};
 		anemoia = new PositionSectorPreset("anemoia", SWPlanets.wendi, 1) {{
 			x = 1;

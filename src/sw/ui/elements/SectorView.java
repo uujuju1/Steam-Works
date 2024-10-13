@@ -10,6 +10,8 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
+import sw.graphics.*;
+import sw.graphics.SWShaders.*;
 import sw.type.*;
 import sw.ui.*;
 
@@ -19,12 +21,17 @@ public class SectorView extends Group {
 	public Cons<PositionSectorPreset> selector = s -> {};
 
 	public SectorViewStyle style = new SectorViewStyle();
+	public UIShader shader = SWShaders.sectorDialogBackground;
 
 	float minx, miny, maxx, maxy;
 	boolean hasSectors = false;
 
 	@Override
 	public void draw() {
+		shader.alpha = parentAlpha;
+		shader.pos.set(-x, -y);
+		Draw.blit(shader);
+
 		if (hasSectors) {
 			Draw.alpha(parentAlpha);
 			style.under.draw(minx + x, miny + y, maxx - minx, maxy - miny);

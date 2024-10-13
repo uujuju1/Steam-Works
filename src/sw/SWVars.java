@@ -14,7 +14,6 @@ import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
 import sw.ui.*;
-import sw.ui.dialog.*;
 import sw.world.*;
 
 import java.util.*;
@@ -34,6 +33,7 @@ public class SWVars implements Loadable {
 			SWStyles.load();
 			ModSettings.load();
 			envProcess = new EnvProcess();
+			SWShaders.load();
 			SWUI.load();
 		}
 	}

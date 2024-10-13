@@ -108,8 +108,12 @@ public class SWTechTree {
     // endregion
     // region sectors
     root.add(node(nowhere, () -> {
-      node(anemoia, () -> node(nostalgia));
-      node(coast, () -> node(island));
+      node(anemoia, with(new SectorComplete(nowhere)), () -> {
+        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
+          node(coast, with(new SectorComplete(nostalgia)), () -> {});
+          node(island, with(new SectorComplete(nostalgia)), () -> {});
+        });
+      });
     }));
     root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;
