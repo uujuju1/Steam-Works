@@ -7,10 +7,11 @@ import arc.util.*;
 import mindustry.*;
 
 public class SWShaders {
-	public static UIShader sectorDialogBackground;
+	public static UIShader sectorDialogBackground, techtreeBackground;
 
 	public static void load() {
 		sectorDialogBackground = new UIShader("sectorDialogBackground");
+		techtreeBackground = new UIShader("techtreeBackground");
 	}
 
 	public static class UIShader extends Shader {

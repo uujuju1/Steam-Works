@@ -1,4 +1,4 @@
-package sw.ui;
+package sw.ui.elements;
 
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -82,6 +82,11 @@ public class ResourceDisplay extends Table {
 			image(item.uiIcon).padRight(5);
 			add(UI.formatAmount(amount)).row();
 		});
+		if (items.toSeq().isEmpty()) {
+			setBackground(null);
+		} else {
+			setBackground(Styles.black6);
+		}
 		margin(10f);
 	}
 }

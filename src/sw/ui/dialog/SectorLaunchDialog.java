@@ -107,7 +107,10 @@ public class SectorLaunchDialog extends BaseDialog {
 	}
 
 	public void moveTo(PositionSectorPreset to) {
-		view.setPosition(cont.getWidth()/2f - to.x * view.sectorScale + view.sectorScale/2f, cont.getHeight()/2f - to.y * view.sectorScale + view.sectorScale/2f);
+		view.setPosition(
+			cont.getWidth()/2f - to.x * view.sectorScale - view.sectorScale/2f,
+			cont.getHeight()/2f - to.y * view.sectorScale - view.sectorScale/2f
+		);
 	}
 
 	public void rebuildSelector(@Nullable PositionSectorPreset sector) {

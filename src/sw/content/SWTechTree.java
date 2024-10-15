@@ -93,14 +93,13 @@ public class SWTechTree {
     // region resources
     root.add(nodeProduce(nickel, () -> {
       nodeProduce(iron, () -> {
-        nodeProduce(Items.silicon, () -> {
-          nodeProduce(compound, () -> {});
-          nodeProduce(denseAlloy, () -> {});
-        });
+        nodeProduce(compound, () -> nodeProduce(chalk, () -> nodeProduce(soda, () -> {})));
+        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(residue, () -> {})));
+        nodeProduce(meteorite, () -> {});
       });
       nodeProduce(solvent, () -> {
         nodeProduce(steam, () -> {});
-//          nodeProduce(fluorane);
+          nodeProduce(fluorane, () -> {});
       });
     }));
     root.peek().name = "sw-resources";
