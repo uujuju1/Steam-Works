@@ -2,7 +2,7 @@ displayName: "Steam Works"
 name: "sw"
 author: "Liz Aurora"
 main: "sw.ModLoader"
-description: "A tech demo mod with a bunch of stuff, whose content is all made by the pure will of a person."
-version: 1.0.Alpha3
+description: "A tech demo mod with a bunch of stuff, whose content is all in lore made by the pure will of a person."
+version: 1.0.Alpha4
 minGameVersion: 142
 java: true
