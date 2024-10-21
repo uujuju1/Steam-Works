@@ -5,13 +5,16 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
+import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.layout.*;
+import sw.ui.*;
 import sw.ui.dialog.*;
 
 public class TreeView extends Group {
@@ -37,22 +40,42 @@ public class TreeView extends Group {
 	}
 
 	public void addRoot(TechtreeDialog.TechTreeNode root) {
-		ImageButton button = new ImageButton(new ImageButton.ImageButtonStyle() {{
-			up = Tex.button;
-			down = Tex.buttonDown;
-			disabled = Tex.buttonDisabled;
-		}});
-		button.setSize(48f);
-		button.setPosition(root.x + width/2f, root.y + height/2f);
-		button.update(() -> {
-			if (root.parent != null) button.setDisabled(!root.parent.node.content.unlocked());
-			button.replaceImage(new Image(button.isDisabled() ? Icon.lock.getRegion() : (root.node.content.unlocked() ? root.node.content.uiIcon : Icon.cancel.getRegion())));
-			button.getImage().setScaling(Scaling.fit);
-		});
-		button.hovered(() -> hovered.get(root));
-		button.clicked(() -> clicked.get(root));
-		addChildCentered(button);
-		for (TechtreeDialog.TechTreeNode next : root.children) addRoot(next);
+		if (root.parent != null) {
+			root.visible = root.parent.node.content.unlocked();
+			if (root.parent.parent != null) {
+				root.selectable = root.parent.parent.node.content.unlocked();
+			}
+		} else {
+			root.selectable = root.visible = true;
+		}
+		if (root.selectable) {
+			Table button = new Table();
+//		ImageButton button = new ImageButton(
+//			new ImageButton.ImageButtonStyle() {{
+//				up = Tex.button;
+//				down = Tex.buttonDown;
+//				disabled = Tex.buttonDisabled;
+//			}}
+//		);
+			button.setSize(48f);
+			button.setPosition(root.x + width / 2f, root.y + height / 2f);
+			button.add(new Image(!root.visible ? Icon.lock.getRegion() : root.node.content.uiIcon)).size(32f);
+			if (root.node.content.unlocked() || !root.visible) {
+				button.setBackground(
+					((ScaledNinePatchDrawable) SWStyles.treeBorder).tint(root.visible ? Color.valueOf("00000099") : Pal.darkestGray)
+				);
+			} else {
+				button.fill(((ScaledNinePatchDrawable) SWStyles.treeBorder).tint(Color.valueOf("00000099")), a -> {});
+			}
+			if (root.visible) {
+				button.touchable = Touchable.enabled;
+				button.addListener(new HandCursorListener());
+			}
+			button.hovered(() -> hovered.get(root));
+			button.clicked(() -> clicked.get(root));
+			addChildCentered(button);
+			for (TechtreeDialog.TechTreeNode next : root.children) addRoot(next);
+		}
 	}
 
 	@Override
@@ -69,8 +92,11 @@ public class TreeView extends Group {
 	public void drawConnections(@Nullable TechtreeDialog.TechTreeNode from) {
 		if (from == null) return;
 		for(TechtreeDialog.TechTreeNode next : from.children) {
-			Lines.stroke(4, Pal.accent);
+			if (!next.selectable) continue;
+			Lines.stroke(5, Pal.accent);
 			Draw.alpha(parentAlpha);
+			Lines.circle(from.x + x + margin - start, from.y + y + margin, 5f);
+			Lines.circle(next.x + x + margin - start, next.y + y + margin, 5f);
 			Lines.line(
 				from.x + x + margin - start,
 				from.y + y + margin,

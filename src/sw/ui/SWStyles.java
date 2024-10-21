@@ -8,7 +8,7 @@ import mindustry.gen.*;
 public class SWStyles {
 	public static ButtonStyle settingButton;
 
-	public static Drawable inventoryClear;
+	public static Drawable inventoryClear, treeBorder;
 
 	public static void load() {
 		settingButton = new ButtonStyle() {{
@@ -18,5 +18,6 @@ public class SWStyles {
 		}};
 
 		inventoryClear = Core.atlas.drawable("sw-inventory-clear");
+		treeBorder = Core.atlas.drawable("sw-tree-border");
 	}
 }

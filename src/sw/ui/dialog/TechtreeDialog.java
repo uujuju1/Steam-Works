@@ -33,6 +33,7 @@ public class TechtreeDialog extends BaseDialog {
 	public Table content;
 
 	public int currentRoot = -1;
+	public TechTreeNode currentContent;
 
 	public Seq<TechNode> roots = new Seq<>();
 
@@ -76,9 +77,14 @@ public class TechtreeDialog extends BaseDialog {
 
 		cont.stack(
 			shader = new ShaderElement(SWShaders.techtreeBackground),
-			new Table(t -> t.addChild(view = new TreeView(Styles.black6) {{
-				hovered = e -> displayInfo(e);
-				clicked = e -> spend(e.node);
+			new Table(t -> t.addChild(view = new TreeView(((ScaledNinePatchDrawable) SWStyles.treeBorder).tint(Color.valueOf("00000099"))) {{
+				hovered = e -> {
+					if (e.visible && !mobile) displayInfo(e);
+				};
+				clicked = e -> {
+					if (e.visible && (!mobile || currentContent == e)) spend(e.node);
+					if (e.visible && mobile) displayInfo(e);
+				};
 			}})),
 			new Table(t -> t.add(resources = new ResourceDisplay(SWPlanets.wendi)).bottom().left()).bottom().left(),
 			new Table(t -> t.add(content = new Table())).right(),
@@ -113,6 +119,7 @@ public class TechtreeDialog extends BaseDialog {
 	}
 
 	public void displayInfo(TechTreeNode node) {
+		currentContent = node;
 		content.clear();
 		content.setBackground(Styles.black6);
 		content.table(Tex.underline, label -> {
@@ -165,6 +172,7 @@ public class TechtreeDialog extends BaseDialog {
 				complete = false;
 			}
 		}
+		complete &= !node.objectives.contains(o -> !o.complete());
 
 		if(complete){
 			node.content.unlock();
@@ -172,9 +180,9 @@ public class TechtreeDialog extends BaseDialog {
 
 		node.save();
 
-		//??????
 		Core.scene.act();
 		resources.rebuild();
+		view.rebuild(roots.get(currentRoot));
 	}
 
 //	public class TreeView extends Group {
