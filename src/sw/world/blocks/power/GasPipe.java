@@ -20,7 +20,7 @@ import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class GasPipe extends Block {
-	public GasConfig gasConfig = new GasConfig();
+	public SpinConfig gasConfig = new SpinConfig();
 
 	public Block junctionReplacement;
 
@@ -92,8 +92,8 @@ public class GasPipe extends Block {
 		gasConfig.addStats(stats);
 	}
 
-	public class GasPipeBuild extends Building implements HasGas {
-		public GasModule gas = new GasModule();
+	public class GasPipeBuild extends Building implements HasSpin {
+		public SpinModule gas = new SpinModule();
 
 		public int tiling = 0;
 
@@ -102,10 +102,10 @@ public class GasPipe extends Block {
 			Draw.rect(regions[tiling], x, y, 0);
 		}
 
-		@Override public GasModule gas() {
+		@Override public SpinModule spin() {
 			return gas;
 		}
-		@Override public GasConfig gasConfig() {
+		@Override public SpinConfig spinConfig() {
 			return gasConfig;
 		}
 
@@ -116,10 +116,10 @@ public class GasPipe extends Block {
 		}
 
 		@Override
-		public void onGasGraphUpdate() {
+		public void onGraphUpdate() {
 			tiling = 0;
 			for (int i = 0; i < 4; i++) {
-				if (nearby(i) instanceof HasGas gas && HasGas.connects(this, gas.getGasDestination(this))) {
+				if (nearby(i) instanceof HasSpin gas && HasSpin.connects(this, gas.getGasDestination(this))) {
 					tiling |= 1 << i;
 				}
 			}
@@ -129,15 +129,15 @@ public class GasPipe extends Block {
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 
-			new GasGraph().addBuild(this);
-			nextBuilds().each(build -> gasGraph().merge(build.gasGraph(), false));
-			onGasGraphUpdate();
+			new SpinGraph().addBuild(this);
+			nextBuilds().each(build -> spinGraph().merge(build.spinGraph(), false));
+			onGraphUpdate();
 		}
 
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			gasGraph().remove(this, true);
+			spinGraph().remove(this, true);
 		}
 
 		@Override

@@ -15,10 +15,9 @@ import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class SWGenericCrafter extends GenericCrafter {
-	public GasConfig gasConfig = new GasConfig();
+	public SpinConfig spinConfig = new SpinConfig();
 
-	public float outputGas = -1;
-	public boolean outputGasContinuous = false;
+	public float outputRotation = -1;
 
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
@@ -46,67 +45,57 @@ public class SWGenericCrafter extends GenericCrafter {
 	@Override
 	public void setBars() {
 		super.setBars();
-		gasConfig.addBars(this);
+		spinConfig.addBars(this);
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
-		gasConfig.addStats(stats);
-		if (outputGas > 0) stats.add(SWStat.outputGas, Strings.fixed(outputGas * (outputGasContinuous ? 60f : 1f), 2), outputGasContinuous ? SWStat.gasSecond : SWStat.gasUnit);
+		spinConfig.addStats(stats);
+		if (outputRotation > 0) stats.add(SWStat.outputGas, Strings.fixed(outputRotation, 2), SWStat.gasUnit);
 	}
 
-	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasGas {
-		public GasModule gas = new GasModule();
+	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasSpin {
+		public SpinModule spin = new SpinModule();
 
 		@Override
 		public void craft() {
 			super.craft();
 			craftSound.at(x, y, 1f, craftSoundVolume);
-			if (!outputGasContinuous && outputGas > 0) {
-				gas().addAmount(outputGas);
-			}
 		}
 
-		@Override public GasModule gas() {
-			return gas;
+		@Override public SpinModule spin() {
+			return spin;
 		}
-		@Override public GasConfig gasConfig() {
-			return gasConfig;
+		@Override public SpinConfig spinConfig() {
+			return spinConfig;
 		}
 
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			gas.read(read);
-		}
-
-		@Override
-		public boolean shouldConsume() {
-			return super.shouldConsume() && (outputGas <= 0 || getGas() <= gasConfig.gasCapacity);
+			spin.read(read);
 		}
 
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 
-			new GasGraph().addBuild(this);
-			nextBuilds().each(build -> gasGraph().merge(build.gasGraph(), false));
+			new SpinGraph().mergeFlood(this);
 		}
 
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			gasGraph().remove(this, true);
+			spinGraph().remove(this, true);
 		}
 
 		@Override
 		public void updateTile() {
 			updateGas();
 			super.updateTile();
+			if (outputRotation > 0) spinGraph().rotation += outputRotation * Time.delta * warmup;
 			if (efficiency > 0) {
-				if (outputGasContinuous && outputGas > 0) gas.addAmount(outputGas * Time.delta);
-
 				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
 					updateEffectStatic.at(x, y);
 				}
@@ -116,7 +105,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			gas.write(write);
+			spin.write(write);
 		}
 	}
 }

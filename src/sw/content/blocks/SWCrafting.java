@@ -83,7 +83,7 @@ public class SWCrafting {
 			size = 2;
 			health = 160;
 
-			gasConfig = new GasConfig() {{
+			spinConfig = new SpinConfig() {{
 				connections = BlockGeometry.sides2;
 			}};
 
@@ -139,7 +139,7 @@ public class SWCrafting {
 			size = 2;
 			health = 160;
 
-			gasConfig = new GasConfig() {{
+			spinConfig = new SpinConfig() {{
 				connections = BlockGeometry.sides2;
 			}};
 

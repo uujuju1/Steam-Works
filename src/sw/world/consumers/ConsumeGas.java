@@ -34,7 +34,7 @@ public class ConsumeGas extends Consume {
 	 */
 	public boolean continuous;
 
-	public float baseEfficiency(HasGas build) {
+	public float baseEfficiency(HasSpin build) {
 		if (build.getGasPressure() < minPressure || build.getGasPressure() > maxPressure) return 0f;
 		return Mathf.map(build.getGasPressure(), minPressure, maxPressure, minEfficiency, maxEfficiency);
 	}
@@ -43,10 +43,10 @@ public class ConsumeGas extends Consume {
 		table.add(new ReqImage(Core.atlas.find("sw-steam"), () -> baseEfficiency(cast(build)) > 0.0001f)).size(iconMed).top().left();
 	}
 
-	public HasGas cast(Building build) {
+	public HasSpin cast(Building build) {
 		try {
-			if (!((HasGas) build).gasConfig().hasGas) throw new RuntimeException("This block doesn't use the gas system");
-			return (HasGas) build;
+			if (!((HasSpin) build).spinConfig().hasSpin) throw new RuntimeException("This block doesn't use the gas system");
+			return (HasSpin) build;
 		} catch (ClassCastException e) {
 			throw new RuntimeException("This block cannot use the gas system!", e);
 		}
@@ -64,10 +64,10 @@ public class ConsumeGas extends Consume {
 	}
 
 	@Override public void trigger(Building build) {
-		if (!continuous) cast(build).gas().subAmount(Math.min(cast(build).getGas(), amount * build.edelta()));
+		if (!continuous) cast(build).spin().subAmount(Math.min(cast(build).getGas(), amount * build.edelta()));
 	}
 
 	@Override public void update(Building build) {
-		if (continuous) cast(build).gas().subAmount(Math.min(cast(build).getGas(), amount * baseEfficiency(cast(build))));
+		if (continuous) cast(build).spin().subAmount(Math.min(cast(build).getGas(), amount * baseEfficiency(cast(build))));
 	}
 }

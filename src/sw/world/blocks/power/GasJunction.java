@@ -21,12 +21,12 @@ public class GasJunction extends GasPipe {
 		return region;
 	}
 
-	public class GasJunctionBuild extends GasPipeBuild {
-		@Override public boolean acceptsGas(HasGas from, float amount) {
+	public class SpinJunctionBuild extends GasPipeBuild {
+		@Override public boolean acceptsGas(HasSpin from, float amount) {
 			return false;
 		}
 
-		@Override public boolean connectTo(HasGas other) {
+		@Override public boolean connectTo(HasSpin other) {
 			return false;
 		}
 
@@ -35,15 +35,15 @@ public class GasJunction extends GasPipe {
 			Draw.rect(region, x, y, 0);
 		}
 
-		@Override public HasGas getGasDestination(HasGas from) {
-			return (nearby(from.relativeTo(tile)) instanceof HasGas other && !(other instanceof GasJunctionBuild)) ? other : this;
+		@Override public HasSpin getGasDestination(HasSpin from) {
+			return (nearby(from.relativeTo(tile)) instanceof HasSpin other && !(other instanceof SpinJunctionBuild)) ? other : this;
 		}
 
-		@Override public Seq<HasGas> nextBuilds() {
+		@Override public Seq<HasSpin> nextBuilds() {
 			return Seq.with();
 		}
 
-		@Override public boolean outputsGas(HasGas to, float amount) {
+		@Override public boolean outputsGas(HasSpin to, float amount) {
 			return false;
 		}
 
@@ -51,8 +51,8 @@ public class GasJunction extends GasPipe {
 		public void updateGas() {
 			gas.setAmount(0);
 			// has to be based on proximity cause nextBuilds will return an empty seq
-			Seq<HasGas> next = proximity.select(b -> b instanceof HasGas).as();
-			for(HasGas other : next) gas.addAmount(other.gas().amount);
+			Seq<HasSpin> next = proximity.select(b -> b instanceof HasSpin).as();
+			for(HasSpin other : next) gas.addAmount(other.spin().amount);
 			gas.amount /= next.size;
 			super.updateGas();
 		}

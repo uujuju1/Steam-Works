@@ -7,11 +7,11 @@ import sw.gen.*;
 import sw.world.graph.*;
 
 @EntityComponent(base = true)
-@EntityDef(value = {GasGraphUpdaterc.class}, serialize = false)
-abstract class GasGraphUpdaterComp implements Entityc {
-	public transient GasGraph graph;
+@EntityDef(value = {SpinGraphUpdaterc.class}, serialize = false)
+abstract class SpinGraphUpdaterComp implements Entityc {
+	public transient SpinGraph graph;
 
-	public GasGraphUpdater setGraph(GasGraph newGraph) {
+	public SpinGraphUpdater setGraph(SpinGraph newGraph) {
 		graph = newGraph;
 		return self();
 	}

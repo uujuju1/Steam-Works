@@ -14,36 +14,22 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		gasPipe, gasPump, gasValve, gasJunction,
-	boiler;
+		boiler,
+		wireShaft, wireShaftRouter;
 
 	public static void load() {
-		gasPipe = new GasPipe("gas-pipe") {{
+		wireShaft = new WireShaft("wire-shaft") {{
 			requirements(Category.power, with(
-				SWItems.compound, 2
+				SWItems.nickel, 5,
+				SWItems.iron, 5
 			));
-			health = 40;
 		}};
-		gasJunction = new GasJunction("gas-junction") {{
+		wireShaftRouter = new WireShaft("wire-shaft-router") {{
 			requirements(Category.power, with(
-				SWItems.compound, 5
+				SWItems.nickel, 10,
+				SWItems.iron, 5
 			));
-			health = 40;
-		}};
-		((GasPipe) gasPipe).junctionReplacement = gasJunction;
-		gasPump = new GasPump("gas-pump") {{
-			requirements(Category.power, with(
-				SWItems.compound, 2,
-				Items.silicon, 3
-			));
-			health = 80;
-		}};
-		gasValve = new GasValve("gas-valve") {{
-			requirements(Category.power, with(
-				SWItems.compound, 3,
-				Items.silicon, 2
-			));
-			health = 80;
+			rotate = false;
 		}};
 
 		boiler = new SWGenericCrafter("boiler") {{
@@ -55,8 +41,7 @@ public class SWPower {
 			size = 2;
 			health = 160;
 
-			gasConfig = new GasConfig() {{
-				overpressureDamage = 0.2f;
+			spinConfig = new SpinConfig() {{
 				connections = BlockGeometry.half2;
 			}};
 
@@ -74,8 +59,7 @@ public class SWPower {
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 			craftTime = 30;
 
-			outputGas = 0.2f;
-			outputGasContinuous = true;
+			outputRotation = 0.2f;
 		}};
 	}
 }

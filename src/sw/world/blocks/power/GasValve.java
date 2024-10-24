@@ -81,7 +81,7 @@ public class GasValve extends GasPipe {
 		public boolean open;
 		public float openTimer = 0;
 
-		@Override public boolean connectTo(HasGas other) {
+		@Override public boolean connectTo(HasSpin other) {
 			return super.connectTo(other) && (other == front() || other == back());
 		}
 
@@ -92,10 +92,10 @@ public class GasValve extends GasPipe {
 		}
 
 		@Override
-		public void onGasGraphUpdate() {
+		public void onGraphUpdate() {
 			tiling = 0;
 			for (int i = 0; i < 4; i+=2) {
-				if (nearby((((rotation + 1) % 2 - 1 + i) + 4) % 4) instanceof HasGas gas && HasGas.connects(this, gas)) {
+				if (nearby((((rotation + 1) % 2 - 1 + i) + 4) % 4) instanceof HasSpin gas && HasSpin.connects(this, gas)) {
 					tiling |= 1 << i/2;
 				}
 			}
@@ -119,7 +119,7 @@ public class GasValve extends GasPipe {
 				}
 			}
 			if (open) {
-				gas().subAmount(Math.min(getGas(), pumpSpeed * Time.delta * (getGasPressure() / gasConfig.gasCapacity)));
+				spin().subAmount(Math.min(getGas(), pumpSpeed * Time.delta * (getGasPressure() / gasConfig.gasCapacity)));
 				if (Mathf.chance(pumpEffectChance)) pumpEffect.at(x, y, (rotdeg() + (open ? 90f : 180f)) % 180 - 90f);
 			}
 

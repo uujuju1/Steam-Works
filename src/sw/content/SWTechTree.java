@@ -10,10 +10,8 @@ import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
-import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
-import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
 import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
@@ -24,7 +22,7 @@ public class SWTechTree {
   }
 
   public static void init(Seq<TechNode> root) {
-    // region crafting
+    /* region crafting
     root.add(node(siliconBoiler, with(new OnSector(coast)), () -> {
       node(compoundSmelter, () -> {
         node(chalkSeparator, with(new Research(boiler)), () -> {});
@@ -36,6 +34,7 @@ public class SWTechTree {
     root.peek().name = "sw-crafting";
     root.peek().icon = Icon.crafting;
     // endregion
+    */
     // region defense
     root.add(node(nickelWall, () -> {
       node(nickelWallLarge);
@@ -73,7 +72,7 @@ public class SWTechTree {
     root.peek().name = "sw-distribution";
     root.peek().icon = Icon.distribution;
     // endregion
-    //region power
+    /*region power
     root.add(node(boiler, () -> {
       node(gasPipe, () -> {
         node(gasJunction);
@@ -81,7 +80,7 @@ public class SWTechTree {
     }));
     root.peek().name = "sw-power";
     root.peek().icon = Icon.power;
-    //endregion
+    //endregion */
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill);

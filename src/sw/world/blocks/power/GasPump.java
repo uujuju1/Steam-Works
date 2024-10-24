@@ -65,11 +65,11 @@ public class GasPump extends GasPipe {
 	}
 
 	public class GasPumpBuild extends GasPipeBuild {
-		@Override public boolean acceptsGas(HasGas from, float amount) {
+		@Override public boolean acceptsGas(HasSpin from, float amount) {
 			return false;
 		}
 
-		@Override public boolean connectTo(HasGas other) {
+		@Override public boolean connectTo(HasSpin other) {
 			return super.connectTo(other) && (other == front() || other == back()) && !(other instanceof GasPumpBuild);
 		}
 
@@ -80,29 +80,29 @@ public class GasPump extends GasPipe {
 		}
 
 		@Override
-		public void onGasGraphUpdate() {
+		public void onGraphUpdate() {
 			tiling = 0;
 			for (int i = 0; i < 4; i+=2) {
-				if (nearby((((rotation + 1) % 2 - 1 + i) + 4) % 4) instanceof HasGas gas && HasGas.connects(this, gas)) {
+				if (nearby((((rotation + 1) % 2 - 1 + i) + 4) % 4) instanceof HasSpin gas && HasSpin.connects(this, gas)) {
 					tiling |= 1 << i/2;
 				}
 			}
 		}
 
-		@Override public boolean outputsGas(HasGas to, float amount) {
+		@Override public boolean outputsGas(HasSpin to, float amount) {
 			return false;
 		}
 
 		@Override
 		public void updateGas() {
-			gas().setAmount(Math.max(
-				front() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0,
-				back() instanceof HasGas gas && gas.gasConfig().hasGas && HasGas.connects(this, gas) ? gas.getGas() : 0
+			spin().setAmount(Math.max(
+				front() instanceof HasSpin gas && HasSpin.connects(this, gas) ? gas.getGas() : 0,
+				back() instanceof HasSpin gas && HasSpin.connects(this, gas) ? gas.getGas() : 0
 			));
 			if (
-				front() instanceof HasGas front && front.gasConfig().hasGas &&
-				back() instanceof HasGas back && back.gasConfig().hasGas && back.getGas() > 0 &&
-				HasGas.connects(this, front) && HasGas.connects(this, back)
+				front() instanceof HasSpin front &&
+				back() instanceof HasSpin back && back.getGas() > 0 &&
+				HasSpin.connects(this, front) && HasSpin.connects(this, back)
 			) {
 				front.handleGas(back, Mathf.clamp(pumpSpeed * Time.delta, 0, back.getGas()), true);
 			}
