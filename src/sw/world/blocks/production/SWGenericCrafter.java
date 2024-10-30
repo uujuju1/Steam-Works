@@ -94,7 +94,7 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void updateTile() {
 			updateGas();
 			super.updateTile();
-			if (outputRotation > 0) spinGraph().rotation += outputRotation * Time.delta * warmup;
+			if (outputRotation > 0) spinGraph().rotation += outputRotation * Time.delta * warmup * spinSection().ratio;
 			if (efficiency > 0) {
 				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
 					updateEffectStatic.at(x, y);

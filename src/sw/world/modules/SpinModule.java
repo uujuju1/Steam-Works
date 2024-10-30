@@ -12,6 +12,7 @@ public class SpinModule extends BlockModule {
 	public float amount = 0;
 
 	public SpinGraph graph = new SpinGraph();
+	public SpinSection section = new SpinSection();
 
 	public void addAmount(float value) {
 		amount += value;

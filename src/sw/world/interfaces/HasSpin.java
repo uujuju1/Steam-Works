@@ -2,6 +2,7 @@ package sw.world.interfaces;
 
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.gen.*;
 import sw.world.graph.*;
 import sw.world.meta.*;
@@ -11,7 +12,8 @@ public interface HasSpin extends Buildingc {
 	/**
 	 * Method indicating if a gas building can connect to another gas building. Mutually inclusive.
 	 */
-	static boolean connects(HasSpin from, HasSpin to) {
+	static boolean connects(@Nullable HasSpin from, @Nullable HasSpin to) {
+		if (from == null || to == null) return false;
 		return from.connectTo(to) && to.connectTo(from);
 	}
 
@@ -28,7 +30,21 @@ public interface HasSpin extends Buildingc {
 	 * @apiNote Liz, do not make this method call itself on another instance, and do not make this null, ever.
 	 */
 	default boolean connectTo(HasSpin other) {
-		return spinConfig().hasSpin && other.team() == team() && (spinConfig().connections.isEmpty() || spinConfig().connections.contains(new Point2(other.tileX(), other.tileY()).sub(tileX(), tileY())));
+		return spinConfig().hasSpin && other.team() == team() && (!proximity().contains(b -> other.as() == b) || connectionPoints(rotation()).isEmpty() || connectionPoints(rotation()).contains(new Point2(other.tileX(), other.tileY()).sub(tileX(), tileY())));
+	}
+
+	/**
+	 * Returns the current offsets to connect based on rotation
+	 */
+	default Seq<Point2> connectionPoints(int rotation) {
+		return spinConfig().connections[rotation];
+	}
+
+	default HasSpin getSpinGraphDestination(HasSpin from) {
+		return this;
+	}
+	default @Nullable HasSpin getSpinSectionDestination(HasSpin from) {
+		return this;
 	}
 
 	SpinModule spin();
@@ -36,9 +52,8 @@ public interface HasSpin extends Buildingc {
 	default SpinGraph spinGraph() {
 		return spin().graph;
 	}
-
-	default HasSpin getGasDestination(HasSpin from) {
-		return this;
+	default SpinSection spinSection() {
+		return spin().section;
 	}
 
 	@Deprecated
@@ -69,14 +84,14 @@ public interface HasSpin extends Buildingc {
 	 * Returns a seq with the gas buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
-		return proximity().select(b -> b instanceof HasSpin a && connects(this, a.getGasDestination(this))).map(a -> ((HasSpin) a).getGasDestination(this));
+		return proximity().select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this))).map(a -> ((HasSpin) a).getSpinGraphDestination(this));
 	}
 
 	/**
 	 * Should be called whenever connections changed.
 	 */
 	default void onGraphUpdate() {
-
+		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
 	}
 
 	/**

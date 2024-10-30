@@ -119,7 +119,7 @@ public class GasPipe extends Block {
 		public void onGraphUpdate() {
 			tiling = 0;
 			for (int i = 0; i < 4; i++) {
-				if (nearby(i) instanceof HasSpin gas && HasSpin.connects(this, gas.getGasDestination(this))) {
+				if (nearby(i) instanceof HasSpin gas && HasSpin.connects(this, gas.getSpinGraphDestination(this))) {
 					tiling |= 1 << i;
 				}
 			}

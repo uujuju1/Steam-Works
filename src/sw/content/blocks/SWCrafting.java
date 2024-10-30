@@ -8,9 +8,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.util.*;
 import sw.world.blocks.production.*;
-import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -74,37 +72,37 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
-		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
-			requirements(Category.crafting, with(
-				SWItems.iron, 50,
-				SWItems.compound, 35,
-				Items.silicon, 30
-			));
-			size = 2;
-			health = 160;
-
-			spinConfig = new SpinConfig() {{
-				connections = BlockGeometry.sides2;
-			}};
-
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawWarmupRegion() {{
-					sinMag = 0f;
-				}},
-				new DrawDefault(),
-				new DrawRegion("-top")
-			);
-
-			craftTime = 120f;
-			consumeItems(with(
-				Items.sand, 1,
-				SWItems.compound, 2
-			));
-			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
-
-			outputItem = new ItemStack(SWItems.chalk, 2);
-		}};
+//		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
+//			requirements(Category.crafting, with(
+//				SWItems.iron, 50,
+//				SWItems.compound, 35,
+//				Items.silicon, 30
+//			));
+//			size = 2;
+//			health = 160;
+//
+//			spinConfig = new SpinConfig() {{
+//				connections = BlockGeometry.sides2;
+//			}};
+//
+//			drawer = new DrawMulti(
+//				new DrawRegion("-bottom"),
+//				new DrawWarmupRegion() {{
+//					sinMag = 0f;
+//				}},
+//				new DrawDefault(),
+//				new DrawRegion("-top")
+//			);
+//
+//			craftTime = 120f;
+//			consumeItems(with(
+//				Items.sand, 1,
+//				SWItems.compound, 2
+//			));
+//			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
+//
+//			outputItem = new ItemStack(SWItems.chalk, 2);
+//		}};
 
 		densePress = new SWGenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
@@ -130,32 +128,32 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
-		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
-			requirements(Category.crafting, with(
-				SWItems.iron, 50,
-				SWItems.denseAlloy, 35,
-				Items.silicon, 30
-			));
-			size = 2;
-			health = 160;
-
-			spinConfig = new SpinConfig() {{
-				connections = BlockGeometry.sides2;
-			}};
-
-			consumeItem(SWItems.denseAlloy, 1);
-			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
-
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawRegion("-rotator") {{
-					spinSprite = true;
-					rotateSpeed = 3f;
-				}},
-				new DrawDefault()
-			);
-
-			outputItems = with(SWItems.thermite, 1);
-		}};
+//		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
+//			requirements(Category.crafting, with(
+//				SWItems.iron, 50,
+//				SWItems.denseAlloy, 35,
+//				Items.silicon, 30
+//			));
+//			size = 2;
+//			health = 160;
+//
+//			spinConfig = new SpinConfig() {{
+//				connections = BlockGeometry.sides2;
+//			}};
+//
+//			consumeItem(SWItems.denseAlloy, 1);
+//			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
+//
+//			drawer = new DrawMulti(
+//				new DrawRegion("-bottom"),
+//				new DrawRegion("-rotator") {{
+//					spinSprite = true;
+//					rotateSpeed = 3f;
+//				}},
+//				new DrawDefault()
+//			);
+//
+//			outputItems = with(SWItems.thermite, 1);
+//		}};
 	}
 }

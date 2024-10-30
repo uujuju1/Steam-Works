@@ -35,7 +35,7 @@ public class GasJunction extends GasPipe {
 			Draw.rect(region, x, y, 0);
 		}
 
-		@Override public HasSpin getGasDestination(HasSpin from) {
+		@Override public HasSpin getSpinGraphDestination(HasSpin from) {
 			return (nearby(from.relativeTo(tile)) instanceof HasSpin other && !(other instanceof SpinJunctionBuild)) ? other : this;
 		}
 

@@ -1,11 +1,12 @@
 package sw.content.blocks;
 
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.util.*;
+import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.meta.*;
@@ -15,7 +16,7 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		boiler,
-		wireShaft, wireShaftRouter;
+		wireShaft, wireShaftRouter, shaftTransmission;
 
 	public static void load() {
 		wireShaft = new WireShaft("wire-shaft") {{
@@ -32,6 +33,24 @@ public class SWPower {
 			rotate = false;
 		}};
 
+		shaftTransmission = new ShaftTransmission("shaft-transmission") {{
+			requirements(Category.power, with(
+				SWItems.nickel, 50,
+				SWItems.iron, 40,
+				Items.silicon, 30
+			));
+			size = 2;
+
+			spinConfig = new SpinConfig() {{
+				connections = new Seq[]{
+					BlockGeometry.sides21,
+					BlockGeometry.sides22,
+					BlockGeometry.sides23,
+					BlockGeometry.sides24
+				};
+			}};
+		}};
+
 		boiler = new SWGenericCrafter("boiler") {{
 			requirements(Category.power, with(
 				SWItems.iron, 20,
@@ -42,7 +61,12 @@ public class SWPower {
 			health = 160;
 
 			spinConfig = new SpinConfig() {{
-				connections = BlockGeometry.half2;
+				connections = new Seq[]{
+					BlockGeometry.half2,
+					BlockGeometry.half2,
+					BlockGeometry.half2,
+					BlockGeometry.half2
+				};
 			}};
 
 			drawer = new DrawMulti(
@@ -59,7 +83,7 @@ public class SWPower {
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 			craftTime = 30;
 
-			outputRotation = 0.2f;
+			outputRotation = 5f;
 		}};
 	}
 }

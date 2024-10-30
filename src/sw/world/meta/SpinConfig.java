@@ -26,9 +26,14 @@ public class SpinConfig {
 	public float maxPressure = 32f;
 
 	/**
-	 * List of possible positions whene a building can connect to. If null, everywhere is allowed.
+	 * List of possible positions whene a building can connect to from 0 to 3 based on rotation, everywhere is allowed when it's an empty seq.
 	 */
-	public Seq<Point2> connections = new Seq<>();
+	public Seq<Point2>[] connections = new Seq[]{
+		new Seq<>(),
+		new Seq<>(),
+		new Seq<>(),
+		new Seq<>()
+	};
 
 	public Color barColor = Pal.lancerLaser, barColorTo = Color.white;
 

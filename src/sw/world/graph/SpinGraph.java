@@ -10,6 +10,8 @@ import sw.world.interfaces.*;
 public class SpinGraph {
 	public float rotation;
 
+	boolean changed;
+
 	/**
 	 * Entity associated with this graph.
 	 */
@@ -30,14 +32,14 @@ public class SpinGraph {
 	 */
 	public void addBuild(HasSpin build) {
 		builds.add(build);
-		updater.add();
 		checkEntity();
 		build.spinGraph().remove(build, false);
 		build.spin().graph = this;
+		changed = true;
 	}
 
 	/**
-	 * Disables the updater if there are less than 2 gas buildings.
+	 * Disables the updater if there are less than 2 buildings.
 	 */
 	public void checkEntity() {
 		if (builds.size > 1) {
@@ -84,13 +86,21 @@ public class SpinGraph {
 		if (split) build.nextBuilds().each(p -> {
 			new SpinGraph().mergeFlood(p);
 		});
-		builds.each(HasSpin::onGraphUpdate);
 		checkEntity();
+		changed = true;
 	}
 
 	/**
 	 * Called every frame by the updater.
 	 */
 	public void update() {
+		if (changed) {
+			builds.each(b -> {
+				b.spin().section = new SpinSection();
+				b.spinSection().addBuild(b);
+			});
+			builds.each(HasSpin::onGraphUpdate);
+			changed = false;
+		}
 	}
 }
