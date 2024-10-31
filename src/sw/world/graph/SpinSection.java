@@ -6,6 +6,7 @@ import sw.world.interfaces.*;
 public class SpinSection {
 	public final Seq<HasSpin> builds = new Seq<>();
 	public float ratio = 1;
+	public boolean set = false;
 
 	public void addBuild(HasSpin build) {
 		builds.addUnique(build);

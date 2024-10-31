@@ -166,12 +166,14 @@ public class ShaftTransmission extends Block {
 			float ratio = (smallSection == null) ? 0.5f : smallSection.ratio / 2f;
 
 			if (bigSection != null) {
-				if (bigSection.ratio != 1f && bigSection.ratio != ratio) {
+				if ((!bigSection.set || bigSection.ratio != 1f) && bigSection.ratio != ratio) {
 					if (smallSection != null) {
 						smallSection.ratio = bigSection.ratio * 2;
+						smallSection.set = true;
 					}
 				} else {
 					bigSection.ratio = ratio;
+					bigSection.set = true;
 				}
 			}
 		}
