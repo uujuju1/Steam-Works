@@ -162,8 +162,17 @@ public class ShaftTransmission extends Block {
 					}
 				}
 			}
+
+			float ratio = (smallSection == null) ? 0.5f : smallSection.ratio / 2f;
+
 			if (bigSection != null) {
-				bigSection.ratio = (smallSection == null) ? 0.5f : smallSection.ratio / 2f;
+				if (bigSection.ratio != 1f && bigSection.ratio != ratio) {
+					if (smallSection != null) {
+						smallSection.ratio = bigSection.ratio * 2;
+					}
+				} else {
+					bigSection.ratio = ratio;
+				}
 			}
 		}
 
