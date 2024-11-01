@@ -16,7 +16,7 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		boiler,
-		wireShaft, wireShaftRouter, shaftTransmission;
+		wireShaft, wireShaftRouter, wireShaftJunction, shaftTransmission;
 
 	public static void load() {
 		wireShaft = new WireShaft("wire-shaft") {{
@@ -31,6 +31,12 @@ public class SWPower {
 				SWItems.iron, 5
 			));
 			rotate = false;
+		}};
+		wireShaftJunction = new ShaftJunction("wire-shaft-junction") {{
+			requirements(Category.power, with(
+				SWItems.nickel, 7,
+				SWItems.iron, 7
+			));
 		}};
 
 		shaftTransmission = new ShaftTransmission("shaft-transmission") {{
