@@ -55,7 +55,7 @@ public class ShaftTransmission extends Block {
 		@Override
 		public void draw() {
 			float rot = (rotation * 90f + 90f) % 180f - 90f;
-			float spin = spinGraph().rotation * (smallSection == null ? 1f : smallSection.ratio);
+			float spin = spinGraph().rotation * (smallSection == null ? (bigSection == null ? 1f : bigSection.ratio * 2) : smallSection.ratio);
 			Draw.rect(bottomRegion, x, y);
 
 			SWDraw.rotatingRects(barRegionsEnd,
