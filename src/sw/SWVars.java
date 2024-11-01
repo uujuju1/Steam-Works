@@ -6,7 +6,6 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
-import mindustry.type.*;
 import mindustry.ui.fragments.*;
 import sw.audio.*;
 import sw.content.*;
@@ -20,11 +19,13 @@ import java.util.*;
 
 public class SWVars implements Loadable {
 	public static Seq<FluidArea> fluidAreas = new Seq<>();
-	public static SectorPreset lastSectorPreset;
 
 	public static EnvProcess envProcess;
 
 	public static boolean showSectorLaunchDialog = true;
+
+	public static float maxRatio = 65536f;
+	public static float minRatio = 1f/65536f;
 
   public static void init() {
 		dev();

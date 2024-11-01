@@ -10,7 +10,7 @@ import sw.world.interfaces.*;
 public class SpinGraph {
 	public float rotation;
 
-	boolean changed;
+	public boolean changed;
 
 	/**
 	 * Entity associated with this graph.

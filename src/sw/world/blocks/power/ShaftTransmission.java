@@ -1,12 +1,19 @@
 package sw.world.blocks.power;
 
 import arc.*;
+import arc.audio.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
+import sw.*;
 import sw.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -16,6 +23,15 @@ import sw.world.modules.*;
 // TODO needs fix
 public class ShaftTransmission extends Block {
 	public SpinConfig spinConfig = new SpinConfig();
+
+	public float breakingDamage = 1f;
+
+	public Sound breakingSound = Sounds.breaks;
+	public float breakingSoundPitchMin = 0.25f;
+	public float breakingSoundPitchMax = 0.5f;
+	public float breakingSoundVolume = 1f;
+	public Effect breakingEffect = Fx.colorSpark;
+	public Color breakingEffectColor = Pal.accent;
 
 	public int[] bigSectionID = new int[]{2, 3};
 
@@ -48,6 +64,8 @@ public class ShaftTransmission extends Block {
 
 		public SpinSection bigSection, smallSection;
 
+		public boolean breaking;
+
 		@Override public boolean connectTo(HasSpin other) {
 			return HasSpin.super.connectTo(other) && !(other instanceof ShaftTransmissionBuild);
 		}
@@ -55,44 +73,45 @@ public class ShaftTransmission extends Block {
 		@Override
 		public void draw() {
 			float rot = (rotation * 90f + 90f) % 180f - 90f;
-			float spin = spinGraph().rotation * (smallSection == null ? (bigSection == null ? 1f : bigSection.ratio * 2) : smallSection.ratio);
+			float spin = (spinGraph().rotation * (smallSection == null ? (bigSection == null ? 1f : bigSection.ratio * 2) : smallSection.ratio));
 			Draw.rect(bottomRegion, x, y);
+			if (breaking) spin += Mathf.random(-15f, 15f);
 
 			SWDraw.rotatingRects(barRegionsEnd,
 				x + Angles.trnsx(rotation * 90f, -6f, -4f),
 				y + Angles.trnsy(rotation * 90f, -6f, -4f),
-				4f, 3.5f, rot, spin
+				4f, 3.5f, rot, spin % 360f
 			);
 			SWDraw.rotatingRects(barRegionsEnd,
 				x + Angles.trnsx(rotation * 90f, -6f, 4f),
 				y + Angles.trnsy(rotation * 90f, -6f, 4f),
-				4f, 3.5f, rot, spin/2f
+				4f, 3.5f, rot, spin/2f % 360f
 			);
 			SWDraw.rotatingRects(barRegionsEnd,
 				x + Angles.trnsx(rotation * 90f, 6f, -4f),
 				y + Angles.trnsy(rotation * 90f, 6f, -4f),
-				4f, 3.5f, rot, spin
+				4f, 3.5f, rot, spin % 360f
 			);
 			SWDraw.rotatingRects(barRegionsEnd,
 				x + Angles.trnsx(rotation * 90f, 6f, 4f),
 				y + Angles.trnsy(rotation * 90f, 6f, 4f),
-				4f, 3.5f, rot, spin/2f
+				4f, 3.5f, rot, spin/2f % 360f
 			);
 
 			SWDraw.rotatingRects(barRegionsSmall,
 				x + Angles.trnsx(rotation * 90f, 0f, -4f),
 				y + Angles.trnsy(rotation * 90f, 0f, -4f),
-				8f, 2f, rot, spin
+				8f, 2f, rot, spin % 360f
 			);
 			SWDraw.rotatingRects(barRegionsMiddle,
 				x + Angles.trnsx(rotation * 90f, 0f, -0.75f),
 				y + Angles.trnsy(rotation * 90f, 0f, -0.75f),
-				4f, 4.5f, rot, -spin/2
+				4f, 4.5f, rot, -spin/2 % 360f
 			);
 			SWDraw.rotatingRects(barRegionsBig,
 				x + Angles.trnsx(rotation * 90f, 0f, 4f),
 				y + Angles.trnsy(rotation * 90f, 0f, 4f),
-				8f, 5f, rot, spin/2f
+				8f, 5f, rot, spin/2f % 360f
 			);
 
 			Draw.rect(
@@ -165,16 +184,29 @@ public class ShaftTransmission extends Block {
 
 			float ratio = (smallSection == null) ? 0.5f : smallSection.ratio / 2f;
 
-			if (bigSection != null) {
-				if ((!bigSection.set || bigSection.ratio != 1f) && bigSection.ratio != ratio) {
-					if (smallSection != null) {
-						smallSection.ratio = bigSection.ratio * 2;
-						smallSection.set = true;
+			if (
+				!(bigSection != null && bigSection.ratio < SWVars.minRatio) &&
+				!(smallSection != null && smallSection.ratio > SWVars.maxRatio) &&
+					!(bigSection != null && smallSection != null && bigSection == smallSection)
+			) {
+				breaking = false;
+				if (bigSection != null) {
+					if ((!bigSection.set || bigSection.ratio != 1f) && bigSection.ratio != ratio) {
+						if (smallSection != null) {
+							smallSection.ratio = bigSection.ratio * 2;
+							smallSection.set = true;
+						}
+					} else {
+						bigSection.ratio = ratio;
+						bigSection.set = true;
 					}
-				} else {
-					bigSection.ratio = ratio;
-					bigSection.set = true;
 				}
+			} else {
+				breaking = true;
+				HasSpin target = spinGraph().builds.random();
+				target.damage(breakingDamage * Time.delta);
+				breakingEffect.at(target.x(), target.y(), Mathf.random(360f), breakingEffectColor);
+				breakingSound.at(target.x(), target.y(), Mathf.random(breakingSoundPitchMin, breakingSoundPitchMax), breakingSoundVolume);
 			}
 		}
 
