@@ -8,7 +8,6 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.production.*;
-import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -18,6 +17,7 @@ public class SWGenericCrafter extends GenericCrafter {
 	public SpinConfig spinConfig = new SpinConfig();
 
 	public float outputRotation = -1;
+	public float outputRotationForce = 0;
 
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
@@ -28,19 +28,19 @@ public class SWGenericCrafter extends GenericCrafter {
 		super(name);
 	}
 
-	public void consumeGas(float gas, float minP, float maxP, float minE, float maxE, boolean cont) {
-		consumeGas(new ConsumeGas() {{
-			amount = gas;
-			minPressure = minP;
-			maxPressure = maxP;
-			minEfficiency = minE;
-			maxEfficiency = maxE;
-			continuous = cont;
-		}});
-	}
-	public void consumeGas(ConsumeGas consumer) {
-		consume(consumer);
-	}
+//	public void consumeGas(float gas, float minP, float maxP, float minE, float maxE, boolean cont) {
+//		consumeGas(new ConsumeGas() {{
+//			amount = gas;
+//			minPressure = minP;
+//			maxPressure = maxP;
+//			minEfficiency = minE;
+//			maxEfficiency = maxE;
+//			continuous = cont;
+//		}});
+//	}
+//	public void consumeGas(ConsumeGas consumer) {
+//		consume(consumer);
+//	}
 
 	@Override
 	public void setBars() {
@@ -62,6 +62,13 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			craftSound.at(x, y, 1f, craftSoundVolume);
+		}
+
+		@Override public float getForce() {
+			return outputRotationForce * spinSection().ratio;
+		}
+		@Override public float getTargetSpeed() {
+			return efficiency > 0 ? outputRotation * spinSection().ratio : 0f;
 		}
 
 		@Override public SpinModule spin() {
@@ -92,9 +99,8 @@ public class SWGenericCrafter extends GenericCrafter {
 
 		@Override
 		public void updateTile() {
-			updateGas();
 			super.updateTile();
-			if (outputRotation > 0) spinGraph().rotation += outputRotation * Time.delta * warmup / spinSection().ratio;
+//			if (outputRotation > 0) spinGraph().rotation += outputRotation * Time.delta * warmup / spinSection().ratio;
 			if (efficiency > 0) {
 				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
 					updateEffectStatic.at(x, y);

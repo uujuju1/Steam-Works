@@ -1,24 +1,30 @@
 package sw.world.graph;
 
+import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import sw.gen.*;
 import sw.world.interfaces.*;
 
 /**
- * Graph containing an isolated group of gas buildings.
+ * Graph containing an isolated group of uildings sharing common stuff.
  */
 public class SpinGraph {
 	public float rotation;
+	public float speed;
 
+	/**
+	 * Wether the graph has changed in any way like adding/removing builds.
+	 */
 	public boolean changed;
 
 	/**
-	 * Entity associated with this graph.
+	 * Entity of this graph.
 	 */
 	public final SpinGraphUpdater updater = SpinGraphUpdater.create().setGraph(this);
 
 	/**
-	 * List of buildings associated with this graph.
+	 * List of buildings of this graph.
 	 */
 	public final Seq<HasSpin> builds = new Seq<>();
 
@@ -50,6 +56,13 @@ public class SpinGraph {
 	}
 
 	/**
+	 * Returns the force that all builds are doing to push the whole system.
+	 */
+	public float force() {
+		return builds.sumf(HasSpin::getForce);
+	}
+
+	/**
 	 * Merges this graph with another one. if other graph is bigger, merge the other graph with this one.
 	 * @param priority If true, the graph will always merge with the other graph.
 	 */
@@ -61,7 +74,6 @@ public class SpinGraph {
 		}
 		builds.each(HasSpin::onGraphUpdate);
 	}
-
 	public void mergeFlood(HasSpin other) {
 		tmp.clear().add(other);
 		tmp2.clear();
@@ -91,6 +103,20 @@ public class SpinGraph {
 	}
 
 	/**
+	 * Returns the resistance of the whole system from moving.
+	 */
+	public float resistance() {
+		return builds.sumf(HasSpin::getResistance);
+	}
+
+	/**
+	 * Returns the speed that the system is trying to reach.
+	 */
+	public float targetSpeed() {
+		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
+	}
+
+	/**
 	 * Called every frame by the updater.
 	 */
 	public void update() {
@@ -102,5 +128,9 @@ public class SpinGraph {
 			builds.each(HasSpin::onGraphUpdate);
 			changed = false;
 		}
+
+		speed = Mathf.approachDelta(speed, targetSpeed(), Mathf.maxZero(force() - resistance()));
+
+		rotation += speed * Time.delta;
 	}
 }

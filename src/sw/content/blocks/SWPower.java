@@ -9,6 +9,8 @@ import sw.content.*;
 import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
+import sw.world.draw.*;
+import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -16,7 +18,9 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		boiler,
-		wireShaft, wireShaftRouter, wireShaftJunction, shaftTransmission;
+		wireShaft, wireShaftRouter, shaftGearbox,
+
+		shaftTransmission;
 
 	public static void load() {
 		wireShaft = new WireShaft("wire-shaft") {{
@@ -24,6 +28,32 @@ public class SWPower {
 				SWItems.nickel, 5,
 				SWItems.iron, 5
 			));
+
+			spinConfig = new SpinConfig() {{
+				connections = new Seq[]{
+					BlockGeometry.sides1,
+					BlockGeometry.sides2,
+					BlockGeometry.sides3,
+					BlockGeometry.sides4
+				};
+			}};
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					new DrawAxles.Axle("-shaft") {{
+						pixelHeight = 7;
+						height = 3.5f;
+					}}
+				),
+				new DrawBitmask("-tiles", build -> {
+					int tiling = 0;
+					if (!rotate) return tiling;
+					if (build.front() instanceof HasSpin gas && HasSpin.connects((HasSpin) build, gas.getSpinGraphDestination((HasSpin) build))) tiling |= 1;
+					if (build.back() instanceof HasSpin gas && HasSpin.connects((HasSpin) build, gas.getSpinGraphDestination((HasSpin) build))) tiling |= 2;
+					return tiling;
+				})
+			);
 		}};
 		wireShaftRouter = new WireShaft("wire-shaft-router") {{
 			requirements(Category.power, with(
@@ -31,12 +61,83 @@ public class SWPower {
 				SWItems.iron, 5
 			));
 			rotate = false;
+
+			drawer = new DrawMulti(
+				new DrawAxles(
+					new DrawAxles.Axle("-shaft") {{
+						iconOverride = "sw-wire-shaft-router-shaft-icon-horizontal";
+						pixelHeight = 7;
+
+						height = 3.5f;
+					}},
+					new DrawAxles.Axle("-shaft") {{
+						iconOverride = "sw-wire-shaft-router-shaft-icon-vertical";
+						pixelHeight = 7;
+
+						rotation = -90f;
+
+						height = 3.5f;
+					}}
+				),
+				new DrawDefault()
+			);
 		}};
-		wireShaftJunction = new ShaftJunction("wire-shaft-junction") {{
+		shaftGearbox = new WireShaft("shaft-gearbox") {{
 			requirements(Category.power, with(
-				SWItems.nickel, 7,
-				SWItems.iron, 7
+				SWItems.nickel, 10,
+				SWItems.iron, 5
 			));
+			size = 2;
+
+			rotate = false;
+
+			spinConfig = new SpinConfig() {{
+				connections = new Seq[]{
+					BlockGeometry.sides21,
+					BlockGeometry.sides22,
+					BlockGeometry.sides23,
+					BlockGeometry.sides24
+				};
+			}};
+
+			drawer = new DrawMulti(
+				new DrawAxles(
+					new DrawAxles.Axle("-shaft") {{
+						iconOverride = "sw-shaft-gearbox-shaft-icon-top";
+
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = 4f;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new DrawAxles.Axle("-shaft") {{
+						iconOverride = "sw-shaft-gearbox-shaft-icon-bottom";
+
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = -4f;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new DrawAxles.Axle("-shaft-middle") {{
+						pixelHeight = 9;
+						pixelWidth = 16;
+
+						spinScl = -1f;
+
+						width = 4f;
+						height = 4.5f;
+					}}
+				),
+				new DrawBitmask("-tiles", build -> 0) {{
+					tileWidth = tileHeight = 64;
+				}}
+			);
 		}};
 
 		shaftTransmission = new ShaftTransmission("shaft-transmission") {{
