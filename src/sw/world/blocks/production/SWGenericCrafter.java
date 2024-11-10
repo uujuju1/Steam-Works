@@ -2,7 +2,6 @@ package sw.world.blocks.production;
 
 import arc.audio.*;
 import arc.math.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -52,7 +51,7 @@ public class SWGenericCrafter extends GenericCrafter {
 	public void setStats() {
 		super.setStats();
 		spinConfig.addStats(stats);
-		if (outputRotation > 0) stats.add(SWStat.outputGas, Strings.fixed(outputRotation, 2), SWStat.gasUnit);
+//		if (outputRotation > 0) stats.add(SWStat.outputGas, Strings.fixed(outputRotation, 2), SWStat.gasUnit);
 	}
 
 	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasSpin {
@@ -65,10 +64,10 @@ public class SWGenericCrafter extends GenericCrafter {
 		}
 
 		@Override public float getForce() {
-			return outputRotationForce * spinSection().ratio;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce / spinSection().ratio * warmup : 0;
 		}
 		@Override public float getTargetSpeed() {
-			return efficiency > 0 ? outputRotation * spinSection().ratio : 0f;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation / spinSection().ratio * warmup : 0f;
 		}
 
 		@Override public SpinModule spin() {

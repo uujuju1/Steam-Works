@@ -30,6 +30,7 @@ public class SWPower {
 			));
 
 			spinConfig = new SpinConfig() {{
+				resistance = 0.2f;
 				connections = new Seq[]{
 					BlockGeometry.sides1,
 					BlockGeometry.sides2,

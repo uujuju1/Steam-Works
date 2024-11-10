@@ -129,7 +129,9 @@ public class SpinGraph {
 			changed = false;
 		}
 
-		speed = Mathf.approachDelta(speed, targetSpeed(), Mathf.maxZero(force() - resistance()));
+		// use delta?
+		speed += force() - resistance();
+		speed = Mathf.clamp(speed, 0, targetSpeed());
 
 		rotation += speed * Time.delta;
 	}

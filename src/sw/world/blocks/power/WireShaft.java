@@ -50,6 +50,18 @@ public class WireShaft extends Block {
 		drawer.load(this);
 	}
 
+	@Override
+	public void setBars() {
+		super.setBars();
+		spinConfig.addBars(this);
+	}
+
+	@Override
+	public void setStats() {
+		super.setStats();
+		spinConfig.addStats(stats);
+	}
+
 	public class WireShaftBuild extends Building implements HasSpin {
 		public SpinModule spin = new SpinModule();
 

@@ -27,14 +27,14 @@ public class SpinConfig {
 		BlockGeometry.full1
 	};
 
-	public Color barColor = Pal.lancerLaser;
+	public Color barColor = Pal.accent;
 
 	public void addBars(Block block) {
 		if (!hasSpin) return;
 		block.addBar("gas", building -> {
 			HasSpin b = building.as();
 			return new Bar(
-				() -> Core.bundle.get("bar.sw-rotation", "Speed") + ": " + Strings.autoFixed(b.spinGraph().speed, 2),
+				() -> Core.bundle.get("bar.sw-rotation", "Speed") + ": " + Strings.autoFixed(b.spinGraph().speed * 10f, 2),
 				() -> barColor,
 				() -> 1
 			);
@@ -42,7 +42,7 @@ public class SpinConfig {
 	}
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
-//		stats.add(SWStat.gasCapacity, Strings.fixed(gasCapacity, 2), SWStat.gasUnit);
+		stats.add(SWStat.spinResistance, Strings.autoFixed(resistance * 10f, 2), SWStat.spinMinute);
 //		stats.add(SWStat.maxPressure, Strings.fixed(maxPressure, 2), SWStat.pressureUnit);
 	}
 }
