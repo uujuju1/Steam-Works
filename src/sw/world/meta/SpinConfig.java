@@ -2,6 +2,7 @@ package sw.world.meta;
 
 import arc.*;
 import arc.graphics.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -15,7 +16,15 @@ import sw.world.interfaces.*;
 public class SpinConfig {
 	public boolean hasSpin = true;
 
+	/**
+	 * Resistance of rotation speed in rpm/10/sec.
+	 */
 	public float resistance = 0;
+
+	/**
+	 * Visual max speed, always full if zero. In (rpm/10).
+	 */
+	public float topSpeed;
 
 	/**
 	 * List of possible positions whene a building can connect to from 0 to 3 based on rotation.
@@ -36,13 +45,12 @@ public class SpinConfig {
 			return new Bar(
 				() -> Core.bundle.get("bar.sw-rotation", "Speed") + ": " + Strings.autoFixed(b.spinGraph().speed * 10f, 2),
 				() -> barColor,
-				() -> 1
+				() -> topSpeed > 0 ? Mathf.clamp(b.spinGraph().speed / topSpeed) : 1f
 			);
 		});
 	}
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
-		stats.add(SWStat.spinResistance, Strings.autoFixed(resistance * 10f, 2), SWStat.spinMinute);
-//		stats.add(SWStat.maxPressure, Strings.fixed(maxPressure, 2), SWStat.pressureUnit);
+		stats.add(SWStat.spinResistance, Strings.autoFixed(resistance * 600f, 2), SWStat.spinMinute);
 	}
 }

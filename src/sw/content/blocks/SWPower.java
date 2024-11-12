@@ -30,7 +30,7 @@ public class SWPower {
 			));
 
 			spinConfig = new SpinConfig() {{
-				resistance = 0.2f;
+				resistance = 1f/600f;
 				connections = new Seq[]{
 					BlockGeometry.sides1,
 					BlockGeometry.sides2,
@@ -63,6 +63,10 @@ public class SWPower {
 			));
 			rotate = false;
 
+			spinConfig = new SpinConfig() {{
+				resistance = 2f/600f;
+			}};
+
 			drawer = new DrawMulti(
 				new DrawAxles(
 					new DrawAxles.Axle("-shaft") {{
@@ -93,6 +97,7 @@ public class SWPower {
 			rotate = false;
 
 			spinConfig = new SpinConfig() {{
+				resistance = 2f/600f;
 				connections = new Seq[]{
 					BlockGeometry.sides21,
 					BlockGeometry.sides22,
@@ -150,6 +155,7 @@ public class SWPower {
 			size = 2;
 
 			spinConfig = new SpinConfig() {{
+				resistance = 3f/600f;
 				connections = new Seq[]{
 					BlockGeometry.sides21,
 					BlockGeometry.sides22,
@@ -169,6 +175,7 @@ public class SWPower {
 			health = 160;
 
 			spinConfig = new SpinConfig() {{
+				topSpeed = 6f;
 				connections = new Seq[]{
 					BlockGeometry.half2,
 					BlockGeometry.half2,
@@ -191,7 +198,8 @@ public class SWPower {
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 			craftTime = 30;
 
-			outputRotation = 5f;
+			outputRotation = 6f;
+			outputRotationForce = 1f/120f;
 		}};
 	}
 }

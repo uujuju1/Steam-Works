@@ -45,10 +45,10 @@ public class SpinGraph {
 	}
 
 	/**
-	 * Disables the updater if there are less than 2 buildings.
+	 * Disables the updater if there are less than a single building.
 	 */
 	public void checkEntity() {
-		if (builds.size > 1) {
+		if (builds.size > 0) {
 			updater.add();
 		} else {
 			updater.remove();
@@ -130,7 +130,7 @@ public class SpinGraph {
 		}
 
 		// use delta?
-		speed += force() - resistance();
+		speed += (force() - resistance()) * Time.delta;
 		speed = Mathf.clamp(speed, 0, targetSpeed());
 
 		rotation += speed * Time.delta;
