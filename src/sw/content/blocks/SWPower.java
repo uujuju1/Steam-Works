@@ -10,6 +10,7 @@ import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.draw.*;
+import sw.world.draw.DrawAxles.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
@@ -42,7 +43,7 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-					new DrawAxles.Axle("-shaft") {{
+					new Axle("-shaft") {{
 						pixelHeight = 7;
 						height = 3.5f;
 					}}
@@ -69,13 +70,13 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawAxles(
-					new DrawAxles.Axle("-shaft") {{
+					new Axle("-shaft") {{
 						iconOverride = "sw-wire-shaft-router-shaft-icon-horizontal";
 						pixelHeight = 7;
 
 						height = 3.5f;
 					}},
-					new DrawAxles.Axle("-shaft") {{
+					new Axle("-shaft") {{
 						iconOverride = "sw-wire-shaft-router-shaft-icon-vertical";
 						pixelHeight = 7;
 
@@ -108,7 +109,7 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawAxles(
-					new DrawAxles.Axle("-shaft") {{
+					new Axle("-shaft") {{
 						iconOverride = "sw-shaft-gearbox-shaft-icon-top";
 
 						pixelWidth = 64;
@@ -119,7 +120,7 @@ public class SWPower {
 						width = 16f;
 						height = 3.5f;
 					}},
-					new DrawAxles.Axle("-shaft") {{
+					new Axle("-shaft") {{
 						iconOverride = "sw-shaft-gearbox-shaft-icon-bottom";
 
 						pixelWidth = 64;
@@ -130,7 +131,7 @@ public class SWPower {
 						width = 16f;
 						height = 3.5f;
 					}},
-					new DrawAxles.Axle("-shaft-middle") {{
+					new Axle("-shaft-middle") {{
 						pixelHeight = 9;
 						pixelWidth = 16;
 
@@ -163,6 +164,66 @@ public class SWPower {
 					BlockGeometry.sides24
 				};
 			}};
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					new Axle("-shaft-end") {{
+						iconOverride = "sw-shaft-transmission-shaft-end-icon-top";
+
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = 4f;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft-end") {{
+						iconOverride = "sw-shaft-transmission-shaft-end-icon-bottom";
+
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = -4f;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft-small") {{
+						pixelHeight = 9;
+						pixelWidth = 16;
+
+						width = -4f;
+						height = 4.5f;
+					}},
+					new Axle("-shaft-middle") {{
+						pixelHeight = 9;
+						pixelWidth = 16;
+
+						spinScl = -(35f/60f);
+
+						y = -0.5f;
+
+						width = 4f;
+						height = 4.5f;
+					}},
+					new Axle("-shaft-big") {{
+						pixelHeight = 9;
+						pixelWidth = 16;
+
+						spinScl = 0.5f;
+
+						y = 4f;
+
+						width = 4f;
+						height = 5f;
+					}}
+				),
+				new DrawBitmask("-tiles", build -> 0) {{
+					tileWidth = tileHeight = 64;
+				}}
+			);
 		}};
 
 		boiler = new SWGenericCrafter("boiler") {{

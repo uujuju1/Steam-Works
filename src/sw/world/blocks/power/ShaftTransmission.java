@@ -1,20 +1,21 @@
 package sw.world.blocks.power;
 
-import arc.*;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
+import mindustry.world.draw.*;
 import sw.*;
-import sw.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -24,8 +25,9 @@ import sw.world.modules.*;
 public class ShaftTransmission extends Block {
 	public SpinConfig spinConfig = new SpinConfig();
 
-	public float breakingDamage = 1f;
+	public DrawBlock drawer = new DrawDefault();
 
+	public float breakingDamage = 1f;
 	public Sound breakingSound = Sounds.breaks;
 	public float breakingSoundPitchMin = 0.25f;
 	public float breakingSoundPitchMax = 0.5f;
@@ -35,28 +37,30 @@ public class ShaftTransmission extends Block {
 
 	public int[] bigSectionID = new int[]{2, 3};
 
-	public int barEndThickness = 7, barSmallThickness = 4, barMiddleThickness = 9, barBigThickness = 10;
-
-	public TextureRegion topRegion, bottomRegion, barShadowRegion1, barShadowRegion2;
-	public TextureRegion[] barRegionsEnd, barRegionsSmall, barRegionsMiddle, barRegionsBig;
-
 	public ShaftTransmission(String name) {
 		super(name);
 		update = rotate = true;
 	}
 
 	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+		drawer.drawPlan(this, plan, list);
+	}
+
+	@Override
+	public void getRegionsToOutline(Seq<TextureRegion> out){
+		drawer.getRegionsToOutline(this, out);
+	}
+
+	@Override
+	public TextureRegion[] icons(){
+		return drawer.finalIcons(this);
+	}
+
+	@Override
 	public void load() {
 		super.load();
-		topRegion = Core.atlas.find(name + "-top");
-		bottomRegion = Core.atlas.find(name + "-bottom");
-		barShadowRegion1 = Core.atlas.find(name + "-shaft-shadow-1");
-		barShadowRegion2 = Core.atlas.find(name + "-shaft-shadow-2");
-
-		barRegionsEnd = Core.atlas.find(name + "-shaft-end").split(16, barEndThickness)[0];
-		barRegionsSmall = Core.atlas.find(name + "-shaft-small").split(32, barSmallThickness)[0];
-		barRegionsMiddle = Core.atlas.find(name + "-shaft-middle").split(16, barMiddleThickness)[0];
-		barRegionsBig = Core.atlas.find(name + "-shaft-big").split(32, barBigThickness)[0];
+		drawer.load(this);
 	}
 
 	public class ShaftTransmissionBuild extends Building implements HasSpin {
@@ -70,56 +74,11 @@ public class ShaftTransmission extends Block {
 			return HasSpin.super.connectTo(other) && !(other instanceof ShaftTransmissionBuild);
 		}
 
-		@Override
-		public void draw() {
-			float rot = (rotation * 90f + 90f) % 180f - 90f;
-			float spin = (spinGraph().rotation * (smallSection == null ? (bigSection == null ? 1f : bigSection.ratio * 2) : smallSection.ratio));
-			Draw.rect(bottomRegion, x, y);
-			if (breaking) spin += Mathf.random(-15f, 15f);
-
-			SWDraw.rotatingRects(barRegionsEnd,
-				x + Angles.trnsx(rotation * 90f, -6f, -4f),
-				y + Angles.trnsy(rotation * 90f, -6f, -4f),
-				4f, 3.5f, rot, spin % 360f
-			);
-			SWDraw.rotatingRects(barRegionsEnd,
-				x + Angles.trnsx(rotation * 90f, -6f, 4f),
-				y + Angles.trnsy(rotation * 90f, -6f, 4f),
-				4f, 3.5f, rot, spin/2f % 360f
-			);
-			SWDraw.rotatingRects(barRegionsEnd,
-				x + Angles.trnsx(rotation * 90f, 6f, -4f),
-				y + Angles.trnsy(rotation * 90f, 6f, -4f),
-				4f, 3.5f, rot, spin % 360f
-			);
-			SWDraw.rotatingRects(barRegionsEnd,
-				x + Angles.trnsx(rotation * 90f, 6f, 4f),
-				y + Angles.trnsy(rotation * 90f, 6f, 4f),
-				4f, 3.5f, rot, spin/2f % 360f
-			);
-
-			SWDraw.rotatingRects(barRegionsSmall,
-				x + Angles.trnsx(rotation * 90f, 0f, -4f),
-				y + Angles.trnsy(rotation * 90f, 0f, -4f),
-				8f, 2f, rot, spin % 360f
-			);
-			SWDraw.rotatingRects(barRegionsMiddle,
-				x + Angles.trnsx(rotation * 90f, 0f, -0.75f),
-				y + Angles.trnsy(rotation * 90f, 0f, -0.75f),
-				4f, 4.5f, rot, -spin/2 % 360f
-			);
-			SWDraw.rotatingRects(barRegionsBig,
-				x + Angles.trnsx(rotation * 90f, 0f, 4f),
-				y + Angles.trnsy(rotation * 90f, 0f, 4f),
-				8f, 5f, rot, spin/2f % 360f
-			);
-
-			Draw.rect(
-				(rotation > 0 && rotation < 3) ? barShadowRegion2 : barShadowRegion1,
-				x, y, rotation % 2 * -90
-			);
-
-			Draw.rect(topRegion, x, y, rot);
+		@Override public void draw() {
+			drawer.draw(this);
+		}
+		@Override public void drawLight() {
+			drawer.drawLight(this);
 		}
 
 		@Override
@@ -154,6 +113,11 @@ public class ShaftTransmission extends Block {
 		}
 		@Override public SpinConfig spinConfig() {
 			return spinConfig;
+		}
+
+		@Override
+		public float totalProgress() {
+			return spinGraph().rotation * spinSection().ratio;
 		}
 
 		@Override
