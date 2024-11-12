@@ -117,7 +117,7 @@ public class ShaftTransmission extends Block {
 
 		@Override
 		public float totalProgress() {
-			return spinGraph().rotation * spinSection().ratio;
+			return spinGraph().rotation * (smallSection == null ? (bigSection == null ? 0f : bigSection.ratio) : smallSection.ratio);
 		}
 
 		@Override

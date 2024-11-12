@@ -174,6 +174,8 @@ public class SWPower {
 						pixelWidth = 64;
 						pixelHeight = 7;
 
+						spinScl = 0.5f;
+
 						y = 4f;
 
 						width = 16f;
@@ -191,10 +193,10 @@ public class SWPower {
 						height = 3.5f;
 					}},
 					new Axle("-shaft-small") {{
-						pixelHeight = 9;
+						pixelHeight = 4;
 						pixelWidth = 16;
 
-						width = -4f;
+						width = 1f;
 						height = 4.5f;
 					}},
 					new Axle("-shaft-middle") {{
@@ -203,13 +205,13 @@ public class SWPower {
 
 						spinScl = -(35f/60f);
 
-						y = -0.5f;
+						y = -0.75f;
 
 						width = 4f;
 						height = 4.5f;
 					}},
 					new Axle("-shaft-big") {{
-						pixelHeight = 9;
+						pixelHeight = 10;
 						pixelWidth = 16;
 
 						spinScl = 0.5f;
@@ -260,7 +262,7 @@ public class SWPower {
 			craftTime = 30;
 
 			outputRotation = 6f;
-			outputRotationForce = 1f/120f;
+			outputRotationForce = 3f/60f;
 		}};
 	}
 }
