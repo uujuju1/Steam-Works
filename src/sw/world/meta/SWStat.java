@@ -10,6 +10,7 @@ public class SWStat {
     spinMinute = new StatUnit("sw-spin-minute");
 
   public static final Stat
+    spinRequirement = new Stat("sw-spin-requirement", spin),
     spinOutput = new Stat("sw-spin-output", spin),
     spinOutputForce = new Stat("sw-spin-output-force", spin),
     spinResistance = new Stat("sw-spin-resistance", spin);

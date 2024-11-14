@@ -194,10 +194,12 @@ public class SWPower {
 					}},
 					new Axle("-shaft-small") {{
 						pixelHeight = 4;
-						pixelWidth = 16;
+						pixelWidth = 32;
 
-						width = 1f;
-						height = 4.5f;
+						y = -4;
+
+						width = 8f;
+						height = 2f;
 					}},
 					new Axle("-shaft-middle") {{
 						pixelHeight = 9;
@@ -212,13 +214,13 @@ public class SWPower {
 					}},
 					new Axle("-shaft-big") {{
 						pixelHeight = 10;
-						pixelWidth = 16;
+						pixelWidth = 32;
 
 						spinScl = 0.5f;
 
 						y = 4f;
 
-						width = 4f;
+						width = 8f;
 						height = 5f;
 					}}
 				),

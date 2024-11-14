@@ -1,6 +1,8 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.math.*;
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -8,7 +10,12 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.math.*;
 import sw.world.blocks.production.*;
+import sw.world.draw.*;
+import sw.world.draw.DrawAxles.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -72,37 +79,64 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
-//		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
-//			requirements(Category.crafting, with(
-//				SWItems.iron, 50,
-//				SWItems.compound, 35,
-//				Items.silicon, 30
-//			));
-//			size = 2;
-//			health = 160;
-//
-//			spinConfig = new SpinConfig() {{
-//				connections = BlockGeometry.sides2;
-//			}};
-//
-//			drawer = new DrawMulti(
-//				new DrawRegion("-bottom"),
-//				new DrawWarmupRegion() {{
-//					sinMag = 0f;
-//				}},
-//				new DrawDefault(),
-//				new DrawRegion("-top")
-//			);
-//
-//			craftTime = 120f;
-//			consumeItems(with(
-//				Items.sand, 1,
-//				SWItems.compound, 2
-//			));
-//			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
-//
-//			outputItem = new ItemStack(SWItems.chalk, 2);
-//		}};
+		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
+			requirements(Category.crafting, with(
+				SWItems.iron, 50,
+				SWItems.compound, 35,
+				Items.silicon, 30
+			));
+			size = 2;
+			health = 160;
+			
+			rotate = true;
+
+			spinConfig = new SpinConfig() {{
+				connections = new Seq[]{
+					BlockGeometry.sides21,
+					BlockGeometry.sides22,
+					BlockGeometry.sides23,
+					BlockGeometry.sides24
+				};
+			}};
+
+			drawer = new DrawMulti(
+				new DrawAxles(
+					new Axle("-shaft") {{
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = 4;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft") {{
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = -4;
+
+						width = 16f;
+						height = 3.5f;
+					}}
+				) {{
+					rotationOverride = b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio;
+				}},
+				new DrawRegion("-bottom"),
+				new DrawBitmask("-tiles", b -> 0) {{
+					tileWidth = tileHeight = 64;
+				}}
+			);
+
+			craftTime = 120f;
+			consumeItems(with(
+				Items.sand, 1,
+				SWItems.compound, 2
+			));
+			consumeSpin(2f, 4f, a -> Interp.sine.apply(Interp.slope.apply(a)));
+
+			outputItem = new ItemStack(SWItems.chalk, 2);
+		}};
 
 		densePress = new SWGenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
@@ -128,32 +162,63 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
-//		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
-//			requirements(Category.crafting, with(
-//				SWItems.iron, 50,
-//				SWItems.denseAlloy, 35,
-//				Items.silicon, 30
-//			));
-//			size = 2;
-//			health = 160;
-//
-//			spinConfig = new SpinConfig() {{
-//				connections = BlockGeometry.sides2;
-//			}};
-//
-//			consumeItem(SWItems.denseAlloy, 1);
-//			consumeGas(0.1f, 4f, 12f, 1f, 1f, true);
-//
-//			drawer = new DrawMulti(
-//				new DrawRegion("-bottom"),
-//				new DrawRegion("-rotator") {{
-//					spinSprite = true;
-//					rotateSpeed = 3f;
-//				}},
-//				new DrawDefault()
-//			);
-//
-//			outputItems = with(SWItems.thermite, 1);
-//		}};
+		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
+			requirements(Category.crafting, with(
+				SWItems.iron, 50,
+				SWItems.denseAlloy, 35,
+				Items.silicon, 30
+			));
+			size = 2;
+			health = 160;
+
+			rotate = true;
+
+			spinConfig = new SpinConfig() {{
+				connections = new Seq[]{
+					BlockGeometry.sides21,
+					BlockGeometry.sides22,
+					BlockGeometry.sides23,
+					BlockGeometry.sides24
+				};
+			}};
+
+			consumeItem(SWItems.denseAlloy, 1);
+			consumeSpin(6f, 18f, a -> Interp.sine.apply(Interp.slope.apply(a)));
+
+			drawer = new DrawMulti(
+				new DrawAxles(
+					new Axle("-shaft") {{
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = 4;
+
+						width = 16f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft") {{
+						pixelWidth = 64;
+						pixelHeight = 7;
+
+						y = -4;
+
+						width = 16f;
+						height = 3.5f;
+					}}
+				) {{
+					rotationOverride = b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio;
+				}},
+				new DrawRegion("-bottom"),
+				new DrawRegion("-rotator") {{
+					spinSprite = true;
+					rotateSpeed = 3f;
+				}},
+				new DrawBitmask("-tiles", b -> 0) {{
+					tileWidth = tileHeight = 64;
+				}}
+			);
+
+			outputItems = with(SWItems.thermite, 1);
+		}};
 	}
 }

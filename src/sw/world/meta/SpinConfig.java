@@ -43,9 +43,9 @@ public class SpinConfig {
 		block.addBar("gas", building -> {
 			HasSpin b = building.as();
 			return new Bar(
-				() -> Core.bundle.get("bar.sw-rotation", "Speed") + ": " + Strings.autoFixed(b.spinGraph().speed * 10f, 2),
+				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed * b.spinSection().ratio * 10f, 2)),
 				() -> barColor,
-				() -> topSpeed > 0 ? Mathf.clamp(b.spinGraph().speed / topSpeed) : 1f
+				() -> topSpeed > 0 ? Mathf.clamp((b.spinGraph().speed * b.spinSection().ratio) / topSpeed) : 1f
 			);
 		});
 	}

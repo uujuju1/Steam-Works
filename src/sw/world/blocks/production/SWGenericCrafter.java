@@ -8,6 +8,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.production.*;
+import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -28,19 +29,16 @@ public class SWGenericCrafter extends GenericCrafter {
 		super(name);
 	}
 
-//	public void consumeGas(float gas, float minP, float maxP, float minE, float maxE, boolean cont) {
-//		consumeGas(new ConsumeGas() {{
-//			amount = gas;
-//			minPressure = minP;
-//			maxPressure = maxP;
-//			minEfficiency = minE;
-//			maxEfficiency = maxE;
-//			continuous = cont;
-//		}});
-//	}
-//	public void consumeGas(ConsumeGas consumer) {
-//		consume(consumer);
-//	}
+	public void consumeSpin(float start, float end, Interp interp) {
+		consumeSpin(new ConsumeRotation() {{
+			startSpeed = start;
+			endSpeed = end;
+			curve = interp;
+		}});
+	}
+	public void consumeSpin(ConsumeRotation consumer) {
+		consume(consumer);
+	}
 
 	@Override
 	public void setBars() {
