@@ -21,10 +21,10 @@ public class SWProduction {
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 25
+				SWItems.nickel, 10
 			));
 			researchCost = with(
-				SWItems.nickel, 100
+				SWItems.nickel, 20
 			);
 			size = 2;
 			health = 160;
@@ -32,15 +32,16 @@ public class SWProduction {
 			tier = 1;
 			range = 5;
 			ambientSound = Sounds.combustion;
+			ambientSoundVolume = 0.01f;
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 40,
-				Items.graphite, 50
+				SWItems.nickel, 20,
+				Items.graphite, 10
 			));
 			researchCost = with(
-				SWItems.nickel, 160,
-				Items.graphite, 200
+				SWItems.nickel, 40,
+				Items.graphite, 20
 			);
 			liquidBoostIntensity = 1f;
 			size = 2;

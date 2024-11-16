@@ -1,5 +1,6 @@
 package sw.content;
 
+import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
@@ -47,7 +48,7 @@ public class SWPlanets {
 			defaultCore = SWStorage.coreScaffold;
 
 			generator = new ModularPlanetGenerator() {{
-				baseColor = SWEnvironment.soil.mapColor;
+				baseColor = Color.black;
 				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU=");
 			}};
 		}};

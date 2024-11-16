@@ -9,7 +9,6 @@ import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
-import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWProduction.*;
@@ -43,10 +42,10 @@ public class SWTechTree {
         node(waveRadar);
       });
 
-      node(flow, with(new OnSector(anemoia)), () -> {
-        node(trail, with(new OnSector(nostalgia)), () -> {});
-        node(vniz, with(new OnSector(anemoia)), () -> {
-          node(rozpad, with(new OnSector(nostalgia)), () -> {});
+      node(flow, with(/*new OnSector(anemoia)*/), () -> {
+        node(trail, with(/*new OnSector(nostalgia)*/), () -> {});
+        node(vniz, with(/*new OnSector(anemoia)*/), () -> {
+          node(rozpad, with(/*new OnSector(nostalgia)*/), () -> {});
         });
       });
     }));
@@ -105,16 +104,16 @@ public class SWTechTree {
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
-    root.add(node(nowhere, () -> {
-      node(anemoia, with(new SectorComplete(nowhere)), () -> {
-        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
-          node(coast, with(new SectorComplete(nostalgia)), () -> {});
-          node(island, with(new SectorComplete(nostalgia)), () -> {});
-        });
-      });
-    }));
-    root.peek().name = "sw-sectors";
-    root.peek().icon = Icon.terrain;
+//    root.add(node(nowhere, () -> {
+//      node(anemoia, with(new SectorComplete(nowhere)), () -> {
+//        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
+//          node(coast, with(new SectorComplete(nostalgia)), () -> {});
+//          node(island, with(new SectorComplete(nostalgia)), () -> {});
+//        });
+//      });
+//    }));
+//    root.peek().name = "sw-sectors";
+//    root.peek().icon = Icon.terrain;
     // endregion
   }
 }

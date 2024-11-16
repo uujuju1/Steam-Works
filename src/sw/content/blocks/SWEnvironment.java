@@ -1,59 +1,31 @@
 package sw.content.blocks;
 
 import mindustry.content.*;
-import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
-import mindustry.world.meta.*;
 import sw.content.*;
 import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
-	spinyTree, deadSpinyTree,
-
 	cliff,
-
 
 	oreNickel, oreIron, fissure, oreGraphite,
 
-	sandstoneBoulder, sandstoneWall,
-	sandstone, spongestone,
-
-	concretion, soilBoulder, soilWall,
-	soil, clay,
-
-	andesitePlate, andesiteBoulder, andesiteWall,
-	andesite, striatedAndesite,
-
-	solventShards, solventIceWall, solventIceBoulder,
-	solventRegular, shallowSolvent, shallowerSolvent, solventIce, solventSnow,
-
-	glacierWall,
-	glacier, glacierCrater, weatheredGlacier,
-
-	blueSolventIceWall,
-	blueSolventIce, blueSolventIceCrater, crystallineBlue,
-
-	erosionWall, erosionBoulder,
-	erosion, erosionCrater,
-
-	meltStoneWall, meltStoneBoulder,
-	meltStone, meltPebbles,
+	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
+	agedSouesite, agedSouesiteWall,
 
 	plate, plateCross, plateVent, plateWall,
 
-	limiter,
-
-	multiFloor, multiOverlay, multiWall;
+	limiter;
 
 	public static void load() {
-		spinyTree = new TreeBlock("spiny-tree") {{
-			attributes.set(Attribute.steam, 1);
-		}};
-		deadSpinyTree = new TreeBlock("dead-spiny-tree") {{
-			attributes.set(Attribute.steam, 0.25f);
-		}};
+//		spinyTree = new TreeBlock("spiny-tree") {{
+//			attributes.set(Attribute.steam, 1);
+//		}};
+//		deadSpinyTree = new TreeBlock("dead-spiny-tree") {{
+//			attributes.set(Attribute.steam, 0.25f);
+//		}};
 
 
 		cliff = new SWCliff("cliff");
@@ -78,6 +50,37 @@ public class SWEnvironment {
 			variants = 4;
 		}};
 		// endregion
+
+		//region souesite
+		souesiteWall = new StaticWall("souesite-wall");
+		souesiteBoulder = new Prop("souesite-boulder") {{
+			variants = 2;
+		}};
+		souesiteCrater = new Floor("souesite-crater", 2) {{
+			wall = souesiteWall;
+			decoration = souesiteBoulder;
+		}};
+		largeSouesiteCrater = new SteamVent("large-souesite-crater") {{
+			variants = 0;
+			effect = Fx.none;
+		}};
+		souesite = new Floor("souesite", 4) {{
+			wall = souesiteWall;
+			decoration = souesiteBoulder;
+			((SteamVent) largeSouesiteCrater).parent = this;
+			((SteamVent) largeSouesiteCrater).blendGroup = this;
+		}};
+		fissuredSouesite = new Floor("fissured-souesite", 4) {{
+			wall = souesiteWall;
+			decoration = souesiteBoulder;
+		}};
+		agedSouesiteWall = new StaticWall("aged-souesite-wall");
+		agedSouesite = new Floor("aged-souesite") {{
+			wall = agedSouesiteWall;
+		}};
+		//endregion
+
+		/*
 
 		// region sandstone
 		sandstoneWall = new StaticWall("sandstone-wall") {{
@@ -233,6 +236,8 @@ public class SWEnvironment {
 			decoration = meltStoneBoulder;
 		}};
 		//endregion
+
+		*/
 
 		// region plate
 		plateWall = new StaticWall("plate-wall");
