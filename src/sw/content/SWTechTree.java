@@ -9,6 +9,7 @@ import static arc.struct.Seq.*;
 import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
+import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWProduction.*;
@@ -56,7 +57,7 @@ public class SWTechTree {
     root.add(node(resistantConveyor, () -> {
       node(mechanicalDistributor, () -> {
         node(mechanicalTunnel, () -> {
-          node(mechanicalUnloader);
+          node(mechanicalUnloader, with(new Research(compactContainer)), () -> {});
         });
         node(mechanicalGate);
         node(mechanicalSorter);
@@ -104,16 +105,16 @@ public class SWTechTree {
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
-//    root.add(node(nowhere, () -> {
+    root.add(node(jezero, () -> {
 //      node(anemoia, with(new SectorComplete(nowhere)), () -> {
 //        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
 //          node(coast, with(new SectorComplete(nostalgia)), () -> {});
 //          node(island, with(new SectorComplete(nostalgia)), () -> {});
 //        });
 //      });
-//    }));
-//    root.peek().name = "sw-sectors";
-//    root.peek().icon = Icon.terrain;
+    }));
+    root.peek().name = "sw-sectors";
+    root.peek().icon = Icon.terrain;
     // endregion
   }
 }

@@ -23,6 +23,7 @@ public class PositionSectorPreset extends SectorPreset {
 	public Seq<PositionSectorPreset> visibleReq = new Seq<>();
 
 	public int x = 0, y = 0;
+	public int size = 100;
 	public boolean accessible = true;
 
 	public TextureRegion mapRegion;

@@ -8,7 +8,7 @@ import mindustry.world.meta.*;
 import sw.type.weather.*;
 
 public class SWWeathers {
-	public static Weather thunder;
+	public static Weather thunder, souesiteDust;
 
 	public static void load() {
 		thunder = new ThunderstormWeather("thunder") {{
@@ -31,5 +31,6 @@ public class SWWeathers {
 			sound = Sounds.rain;
 			soundVol = 0.25f;
 		}};
+		souesiteDust = new DustStormWeather("souesite-dust");
 	}
 }

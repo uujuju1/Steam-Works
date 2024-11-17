@@ -1,14 +1,28 @@
 package sw.content;
 
+import mindustry.gen.*;
 import mindustry.type.*;
+import sw.type.*;
 
 public class SWSectorPresets {
-//	public static SectorPreset
-//		terrain1, terrain2, terrain3,
+	public static SectorPreset
+		jezero;
 //
 //		nowhere, anemoia, nostalgia, coast, island;
 
 	public static void load() {
+		jezero = new PositionSectorPreset("jezero", SWPlanets.wendi, 0) {{
+			x = y = 0;
+			size = 100;
+			icon = () -> Icon.terrain;
+			alwaysUnlocked = true;
+
+			rules = r -> {
+				r.waves = false;
+				r.weather.add(new Weather.WeatherEntry(SWWeathers.souesiteDust, 36000f, 54000f, 9000f, 27000f));
+			};
+		}};
+
 //		nowhere = new PositionSectorPreset("nowhere", SWPlanets.wendi, 0) {{
 //			x = y = 0;
 //			icon = () -> Icon.terrain;

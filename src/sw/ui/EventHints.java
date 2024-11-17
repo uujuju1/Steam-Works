@@ -10,8 +10,8 @@ import sw.content.blocks.*;
 
 public enum EventHints implements Hint {
 	hydraulicDrill(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.hydraulicDrill).size > 0,
-		() -> Vars.control.input.block == SWProduction.hydraulicDrill
+		() -> false,
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.hydraulicDrill).size > 0
 	);
 
 	final Boolp complete, shown;
