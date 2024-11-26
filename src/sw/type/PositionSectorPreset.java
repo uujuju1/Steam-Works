@@ -18,12 +18,12 @@ public class PositionSectorPreset extends SectorPreset {
 	public Prov<Drawable> icon = () -> Icon.waves;
 
 	/**
-	 * require those sectors to have a save for it to be visible. Only works with accessible = false
+	 * Require those sectors to have a save for it to be visible. Only works with accessible = false
 	 */
 	public Seq<PositionSectorPreset> visibleReq = new Seq<>();
 
-	public int x = 0, y = 0;
-	public int size = 100;
+	public float x = 0, y = 0;
+	public float width = 100, height = 100;
 	public boolean accessible = true;
 
 	public TextureRegion mapRegion;

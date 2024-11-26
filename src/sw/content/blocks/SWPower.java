@@ -233,8 +233,8 @@ public class SWPower {
 		boiler = new SWGenericCrafter("boiler") {{
 			requirements(Category.power, with(
 				SWItems.iron, 20,
-				SWItems.compound, 40,
-				Items.silicon, 35
+				SWItems.nickel, 40,
+				Items.graphite, 35
 			));
 			size = 2;
 			health = 160;

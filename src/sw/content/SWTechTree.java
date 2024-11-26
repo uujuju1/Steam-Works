@@ -12,6 +12,7 @@ import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
+import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
 import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
@@ -36,7 +37,7 @@ public class SWTechTree {
     // endregion
     */
     // region defense
-    root.add(node(nickelWall, () -> {
+    root.add(node(nickelWall, with(new OnSector(myeik)), () -> {
       node(nickelWallLarge);
       node(ironWall, () -> {
         node(ironWallLarge);
@@ -72,15 +73,15 @@ public class SWTechTree {
     root.peek().name = "sw-distribution";
     root.peek().icon = Icon.distribution;
     // endregion
-    /*region power
+    //region power
     root.add(node(boiler, () -> {
-      node(gasPipe, () -> {
-        node(gasJunction);
+      node(wireShaft, () -> {
+        node(wireShaftRouter);
       });
     }));
     root.peek().name = "sw-power";
     root.peek().icon = Icon.power;
-    //endregion */
+    //endregion
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill);
@@ -106,12 +107,12 @@ public class SWTechTree {
     // endregion
     // region sectors
     root.add(node(jezero, () -> {
-//      node(anemoia, with(new SectorComplete(nowhere)), () -> {
+      node(myeik, with(new SectorComplete(jezero)), () -> {
 //        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
 //          node(coast, with(new SectorComplete(nostalgia)), () -> {});
 //          node(island, with(new SectorComplete(nostalgia)), () -> {});
 //        });
-//      });
+      });
     }));
     root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;

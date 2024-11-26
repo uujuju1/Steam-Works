@@ -1,6 +1,7 @@
 package sw.content.blocks;
 
 import mindustry.content.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import sw.content.*;
@@ -13,7 +14,11 @@ public class SWEnvironment {
 	oreNickel, oreIron, fissure, oreGraphite,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
+	souesiteShallowerSolvent, souesiteShallowSolvent,
 	agedSouesite, agedSouesiteWall,
+
+	solvent,
+	solventCrystal,
 
 	plate, plateCross, plateVent, plateWall,
 
@@ -74,9 +79,34 @@ public class SWEnvironment {
 			wall = souesiteWall;
 			decoration = souesiteBoulder;
 		}};
+
 		agedSouesiteWall = new StaticWall("aged-souesite-wall");
 		agedSouesite = new Floor("aged-souesite") {{
 			wall = agedSouesiteWall;
+		}};
+
+		souesiteShallowerSolvent = new Floor("souesite-shallower-solvent", 2) {{
+			wall = souesiteWall;
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		souesiteShallowSolvent = new Floor("souesite-shallow-solvent", 2) {{
+			wall = souesiteWall;
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		//endregion
+
+		//region solvent
+		solventCrystal = new TallBlock("solvent-crystal") {{
+			variants = 2;
+		}};
+		solvent = new Floor("solvent-regular", 0) {{
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
 		}};
 		//endregion
 
@@ -149,13 +179,6 @@ public class SWEnvironment {
 		}};
 		solventShards = new OverlayFloor("solvent-shards") {{
 			variants = 4;
-		}};
-		solventRegular = new Floor("solvent-regular", 0) {{
-			cacheLayer = CacheLayer.water;
-			isLiquid = true;
-			liquidDrop = SWLiquids.solvent;
-			wall = solventIceWall;
-			decoration = solventIceBoulder;
 		}};
 		shallowSolvent = new Floor("shallow-solvent") {{
 			cacheLayer = CacheLayer.water;

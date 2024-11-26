@@ -9,6 +9,7 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import sw.math.*;
 import sw.world.*;
@@ -79,6 +80,34 @@ public class SWFx {
         }
       }
     }).layer(Layer.block - 1),
+		blockCrack = new Effect(60f, e -> {
+			if (!(e.data instanceof Item item)) return;
+
+			rand.setSeed(e.id);
+
+			for(int j = 0; j < 3; j++) {
+				float lx = Angles.trnsx(e.rotation, rand.random(2));
+				float ly = Angles.trnsy(e.rotation, rand.random(2));
+
+				Draw.color(Pal.darkestGray, item.color, e.finpowdown()/4);
+				for(int i = 1; i < 4; i++) {
+					Lines.stroke((1f - 0.5f/4f * i) * (e.foutpowdown()/rand.random(1f, 2f)));
+
+					float rx = rand.range(4f) + Angles.trnsx(e.rotation, 8f * i);
+					float ry = rand.range(4f) + Angles.trnsy(e.rotation, 8f * i);
+
+					Lines.line(e.x + lx, e.y + ly, e.x + rx, e.y + ry);
+
+					lx = rx;
+					ly = ry;
+				}
+			}
+
+			Angles.randLenVectors(e.id, 5, 24f * e.finpow(), e.rotation, 10f, (x, y) -> {
+				Draw.color(item.color, Pal.darkestGray, rand.random(0.5f));
+				Fill.circle(e.x + x, e.y + y, rand.random(1, 3) * e.foutpowdown());
+			});
+		}).layer(Layer.effect + 1),
 
     compoundCraft = new Effect(30f, e -> {
       rand.setSeed(e.id);
@@ -157,32 +186,27 @@ public class SWFx {
     }),
 
     burnElevation = new Effect(120f, e -> {
-      Draw.z(Layer.darkness + 1f);
+	    rand.setSeed(e.id);
 
-      rand.setSeed(e.id);
-      Draw.color(Pal.darkestGray, Color.gray, e.finpow());
-      Draw.alpha(Mathf.slope(e.finpow()));
+	    Draw.blend(Blending.additive);
+	    Draw.z(Layer.effect);
+	    Angles.randLenVectors(e.id, 5, 8f * e.finpow(), (x, y) -> {
+		    Draw.color(Pal.turretHeat, Pal.accent, rand.random(1f));
+		    Fill.circle(e.x + x, e.y + y, rand.random(1f, 3f) * e.foutpowdown());
+	    });
+	    Draw.blend();
 
-      temp.set(0f, 0f);
-      Groups.weather.each(weather -> temp.add(Tmp.v1.set(weather.windVector).scl(weather.opacity)));
-      temp.scl(1f/Math.max(1f, Groups.weather.size()));
-      temp.scl(e.fin() * 30f).add(e.x, e.y);
-      Parallax.getParallaxFrom(temp, Core.camera.position, e.finpow() * 0.5f);
+	    temp.set(0, 0);
+	    Groups.weather.each(weather -> temp.add(Tmp.v1.set(weather.windVector).scl(weather.opacity)));
+	    temp.scl(1f/Math.max(1f, Groups.weather.size()));
+	    temp.scl(e.fin() * 30f).add(e.x, e.y);
+	    Parallax.getParallaxFrom(temp, Core.camera.position, e.fin() * 5f);
 
-      Fill.circle(temp.x, temp.y, (5 - 2 * e.fin()) * rand.random(0.75f, 1.25f));
+	    Draw.z(Layer.effect + 1);
+	    Draw.color(Pal.darkerGray, Color.white, e.fin());
+	    Draw.alpha(e.fout());
+	    Fill.circle(temp.x, temp.y, Mathf.clamp(e.fin() * 5) * ((5 - 4 * e.fin()) * rand.random(0.75f, 1.25f)));
 		}),
-
-    valveElevation = new Effect(60f, e -> {
-      rand.setSeed(e.id);
-
-      Draw.alpha(Mathf.slope(e.fin()) * 0.5f);
-      for (int i : Mathf.signs) {
-        float minSize = rand.random(2f), maxSize = minSize + rand.random(6f);
-        temp.set(e.x, e.y + (rand.random(8f, 16f) * e.fin()) * i);
-        Parallax.getParallaxFrom(temp, Core.camera.position, 0.1f * e.fin());
-        Fill.circle(temp.x, temp.y, Mathf.map(e.fin(), 0f, 1f, minSize, maxSize));
-      }
-    }),
 
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);

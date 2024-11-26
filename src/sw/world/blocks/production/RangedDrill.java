@@ -19,12 +19,19 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
+import sw.world.graph.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
+import sw.world.modules.*;
 
 import static mindustry.Vars.*;
 
 public class RangedDrill extends Block {
+	public SpinConfig spinConfig = new SpinConfig();
+
 	public int
 		range = 5,
 		tier = 1;
@@ -38,9 +45,7 @@ public class RangedDrill extends Block {
 
 	public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
 
-	public TextureRegion
-		itemRegion, itemBoreRegion,
-		startBoreRegion, boreRegion, endBoreRegion, rotatorRegion;
+	public DrawBlock drawer = new DrawDefault();
 
 	public RangedDrill(String name) {
 		super(name);
@@ -137,14 +142,19 @@ public class RangedDrill extends Block {
 	}
 
 	@Override
-	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-		Draw.rect(region, plan.drawx(), plan.drawy());
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
 	}
 
 	public float getDrillTime(Item item){
 		return drillTime / drillMultipliers.get(item, 1f);
 	}
 
+	@Override protected TextureRegion[] icons() {
+		return drawer.finalIcons(this);
+	}
+
+	@Override
 	public void init(){
 		updateClipRadius((range + 2) * tilesize);
 		super.init();
@@ -153,13 +163,7 @@ public class RangedDrill extends Block {
 	@Override
 	public void load() {
 		super.load();
-		itemRegion = Core.atlas.find(name + "-item", "drill-item-" + size);
-		itemBoreRegion = Core.atlas.find(name + "-bore-item", "drill-item-2");
-
-		startBoreRegion = Core.atlas.find(name + "-start-bore");
-		boreRegion = Core.atlas.find(name + "-bore");
-		endBoreRegion = Core.atlas.find(name + "-bore-end");
-		rotatorRegion = Core.atlas.find(name + "-rotator");
+		drawer.load(this);
 	}
 
 	@Override
@@ -168,8 +172,10 @@ public class RangedDrill extends Block {
 	}
 
 	@Override
-	public void setBars(){
+	public void setBars() {
 		super.setBars();
+
+		spinConfig.addBars(this);
 
 		addBar("drillspeed", (RangedDrillBuild e) ->
 			new Bar(
@@ -180,8 +186,10 @@ public class RangedDrill extends Block {
 	}
 
 	@Override
-	public void setStats(){
+	public void setStats() {
 		super.setStats();
+
+		spinConfig.addStats(stats);
 
 		stats.add(Stat.drillTier, StatValues.drillables(drillTime, 0f, size, drillMultipliers, b -> (b instanceof Floor f && f.wallOre && f.itemDrop != null && f.itemDrop.hardness <= tier) || (b instanceof StaticWall w && w.itemDrop != null && w.itemDrop.hardness <= tier)));
 
@@ -202,7 +210,9 @@ public class RangedDrill extends Block {
 		return false;
 	}
 
-	public class RangedDrillBuild extends Building {
+	public class RangedDrillBuild extends Building implements HasSpin {
+		public SpinModule spin = new SpinModule();
+
 		public Tile[] facing = new Tile[size];
 		public Point2[] lasers = new Point2[size];
 		public @Nullable Item lastItem;
@@ -212,55 +222,8 @@ public class RangedDrill extends Block {
 		public float lastDrillSpeed;
 		public int facingAmount;
 
-		@Override
-		public void draw(){
-			Draw.rect(block.region, x, y);
-
-			if(isPayload()) return;
-
-			if (rotation == 1 || rotation == 2) Draw.yscl = -1;
-			Draw.rect(startBoreRegion, x, y, rotdeg());
-			Draw.yscl = 1;
-			for(int i = 0; i < size; i++){
-				Tile face = facing[i];
-				if(face != null){
-					Point2 p = lasers[i];
-
-					Draw.z(Layer.power - 1);
-					float dst = Math.abs(p.x - face.x) + Math.abs(p.y - face.y);
-					float
-						dsx = p.x * tilesize,
-						dsy = p.y * tilesize,
-						dx = face.worldx(),
-						dy = face.worldy();
-					Draw.rect(rotatorRegion, dx, dy, totalTime);
-					if(dst != 0) {
-						for(int j = 0; j < dst; j++) {
-							float lx = (dx - dsx)/dst * j + dsx, ly = (dy - dsy)/dst * j + dsy;
-
-							Draw.rect(boreRegion, lx, ly, (rotdeg() + 90f) % 180f - 90f);
-							if (lastItem != null) {
-								Draw.color(lastItem.color);
-								Draw.rect(itemBoreRegion, lx, ly);
-								Draw.color();
-							}
-						}
-					}
-
-					if (rotation == 1 || rotation == 2) Draw.yscl = -1;
-					Draw.rect(endBoreRegion, dx, dy, rotdeg());
-					Draw.yscl = 1;
-					Draw.reset();
-				}
-			}
-
-			if (lastItem != null) {
-				Draw.color(lastItem.color);
-				Draw.rect(itemRegion, x, y);
-				Draw.color();
-			}
-
-			Draw.reset();
+		@Override public void draw() {
+			drawer.draw(this);
 		}
 
 		@Override
@@ -278,6 +241,18 @@ public class RangedDrill extends Block {
 		public void onProximityUpdate() {
 			updateLasers();
 			updateFacing();
+
+			new SpinGraph().mergeFlood(this);
+		}
+
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			spinGraph().remove(this, true);
+		}
+
+		@Override public float progress() {
+			return time/drillTime;
 		}
 
 		@Override
@@ -290,6 +265,17 @@ public class RangedDrill extends Block {
 		@Override
 		public boolean shouldConsume(){
 			return items.total() < itemCapacity && lastItem != null && enabled;
+		}
+
+		@Override public SpinModule spin() {
+			return spin;
+		}
+		@Override public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override public float totalProgress() {
+			return totalTime;
 		}
 
 		protected void updateFacing(){
@@ -371,6 +357,10 @@ public class RangedDrill extends Block {
 			if(timer(timerDump, dumpTime)){
 				dump();
 			}
+		}
+
+		@Override public float warmup() {
+			return warmup;
 		}
 
 		@Override

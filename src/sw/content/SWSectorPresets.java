@@ -6,15 +6,28 @@ import sw.type.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		jezero;
+		jezero, myeik;
 //
 //		nowhere, anemoia, nostalgia, coast, island;
 
 	public static void load() {
 		jezero = new PositionSectorPreset("jezero", SWPlanets.wendi, 0) {{
 			x = y = 0;
-			size = 100;
+			width = height = 100;
 			icon = () -> Icon.terrain;
+			alwaysUnlocked = true;
+
+			rules = r -> {
+				r.waves = false;
+				r.weather.add(new Weather.WeatherEntry(SWWeathers.souesiteDust, 36000f, 54000f, 9000f, 27000f));
+			};
+		}};
+		myeik = new PositionSectorPreset("myeik", SWPlanets.wendi, 1) {{
+			x = -100f;
+			y = 100f;
+			width = 200f;
+			height = 100f;
+			icon = () -> Icon.waves;
 			alwaysUnlocked = true;
 
 			rules = r -> {

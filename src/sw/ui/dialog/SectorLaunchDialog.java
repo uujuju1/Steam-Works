@@ -108,8 +108,8 @@ public class SectorLaunchDialog extends BaseDialog {
 
 	public void moveTo(PositionSectorPreset to) {
 		view.setPosition(
-			cont.getWidth()/2f - to.x * to.size - to.size/2f,
-			cont.getHeight()/2f - to.y * to.size - to.size/2f
+			cont.getWidth()/2f - to.x * to.width - to.width/2f,
+			cont.getHeight()/2f - to.y * to.height - to.height/2f
 		);
 	}
 

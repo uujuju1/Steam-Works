@@ -54,8 +54,8 @@ public class SectorView extends Group {
 			button.touchable = Touchable.enabled;
 			button.addListener(new HandCursorListener());
 			button.clicked(() -> selector.get(sector));
-			button.setSize(sector.size);
-			button.setPosition(sector.x * sector.size, sector.y * sector.size);
+			button.setSize(sector.width, sector.height);
+			button.setPosition(sector.x, sector.y);
 			button.visible = sector.unlocked();
 
 			if (sector.sector.hasSave() || (!sector.accessible && !sector.visibleReq.contains(s -> !s.sector.hasSave()))) {
@@ -65,15 +65,15 @@ public class SectorView extends Group {
 					stack.add(new Table(t -> t.table(Styles.black6, img -> img.image(sector.icon.get())).margin(10f)));
 				}
 			} else {
-				button.stack(new Image(Styles.black), new Image(SWStyles.inventoryClear), new Image(Icon.map)).size(sector.size);
+				button.stack(new Image(Styles.black), new Image(SWStyles.inventoryClear), new Image(Icon.map)).size(sector.width, sector.height);
 			}
 
 			addChild(button);
 
 			minx = Math.min(minx, button.x);
 			miny = Math.min(miny, button.y);
-			maxx = Math.max(maxx, button.x + sector.size);
-			maxy = Math.max(maxy, button.y + sector.size);
+			maxx = Math.max(maxx, button.x + sector.width);
+			maxy = Math.max(maxy, button.y + sector.height);
 		}
 
 		if (sectors.isEmpty()) return;
