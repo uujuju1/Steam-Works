@@ -2,6 +2,7 @@ package sw.world.consumers;
 
 import arc.*;
 import arc.math.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -20,9 +21,8 @@ public class ConsumeRotation extends Consume {
 		}
 	}
 
-	@Override
-	public void display(Stats stats) {
-		stats.add(SWStat.spinRequirement, Core.bundle.format("stat.sw-spin-requirement.format", startSpeed, endSpeed));
+	@Override public void display(Stats stats) {
+		stats.add(SWStat.spinRequirement, Core.bundle.format("stat.sw-spin-requirement.format", Strings.autoFixed(startSpeed * 10f, 2), Strings.autoFixed(endSpeed * 10f, 2)));
 	}
 
 	@Override

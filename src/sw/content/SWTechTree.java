@@ -44,10 +44,10 @@ public class SWTechTree {
         node(waveRadar);
       });
 
-      node(flow, with(/*new OnSector(anemoia)*/), () -> {
-        node(trail, with(/*new OnSector(nostalgia)*/), () -> {});
-        node(vniz, with(/*new OnSector(anemoia)*/), () -> {
-          node(rozpad, with(/*new OnSector(nostalgia)*/), () -> {});
+      node(flow, () -> {
+        node(trail, with(new SectorComplete(myeik)), () -> {});
+        node(vniz, () -> {
+          node(rozpad, with(new SectorComplete(myeik)), () -> {});
         });
       });
     }));
@@ -84,7 +84,7 @@ public class SWTechTree {
     //endregion
     // region production
     root.add(node(mechanicalBore, () -> {
-      node(hydraulicDrill);
+      node(hydraulicDrill, () -> node(mechanicalFracker, with(new Research(boiler)), () -> {}));
       node(liquidCollector);
     }));
     root.peek().name = "sw-production";
@@ -107,7 +107,7 @@ public class SWTechTree {
     // endregion
     // region sectors
     root.add(node(jezero, () -> {
-      node(myeik, with(new SectorComplete(jezero)), () -> {
+      node(myeik, with(new OnSector(jezero)), () -> {
 //        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
 //          node(coast, with(new SectorComplete(nostalgia)), () -> {});
 //          node(island, with(new SectorComplete(nostalgia)), () -> {});

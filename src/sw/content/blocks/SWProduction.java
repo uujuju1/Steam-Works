@@ -43,6 +43,11 @@ public class SWProduction {
 			ambientSound = Sounds.combustion;
 			ambientSoundVolume = 0.01f;
 
+			useAllowList = true;
+			drillMultipliers.put(Items.graphite, 1);
+
+			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
+
 			drawer = new DrawMulti(new DrawRegion(), new DrawRangedDrill());
 
 			spinConfig.hasSpin = false;
@@ -76,11 +81,14 @@ public class SWProduction {
 
 			size = 2;
 			health = 160;
-			drillTime = 480f;
+			drillTime = 60f;
 			tier = 1;
 			range = 5;
-			ambientSound = Sounds.combustion;
-			ambientSoundVolume = 0.01f;
+			ambientSound = Sounds.drill;
+			ambientSoundVolume = 0.14f;
+
+			useAllowList = true;
+			drillMultipliers.put(Items.sand, 1);
 
 			drillEffect = SWFx.blockCrack;
 

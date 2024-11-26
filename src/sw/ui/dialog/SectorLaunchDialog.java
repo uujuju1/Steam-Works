@@ -94,8 +94,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 	public boolean checkLoadout(PositionSectorPreset to) {
 		if (to.sector.preset == null || to.sector.id == to.planet.startSector) return true;
-		Rules rules = new Rules();
-		to.sector.preset.rules.get(rules);
+		Rules rules = to.sector.preset.generator.map.rules();
 		if (Vars.state.getSector() != null) {
 			for (ItemStack stack : rules.loadout) {
 				if (!Vars.state.rules.defaultTeam.items().has(stack.item, stack.amount)) return false;
@@ -149,8 +148,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			t.setBackground(Tex.paneSolid);
 			t.add("loadout:").row();
 			t.table(req -> {
-				Rules rules = new Rules();
-				sector.sector.preset.rules.get(rules);
+				Rules rules = sector.generator.map.rules();
 				rules.loadout.each(stack -> {
 					req.image(stack.item.uiIcon).padRight(5);
 					req.add(
@@ -172,6 +170,7 @@ public class SectorLaunchDialog extends BaseDialog {
 					selected = s;
 					rebuildSelector(selected);
 				}).size(200, 50);
+				t.row();
 				if (!s.sector.isCaptured()) button.tooltip(tooltip -> tooltip.add("@sectors.underattack.nodamage"));
 			});
 		}).maxHeight(300f);

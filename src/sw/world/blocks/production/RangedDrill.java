@@ -43,6 +43,8 @@ public class RangedDrill extends Block {
 	public float drillSoundVolume = 1;
 	public Effect drillEffect = SWFx.boreMine;
 
+	public boolean useAllowList = false;
+
 	public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
 
 	public DrawBlock drawer = new DrawDefault();
@@ -62,6 +64,15 @@ public class RangedDrill extends Block {
 		flags = EnumSet.of(BlockFlag.drill);
 	}
 
+	public boolean canMine(Item item) {
+		if (
+			getDrillTime(item) <= 0 ||
+			useAllowList && !drillMultipliers.containsKey(item) ||
+			item.hardness > tier
+		) return false;
+		return true;
+	}
+
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation){
 		for(int i = 0; i < size; i++){
@@ -70,7 +81,7 @@ public class RangedDrill extends Block {
 				Tile other = world.tile(Tmp.p1.x + Geometry.d4x(rotation)*j, Tmp.p1.y + Geometry.d4y(rotation)*j);
 				if(other != null && other.solid()){
 					Item drop = other.wallDrop();
-					if(drop != null && drop.hardness <= tier){
+					if(drop != null && canMine(drop)){
 						return true;
 					}
 					break;
@@ -98,7 +109,7 @@ public class RangedDrill extends Block {
 				if(other != null && other.solid()){
 					Item drop = other.wallDrop();
 					if(drop != null){
-						if(drop.hardness <= tier){
+						if(canMine(drop)){
 							found = drop;
 							count++;
 						}else{
@@ -147,7 +158,7 @@ public class RangedDrill extends Block {
 	}
 
 	public float getDrillTime(Item item){
-		return drillTime / drillMultipliers.get(item, 1f);
+		return drillTime * drillMultipliers.get(item, 1f);
 	}
 
 	@Override protected TextureRegion[] icons() {
@@ -191,7 +202,7 @@ public class RangedDrill extends Block {
 
 		spinConfig.addStats(stats);
 
-		stats.add(Stat.drillTier, StatValues.drillables(drillTime, 0f, size, drillMultipliers, b -> (b instanceof Floor f && f.wallOre && f.itemDrop != null && f.itemDrop.hardness <= tier) || (b instanceof StaticWall w && w.itemDrop != null && w.itemDrop.hardness <= tier)));
+		stats.add(Stat.drillTier, StatValues.drillables(drillTime, 0f, size, drillMultipliers, b -> (b instanceof Floor f && f.wallOre && f.itemDrop != null && canMine(f.itemDrop)) || (b instanceof StaticWall w && w.itemDrop != null && canMine(w.itemDrop))));
 
 		stats.add(Stat.drillSpeed, 60f / drillTime * size, StatUnit.itemsSecond);
 
@@ -294,7 +305,7 @@ public class RangedDrill extends Block {
 					if(other != null){
 						if(other.solid()){
 							Item drop = other.wallDrop();
-							if(drop != null && drop.hardness <= tier){
+							if(drop != null && canMine(drop)){
 								facingAmount ++;
 								if(lastItem != drop && lastItem != null){
 									multiple = true;

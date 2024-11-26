@@ -158,6 +158,8 @@ public class TechtreeDialog extends BaseDialog {
 	public void spend(TechNode node) {
 		boolean complete = true;
 
+		if (node.objectives.contains(o -> !o.complete())) return;
+
 		for(int i = 0; i < node.requirements.length; i++){
 			ItemStack req = node.requirements[i];
 			ItemStack completed = node.finishedRequirements[i];

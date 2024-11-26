@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import arc.struct.*;
 import mindustry.content.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
@@ -238,6 +239,8 @@ public class SWPower {
 			));
 			size = 2;
 			health = 160;
+			ignoreLiquidFullness = true;
+			ambientSound = Sounds.torch;
 
 			spinConfig = new SpinConfig() {{
 				topSpeed = 6f;
@@ -265,6 +268,7 @@ public class SWPower {
 
 			outputRotation = 6f;
 			outputRotationForce = 3f/60f;
+			outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
 		}};
 	}
 }

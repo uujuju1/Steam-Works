@@ -31,7 +31,6 @@ public class SWSectorPresets {
 			alwaysUnlocked = true;
 
 			rules = r -> {
-				r.waves = false;
 				r.weather.add(new Weather.WeatherEntry(SWWeathers.souesiteDust, 36000f, 54000f, 9000f, 27000f));
 			};
 		}};

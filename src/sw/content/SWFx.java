@@ -9,7 +9,6 @@ import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import sw.math.*;
 import sw.world.*;
@@ -81,15 +80,13 @@ public class SWFx {
       }
     }).layer(Layer.block - 1),
 		blockCrack = new Effect(60f, e -> {
-			if (!(e.data instanceof Item item)) return;
-
 			rand.setSeed(e.id);
 
 			for(int j = 0; j < 3; j++) {
 				float lx = Angles.trnsx(e.rotation, rand.random(2));
 				float ly = Angles.trnsy(e.rotation, rand.random(2));
 
-				Draw.color(Pal.darkestGray, item.color, e.finpowdown()/4);
+				Draw.color(Pal.darkestGray, e.color, e.finpowdown()/4f);
 				for(int i = 1; i < 4; i++) {
 					Lines.stroke((1f - 0.5f/4f * i) * (e.foutpowdown()/rand.random(1f, 2f)));
 
@@ -104,7 +101,7 @@ public class SWFx {
 			}
 
 			Angles.randLenVectors(e.id, 5, 24f * e.finpow(), e.rotation, 10f, (x, y) -> {
-				Draw.color(item.color, Pal.darkestGray, rand.random(0.5f));
+				Draw.color(e.color, Pal.darkestGray, rand.random(0.5f));
 				Fill.circle(e.x + x, e.y + y, rand.random(1, 3) * e.foutpowdown());
 			});
 		}).layer(Layer.effect + 1),

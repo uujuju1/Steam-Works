@@ -8,22 +8,85 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import sw.*;
+import sw.content.*;
 import sw.graphics.*;
 import sw.ui.*;
 
+import static mindustry.Vars.*;
+
 public class ModSettings {
+  public static BaseDialog gamedata;
+
   public static void load() {
+    gamedata = new BaseDialog("@settings.sw-moddata") {{
+      addCloseButton();
+
+      cont.table(Tex.button, cat -> {
+        cat.button(
+          "@settings.clearresearch",
+          Icon.trash,
+          Styles.flatt,
+          Vars.iconMed,
+          () -> Vars.ui.showConfirm("@settings.sw-clearresearch-confirm", SWVars::clearUnlockModContent)
+        ).growX().marginLeft(8).height(50).row();
+        cat.button(
+          "@settings.clearcampaignsaves",
+          Icon.trash,
+          Styles.flatt,
+          Vars.iconMed,
+          () -> Vars.ui.showConfirm("@settings.sw-clearcampaignsaves-confirm", () -> {
+            SWPlanets.wendi.sectors.each(sector -> {
+              if (sector.hasSave()) {
+                sector.save.delete();
+                sector.save = null;
+              }
+            });
+          })
+        ).growX().marginLeft(8).height(50).row();
+        cat.button(
+          "@settings.sw-resethints",
+          Icon.trash,
+          Styles.flatt,
+          Vars.iconMed,
+          () -> Vars.ui.showConfirm("@settings.sw-resethints-confirm", EventHints::resetHints)
+        ).growX().marginLeft(8).height(50).row();
+      }).width(400f).row();
+    }};
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.pref(new ButtonSetting("sw-erase", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-confirm"), SWVars::clearUnlockModContent)));
-      table.pref(new ButtonSetting("sw-erase-hints", () -> Vars.ui.showConfirm(Core.bundle.get("sw-erase-hints-confirm"), EventHints::resetHints)));
+      table.pref(new TableSetting("sw-categories", new Table(Tex.button, t -> {
+        t.button(
+          "@settings.sw-moddata",
+          Icon.save,
+          Styles.flatt,
+          iconMed,
+          () -> gamedata.show()
+        ).growX().marginLeft(8f).height(50f).row();
+      })));
       table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
         title = Core.bundle.get("sw-menu-enabled");
         description = Core.bundle.get("sw-menu-enabled-description");
       }});
     });
+  }
+
+  static class TableSetting extends Setting {
+    Table table;
+
+    public TableSetting(String name, Table table) {
+      super(name);
+      this.table = table;
+    }
+
+    @Override
+    public void add(SettingsTable s) {
+      s.add(table).growX();
+      addDesc(table);
+      s.row();
+    }
   }
 
   static class ButtonSetting extends Setting {

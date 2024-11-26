@@ -31,6 +31,8 @@ public class SWWeathers {
 			sound = Sounds.rain;
 			soundVol = 0.25f;
 		}};
-		souesiteDust = new DustStormWeather("souesite-dust");
+		souesiteDust = new DustStormWeather("souesite-dust") {{
+			sound = Sounds.windhowl;
+		}};
 	}
 }
