@@ -19,7 +19,7 @@ import sw.ui.*;
 import static mindustry.Vars.*;
 
 public class ModSettings {
-  public static BaseDialog gamedata;
+  public static BaseDialog gamedata, graphics;
 
   public static void load() {
     gamedata = new BaseDialog("@settings.sw-moddata") {{
@@ -56,6 +56,22 @@ public class ModSettings {
         ).growX().marginLeft(8).height(50).row();
       }).width(400f).row();
     }};
+    graphics = new BaseDialog("@settings.graphics") {{
+      addCloseButton();
+
+      cont.table(settings -> {
+        settings.left();
+        settings.check(
+          "@settings.sw-menu-enabled",
+          Core.settings.getBool("sw-menu-enabled", true),
+          check -> Core.settings.put("sw-menu-enabled", check)
+        ).update(check -> check.setChecked(Core.settings.getBool("sw-menu-enabled", true)));
+      }).width(400f);
+
+      buttons.button("@settings.reset", () -> {
+        Core.settings.put("sw-menu-enabled", true);
+      }).size(210f, 64f).pad(6f);
+    }};
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
       table.pref(new TableSetting("sw-categories", new Table(Tex.button, t -> {
         t.button(
@@ -65,11 +81,18 @@ public class ModSettings {
           iconMed,
           () -> gamedata.show()
         ).growX().marginLeft(8f).height(50f).row();
+        t.button(
+          "@settings.graphics",
+          Icon.image,
+          Styles.flatt,
+          iconMed,
+          () -> graphics.show()
+        ).growX().minWidth(400f).marginLeft(8f).height(50f).row();
       })));
-      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
-        title = Core.bundle.get("sw-menu-enabled");
-        description = Core.bundle.get("sw-menu-enabled-description");
-      }});
+//      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
+//        title = Core.bundle.get("sw-menu-enabled");
+//        description = Core.bundle.get("sw-menu-enabled-description");
+//      }});
     });
   }
 
