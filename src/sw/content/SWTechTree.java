@@ -1,7 +1,9 @@
 package sw.content;
 
+import arc.*;
 import arc.struct.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
 
@@ -10,6 +12,7 @@ import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
+import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWPower.*;
@@ -23,8 +26,8 @@ public class SWTechTree {
   }
 
   public static void init(Seq<TechNode> root) {
-    /* region crafting
-    root.add(node(siliconBoiler, with(new OnSector(coast)), () -> {
+    // region crafting
+    root.add(node(siliconBoiler, with(new NonUnlockable()), () -> {
       node(compoundSmelter, () -> {
         node(chalkSeparator, with(new Research(boiler)), () -> {});
       });
@@ -35,13 +38,12 @@ public class SWTechTree {
     root.peek().name = "sw-crafting";
     root.peek().icon = Icon.crafting;
     // endregion
-    */
     // region defense
     root.add(node(nickelWall, with(new OnSector(myeik)), () -> {
       node(nickelWallLarge);
       node(ironWall, () -> {
         node(ironWallLarge);
-        node(waveRadar);
+        node(waveRadar, with(new NonUnlockable()), () -> {});
       });
 
       node(flow, () -> {
@@ -68,15 +70,18 @@ public class SWTechTree {
         node(mechanicalConduitJunction);
         node(mechanicalConduitRouter);
       });
-      node(compactContainer);
+      node(compactContainer, with(new NonUnlockable()), () -> {});
     }));
     root.peek().name = "sw-distribution";
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(boiler, () -> {
+    root.add(node(boiler, with(new NonUnlockable()), () -> {
       node(wireShaft, () -> {
-        node(wireShaftRouter);
+        node(wireShaftRouter, () -> {
+          node(shaftGearbox);
+        });
+        node(shaftTransmission);
       });
     }));
     root.peek().name = "sw-power";
@@ -84,7 +89,9 @@ public class SWTechTree {
     //endregion
     // region production
     root.add(node(mechanicalBore, () -> {
-      node(hydraulicDrill, () -> node(mechanicalFracker, with(new Research(boiler)), () -> {}));
+      node(hydraulicDrill, () -> {
+        node(mechanicalFracker, with(new Research(boiler), new NonUnlockable()), () -> {});
+      });
       node(liquidCollector);
     }));
     root.peek().name = "sw-production";
@@ -107,7 +114,7 @@ public class SWTechTree {
     // endregion
     // region sectors
     root.add(node(jezero, () -> {
-      node(myeik, with(new OnSector(jezero)), () -> {
+      node(myeik, with(new Research(hydraulicDrill)), () -> {
 //        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
 //          node(coast, with(new SectorComplete(nostalgia)), () -> {});
 //          node(island, with(new SectorComplete(nostalgia)), () -> {});
@@ -117,5 +124,16 @@ public class SWTechTree {
     root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;
     // endregion
+  }
+
+  public static class NonUnlockable implements Objectives.Objective {
+    @Override public boolean complete() {
+      return false;
+    }
+
+    @Override
+    public String display() {
+      return Core.bundle.get("requirement.sw-non-unlockable");
+    }
   }
 }
