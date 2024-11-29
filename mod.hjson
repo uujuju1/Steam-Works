@@ -3,6 +3,6 @@ name: "sw"
 author: "Liz Aurora"
 main: "sw.ModLoader"
 description: "A tech demo mod with a bunch of stuff, whose content is all in lore made by the pure will of a person."
-version: 1.0.Alpha4
+version: 1.0.Alpha5
 minGameVersion: 146
 java: true
