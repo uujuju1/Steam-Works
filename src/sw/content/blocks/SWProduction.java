@@ -47,6 +47,7 @@ public class SWProduction {
 			drillMultipliers.put(Items.graphite, 1);
 
 			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
+			optionalBoostIntensity = 2;
 
 			drawer = new DrawMulti(new DrawRegion(), new DrawRangedDrill());
 
@@ -61,7 +62,6 @@ public class SWProduction {
 				SWItems.nickel, 40,
 				Items.graphite, 20
 			);
-			liquidBoostIntensity = 1f;
 			size = 2;
 			health = 160;
 			tier = 2;
@@ -70,6 +70,9 @@ public class SWProduction {
 			drillEffectRnd = 0f;
 			ambientSound = Sounds.drillCharge;
 			mineRect = new Rect(0, 0, 4, 4);
+
+			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
+			liquidBoostIntensity = 1.5f;
 		}};
 
 		mechanicalFracker = new RangedDrill("mechanical-fracker") {{
