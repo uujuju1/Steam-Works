@@ -17,6 +17,9 @@ public class SWEnvironment {
 	souesiteShallowerSolvent, souesiteShallowSolvent,
 	agedSouesite, agedSouesiteWall,
 
+	tuff, shapedTuff, tuffWall, columnarTuff, tuffConcretion, tuffPile,
+	tuffShallowerSolvent, tuffShallowSolvent,
+
 	solvent,
 	solventCrystal,
 
@@ -99,6 +102,40 @@ public class SWEnvironment {
 		}};
 		//endregion
 
+		//region tuff
+		tuffWall = new StaticWall("tuff-wall");
+		tuffPile = new Prop("tuff-pile") {{
+			variants = 2;
+		}};
+		columnarTuff = new TallBlock("columnar-tuff") {{
+			variants = 2;
+		}};
+		tuffConcretion = new OverlayFloor("tuff-concretion") {{
+			variants = 4;
+		}};
+		tuff = new Floor("tuff", 4) {{
+			wall = tuffWall;
+			decoration = tuffPile;
+		}};
+		shapedTuff = new Floor("shaped-tuff", 4) {{
+			wall = tuffWall;
+			decoration = tuffPile;
+		}};
+
+		tuffShallowerSolvent = new Floor("tuff-shallower-solvent", 2) {{
+			wall = tuffWall;
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		tuffShallowSolvent = new Floor("tuff-shallow-solvent", 2) {{
+			wall = tuffWall;
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		//endregion
+
 		//region solvent
 		solventCrystal = new TallBlock("solvent-crystal") {{
 			variants = 2;
@@ -111,98 +148,6 @@ public class SWEnvironment {
 		//endregion
 
 		/*
-
-		// region sandstone
-		sandstoneWall = new StaticWall("sandstone-wall") {{
-			attributes.set(Attribute.sand, 1);
-		}};
-		sandstoneBoulder = new Prop("sandstone-boulder") {{
-			variants = 2;
-		}};
-		sandstone = new Floor("sandstone", 4) {{
-			wall = sandstoneWall;
-			decoration = sandstoneBoulder;
-		}};
-		spongestone = new Floor("spongestone", 4) {{
-			wall = sandstoneWall;
-			decoration = sandstoneBoulder;
-			blendGroup = sandstone;
-		}};
-		// endregion
-
-		// region soil
-		soilWall = new StaticWall("soil-wall") {{
-			attributes.set(Attribute.sand, 1);
-		}};
-		soilBoulder = new Prop("soil-boulder") {{
-			variants = 2;
-		}};
-		concretion = new OverlayFloor("concretion") {{
-			variants = 4;
-		}};
-		soil = new Floor("soil", 4) {{
-			wall = soilWall;
-			decoration = soilBoulder;
-		}};
-		clay = new Floor("clay", 4) {{
-			wall = soilWall;
-			decoration = soilBoulder;
-			blendGroup = soil;
-		}};
-		// endregion
-
-		// region andesite
-		andesiteWall = new StaticWall("andesite-wall") {{
-			attributes.set(Attribute.sand, 1);
-		}};
-		andesiteBoulder = new Prop("andesite-boulder") {{
-			variants = 2;
-		}};
-		andesitePlate = new OverlayFloor("andesite-plate") {{
-			variants = 4;
-		}};
-		andesite = new Floor("andesite", 4) {{
-			wall = andesiteWall;
-			decoration = andesiteBoulder;
-		}};
-		striatedAndesite = new Floor("striated-andesite", 4) {{
-			wall = andesiteWall;
-			decoration = andesiteBoulder;
-			blendGroup = andesite;
-		}};
-		// endregion
-
-		// region solvent
-		solventIceWall = new StaticWall("solvent-ice-wall");
-		solventIceBoulder = new Prop("solvent-ice-boulder") {{
-			variants = 2;
-		}};
-		solventShards = new OverlayFloor("solvent-shards") {{
-			variants = 4;
-		}};
-		shallowSolvent = new Floor("shallow-solvent") {{
-			cacheLayer = CacheLayer.water;
-			isLiquid = true;
-			liquidDrop = SWLiquids.solvent;
-			wall = solventIceWall;
-			decoration = solventIceBoulder;
-		}};
-		shallowerSolvent = new Floor("shallower-solvent") {{
-			cacheLayer = CacheLayer.water;
-			isLiquid = true;
-			liquidDrop = SWLiquids.solvent;
-			wall = solventIceWall;
-			decoration = solventIceBoulder;
-		}};
-		solventIce = new Floor("solvent-ice", 4) {{
-			wall = solventIceWall;
-			decoration = solventIceBoulder;
-		}};
-		solventSnow = new Floor("solvent-snow", 4) {{
-			wall = solventIceWall;
-			decoration = solventIceBoulder;
-		}};
-		// endregion
 
 		// region glacier
 		glacierWall = new StaticWall("glacier-wall");
