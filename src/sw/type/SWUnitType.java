@@ -1,6 +1,7 @@
 package sw.type;
 
 import arc.*;
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -27,6 +28,9 @@ public class SWUnitType extends UnitType {
   public Seq<UnitRotor> rotors = new Seq<>();
   public float rotorSlowDown = 0.014f;
   public float rotateDeathSpeed = 1f;
+  public Sound rotorSound = Sounds.none;
+  public float rotorSoundVolumeFrom = 1f;
+  public float rotorSoundVolumeTo = 0.1f;
   public boolean rotatesDeath = true;
   public boolean drawRotors = true;
   // endregion
@@ -102,7 +106,7 @@ public class SWUnitType extends UnitType {
     /**
      * speed
      */
-    public float speed = 1f;
+    public float speed = 1f, shineSpeed = -1f;
     /**
      * rotor layer offset
      */
@@ -119,6 +123,10 @@ public class SWUnitType extends UnitType {
      * name is a suffix for finding regions
      */
     public boolean isSuffix;
+    /**
+     * If true, this rotor rotates along with the unit.
+     */
+    public boolean followParent = true;
 
     public String name;
 
@@ -133,22 +141,33 @@ public class SWUnitType extends UnitType {
 			float z = Draw.z();
 			Draw.z(z + layerOffset);
       for (int i : Mathf.signs) {
-        Tmp.v1.trns(unit.rotation() - 90, x * i, y * i).add(unit.x(), unit.y());
-        if (mirrored) Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, mirrored && i == 1 ? -y : y).add(unit.x(), unit.y());
-
+        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
         float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
-        if (mirrored && i == -1) Draw.scl(-1, 1);
+
+        Draw.scl(i, 1);
         Draw.alpha(1f - unit.rotorBlur());
-        Draw.rect(region, drawX, drawY, unit.rotation() + Time.time * speed * i);
+        Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * speed * i);
         Draw.alpha(unit.rotorBlur());
-        if (mirrored || i == 1) {
-          Draw.rect(blurRegion, drawX, drawY, unit.rotation() + Time.time * speed * i);
-          Draw.rect(shineRegion, drawX, drawY, -Time.time * i);
-          Draw.alpha(1f);
-          if (drawTop) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90);
-        }
+        Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * speed * i);
         Draw.reset();
       }
+      for (int i : Mathf.signs) {
+        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
+        float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+
+        Draw.scl(i, 1);
+        Draw.alpha(unit.rotorBlur());
+        Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * shineSpeed * i);
+        Draw.reset();
+      }
+      for (int i : Mathf.signs) {
+        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
+        float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+
+        Draw.scl(i, 1);
+        if ((mirrored || i == 1) && drawTop) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90);
+      }
+      Draw.reset();
 			Draw.z(z);
     }
 

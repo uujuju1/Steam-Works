@@ -26,5 +26,7 @@ abstract class CopterComp implements Unitc {
 			rotorBlur = Mathf.approachDelta(rotorBlur, 0, type().rotorSlowDown);
 			if (!Vars.state.isPaused() && type().rotatesDeath) rotation+= Time.delta * type().rotateDeathSpeed;
 		}
+
+		Vars.control.sound.loop(type().rotorSound, this, Mathf.map(rotorBlur, type().rotorSoundVolumeTo, type().rotorSoundVolumeFrom));
 	}
 }

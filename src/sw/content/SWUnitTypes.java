@@ -20,7 +20,9 @@ import sw.type.units.*;
 public class SWUnitTypes {
   @EntityDef({Revealc.class, WaterMovec.class, Unitc.class}) public static UnitType recluse, retreat, evade;
 
-  @EntityDef({Copterc.class, Unitc.class}) public static UnitType fly, spin, gyro;
+  @EntityDef({Copterc.class, Unitc.class}) public static UnitType
+		soar,
+	  fly, spin, gyro;
 
 	@EntityDef({GrassHopperc.class, Unitc.class}) public static UnitType cinerea, robinia, gregarea;
 
@@ -553,6 +555,63 @@ public class SWUnitTypes {
         }}
       );
     }};
+
+		soar = new SWUnitType("soar") {{
+			constructor = UnitCopter::create;
+
+			health = 250;
+			speed = 4f;
+			accel = drag = 0.05f;
+			rotateSpeed = 6f;
+			fallSpeed = 0.005f;
+
+      hitSize = 10;
+			engineSize = 0f;
+			rotorSound = Sounds.cutter;
+			rotorSoundVolumeFrom = 0.05f;
+			rotorSoundVolumeTo = 0f;
+
+			flying = lowAltitude = true;
+
+			range = maxRange = 120f;
+
+			rotors.add(new UnitRotor("-rotor", true) {{
+				x = 0f;
+				y = 3.75f;
+
+				speed = 10f;
+				shineSpeed = -2f;
+			}});
+
+			weapons.addAll(
+				new Weapon("sw-soar-cannon") {{
+					x = 7f;
+					y = 5.5f;
+					layerOffset = -0.01f;
+
+          reload = 60f;
+
+          recoil = 4f;
+          recoilTime = 60f;
+
+          shootSound = Sounds.cannon;
+					bullet = new BasicBulletType(4, 10) {{
+            recoil = 1f;
+
+            width = 10f;
+            height = 16f;
+            lifetime = 30f;
+
+						hitEffect = despawnEffect = Fx.hitBulletBig;
+
+            trailEffect = Fx.disperseTrail;
+            trailInterval = 1f;
+            trailRotation = true;
+            trailColor = Pal.accent;
+					}};
+				}}
+			);
+		}};
 		//endregion
 	  //region grasshopper
 	  cinerea = new GrassHopperUnitType("cinerea") {{
