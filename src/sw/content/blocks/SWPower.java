@@ -96,8 +96,6 @@ public class SWPower {
 			));
 			size = 2;
 
-			rotate = false;
-
 			spinConfig = new SpinConfig() {{
 				resistance = 2f/600f;
 				connections = new Seq[]{

@@ -19,6 +19,11 @@ public class SpinGraph {
 	public boolean changed;
 
 	/**
+	 * Used when updating inertia.
+	 */
+	public float lastSpeed;
+
+	/**
 	 * Entity of this graph.
 	 */
 	public final SpinGraphUpdater updater = SpinGraphUpdater.create().setGraph(this);
@@ -113,6 +118,8 @@ public class SpinGraph {
 	 * Returns the speed that the system is trying to reach.
 	 */
 	public float targetSpeed() {
+		if (force() < resistance()) return 0;
+		if (force() == resistance()) return speed;
 		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
 	}
 
@@ -126,13 +133,25 @@ public class SpinGraph {
 				b.spinSection().addBuild(b);
 			});
 			builds.each(HasSpin::onGraphUpdate);
+			updateInertia();
 			changed = false;
 		}
 
 		// use delta?
-		speed += (force() - resistance()) * Time.delta;
-		speed = Mathf.clamp(speed, 0, targetSpeed());
+//		speed += (force() - resistance()) * Time.delta;
+//		speed = Mathf.clamp(speed, 0, targetSpeed());
+
+		speed = Mathf.approachDelta(speed, targetSpeed(), Math.abs(force() - resistance()));
+
+		if (lastSpeed != speed) {
+			lastSpeed = speed;
+			builds.each(b -> b.spin().inertia = speed);
+		}
 
 		rotation += speed * Time.delta;
+	}
+
+	public void updateInertia() {
+		speed = builds.sumf(b -> b.spin().inertia)/builds.size;
 	}
 }
