@@ -4,7 +4,6 @@ import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
@@ -303,6 +302,8 @@ public class SWTurrets {
 				hitSound = Sounds.explosion;
 				lifetime = 80f;
 			}};
+
+			spinConfig.hasSpin = false;
 		}};
 		sonar = new SWConsumeTurret("sonar") {{
 			requirements(Category.turret, with());
@@ -334,6 +335,8 @@ public class SWTurrets {
 				length = 160f;
 				colors = new Color[]{Color.white};
 			}};
+
+			spinConfig.hasSpin = false;
 		}};
 
 		push = new SWConsumeTurret("push") {{
@@ -372,6 +375,8 @@ public class SWTurrets {
 				trailRotation = true;
 				pierce = pierceBuilding = true;
 			}};
+
+			spinConfig.hasSpin = false;
 		}};
 		thermikos = new SWConsumeTurret("thermikos") {{
 			requirements(Category.turret, with());
@@ -414,6 +419,8 @@ public class SWTurrets {
 				shootEffect = SWFx.thermiteShoot;
 				chargeEffect = SWFx.thermiteCharge;
 			}};
+
+			spinConfig.hasSpin = false;
 		}};
 		swing = new SWConsumeTurret("swing") {{
 			requirements(Category.turret, with());
@@ -426,10 +433,6 @@ public class SWTurrets {
 			cooldownTime = 90f;
 
 			shootY = 6f;
-			shoot = new ShootAlternate(12f) {{
-				firstShotDelay = 90f;
-				shots = 2;
-			}};
 
 			shootSound = Sounds.shootAlt;
 
@@ -441,55 +444,24 @@ public class SWTurrets {
 						under = true;
 						layerOffset = -0.001f;
 					}},
-					new RegionPart("-shoot") {{
-						progress = PartProgress.charge.curve(Interp.sineIn);
-						moveRot = 2.75f * 360f;
-						outlineLayerOffset = -1f;
+					new RegionPart() {{
+						name = "sw-saw";
+
+						progress = PartProgress.heat;
+						colorTo = Color.white.cpy().a(0f);
+						color = Color.white;
+						outline = false;
 						under = true;
 
-						moves.add(new PartMove(PartProgress.heat.curve(Interp.circleOut), 0f, 0f, 270f));
-
-						children.add(new RegionPart("-payload") {{
-							progress = PartProgress.heat;
-							outlineLayerOffset = -1f;
-							under = true;
-
-							colorTo = new Color(1f, 1f, 1f, 0f);
-							color = Color.white;
-						}});
-					}},
-					new RegionPart("-shoot") {{
-						progress = PartProgress.charge.curve(Interp.sineIn);
-						moveRot = -2.75f * 360f;
-						outlineLayerOffset = -1f;
-						under = true;
-
-						moves.add(new PartMove(PartProgress.heat.curve(Interp.circleOut), 0f, 0f, -270f));
-
-						children.add(new RegionPart("-payload") {{
-							progress = PartProgress.heat;
-							outlineLayerOffset = -1f;
-							under = true;
-
-							colorTo = new Color(1f, 1f, 1f, 0f);
-							color = Color.white;
-						}});
+						moves.add(new PartMove(PartProgress.charge.curve(Interp.circleOut), 0f, 0f, 720f));
 					}}
 				);
 			}};
 
-			shootType = new BasicBulletType(4f, 25f, "sw-round-bullet") {{
-				width = height = 8f;
+			shootType = new BasicBulletType(4f, 25f, "sw-saw") {{
+				width = height = 16f;
 				shrinkY = 0f;
 				lifetime = 50f;
-				splashDamage = 75f;
-				splashDamageRadius = 24f;
-				shootEffect = SWFx.accelSparks;
-				hitEffect = despawnEffect = new ExplosionEffect() {{
-					waveRad = 24f;
-					sparkRad = smokeRad = 33f;
-				}};
-				hitSound = despawnSound = Sounds.explosion;
 			}};
 		}};
 	}
