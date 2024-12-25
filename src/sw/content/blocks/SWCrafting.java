@@ -21,6 +21,14 @@ import static mindustry.type.ItemStack.*;
 
 public class SWCrafting {
 	public static Block
+
+		cokeOven, reductor, mechanocatalysisChamber,
+
+		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
+
+		crystalFurnace, rte, kitchenGarden,
+
+
 		siliconBoiler,
 		compoundSmelter, chalkSeparator,
 		densePress, thermiteMixer;
@@ -219,6 +227,191 @@ public class SWCrafting {
 			);
 
 			outputItems = with(SWItems.thermite, 1);
+		}};
+
+
+		cokeOven = new GenericCrafter("coke-oven") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItems(with(Items.graphite, 2));
+			consumeLiquid(Liquids.water, 0.1f);
+			outputItems = with(SWItems.coke, 1);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		reductor = new GenericCrafter("reductor") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 30f;
+
+			consumeItems(with(Items.sand, 1));
+			outputItems = with(Items.silicon, 1);
+			outputLiquids = LiquidStack.with(Liquids.ozone, 2f/60f);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		mechanocatalysisChamber = new GenericCrafter("mechanocatalysis-chamber") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			regionRotated1 = 3;
+			liquidOutputDirections = new int[]{1, 3};
+
+			consumeLiquid(Liquids.water, 3f/60f);
+			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 6f/60f);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+
+		blastFurnace = new GenericCrafter("blast-furnace") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 120f;
+
+			consumeItems(with(SWItems.iron, 2, SWItems.coke, 1));
+			outputItems = with(SWItems.steel, 1);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		pressureKiln = new GenericCrafter("pressure-kiln") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItems(with(SWItems.steel, 1, Items.sand, 2));
+			consumeLiquids(LiquidStack.with(Liquids.hydrogen, 3f/60f));
+			outputItems = with(SWItems.denseAlloy, 2);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		wedger = new GenericCrafter("wedger") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItems(with(SWItems.oxycarbide, 2, SWItems.iron, 2));
+			outputItems = with(SWItems.compound, 2);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		pyrolysisSynthetizer = new GenericCrafter("pyrolysis-synthetizer") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
+			consumeLiquid(Liquids.ozone, 1f/60f);
+			outputItems = with(SWItems.oxycarbide, 1);
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawFlame() {{
+					flameRadius = 5f;
+				}}
+			);
+		}};
+		oxidationPlant = new GenericCrafter("oxidation-plant") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItems(with(SWItems.iron, 2, SWItems.aluminium, 1));
+			consumeLiquid(Liquids.ozone, 2f/60f);
+			outputItems = with(SWItems.thermite, 3);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+
+		rte = new GenericCrafter("rte") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeItem(Items.thorium, 2);
+			consumeLiquid(Liquids.water, 0.2f);
+			outputItems = with(Items.silicon, 3);
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.2f);
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawFlame() {{
+					flameRadius = 5f;
+				}}
+			);
+		}};
+		crystalFurnace = new GenericCrafter("crystal-furnace") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 60f;
+
+			consumeItems(with(Items.lead, 1, Items.sand, 2));
+			outputItems = with(Items.metaglass, 2);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
+		}};
+		kitchenGarden = new GenericCrafter("kitchen-garden") {{
+			requirements(Category.crafting, with(
+			));
+			size = 3;
+			health = 240;
+
+			craftTime = 180f;
+
+			consumeLiquids(LiquidStack.with(Liquids.water, 0.1f, SWLiquids.primordialSoup, 0.1f));
+			outputLiquids = LiquidStack.with(SWLiquids.primordialSoup, 0.2f);
+
+			drawer = new DrawMulti(
+				new DrawDefault()
+			);
 		}};
 	}
 }
