@@ -84,7 +84,7 @@ public class ShaftTransmission extends Block {
 		@Override
 		public HasSpin getSpinSectionDestination(HasSpin from) {
 			Point2 p = new Point2(3, 0).rotate((relativeTo((Building) from) + 2) % 4);
-			return from.nearby(p.x, p.y) instanceof HasSpin a ? a : null;
+			return (from.nearby(p.x, p.y) instanceof HasSpin a && HasSpin.connects(this, a)) ? a : null;
 		}
 
 		@Override public void onGraphUpdate() {}
