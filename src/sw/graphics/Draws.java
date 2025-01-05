@@ -6,18 +6,21 @@ import arc.math.*;
 import arc.util.*;
 
 public class Draws {
-	public Color paletteLight, paletteMedium, paletteDark;
+	public static Color paletteLight, paletteMedium, paletteDark;
+	private static boolean hasPalette = false;
 
-	public void palette() {
+	public static void palette() {
 		paletteLight = paletteMedium = paletteDark = Color.clear;
+		hasPalette = false;
 	}
-	public void palette(Color light, Color medium, Color dark) {
+	public static void palette(Color light, Color medium, Color dark) {
 		paletteLight = light;
 		paletteMedium = medium;
 		paletteDark = dark;
+		hasPalette = true;
 	}
 
-	public void regionCylinder(TextureRegion[] regions, float x, float y, float width, float height, float angle, float rotation) {
+	public static void regionCylinder(TextureRegion[] regions, float x, float y, float width, float height, float angle, float rotation) {
 		int sides = regions.length;
 		for (int i = 0; i < sides; i++) {
 			float
@@ -47,12 +50,12 @@ public class Draws {
 				cos1 = Mathf.map(cos1, -1, 1, y - height / 2, y + height / 2);
 				cos2 = Mathf.map(cos2, -1, 1, y - height / 2, y + height / 2);
 
-				Draw.mixcol(Tmp.c1, Tmp.c1.a);
+				if (hasPalette) Draw.mixcol(Tmp.c1, Tmp.c1.a);
 				Draw.rect(regions[i], x, (cos1 + cos2) * 0.5f, width, cos2 - cos1, width * 0.5f, y - cos1, rotation);
 			}
 		}
 	}
-	public void polyCylinder(int sides, float x, float y, float width, float height, float angle, float rotation) {
+	public static void polyCylinder(int sides, float x, float y, float width, float height, float angle, float rotation) {
 		for (int i = 0; i < sides; i++) {
 			float
 				angle1 = angle + (360f/sides * i),
@@ -81,7 +84,7 @@ public class Draws {
 				cos1 = Mathf.map(cos1, -1, 1, y - height / 2, y + height / 2);
 				cos2 = Mathf.map(cos2, -1, 1, y - height / 2, y + height / 2);
 
-				Draw.color(Tmp.c1, Tmp.c1.a);
+				if (hasPalette) Draw.color(Tmp.c1, Tmp.c1.a);
         Fill.rect(x, (cos1 + cos2) * 0.5f, width, cos2 - cos1, rotation);
 
 			}

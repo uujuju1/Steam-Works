@@ -2,9 +2,11 @@ package sw.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
@@ -230,7 +232,7 @@ public class SWCrafting {
 		}};
 
 
-		cokeOven = new GenericCrafter("coke-oven") {{
+		cokeOven = new StackableGenericCrafter("coke-oven") {{
 			requirements(Category.crafting, with(
 			));
 			size = 3;
@@ -238,12 +240,69 @@ public class SWCrafting {
 
 			craftTime = 180f;
 
+			connectEdge = new boolean[]{true, false, true, false};
+
+			ambientSound = Sounds.smelter;
+			updateEffectStatic = SWFx.cokeBurn;
+			updateEffectChance = 0.2f;
+
 			consumeItems(with(Items.graphite, 2));
 			consumeLiquid(Liquids.water, 0.1f);
 			outputItems = with(SWItems.coke, 1);
 
 			drawer = new DrawMulti(
-				new DrawDefault()
+				new DrawAxles(
+					new Axle("-barrel") {{
+						pixelWidth = 8;
+						pixelHeight = 14;
+
+						x = 8;
+						y = 0;
+
+						width = 2;
+						height = 21f;
+
+						paletteLight = Color.valueOf("ffffff55");
+						paletteMedium = Color.valueOf("00000000");
+						paletteDark = Color.valueOf("00000099");
+					}},
+					new Axle("-barrel") {{
+						pixelWidth = 8;
+						pixelHeight = 14;
+
+						x = -8;
+						y = 0;
+
+						width = 2;
+						height = 21f;
+
+						paletteLight = Color.valueOf("ffffff55");
+						paletteMedium = Color.valueOf("00000000");
+						paletteDark = Color.valueOf("00000099");
+					}}
+				),
+				new DrawBitmask("-tiles", b -> {
+					Point2[] edges = Edges.getEdges(3);
+
+					int out = 0;
+					if (
+						b.nearby(edges[11].x, edges[11].y) != null && b.nearby(edges[11].x, edges[11].y).block == b.block &&
+						b.nearby(edges[0].x, edges[0].y) != null && b.nearby(edges[0].x, edges[0].y).block == b.block &&
+						b.nearby(edges[1].x, edges[1].y) != null && b.nearby(edges[1].x, edges[1].y).block == b.block
+					) out |= 1;
+					if (
+						b.nearby(edges[6].x, edges[6].y) != null && b.nearby(edges[6].x, edges[6].y).block == b.block &&
+						b.nearby(edges[7].x, edges[7].y) != null && b.nearby(edges[7].x, edges[7].y).block == b.block &&
+						b.nearby(edges[5].x, edges[5].y) != null && b.nearby(edges[5].x, edges[5].y).block == b.block
+					) out |= 2;
+					return out;
+				}, 96),
+				new DrawGlowRegion() {{
+					color = Pal.accentBack;
+
+					glowScale = 5f;
+					glowIntensity = 0.1f;
+				}}
 			);
 		}};
 		reductor = new GenericCrafter("reductor") {{

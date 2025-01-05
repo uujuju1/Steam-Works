@@ -25,6 +25,12 @@ public class DrawBitmask extends DrawBlock {
 		this.index = index;
 	}
 
+	public DrawBitmask(String suffix, Intf<Building> index, int tileSize) {
+		this.suffix = suffix;
+		this.index = index;
+		tileWidth = tileHeight = tileSize;
+	}
+
 	@Override public void draw(Building build) {
 		Draw.rect(regions[build.rotation][index.get(build)], build.x, build.y);
 	}

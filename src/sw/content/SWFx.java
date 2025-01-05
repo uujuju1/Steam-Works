@@ -182,6 +182,18 @@ public class SWFx {
     });
     }),
 
+    cokeBurn = new Effect(120f, e -> {
+      rand.setSeed(e.id);
+
+      Draw.blend(Blending.additive);
+      Parallax.getParallaxFrom(temp.set(e.x + rand.range(1), e.y + rand.range(10.5f)), Core.camera.position, rand.random(1f, 5f) * e.finpow());
+
+      Draw.color(Pal.accentBack, Pal.darkerGray, rand.random(1f));
+      Draw.alpha(e.foutpowdown());
+      Fill.circle(temp.x, temp.y, rand.random(1f, 2f));
+      Draw.blend();
+    }),
+
     burnElevation = new Effect(120f, e -> {
 	    rand.setSeed(e.id);
 
