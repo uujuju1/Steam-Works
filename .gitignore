@@ -28,7 +28,8 @@ desktop-sdl/build/
 /core/assets/gifexport/
 /core/assets/version.properties
 /core/assets/locales
-assets/sprites/
+/assets/sprites/
+/assets/meta
 /ios/src/io/anuke/mindustry/gen/
 /core/src/io/anuke/mindustry/gen/
 ios/robovm.properties
