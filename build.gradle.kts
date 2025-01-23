@@ -3,6 +3,7 @@ import arc.util.*
 import arc.util.serialization.*
 import ent.*
 import java.io.*
+import java.util.regex.*
 
 buildscript{
     val arcVersion: String by project
@@ -97,6 +98,52 @@ allprojects{
     }
 }
 
+project(":tools") {
+    dependencies{
+        implementation(rootProject)
+
+        implementation(mindustry(":core"))
+        implementation(arc(":arc-core"))
+        implementation(arc(":natives-desktop"))
+    }
+
+    tasks.register<JavaExec>("run"){
+        val assets = rootProject.layout.projectDirectory.dir("assets")
+        val out = assets.dir("sprites")
+        val raw = assets.dir("sprites-raw")
+
+        inputs.files(raw)
+        outputs.dir(out)
+
+        mainClass = "sw.tools.Tools"
+        classpath = sourceSets["main"].runtimeClasspath
+        workingDir = temporaryDir
+        standardInput = System.`in`
+        args(assets.asFile)
+
+        doFirst{
+            val dir = out.asFile
+            dir.deleteRecursively()
+            dir.mkdirs()
+
+            temporaryDir.deleteRecursively()
+            temporaryDir.mkdirs()
+
+            copy {
+                from(files(raw))
+                into(File(temporaryDir, "sprites"))
+            }
+        }
+
+        doLast{
+            copy{
+                from(files(File(temporaryDir, "sprites")))
+                into(out.asFile)
+            }
+        }
+    }
+}
+
 project(":"){
     apply(plugin = "com.github.GlennFolker.EntityAnno")
     configure<EntityAnnoExtension>{
@@ -118,7 +165,66 @@ project(":"){
         compileOnly(arc(":arc-core"))
     }
 
-    val jar = tasks.named<Jar>("jar"){
+    val list = tasks.register<DefaultTask>("list") {
+        inputs.files(tasks.named<JavaCompile>("compileJava"), configurations.runtimeClasspath)
+
+        val output = layout.projectDirectory.dir("assets").dir("meta").dir("sw").file("classes.json").asFile
+        outputs.file(output)
+
+        doFirst{
+            output.parentFile.mkdirs()
+            val packages = Jval.newArray()
+            val classes = Jval.newArray()
+
+            val forbid = Pattern.compile("\\$\\d+|.+Impl")
+            fun proc(path: String, dir: File){
+                dir.listFiles()?.forEach{
+                    if(it.isDirectory && (path.startsWith("sw") || it.name == "sw")){
+                        val visited = if(path.isEmpty()) it.name else "$path.${it.name}"
+                        if(visited != modFetch && visited != modGenSrc){
+                            packages.add(visited)
+                            proc(visited, it)
+                        }
+                    }else{
+                        val dot = it.name.lastIndexOf('.')
+                        if(dot != -1){
+                            val name = it.name.substring(0, dot)
+                            val ext = it.name.substring(dot + 1)
+
+                            if(ext == "class" && !forbid.matcher(name).matches()) classes.add("$path.$name")
+                        }
+                    }
+                }
+            }
+
+            sourceSets["main"].runtimeClasspath.forEach{
+                if(it.isDirectory){
+                    proc("", it)
+                }else if(it.exists()){
+                    zipTree(it).forEach{inner -> proc("", inner)}
+                }
+            }
+
+            val compacted = Jval.newObject().put("packages", packages).put("classes", classes)
+            BufferedWriter(FileWriter(output, Charsets.UTF_8, false)).use{compacted.writeTo(it, Jval.Jformat.formatted)}
+        }
+    }
+
+    tasks.named<Jar>("jar"){
+        inputs.files(list)
+        archiveFileName = "base.jar"
+    }
+
+    val dep = tasks.register<Jar>("dep"){
+        val proc = project(":tools").tasks.named<JavaExec>("run")
+
+        mustRunAfter(proc)
+
+        if(!layout.projectDirectory.dir("assets").dir("sprites").asFile.exists()){
+            logger.lifecycle("Sprites folder not found; automatically running `:tools:run`.")
+            inputs.files(proc)
+        }
+
         archiveFileName = "${modArtifact}Desktop.jar"
 
         val meta = layout.projectDirectory.file("$temporaryDir/mod.json")
@@ -157,10 +263,10 @@ project(":"){
     }
 
     val dex = tasks.register<Jar>("dex"){
-        inputs.files(jar)
+        inputs.files(dep)
         archiveFileName = "$modArtifact.jar"
 
-        val desktopJar = jar.flatMap{it.archiveFile}
+        val desktopJar = dep.flatMap{it.archiveFile}
         val dexJar = File(temporaryDir, "Dex.jar")
 
         from(zipTree(desktopJar), zipTree(dexJar))
@@ -200,9 +306,9 @@ project(":"){
     }
 
     tasks.register<DefaultTask>("install"){
-        inputs.files(jar)
+        inputs.files(dep)
 
-        val desktopJar = jar.flatMap{it.archiveFile}
+        val desktopJar = dep.flatMap{it.archiveFile}
         val dexJar = dex.flatMap{it.archiveFileName}
         doLast{
             val folder = Fi.get(OS.getAppDataDirectoryString("Mindustry")).child("mods")
