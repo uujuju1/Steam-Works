@@ -6,24 +6,11 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
 import sw.gen.*;
 
 public class SWUnitType extends UnitType {
-  // Submarine stuff
-  public boolean submerges = false;
-  public float vulnerabilityTime = 60f;
-
-  // revealable units
-  public float revealSpeed = 0.03f;
-	public float revealedAt = 0.2f;
-  public float hiddenAlpha = 0.1f;
-  public boolean canHide = true;
-  // endregion
-
   // region rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
   public float rotorSlowDown = 0.014f;
@@ -31,8 +18,6 @@ public class SWUnitType extends UnitType {
   public Sound rotorSound = Sounds.none;
   public float rotorSoundVolumeFrom = 1f;
   public float rotorSoundVolumeTo = 0.1f;
-  public boolean rotatesDeath = true;
-  public boolean drawRotors = true;
   // endregion
 
   //general unit stuff
@@ -43,31 +28,9 @@ public class SWUnitType extends UnitType {
   }
 
   @Override
-  public void applyColor(Unit unit) {
-    if (canHide && unit instanceof Revealc u) {
-      Draw.mixcol(Pal.shadow, 1f - u.revealTime());
-      Draw.alpha(Math.max(hiddenAlpha, u.revealTime()));
-    } else {
-      super.applyColor(unit);
-    }
-  }
-
-  @Override
   public void draw(Unit unit) {
     super.draw(unit);
     if (unit instanceof Copterc u) drawRotors(u);
-  }
-
-  @Override
-  public void drawCell(Unit unit) {
-    applyColor(unit);
-
-    Draw.color(cellColor(unit));
-    if (canHide && unit instanceof Revealc u) {
-      Draw.alpha(Math.max(hiddenAlpha, u.revealTime()));
-    }
-    Draw.rect(cellRegion, unit.x, unit.y, unit.rotation - 90);
-    Draw.reset();
   }
 
   @Override
@@ -79,7 +42,7 @@ public class SWUnitType extends UnitType {
   }
 
   public void drawRotors(Copterc unit) {
-    if (drawRotors) rotors.each(rotor -> rotor.draw(unit));
+    rotors.each(rotor -> rotor.draw(unit));
   }
 
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
@@ -89,40 +52,51 @@ public class SWUnitType extends UnitType {
   @Override
   public void load() {
     super.load();
+    Seq<UnitRotor> rotorSeq = new Seq<>();
+
+    rotors.each(rotor -> {
+      rotorSeq.add(rotor);
+      var r = rotor.copy();
+      r.flip();
+      rotorSeq.add(r);
+    });
+    rotors = rotorSeq;
     rotors.each(rotor -> rotor.load(this));
   }
 
-  @Override
-  public boolean targetable(Unit unit, Team from) {
-    if (canHide && unit instanceof Revealc u) return u.revealTime() >= revealedAt && super.targetable(unit, from);
-    return super.targetable(unit, from);
-  }
-
-	public class UnitRotor {
+	public static class UnitRotor implements Cloneable {
     /**
-     * position
+     * Position
      */
     public float x, y;
     /**
-     * speed
+     * Speed
      */
     public float speed = 1f, shineSpeed = -1f;
     /**
-     * rotor layer offset
+     * Amount of blades this rotor has
+     */
+    public int blades = 1;
+    /**
+     * Rotor layer offset
      */
     public float layerOffset;
     /**
-     * draws a top region
+     * Opacity of the blur and shine regions.
      */
-    public boolean drawTop = true;
+    public float blurAlpha = 0.25f;
     /**
-     * mirrors it between 2 sides, if false, it draws 2 opposite rotors at the same position
+     * Mirrors it between 2 sides, if false, it draws 2 opposite rotors at the same position
      */
     public boolean mirrored;
     /**
-     * name is a suffix for finding regions
+     * Name is a suffix for finding regions
      */
     public boolean isSuffix;
+    /**
+     * Flips the sprite during sprite generation
+     */
+    public boolean flipped;
     /**
      * If true, this rotor rotates along with the unit.
      */
@@ -137,38 +111,39 @@ public class SWUnitType extends UnitType {
       this.isSuffix = isSuffix;
     }
 
+    public UnitRotor copy() {
+      try {
+        return (UnitRotor) clone();
+      } catch (CloneNotSupportedException uwu) {
+        throw new RuntimeException("i assume this is necessary", uwu);
+      }
+    }
+
     public void draw(Copterc unit) {
 			float z = Draw.z();
 			Draw.z(z + layerOffset);
-      for (int i : Mathf.signs) {
-        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
-        float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
 
-        Draw.scl(i, 1);
-        Draw.alpha(1f - unit.rotorBlur());
-        Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * speed * i);
-        Draw.alpha(unit.rotorBlur());
-        Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * speed * i);
-        Draw.reset();
-      }
-      for (int i : Mathf.signs) {
-        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
-        float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+      Tmp.v1.trns(unit.rotation() - 90f, x, y).add(unit.x(), unit.y());
+      float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
 
-        Draw.scl(i, 1);
-        Draw.alpha(unit.rotorBlur());
-        Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0) + Time.time * shineSpeed * i);
-        Draw.reset();
-      }
-      for (int i : Mathf.signs) {
-        Tmp.v1.trns(unit.rotation() - 90, mirrored && i == 1 ? -x : x, y).add(unit.x(), unit.y());
-        float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+      if (flipped) Draw.xscl = -1f;
 
-        Draw.scl(i, 1);
-        if ((mirrored || i == 1) && drawTop) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90);
-      }
+      Draw.alpha(1f - unit.rotorBlur());
+      Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
+      Draw.alpha(unit.rotorBlur() * blurAlpha);
+      Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
+      Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * shineSpeed);
       Draw.reset();
+
+      if (topRegion.found() && (mirrored || !flipped)) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90f);
 			Draw.z(z);
+    }
+
+    public void flip() {
+      if (mirrored) x *= -1f;
+      speed *= -1f;
+      shineSpeed *= -1f;
+      flipped = !flipped;
     }
 
     public void load(SWUnitType type) {

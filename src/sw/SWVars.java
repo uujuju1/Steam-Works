@@ -24,11 +24,13 @@ public class SWVars implements Loadable {
 
 	public static boolean showSectorLaunchDialog = true;
 
+	public static boolean isMod = true;
+
 	public static float maxRatio = 65536f;
 	public static float minRatio = 1f/65536f;
 
   public static void init() {
-		dev();
+		if (isMod) dev();
 
 		if (!Vars.headless) {
 			SWStyles.load();
