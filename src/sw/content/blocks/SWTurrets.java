@@ -1,12 +1,16 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
+import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -21,6 +25,7 @@ import static mindustry.type.ItemStack.*;
 public class SWTurrets {
 	public static Block
 		flow, trail, vniz, rozpad,
+		imber,
 		curve, sonar,
 		push, thermikos, swing;
 
@@ -234,6 +239,112 @@ public class SWTurrets {
 
 					fragBullets = 5;
 					fragBullet = frag;
+				}}
+			);
+		}};
+
+		imber = new ItemTurret("imber") {{
+			requirements(Category.turret, with());
+			size = 2;
+			scaledHealth = 220;
+			reload = 240f;
+			range = 140f;
+
+			outlineIcon = false;
+
+			targetGround = false;
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-floor") {{
+						under = true;
+						outline = false;
+					}},
+					new RegionPart("-ammo") {{
+						under = true;
+						outline = false;
+
+						progress = DrawPart.PartProgress.heat.curve(Interp.exp10Out);
+
+						color = Color.white;
+						colorTo = Color.clear;
+
+						heatProgress = DrawPart.PartProgress.charge.compress(0.5f, 1f).curve(Interp.exp10);
+					}},
+					new RegionPart("-sparker") {{
+						mirror = true;
+						under = true;
+
+						x = 3.5f;
+						y = 3.75f;
+
+						moves.add(
+							new PartMove(DrawPart.PartProgress.charge.compress(0f, 0.5f).curve(Interp.exp10Out), 0f, -2f, 0f),
+							new PartMove(DrawPart.PartProgress.charge.compress(0f, 0.5f).curve(Interp.pow10In), -0.75f, 0f, 0f),
+							new PartMove(DrawPart.PartProgress.charge.compress(0.5f, 1f).curve(Interp.bounceOut), 0.75f, 3f, 0f),
+							new PartMove(DrawPart.PartProgress.heat.curve(Interp.smooth), 0f, -2f, 0f)
+						);
+					}}
+				);
+			}
+				// ANUKE WHY DID YOU MAKE ME DO THIS
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			cooldownTime = 60f;
+			shoot = new ShootPattern() {{
+				firstShotDelay = 60f;
+			}};
+
+			shootSound = Sounds.bigshot;
+			ammo(
+				SWItems.coke, new BasicBulletType(4, 50) {{
+					width = 8f;
+					height = 16f;
+					shrinkY = 0f;
+
+					lifetime = 60;
+					drag = 0.02f;
+
+					collidesGround = false;
+
+					status = StatusEffects.burning;
+					statusDuration = 60f;
+
+					trailEffect = Fx.disperseTrail;
+					trailInterval = 1f;
+					trailRotation = true;
+
+					hitSound = Sounds.flame2;
+					hitEffect = Fx.hitBulletBig;
+					despawnHit = true;
+
+					intervalBullets = 3;
+					intervalRandomSpread = 360f;
+					bulletInterval = 10f;
+					intervalDelay = 5f;
+					intervalBullet = new BasicBulletType(1, 5, "casing") {{
+						width = 2f;
+						height = 4f;
+						shrinkY = 0f;
+
+						frontColor = Pal.accentBack;
+
+						layer = Layer.block + 0.01f;
+
+						lifetime = 120f;
+						drag = 0.2f;
+
+						collidesAir = false;
+						pierce = true;
+
+						status = StatusEffects.burning;
+						statusDuration = 30f;
+
+						hitSound = Sounds.flame2;
+						hitEffect = Fx.hitBulletBig;
+						despawnHit = true;
+					}};
 				}}
 			);
 		}};

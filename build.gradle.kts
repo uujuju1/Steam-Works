@@ -233,10 +233,10 @@ project(":"){
             files(sourceSets["main"].output.resourcesDir),
             configurations.runtimeClasspath.map{conf -> conf.map{if(it.isDirectory) it else zipTree(it)}},
 
-            files(layout.projectDirectory.dir("assets")),
             layout.projectDirectory.file("icon.png"),
             meta
         )
+        from(files(layout.projectDirectory.dir("assets"))).exclude("sprites-raw")
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
         doFirst{

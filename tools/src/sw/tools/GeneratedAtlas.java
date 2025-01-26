@@ -73,5 +73,22 @@ public class GeneratedAtlas extends TextureAtlas implements Eachable<GeneratedAt
 			if(add) Tools.atlas.add(this);
 			return this;
 		}
+
+		@Override
+		public GeneratedRegion[][] split(int tileWidth, int tileHeight){
+			GeneratedRegion[][] out = new GeneratedRegion[pixmap.width/tileWidth][pixmap.height/tileHeight];
+
+			for (int i = 0; i < pixmap.width/tileWidth; i++) {
+				for (int j = 0; j < pixmap.height/tileHeight; j++) {
+					out[i][j] = new GeneratedRegion(
+						name + "-" + i + "-" + j,
+						pixmap.crop(i * pixmap.width, i * pixmap.height, tileWidth, tileHeight),
+						null
+					);
+				}
+			}
+
+			return out;
+		}
 	}
 }

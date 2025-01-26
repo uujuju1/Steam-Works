@@ -15,7 +15,7 @@ import sw.*;
 import sw.tools.processors.*;
 
 public class Tools {
-	protected static final SpriteProcessor[] processes = new SpriteProcessor[]{new UnitProcessor()};
+	protected static final SpriteProcessor[] processes = new SpriteProcessor[]{new BlockProcessor(), new UnitProcessor()};
 
 	public static ModLoader main;
 	public static Mods.ModMeta meta;
