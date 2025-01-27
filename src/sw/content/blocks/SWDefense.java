@@ -19,7 +19,7 @@ public class SWDefense {
 	public static void load() {
 		// region walls
 		nickelWall = new Wall("nickel-wall") {{
-			requirements(Category.defense, with(SWItems.nickel, 6));
+			requirements(Category.defense, with(SWItems.verdigris, 6));
 			health = 90 * 4;
 		}};
 		nickelWallLarge = new Wall("nickel-wall-large") {{

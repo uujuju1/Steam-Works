@@ -11,7 +11,7 @@ public class SWEnvironment {
 	public static Block
 	cliff,
 
-	oreNickel, oreIron, fissure, oreGraphite,
+	oreVerdigris, oreIron, fissure, oreGraphite,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
@@ -28,22 +28,11 @@ public class SWEnvironment {
 	limiter;
 
 	public static void load() {
-//		spinyTree = new TreeBlock("spiny-tree") {{
-//			attributes.set(Attribute.steam, 1);
-//		}};
-//		deadSpinyTree = new TreeBlock("dead-spiny-tree") {{
-//			attributes.set(Attribute.steam, 0.25f);
-//		}};
-
-
 		cliff = new SWCliff("cliff");
-
-
 		limiter = new Limiter("limiter");
 
-
 		// region ores
-		oreNickel = new OreBlock(SWItems.nickel) {{
+		oreVerdigris = new OreBlock(SWItems.verdigris) {{
 			variants = 4;
 		}};
 		oreIron = new OreBlock(SWItems.iron) {{

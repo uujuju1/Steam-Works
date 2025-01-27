@@ -16,7 +16,7 @@ public class SWStorage {
 	public static void load() {
 		compactContainer = new StorageBlock("compact-container") {{
 			requirements(Category.effect, with(
-				SWItems.nickel, 40,
+				SWItems.verdigris, 40,
 				SWItems.iron, 50,
 				Items.silicon, 30
 			));
@@ -28,7 +28,7 @@ public class SWStorage {
 
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
-				SWItems.nickel, 1000,
+				SWItems.verdigris, 1000,
 				Items.graphite, 800
 			));
 			size = 3;

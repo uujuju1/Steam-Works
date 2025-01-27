@@ -29,12 +29,12 @@ public class SWDistribution {
 	public static void load() {
 		// region items
 		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
-			requirements(Category.distribution, with(SWItems.nickel, 1));
+			requirements(Category.distribution, with(SWItems.verdigris, 1));
 			health = 100;
 			speed = 0.04f;
 			displayedSpeed = 5f;
 			researchCost = with(
-				SWItems.nickel, 30
+				SWItems.verdigris, 30
 			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
@@ -47,34 +47,34 @@ public class SWDistribution {
 
 		mechanicalDistributor = new Router("mechanical-distributor") {{
 			requirements(Category.distribution, with(
-				SWItems.nickel, 5
+				SWItems.verdigris, 5
 			));
 			health = 100;
 			solid = false;
 		}};
 		mechanicalSorter = new MechanicalSorter("mechanical-sorter") {{
 			requirements(Category.distribution, with(
-				SWItems.nickel, 1,
+				SWItems.verdigris, 1,
 				Items.graphite, 1
 			));
 		}};
 		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
 			requirements(Category.distribution, with(
-				SWItems.nickel, 5,
+				SWItems.verdigris, 5,
 				Items.graphite, 5
 			));
 			health = 100;
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
 			requirements(Category.distribution, with(
-				SWItems.nickel, 5,
+				SWItems.verdigris, 5,
 				Items.graphite, 3
 			));
 			health = 100;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
 			requirements(Category.distribution, with(
-				SWItems.nickel, 6,
+				SWItems.verdigris, 6,
 				Items.silicon, 2,
 				Items.graphite, 4
 			));
@@ -91,7 +91,7 @@ public class SWDistribution {
 			requirements(Category.units, with(
 				Items.silicon, 10,
 				Items.titanium, 10,
-				SWItems.nickel, 10
+				SWItems.verdigris, 10
 			));
 			canOverdrive = false;
 		}};
@@ -99,7 +99,7 @@ public class SWDistribution {
 			requirements(Category.units, with(
 				Items.silicon, 10,
 				Items.titanium, 10,
-				SWItems.nickel, 10
+				SWItems.verdigris, 10
 			));
 			canOverdrive = false;
 		}};

@@ -7,7 +7,6 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
-import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.math.*;
@@ -16,7 +15,6 @@ import sw.world.*;
 public class SWFx {
   public static final Rand rand = new Rand();
   public static final Vec2 temp = new Vec2();
-
 
   protected static final Rect[] rects = new Rect[]{
     new Rect(0, 0, 24, 16),
@@ -194,28 +192,21 @@ public class SWFx {
       Draw.blend();
     }),
 
-    burnElevation = new Effect(120f, e -> {
-	    rand.setSeed(e.id);
+    evaporate = new Effect(60f, e -> {
+      rand.setSeed(e.id);
 
-	    Draw.blend(Blending.additive);
-	    Draw.z(Layer.effect);
-	    Angles.randLenVectors(e.id, 5, 8f * e.finpow(), (x, y) -> {
-		    Draw.color(Pal.turretHeat, Pal.accent, rand.random(1f));
-		    Fill.circle(e.x + x, e.y + y, rand.random(1f, 3f) * e.foutpowdown());
-	    });
-	    Draw.blend();
+      Angles.randLenVectors(e.id, 10, 8f, (x, y) ->  {
+        Parallax.getParallaxFrom(
+          temp.set(e.x + x, e.y + y),
+          Core.camera.position,
+          rand.random(1f, 5f) * e.finpow()
+        );
 
-	    temp.set(0, 0);
-	    Groups.weather.each(weather -> temp.add(Tmp.v1.set(weather.windVector).scl(weather.opacity)));
-	    temp.scl(1f/Math.max(1f, Groups.weather.size()));
-	    temp.scl(e.fin() * 30f).add(e.x, e.y);
-	    Parallax.getParallaxFrom(temp, Core.camera.position, e.fin() * 5f);
-
-	    Draw.z(Layer.effect + 1);
-	    Draw.color(Pal.darkerGray, Color.white, e.fin());
-	    Draw.alpha(e.fout());
-	    Fill.circle(temp.x, temp.y, Mathf.clamp(e.fin() * 5) * ((5 - 4 * e.fin()) * rand.random(0.75f, 1.25f)));
-		}),
+        Draw.color(Color.white, Pal.darkerGray, rand.random(1f));
+        Draw.alpha(e.fslope() / 5f);
+        Fill.circle(temp.x, temp.y, rand.random(1f, 2f) * e.finpow());
+      });
+    }),
 
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);

@@ -38,7 +38,7 @@ public class SWCrafting {
 	public static void load() {
 		siliconBoiler = new GenericCrafter("silicon-boiler") {{
 			requirements(Category.crafting, with(
-				SWItems.nickel, 150,
+				SWItems.verdigris, 150,
 				SWItems.iron, 120,
 				Items.graphite, 80
 			));
@@ -61,7 +61,7 @@ public class SWCrafting {
 		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
 			requirements(Category.crafting, with(
 				SWItems.iron, 80,
-				SWItems.nickel, 200,
+				SWItems.verdigris, 200,
 				Items.silicon, 150,
 				Items.graphite, 160
 			));
@@ -83,7 +83,7 @@ public class SWCrafting {
 
 			consumeItems(with(
 				Items.silicon, 1,
-				SWItems.nickel, 2
+				SWItems.verdigris, 2
 			));
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 
@@ -151,7 +151,7 @@ public class SWCrafting {
 		densePress = new SWGenericCrafter("dense-press") {{
 			requirements(Category.crafting, with(
 				SWItems.iron, 160,
-				SWItems.nickel, 200,
+				SWItems.verdigris, 200,
 				Items.silicon, 80,
 				Items.graphite, 160
 			));

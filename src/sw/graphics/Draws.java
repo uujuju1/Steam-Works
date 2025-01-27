@@ -33,7 +33,8 @@ public class Draws {
 			Draw.mixcol(Tmp.c1, Tmp.c1.a);
 
 			if (sin1 - sin2 >= 0f) {
-				Draw.rect(regions[i], x, y + height * (sin1 + sin2)/4f, width, height/2f * (sin1 - sin2), rotation);
+				Tmp.v1.trns(rotation, 0f, height * (sin1 + sin2)/4f);
+				Draw.rect(regions[i], x + Tmp.v1.x, y + Tmp.v1.y, width, height * (sin1 - sin2)/2f, rotation);
 			}
 		}
 	}
@@ -49,10 +50,11 @@ public class Draws {
 				Tmp.c1.set(paletteDark).lerp(paletteMedium, Mathf.clamp(sin3 + 1f));
 			}
 
-			Draw.mixcol(Tmp.c1, Tmp.c1.a);
+			Draw.color(Tmp.c1, Tmp.c1.a);
 
 			if (sin1 - sin2 >= 0f) {
-				Fill.rect(x, y + height * (sin1 + sin2)/4f, width, height/2f * (sin1 - sin2), rotation);
+				Tmp.v1.trns(rotation, 0f, height * (sin1 + sin2)/4f);
+				Fill.rect(x + Tmp.v1.x, y + Tmp.v1.y, width, height/2f * (sin1 - sin2)/2f, rotation);
 			}
 		}
 	}

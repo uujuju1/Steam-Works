@@ -10,12 +10,12 @@ public class SWItems {
 
   compound, denseAlloy, thermite, oxycarbide, steel,
 
-  nickel, meteorite,
+  verdigris, meteorite,
     chalk, soda,
    residue;
 
   public static void load() {
-    nickel = new Item("nickel", valueOf("CCD4D9")) {{
+    verdigris = new Item("verdigris", valueOf("40916C")) {{
       hardness = 1;
     }};
     meteorite = new Item("meteorite", valueOf("E4CAAC"));

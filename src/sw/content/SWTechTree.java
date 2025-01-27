@@ -29,10 +29,10 @@ public class SWTechTree {
     // region crafting
     root.add(node(siliconBoiler, with(new NonUnlockable()), () -> {
       node(compoundSmelter, () -> {
-        node(chalkSeparator, with(new Research(boiler)), () -> {});
+        node(chalkSeparator, with(new Research(evaporator)), () -> {});
       });
       node(densePress, () -> {
-        node(thermiteMixer, with(new Research(boiler)), () -> {});
+        node(thermiteMixer, with(new Research(evaporator)), () -> {});
       });
     }));
     root.peek().name = "sw-crafting";
@@ -76,7 +76,7 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(boiler, with(new NonUnlockable()), () -> {
+    root.add(node(evaporator, with(new NonUnlockable()), () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
           node(shaftGearbox);
@@ -90,7 +90,7 @@ public class SWTechTree {
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill, () -> {
-        node(mechanicalFracker, with(new Research(boiler), new NonUnlockable()), () -> {});
+        node(mechanicalFracker, with(new Research(evaporator), new NonUnlockable()), () -> {});
       });
       node(liquidCollector);
     }));
@@ -98,7 +98,7 @@ public class SWTechTree {
     root.peek().icon = Icon.production;
     // endregion
     // region resources
-    root.add(nodeProduce(nickel, () -> {
+    root.add(nodeProduce(verdigris, () -> {
       nodeProduce(iron, () -> {
         nodeProduce(compound, () -> nodeProduce(chalk, () -> nodeProduce(soda, () -> {})));
         nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(residue, () -> {})));

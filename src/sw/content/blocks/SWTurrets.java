@@ -7,7 +7,6 @@ import arc.struct.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
-import mindustry.entities.part.DrawPart.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -32,11 +31,11 @@ public class SWTurrets {
 	public static void load() {
 		flow = new ItemTurret("flow") {{
 			requirements(Category.turret, with(
-				SWItems.nickel, 20,
+				SWItems.verdigris, 20,
 				Items.graphite, 25
 			));
 			researchCost = with(
-				SWItems.nickel, 100,
+				SWItems.verdigris, 100,
 				Items.graphite, 100
 			);
 			size = 1;
@@ -53,7 +52,7 @@ public class SWTurrets {
 			}};
 
 			ammo(
-				SWItems.nickel, new BasicBulletType(2, 10) {{
+				SWItems.verdigris, new BasicBulletType(2, 10) {{
 					frontColor = trailColor = Color.valueOf("A1A7AB");
 					backColor = Color.valueOf("595E61");
 					hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -83,7 +82,7 @@ public class SWTurrets {
 		}};
 		trail = new ItemTurret("trail") {{
 			requirements(Category.turret, with(
-				SWItems.nickel, 40,
+				SWItems.verdigris, 40,
 				SWItems.iron, 45,
 				Items.graphite, 20
 			));
@@ -99,7 +98,7 @@ public class SWTurrets {
 			}};
 
 			ammo(
-				SWItems.nickel, new BasicBulletType(4, 15) {{
+				SWItems.verdigris, new BasicBulletType(4, 15) {{
 					frontColor = trailColor = Color.valueOf("A1A7AB");
 					backColor = Color.valueOf("595E61");
 					hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -129,11 +128,11 @@ public class SWTurrets {
 		}};
 		vniz = new ItemTurret("vniz") {{
 			requirements(Category.turret, with(
-				SWItems.nickel, 25,
+				SWItems.verdigris, 25,
 				Items.graphite, 20
 			));
 			researchCost = with(
-				SWItems.nickel, 100,
+				SWItems.verdigris, 100,
 				Items.graphite, 100
 			);
 			size = 1;
@@ -153,7 +152,7 @@ public class SWTurrets {
 				collidesGround = false;
 			}};
 			ammo(
-				SWItems.nickel, new ArtilleryBulletType(4, 10) {{
+				SWItems.verdigris, new ArtilleryBulletType(4, 10) {{
 					frontColor = trailColor = Color.valueOf("A1A7AB");
 					backColor = Color.valueOf("595E61");
 					hitEffect = despawnEffect = Fx.hitBulletColor;
@@ -185,7 +184,7 @@ public class SWTurrets {
 		}};
 		rozpad = new ItemTurret("rozpad") {{
 			requirements(Category.turret, with(
-				SWItems.nickel, 45,
+				SWItems.verdigris, 45,
 				SWItems.iron, 40,
 				Items.graphite, 20
 			));
@@ -208,7 +207,7 @@ public class SWTurrets {
 				collidesGround = false;
 			}};
 			ammo(
-				SWItems.nickel, new ArtilleryBulletType(4, 20) {{
+				SWItems.verdigris, new ArtilleryBulletType(4, 20) {{
 					frontColor = trailColor = Color.valueOf("A1A7AB");
 					backColor = Color.valueOf("595E61");
 					hitEffect = despawnEffect = Fx.hitBulletColor;

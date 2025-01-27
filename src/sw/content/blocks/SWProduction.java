@@ -30,10 +30,10 @@ public class SWProduction {
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 10
+				SWItems.verdigris, 10
 			));
 			researchCost = with(
-				SWItems.nickel, 20
+				SWItems.verdigris, 20
 			);
 			size = 2;
 			health = 160;
@@ -55,11 +55,11 @@ public class SWProduction {
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(
-				SWItems.nickel, 20,
+				SWItems.verdigris, 20,
 				Items.graphite, 10
 			));
 			researchCost = with(
-				SWItems.nickel, 40,
+				SWItems.verdigris, 40,
 				Items.graphite, 20
 			);
 			size = 2;
@@ -78,7 +78,7 @@ public class SWProduction {
 		mechanicalFracker = new RangedDrill("mechanical-fracker") {{
 			requirements(Category.production, with(
 				SWItems.iron, 20,
-				SWItems.nickel, 40,
+				SWItems.verdigris, 40,
 				Items.graphite, 35
 			));
 
@@ -96,13 +96,14 @@ public class SWProduction {
 			drillEffect = SWFx.blockCrack;
 
 			consume(new ConsumeRotation() {{
-				startSpeed = 3f;
-				endSpeed = 9f;
+				startSpeed = 0.5f;
+				endSpeed = 1f;
 				curve = Interp.one;
 			}});
 
 			drawer = new DrawMulti(
 				new DrawAxles(
+					b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio,
 					new Axle("-shaft") {{
 						pixelWidth = 64;
 						pixelHeight = 7;
@@ -121,9 +122,7 @@ public class SWProduction {
 						width = 16f;
 						height = 3.5f;
 					}}
-				) {{
-					rotationOverride = b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio;
-				}},
+				),
 				new DrawBitmask("-tiles", b -> 0) {{
 					tileWidth = tileHeight = 64;
 				}},

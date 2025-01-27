@@ -36,7 +36,7 @@ public class SWPlanets {
 			startSector = 0;
 
 			itemWhitelist.addAll(
-				SWItems.nickel,
+				SWItems.verdigris,
 				SWItems.iron,
 				SWItems.compound,
 				SWItems.denseAlloy,

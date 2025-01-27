@@ -19,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		boiler,
+		evaporator,
 		wireShaft, wireShaftRouter, shaftGearbox,
 
 		shaftTransmission;
@@ -27,7 +27,7 @@ public class SWPower {
 	public static void load() {
 		wireShaft = new WireShaft("wire-shaft") {{
 			requirements(Category.power, with(
-				SWItems.nickel, 5,
+				SWItems.verdigris, 5,
 				SWItems.iron, 5
 			));
 
@@ -60,7 +60,7 @@ public class SWPower {
 		}};
 		wireShaftRouter = new WireShaft("wire-shaft-router") {{
 			requirements(Category.power, with(
-				SWItems.nickel, 10,
+				SWItems.verdigris, 10,
 				SWItems.iron, 5
 			));
 			rotate = false;
@@ -91,7 +91,7 @@ public class SWPower {
 		}};
 		shaftGearbox = new WireShaft("shaft-gearbox") {{
 			requirements(Category.power, with(
-				SWItems.nickel, 10,
+				SWItems.verdigris, 10,
 				SWItems.iron, 5
 			));
 			size = 2;
@@ -148,7 +148,7 @@ public class SWPower {
 
 		shaftTransmission = new ShaftTransmission("shaft-transmission") {{
 			requirements(Category.power, with(
-				SWItems.nickel, 50,
+				SWItems.verdigris, 50,
 				SWItems.iron, 40,
 				Items.silicon, 30
 			));
@@ -229,10 +229,10 @@ public class SWPower {
 			);
 		}};
 
-		boiler = new SWGenericCrafter("boiler") {{
+		evaporator = new SWGenericCrafter("evaporator") {{
 			requirements(Category.power, with(
 				SWItems.iron, 20,
-				SWItems.nickel, 40,
+				SWItems.verdigris, 40,
 				Items.graphite, 35
 			));
 			size = 2;
@@ -251,22 +251,31 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(SWLiquids.solvent),
 				new DrawDefault(),
-				new DrawRegion("-rotator") {{
-					spinSprite = true;
-					rotateSpeed = 2f;
-				}}
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+				}},
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+					rotation = 30f;
+				}},
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+					rotation = 60f;
+				}},
+				new DrawRegion("-top"),
+				new DrawIcon()
 			);
 
-			updateEffectStatic = SWFx.burnElevation;
+			updateEffectStatic = SWFx.evaporate;
+			updateEffectChance = 0.5f;
 
-			consumeItem(Items.graphite, 1);
-			consumeLiquid(SWLiquids.solvent, 0.1f);
-			craftTime = 30;
+			consumeLiquid(SWLiquids.solvent, 1f/60f);
 
-			outputRotation = 6f;
-			outputRotationForce = 3f/60f;
-			outputLiquid = new LiquidStack(SWLiquids.steam, 0.2f);
+			outputRotation = 1f;
+			outputRotationForce = 1f/60f;
 		}};
 	}
 }
