@@ -51,6 +51,6 @@ public class SpinConfig {
 	}
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
-		stats.add(SWStat.spinResistance, Strings.autoFixed(resistance * 600f, 2), SWStat.spinMinute);
+		if (resistance > 0) stats.add(SWStat.spinResistance, StatValues.number(resistance * 600f, SWStat.spinMinuteSecond));
 	}
 }

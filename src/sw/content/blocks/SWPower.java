@@ -7,6 +7,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.graphics.*;
 import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
@@ -47,6 +48,10 @@ public class SWPower {
 					new Axle("-shaft") {{
 						pixelHeight = 7;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}}
 				),
 				new DrawBitmask("-tiles", build -> {
@@ -76,6 +81,10 @@ public class SWPower {
 						pixelHeight = 7;
 
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}},
 					new Axle("-shaft") {{
 						iconOverride = "sw-wire-shaft-router-shaft-icon-vertical";
@@ -84,6 +93,10 @@ public class SWPower {
 						rotation = -90f;
 
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}}
 				),
 				new DrawDefault()
@@ -237,11 +250,11 @@ public class SWPower {
 			));
 			size = 2;
 			health = 160;
-			ignoreLiquidFullness = true;
-			ambientSound = Sounds.torch;
+			ambientSound = Sounds.wind;
+			ambientSoundVolume = 0.1f;
 
 			spinConfig = new SpinConfig() {{
-				topSpeed = 6f;
+				topSpeed = 1f;
 				connections = new Seq[]{
 					BlockGeometry.half2,
 					BlockGeometry.half2,
@@ -252,7 +265,9 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawLiquidTile(SWLiquids.solvent),
+				new DrawLiquidTile(SWLiquids.solvent) {{
+					alpha = 0.5f;
+				}},
 				new DrawDefault(),
 				new DrawRegion("-blade") {{
 					rotateSpeed = 5f;

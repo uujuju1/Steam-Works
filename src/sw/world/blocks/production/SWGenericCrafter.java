@@ -8,6 +8,7 @@ import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.production.*;
+import mindustry.world.meta.*;
 import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -51,8 +52,8 @@ public class SWGenericCrafter extends GenericCrafter {
 		super.setStats();
 		spinConfig.addStats(stats);
 		if (outputRotation > 0 && outputRotationForce > 0) {
-			stats.add(SWStat.spinOutput, Strings.autoFixed(outputRotation * 10f, 2), SWStat.spinMinute);
-			stats.add(SWStat.spinOutputForce, Strings.autoFixed(outputRotationForce * 600f, 2), SWStat.spinMinuteSecond);
+			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
+			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.spinMinuteSecond));
 		}
 	}
 

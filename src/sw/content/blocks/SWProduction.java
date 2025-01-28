@@ -11,6 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.graphics.*;
 import sw.math.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -112,6 +113,10 @@ public class SWProduction {
 
 						width = 16f;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}},
 					new Axle("-shaft") {{
 						pixelWidth = 64;
@@ -121,6 +126,10 @@ public class SWProduction {
 
 						width = 16f;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}}
 				),
 				new DrawBitmask("-tiles", b -> 0) {{
@@ -157,7 +166,8 @@ public class SWProduction {
 			);
 
 			spinConfig = new SpinConfig() {{
-				topSpeed = 6f;
+				topSpeed = 1f;
+				resistance = 10f;
 				connections = new Seq[]{
 					BlockGeometry.side23,
 					BlockGeometry.side24,

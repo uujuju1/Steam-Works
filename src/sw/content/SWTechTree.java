@@ -76,12 +76,12 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(evaporator, with(new NonUnlockable()), () -> {
+    root.add(node(evaporator, with(new Research(mechanicalFracker)), () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
-          node(shaftGearbox);
+          node(shaftGearbox, Seq.with(new NonUnlockable()), () -> {});
         });
-        node(shaftTransmission);
+        node(shaftTransmission, Seq.with(new NonUnlockable()), () -> {});
       });
     }));
     root.peek().name = "sw-power";
@@ -90,7 +90,7 @@ public class SWTechTree {
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill, () -> {
-        node(mechanicalFracker, with(new Research(evaporator), new NonUnlockable()), () -> {});
+        node(mechanicalFracker, () -> {});
       });
       node(liquidCollector);
     }));
