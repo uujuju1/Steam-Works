@@ -28,17 +28,18 @@ public class SWPower {
 	public static void load() {
 		wireShaft = new WireShaft("wire-shaft") {{
 			requirements(Category.power, with(
-				SWItems.verdigris, 5,
-				SWItems.iron, 5
+				SWItems.verdigris, 1,
+				Items.graphite, 1,
+				Items.silicon, 2
 			));
 
 			spinConfig = new SpinConfig() {{
 				resistance = 1f/600f;
-				connections = new Seq[]{
-					BlockGeometry.sides1,
-					BlockGeometry.sides2,
-					BlockGeometry.sides3,
-					BlockGeometry.sides4
+				allowedEdges = new int[][]{
+					new int[]{0, 2},
+					new int[]{1, 3},
+					new int[]{2, 0},
+					new int[]{3, 1}
 				};
 			}};
 
@@ -65,8 +66,9 @@ public class SWPower {
 		}};
 		wireShaftRouter = new WireShaft("wire-shaft-router") {{
 			requirements(Category.power, with(
-				SWItems.verdigris, 10,
-				SWItems.iron, 5
+				SWItems.verdigris, 2,
+				Items.graphite, 2,
+				Items.silicon, 4
 			));
 			rotate = false;
 
@@ -104,18 +106,19 @@ public class SWPower {
 		}};
 		shaftGearbox = new WireShaft("shaft-gearbox") {{
 			requirements(Category.power, with(
-				SWItems.verdigris, 10,
-				SWItems.iron, 5
+				SWItems.verdigris, 5,
+				Items.graphite, 5,
+				Items.silicon, 10
 			));
 			size = 2;
 
 			spinConfig = new SpinConfig() {{
 				resistance = 2f/600f;
-				connections = new Seq[]{
-					BlockGeometry.sides21,
-					BlockGeometry.sides22,
-					BlockGeometry.sides23,
-					BlockGeometry.sides24
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 4, 5},
+					new int[]{2, 3, 6, 7},
+					new int[]{4, 5, 0, 1},
+					new int[]{6, 7, 2, 3}
 				};
 			}};
 
@@ -255,12 +258,6 @@ public class SWPower {
 
 			spinConfig = new SpinConfig() {{
 				topSpeed = 1f;
-				connections = new Seq[]{
-					BlockGeometry.half2,
-					BlockGeometry.half2,
-					BlockGeometry.half2,
-					BlockGeometry.half2
-				};
 			}};
 
 			drawer = new DrawMulti(

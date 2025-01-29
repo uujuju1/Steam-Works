@@ -36,6 +36,11 @@ public class SpinConfig {
 		BlockGeometry.full1
 	};
 
+	/**
+	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.
+	 */
+	public int[][] allowedEdges;
+
 	public Color barColor = Pal.accent;
 
 	public void addBars(Block block) {

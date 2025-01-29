@@ -4,6 +4,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import sw.world.graph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -22,7 +23,15 @@ public interface HasSpin extends Buildingc {
 	 * @apiNote Liz, do not make this method call itself on another instance, and do not make this null, ever.
 	 */
 	default boolean connectTo(HasSpin other) {
-		return spinConfig().hasSpin && other.team() == team() && (!proximity().contains(b -> other.as() == b) || connectionPoints(rotation()).isEmpty() || connectionPoints(rotation()).contains(next -> nearby(next.x, next.y) == other));
+		boolean hasSpin = spinConfig().hasSpin;
+		boolean sameTeam = other.team() == team();
+		boolean isEdge = !proximity().contains((Building) other);
+		if (spinConfig().allowedEdges != null) {
+			for(int i : spinConfig().allowedEdges[rotation()]) {
+				isEdge |= nearby(Edges.getEdges(block().size)[i].x, Edges.getEdges(block().size)[i].y) == other;
+			}
+		} else isEdge = true;
+		return hasSpin && sameTeam && isEdge;
 	}
 
 	/**
@@ -79,7 +88,10 @@ public interface HasSpin extends Buildingc {
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
-		return connectionPoints(rotation()).map(p -> nearby(p.x, p.y)).retainAll(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this))).map(a -> ((HasSpin) a).getSpinGraphDestination(this));
+		return proximity()
+			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
+			     .map(a -> ((HasSpin) a)
+				   .getSpinGraphDestination(this));
 	}
 
 	/**
@@ -87,9 +99,5 @@ public interface HasSpin extends Buildingc {
 	 */
 	default void onGraphUpdate() {
 		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
-	}
-
-	default void updateGas() {
-
 	}
 }

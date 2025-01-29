@@ -167,12 +167,12 @@ public class SWProduction {
 
 			spinConfig = new SpinConfig() {{
 				topSpeed = 1f;
-				resistance = 10f;
-				connections = new Seq[]{
-					BlockGeometry.side23,
-					BlockGeometry.side24,
-					BlockGeometry.side21,
-					BlockGeometry.side22
+				resistance = 0.5f/60f;
+				allowedEdges = new int[][]{
+					new int[]{4, 5},
+					new int[]{6, 7},
+					new int[]{0, 1},
+					new int[]{2, 3}
 				};
 			}};
 		}};
