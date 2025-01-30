@@ -243,7 +243,11 @@ public class SWTurrets {
 		}};
 
 		imber = new ItemTurret("imber") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.verdigris, 20,
+				SWItems.iron, 30,
+				Items.graphite, 10
+			));
 			size = 2;
 			scaledHealth = 220;
 			reload = 240f;

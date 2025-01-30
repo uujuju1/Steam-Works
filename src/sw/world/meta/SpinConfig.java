@@ -2,10 +2,12 @@ package sw.world.meta;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -57,5 +59,20 @@ public class SpinConfig {
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
 		if (resistance > 0) stats.add(SWStat.spinResistance, StatValues.number(resistance * 600f, SWStat.spinMinuteSecond));
+	}
+
+	public void drawPlace(Block block, int x, int y, int rotation, boolean valid) {
+		if (hasSpin) {
+			Point2[] edges = Edges.getEdges(block.size);
+			if (allowedEdges != null) {
+				for(int i : allowedEdges[rotation]) {
+					Draw.rect("sw-icon-spin-edge", (x + edges[i].x) * Vars.tilesize, (y + edges[i].y) * Vars.tilesize, 4, 4, 0);
+				}
+			} else {
+				for(Point2 i : edges) {
+					Draw.rect("sw-icon-spin-edge", (x + i.x) * Vars.tilesize, (y + i.y) * Vars.tilesize, 4, 4, 0);
+				}
+			}
+		}
 	}
 }

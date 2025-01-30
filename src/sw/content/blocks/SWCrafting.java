@@ -283,18 +283,39 @@ public class SWCrafting {
 				),
 				new DrawBitmask("-tiles", b -> {
 					Point2[] edges = Edges.getEdges(3);
+					int offset = Mathf.floor((size - 1f)/2f);
+					Building other = null;
 
 					int out = 0;
-					if (
-						b.nearby(edges[11].x, edges[11].y) != null && b.nearby(edges[11].x, edges[11].y).block == b.block &&
-						b.nearby(edges[0].x, edges[0].y) != null && b.nearby(edges[0].x, edges[0].y).block == b.block &&
-						b.nearby(edges[1].x, edges[1].y) != null && b.nearby(edges[1].x, edges[1].y).block == b.block
-					) out |= 1;
-					if (
-						b.nearby(edges[6].x, edges[6].y) != null && b.nearby(edges[6].x, edges[6].y).block == b.block &&
-						b.nearby(edges[7].x, edges[7].y) != null && b.nearby(edges[7].x, edges[7].y).block == b.block &&
-						b.nearby(edges[5].x, edges[5].y) != null && b.nearby(edges[5].x, edges[5].y).block == b.block
-					) out |= 2;
+					for (int pos = 0; pos < size; pos++) {
+						Building nearby = b.nearby(
+							edges[Mathf.mod(pos - offset, edges.length)].x,
+							edges[Mathf.mod(pos - offset, edges.length)].y
+						);
+
+						if (pos == 0) {
+							other = nearby;
+
+							if (other == null) break;
+						} else if (nearby == other) {
+							if (pos == size - 1) out |= 1;
+						} else break;
+					}
+					other = null;
+					for (int pos = 0; pos < size; pos++) {
+						Building nearby = b.nearby(
+							edges[Mathf.mod(pos - offset + size * 2, edges.length)].x,
+							edges[Mathf.mod(pos - offset + size * 2, edges.length)].y
+						);
+
+						if (pos == 0) {
+							other = nearby;
+
+							if (other == null) break;
+						} else if (nearby == other) {
+							if (pos == size - 1) out |= 2;
+						} else break;
+					}
 					return out;
 				}, 96),
 				new DrawGlowRegion() {{

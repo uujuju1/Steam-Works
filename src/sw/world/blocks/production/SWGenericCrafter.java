@@ -1,12 +1,17 @@
 package sw.world.blocks.production;
 
 import arc.audio.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 import sw.world.consumers.*;
@@ -39,6 +44,12 @@ public class SWGenericCrafter extends GenericCrafter {
 	}
 	public void consumeSpin(ConsumeRotation consumer) {
 		consume(consumer);
+	}
+
+	@Override
+	public void drawPlace(int x, int y, int rotation, boolean valid) {
+		super.drawPlace(x, y, rotation, valid);
+		spinConfig.drawPlace(this, x, y, rotation, valid);
 	}
 
 	@Override

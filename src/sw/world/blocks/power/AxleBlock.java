@@ -1,9 +1,11 @@
 package sw.world.blocks.power;
 
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
@@ -13,12 +15,12 @@ import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class WireShaft extends Block {
+public class AxleBlock extends Block {
 	public SpinConfig spinConfig = new SpinConfig();
 
 	public DrawBlock drawer = new DrawDefault();
 
-	public WireShaft(String name) {
+	public AxleBlock(String name) {
 		super(name);
 		update = true;
 		rotate = true;
@@ -26,11 +28,17 @@ public class WireShaft extends Block {
 
 	@Override
 	public boolean canReplace(Block other) {
-		return super.canReplace(other) || other instanceof WireShaft;
+		return super.canReplace(other) || other instanceof AxleBlock;
 	}
 
 	@Override
-	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+	public void drawPlace(int x, int y, int rotation, boolean valid) {
+		super.drawPlace(x, y, rotation, valid);
+		spinConfig.drawPlace(this, x, y, rotation, valid);
+	}
+
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
 		drawer.drawPlan(this, plan, list);
 	}
 

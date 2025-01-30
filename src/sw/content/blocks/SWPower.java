@@ -26,7 +26,7 @@ public class SWPower {
 		shaftTransmission;
 
 	public static void load() {
-		wireShaft = new WireShaft("wire-shaft") {{
+		wireShaft = new AxleBlock("wire-shaft") {{
 			requirements(Category.power, with(
 				SWItems.verdigris, 1,
 				Items.graphite, 1,
@@ -64,7 +64,7 @@ public class SWPower {
 				})
 			);
 		}};
-		wireShaftRouter = new WireShaft("wire-shaft-router") {{
+		wireShaftRouter = new AxleBlock("wire-shaft-router") {{
 			requirements(Category.power, with(
 				SWItems.verdigris, 2,
 				Items.graphite, 2,
@@ -104,7 +104,7 @@ public class SWPower {
 				new DrawDefault()
 			);
 		}};
-		shaftGearbox = new WireShaft("shaft-gearbox") {{
+		shaftGearbox = new AxleBlock("shaft-gearbox") {{
 			requirements(Category.power, with(
 				SWItems.verdigris, 5,
 				Items.graphite, 5,

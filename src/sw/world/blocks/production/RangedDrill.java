@@ -9,6 +9,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -93,7 +94,8 @@ public class RangedDrill extends Block {
 	}
 
 	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid){
+	public void drawPlace(int x, int y, int rotation, boolean valid) {
+		spinConfig.drawPlace(this, x, y, rotation, valid);
 		Item item = null, invalidItem = null;
 		boolean multiple = false;
 		int count = 0;
@@ -149,7 +151,6 @@ public class RangedDrill extends Block {
 		}else if(invalidItem != null){
 			drawPlaceText(Core.bundle.get("bar.drilltierreq"), x, y, false);
 		}
-
 	}
 
 	@Override
