@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -26,7 +27,7 @@ public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
 
-		liquidCollector;
+		liquidCollector, fogCollector;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -181,6 +182,32 @@ public class SWProduction {
 			requirements(Category.liquid, with(
 				SWItems.iron, 20
 			));
+		}};
+
+		fogCollector = new SpaciousGenericCrafter("fog-collector") {{
+			requirements(Category.production, with(
+				SWItems.iron, 20,
+				Items.graphite, 35
+			));
+			size = 3;
+
+			outputLiquids = LiquidStack.with(
+				Liquids.water, 1f/60f
+			);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water, 2f),
+				new DrawDefault(),
+				new DrawNet() {{
+					radius = 8f;
+					height = 2f;
+
+					netColor = Pal.shadow;
+					coverColor = Color.valueOf("9799A3");
+				}},
+				new DrawIcon()
+			);
 		}};
 	}
 }
