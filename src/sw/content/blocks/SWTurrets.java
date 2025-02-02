@@ -248,6 +248,11 @@ public class SWTurrets {
 				SWItems.iron, 30,
 				Items.graphite, 10
 			));
+			researchCost = with(
+				SWItems.verdigris, 80,
+				SWItems.iron, 60,
+				Items.graphite, 20
+			);
 			size = 2;
 			scaledHealth = 220;
 			reload = 240f;

@@ -34,7 +34,7 @@ public class SWTechTree {
     root.peek().icon = Icon.crafting;
     // endregion
     // region defense
-    root.add(node(imber, () -> {}));
+    root.add(node(imber, with(new Produce(coke)), () -> {}));
     root.peek().name = "sw-defense";
     root.peek().icon = Icon.turret;
     // endregion
@@ -58,9 +58,7 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(evaporator, with(
-      new Research(liquidCollector)
-    ), () -> {
+    root.add(node(evaporator, () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
           node(shaftGearbox, Seq.with(new NonUnlockable()), () -> {});
@@ -74,9 +72,7 @@ public class SWTechTree {
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill, () -> {
-        node(mechanicalFracker, with(
-          new Research(evaporator)
-        ), () -> {});
+        node(mechanicalFracker, () -> {});
       });
       node(liquidCollector, () -> {
         node(fogCollector, with(
@@ -93,28 +89,17 @@ public class SWTechTree {
         nodeProduce(coke, () -> {});
       });
       nodeProduce(iron, () -> {
-//        nodeProduce(compound, () -> nodeProduce(chalk, () -> nodeProduce(soda, () -> {})));
-//        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(residue, () -> {})));
-//        nodeProduce(meteorite, () -> {});
+        nodeProduce(Items.sand, () -> {});
       });
       nodeProduce(solvent, () -> {
         nodeProduce(Liquids.water, () -> {});
-//        nodeProduce(steam, () -> {});
-//        nodeProduce(fluorane, () -> {});
       });
     }));
     root.peek().name = "sw-resources";
     root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
-    root.add(node(jezero, () -> {
-      node(myeik, with(new Research(hydraulicDrill)), () -> {
-//        node(nostalgia, with(new SectorComplete(anemoia)), () -> {
-//          node(coast, with(new SectorComplete(nostalgia)), () -> {});
-//          node(island, with(new SectorComplete(nostalgia)), () -> {});
-//        });
-      });
-    }));
+    root.add(node(crevasse, () -> {}));
     root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;
     // endregion

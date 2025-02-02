@@ -251,6 +251,11 @@ public class SWPower {
 				SWItems.verdigris, 40,
 				Items.graphite, 35
 			));
+			researchCost = with(
+				SWItems.iron, 40,
+				SWItems.verdigris, 80,
+				Items.graphite, 70
+			);
 			size = 2;
 			health = 160;
 			ambientSound = Sounds.wind;

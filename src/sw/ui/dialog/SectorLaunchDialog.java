@@ -31,6 +31,7 @@ public class SectorLaunchDialog extends BaseDialog {
 
 	public SectorLaunchDialog() {
 		super("@sector.view");
+		shouldPause = true;
 		titleTable.remove();
 		titleTable.button("@quit", Icon.left, new TextButton.TextButtonStyle() {{
 			font = Fonts.def;

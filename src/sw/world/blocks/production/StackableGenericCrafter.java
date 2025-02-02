@@ -1,5 +1,6 @@
 package sw.world.blocks.production;
 
+import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
@@ -24,7 +25,7 @@ public class StackableGenericCrafter extends GenericCrafter {
 	public void setStats() {
 		super.setStats();
 
-		stats.add(Stat.boostEffect, "stat.sw-boostperbuild.format", boost * 100f);
+		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boostperbuild.format"), boost * 100f);
 	}
 
 	public class StackableGenericCrafterBuild extends GenericCrafterBuild {

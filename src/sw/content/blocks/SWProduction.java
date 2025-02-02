@@ -81,6 +81,11 @@ public class SWProduction {
 				SWItems.verdigris, 40,
 				Items.graphite, 35
 			));
+			researchCost = with(
+				SWItems.iron, 40,
+				SWItems.verdigris, 80,
+				Items.graphite, 70
+			);
 
 			size = 2;
 			health = 160;
@@ -180,6 +185,9 @@ public class SWProduction {
 			requirements(Category.liquid, with(
 				SWItems.iron, 20
 			));
+			researchCost = with(
+				SWItems.iron, 40
+			);
 		}};
 
 		fogCollector = new SpaciousGenericCrafter("fog-collector") {{
@@ -187,6 +195,10 @@ public class SWProduction {
 				SWItems.iron, 20,
 				Items.graphite, 35
 			));
+			researchCost = with(
+				SWItems.iron, 40,
+				Items.graphite, 70
+			);
 			size = 3;
 
 			ambientSound = Sounds.wind2;

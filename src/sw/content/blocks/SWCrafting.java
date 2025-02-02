@@ -217,6 +217,12 @@ public class SWCrafting {
 				Items.graphite, 45,
 				Items.silicon, 30
 			));
+			researchCost = with(
+				SWItems.iron, 100,
+				SWItems.verdigris, 120,
+				Items.graphite, 85,
+				Items.silicon, 60
+			);
 			size = 3;
 			health = 240;
 
@@ -314,6 +320,11 @@ public class SWCrafting {
 				SWItems.verdigris, 40,
 				Items.graphite, 35
 			));
+			researchCost = with(
+				SWItems.iron, 80,
+				SWItems.verdigris, 80,
+				Items.graphite, 70
+			);
 			size = 3;
 			health = 240;
 
@@ -324,6 +335,7 @@ public class SWCrafting {
 			updateEffectChance = 0.15f;
 			craftTime = 30f;
 
+			researchConsumers = false;
 			consumeItems(with(Items.sand, 1));
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 			consume(new ConsumeRotation() {{
