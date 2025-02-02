@@ -12,8 +12,10 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.graphics.*;
 import sw.math.*;
 import sw.world.blocks.production.*;
+import sw.world.consumers.*;
 import sw.world.draw.*;
 import sw.world.draw.DrawAxles.*;
 import sw.world.interfaces.*;
@@ -24,39 +26,16 @@ import static mindustry.type.ItemStack.*;
 public class SWCrafting {
 	public static Block
 
-		cokeOven, reductor, mechanocatalysisChamber,
+		cokeOven, engineSmelter, mechanocatalysisChamber,
 
 		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
 
 		crystalFurnace, rte, kitchenGarden,
 
-
-		siliconBoiler,
 		compoundSmelter, chalkSeparator,
 		densePress, thermiteMixer;
 
 	public static void load() {
-		siliconBoiler = new GenericCrafter("silicon-boiler") {{
-			requirements(Category.crafting, with(
-				SWItems.verdigris, 150,
-				SWItems.iron, 120,
-				Items.graphite, 80
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItems(with(Items.graphite, 3, Items.sand, 3));
-			outputItems = with(Items.silicon, 3);
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame() {{
-					flameRadius = 5f;
-				}}
-			);
-		}};
 
 		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
 			requirements(Category.crafting, with(
@@ -231,9 +210,12 @@ public class SWCrafting {
 			outputItems = with(SWItems.thermite, 1);
 		}};
 
-
 		cokeOven = new StackableGenericCrafter("coke-oven") {{
 			requirements(Category.crafting, with(
+				SWItems.iron, 50,
+				SWItems.verdigris, 60,
+				Items.graphite, 45,
+				Items.silicon, 30
 			));
 			size = 3;
 			health = 240;
@@ -326,22 +308,110 @@ public class SWCrafting {
 				}}
 			);
 		}};
-		reductor = new GenericCrafter("reductor") {{
+		engineSmelter = new SWGenericCrafter("engine-smelter") {{
 			requirements(Category.crafting, with(
+				SWItems.iron, 40,
+				SWItems.verdigris, 40,
+				Items.graphite, 35
 			));
 			size = 3;
 			health = 240;
 
+			ambientSound = Sounds.smelter;
+			ambientSoundVolume = 0.1f;
+
+			craftEffect = updateEffectStatic = SWFx.combust;
+			updateEffectChance = 0.15f;
 			craftTime = 30f;
 
 			consumeItems(with(Items.sand, 1));
+			consumeLiquid(SWLiquids.solvent, 0.1f);
+			consume(new ConsumeRotation() {{
+				startSpeed = 0.5f;
+				endSpeed = 1f;
+				curve = Interp.one;
+			}});
 			outputItems = with(Items.silicon, 1);
-			outputLiquids = LiquidStack.with(Liquids.ozone, 2f/60f);
 
 			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio,
+					new Axle("-axle") {{
+						x = 8f;
+						y = 0f;
+
+						height = 3.5f;
+
+						pixelHeight = 7;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						x = 0f;
+						y = 8f;
+
+						height = 3.5f;
+
+						pixelHeight = 7;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+
+						rotation = -90f;
+
+						hasIcon = false;
+					}},
+					new Axle("-axle") {{
+						x = -8f;
+						y = 0f;
+
+						height = 3.5f;
+
+						pixelHeight = 7;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+
+						hasIcon = false;
+					}},
+					new Axle("-axle") {{
+						x = 0f;
+						y = -8f;
+
+						height = 3.5f;
+
+						pixelHeight = 7;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+
+						rotation = -90f;
+
+						hasIcon = false;
+					}}
+				),
 				new DrawDefault()
 			);
+
+			spinConfig = new SpinConfig() {{
+				topSpeed = 1f;
+				resistance = 1f/60f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9}
+				};
+			}};
 		}};
+
 		mechanocatalysisChamber = new GenericCrafter("mechanocatalysis-chamber") {{
 			requirements(Category.crafting, with(
 			));

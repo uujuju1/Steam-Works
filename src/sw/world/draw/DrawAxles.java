@@ -46,15 +46,14 @@ public class DrawAxles extends DrawBlock {
 	}
 	@Override
 	public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
-		axles.each(axle -> {
-			Draw.rect(axle.iconRegion, plan.drawx(), plan.drawy(), plan.rotation * 90);
-		});
+		axles.each(axle -> Draw.rect(axle.iconRegion, plan.drawx(), plan.drawy(), plan.rotation * 90));
 	}
 
 	@Override
 	public TextureRegion[] icons(Block block) {
-		TextureRegion[] out = new TextureRegion[axles.size];
-		for(int i = 0; i < out.length; i++) out[i] = axles.get(i).iconRegion;
+		Seq<Axle> tmp = axles.select(b -> b.hasIcon);
+		TextureRegion[] out = new TextureRegion[tmp.size];
+		for(int i = 0; i < out.length; i++) out[i] = tmp.get(i).iconRegion;
 		return out;
 	}
 
@@ -82,6 +81,7 @@ public class DrawAxles extends DrawBlock {
 		public int polySides = 1;
 
 		public boolean hasSprites = true;
+		public boolean hasIcon = true;
 
 		public TextureRegion[] regions;
 		public TextureRegion iconRegion;

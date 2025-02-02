@@ -117,6 +117,7 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.fout());
       });
     }),
+
     denseAlloyCraft = new Effect(30f, e -> {
       for(int i = 0; i < 4; i++) {
         Draw.color(Pal.accent);
@@ -137,48 +138,6 @@ public class SWFx {
         Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
       });
     }),
-    scorchCraft = new Effect(30f, e -> {
-      Draw.blend(Blending.additive);
-      for(int i = 0; i < 4; i++) {
-        Tmp.v1.trns(i * 90f, 3.5f);
-        Draw.color(Pal.accent, 0.6f);
-        Angles.randLenVectors(e.id, 5, 20f * e.finpow(), i * 90f, 15f, (x, y) -> {
-          Fill.circle(
-            e.x + x + Tmp.v1.x,
-            e.y + y + Tmp.v1.y,
-            2f * e.fout()
-          );
-        });
-        Draw.color(Pal.turretHeat, 0.6f);
-        Angles.randLenVectors(e.id + 1, 5, 20 * e.finpow(), i * 90f, 15f, (x, y) -> {
-          Fill.circle(
-            e.x + x + Tmp.v1.x,
-            e.y + y + Tmp.v1.y,
-            2f * e.fout()
-          );
-        });
-        Draw.color(Color.gray, 0.6f);
-        Angles.randLenVectors(e.id + 2, 5, 20 * e.finpow(), i * 90f, 15f, (x, y) -> {
-          Fill.circle(
-            e.x + x + Tmp.v1.x,
-            e.y + y + Tmp.v1.y,
-            2f * e.fout()
-          );
-        });
-      }
-      Draw.blend();
-
-    }),
-    grapheneCraft = new Effect(30f, e -> {
-      Angles.randLenVectors(e.id, 20, 10f * e.finpow(), (x, y) -> {
-      Tmp.v1.trns(Mathf.angle(x, y), 8f);
-      Fill.circle(
-        e.x + x + Tmp.v1.x,
-        e.y + y + Tmp.v1.y,
-        3f * e.foutpow()
-      );
-    });
-    }),
 
     cokeBurn = new Effect(120f, e -> {
       rand.setSeed(e.id);
@@ -190,6 +149,28 @@ public class SWFx {
       Draw.alpha(e.foutpowdown());
       Fill.circle(temp.x, temp.y, rand.random(1f, 2f));
       Draw.blend();
+    }),
+
+    combust = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+
+      if (rand.chance(0.5)) {
+        temp.trns(rand.random(4) * 90f, 4f, 4f);
+      } else temp.set(0, 0);
+
+      Angles.randLenVectors(e.id, 10, 4 * e.finpow(), (x, y) -> {
+	      float h = rand.random(5);
+
+	      Draw.color(Pal.accent, Color.gray, 1 - e.foutpow() * Mathf.clamp(h - rand.random(h)));
+	      Draw.alpha((1 - h/5f) * e.fout());
+
+	      Fill.circle(
+		      Parallax.getParallaxFrom(temp.x + e.x + x, Core.camera.position.x, h * e.finpow()),
+		      Parallax.getParallaxFrom(temp.y + e.y + y, Core.camera.position.y, h * e.finpow()),
+		      rand.random(1, 5)
+	      );
+
+      });
     }),
 
     evaporate = new Effect(60f, e -> {

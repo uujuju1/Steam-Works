@@ -3,7 +3,6 @@ package sw.content.blocks;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -13,7 +12,6 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.graphics.*;
-import sw.math.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -191,8 +189,10 @@ public class SWProduction {
 			));
 			size = 3;
 
+			ambientSound = Sounds.wind2;
+
 			outputLiquids = LiquidStack.with(
-				Liquids.water, 1f/60f
+				Liquids.water, 3f/60f
 			);
 
 			drawer = new DrawMulti(

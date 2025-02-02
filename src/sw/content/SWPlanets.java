@@ -41,6 +41,11 @@ public class SWPlanets {
 				SWItems.compound,
 				SWItems.denseAlloy,
 				SWItems.thermite,
+				SWItems.aluminium,
+				SWItems.steel,
+				SWItems.oxycarbide,
+				SWItems.coke,
+				SWItems.iron,
 				Items.graphite,
 				Items.silicon
 			);

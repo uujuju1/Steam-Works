@@ -27,32 +27,14 @@ public class SWTechTree {
 
   public static void init(Seq<TechNode> root) {
     // region crafting
-    root.add(node(siliconBoiler, with(new NonUnlockable()), () -> {
-      node(compoundSmelter, () -> {
-        node(chalkSeparator, with(new Research(evaporator)), () -> {});
-      });
-      node(densePress, () -> {
-        node(thermiteMixer, with(new Research(evaporator)), () -> {});
-      });
+    root.add(node(engineSmelter, () -> {
+      node(cokeOven);
     }));
     root.peek().name = "sw-crafting";
     root.peek().icon = Icon.crafting;
     // endregion
     // region defense
-    root.add(node(nickelWall, with(new OnSector(myeik)), () -> {
-      node(nickelWallLarge);
-      node(ironWall, () -> {
-        node(ironWallLarge);
-        node(waveRadar, with(new NonUnlockable()), () -> {});
-      });
-
-      node(flow, () -> {
-        node(trail, with(new SectorComplete(myeik)), () -> {});
-        node(vniz, () -> {
-          node(rozpad, with(new SectorComplete(myeik)), () -> {});
-        });
-      });
-    }));
+    root.add(node(imber, () -> {}));
     root.peek().name = "sw-defense";
     root.peek().icon = Icon.turret;
     // endregion
@@ -66,7 +48,7 @@ public class SWTechTree {
         node(mechanicalSorter);
       });
       node(suspensionConveyor);
-      node(mechanicalConduit, with(new Produce(Items.silicon), new Research(liquidCollector)), () -> {
+      node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
         node(mechanicalConduitJunction);
         node(mechanicalConduitRouter);
       });
@@ -76,7 +58,9 @@ public class SWTechTree {
     root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(evaporator, with(new Research(mechanicalFracker)), () -> {
+    root.add(node(evaporator, with(
+      new Research(liquidCollector)
+    ), () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
           node(shaftGearbox, Seq.with(new NonUnlockable()), () -> {});
@@ -90,23 +74,33 @@ public class SWTechTree {
     // region production
     root.add(node(mechanicalBore, () -> {
       node(hydraulicDrill, () -> {
-        node(mechanicalFracker, () -> {});
+        node(mechanicalFracker, with(
+          new Research(evaporator)
+        ), () -> {});
       });
-      node(liquidCollector);
+      node(liquidCollector, () -> {
+        node(fogCollector, with(
+          new Produce(solvent)
+        ), () -> {});
+      });
     }));
     root.peek().name = "sw-production";
     root.peek().icon = Icon.production;
     // endregion
     // region resources
     root.add(nodeProduce(verdigris, () -> {
+      nodeProduce(Items.graphite, () -> {
+        nodeProduce(coke, () -> {});
+      });
       nodeProduce(iron, () -> {
-        nodeProduce(compound, () -> nodeProduce(chalk, () -> nodeProduce(soda, () -> {})));
-        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(residue, () -> {})));
-        nodeProduce(meteorite, () -> {});
+//        nodeProduce(compound, () -> nodeProduce(chalk, () -> nodeProduce(soda, () -> {})));
+//        nodeProduce(denseAlloy, () -> nodeProduce(thermite, () -> nodeProduce(residue, () -> {})));
+//        nodeProduce(meteorite, () -> {});
       });
       nodeProduce(solvent, () -> {
-        nodeProduce(steam, () -> {});
-          nodeProduce(fluorane, () -> {});
+        nodeProduce(Liquids.water, () -> {});
+//        nodeProduce(steam, () -> {});
+//        nodeProduce(fluorane, () -> {});
       });
     }));
     root.peek().name = "sw-resources";
