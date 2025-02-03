@@ -15,8 +15,8 @@ import static mindustry.type.ItemStack.*;
 public class SWDistribution {
 	public static Block
 
-		resistantConveyor, suspensionConveyor,
-		mechanicalDistributor, mechanicalSorter, mechanicalTunnel,
+		mechanicalConveyor, suspensionConveyor,
+		mechanicalDistributor, mechanicalSorter, mechanicalBridge,
 		mechanicalGate,
 		mechanicalUnloader,
 
@@ -28,8 +28,10 @@ public class SWDistribution {
 
 	public static void load() {
 		// region items
-		resistantConveyor = new MechanicalConveyor("resistant-conveyor") {{
-			requirements(Category.distribution, with(SWItems.verdigris, 1));
+		mechanicalConveyor = new MechanicalConveyor("resistant-conveyor") {{
+			requirements(Category.distribution, with(
+				SWItems.verdigris, 1
+			));
 			health = 100;
 			speed = 0.04f;
 			displayedSpeed = 5f;
@@ -38,7 +40,9 @@ public class SWDistribution {
 			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
-			requirements(Category.distribution, with(SWItems.iron, 1));
+			requirements(Category.distribution, with(
+				SWItems.iron, 1
+			));
 			health = 100;
 			speed = 0.04f;
 			displayedSpeed = 5f;
@@ -58,18 +62,30 @@ public class SWDistribution {
 				Items.graphite, 1
 			));
 		}};
-		mechanicalTunnel = new MechanicalTunnel("mechanical-tunnel") {{
+		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 5,
 				Items.graphite, 5
 			));
+			researchCost = with(
+				SWItems.verdigris, 10,
+				Items.graphite, 10
+			);
 			health = 100;
+			range = 10;
+
+			((MechanicalConveyor) mechanicalConveyor).bridgeReplacement = this;
+			((MechanicalConveyor) suspensionConveyor).bridgeReplacement = this;
 		}};
 		mechanicalGate = new MechanicalGate("mechanical-gate") {{
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 5,
 				Items.graphite, 3
 			));
+			researchCost = with(
+				SWItems.verdigris, 10,
+				Items.graphite, 10
+			);
 			health = 100;
 		}};
 		mechanicalUnloader = new DirectionalUnloader("mechanical-unloader") {{
@@ -78,6 +94,11 @@ public class SWDistribution {
 				Items.silicon, 2,
 				Items.graphite, 4
 			));
+			researchCost = with(
+				SWItems.verdigris, 12,
+				Items.silicon, 4,
+				Items.graphite, 8
+			);
 			health = 100;
 			speed = 2f;
 			solid = false;

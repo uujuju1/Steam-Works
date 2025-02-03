@@ -13,7 +13,6 @@ import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWCrafting.*;
-import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
@@ -39,9 +38,9 @@ public class SWTechTree {
     root.peek().icon = Icon.turret;
     // endregion
     // region distribution
-    root.add(node(resistantConveyor, () -> {
+    root.add(node(mechanicalConveyor, () -> {
       node(mechanicalDistributor, () -> {
-        node(mechanicalTunnel, () -> {
+        node(mechanicalBridge, () -> {
           node(mechanicalUnloader, with(new Research(compactContainer)), () -> {});
         });
         node(mechanicalGate);
