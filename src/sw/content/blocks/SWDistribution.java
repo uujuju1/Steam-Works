@@ -28,7 +28,7 @@ public class SWDistribution {
 
 	public static void load() {
 		// region items
-		mechanicalConveyor = new MechanicalConveyor("resistant-conveyor") {{
+		mechanicalConveyor = new MechanicalConveyor("mechanical-conveyor") {{
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 1
 			));
