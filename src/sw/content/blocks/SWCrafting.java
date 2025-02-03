@@ -11,6 +11,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.graphics.*;
 import sw.math.*;
@@ -38,7 +39,7 @@ public class SWCrafting {
 	public static void load() {
 
 		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 				SWItems.iron, 80,
 				SWItems.verdigris, 200,
 				Items.silicon, 150,
@@ -69,7 +70,7 @@ public class SWCrafting {
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
 		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 				SWItems.iron, 50,
 				SWItems.compound, 35,
 				Items.silicon, 30
@@ -128,7 +129,7 @@ public class SWCrafting {
 		}};
 
 		densePress = new SWGenericCrafter("dense-press") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 				SWItems.iron, 160,
 				SWItems.verdigris, 200,
 				Items.silicon, 80,
@@ -152,7 +153,7 @@ public class SWCrafting {
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
 		}};
 		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 				SWItems.iron, 50,
 				SWItems.denseAlloy, 35,
 				Items.silicon, 30
@@ -425,7 +426,7 @@ public class SWCrafting {
 		}};
 
 		mechanocatalysisChamber = new GenericCrafter("mechanocatalysis-chamber") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -444,7 +445,7 @@ public class SWCrafting {
 		}};
 
 		blastFurnace = new GenericCrafter("blast-furnace") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -459,7 +460,7 @@ public class SWCrafting {
 			);
 		}};
 		pressureKiln = new GenericCrafter("pressure-kiln") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -475,7 +476,7 @@ public class SWCrafting {
 			);
 		}};
 		wedger = new GenericCrafter("wedger") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -490,7 +491,7 @@ public class SWCrafting {
 			);
 		}};
 		pyrolysisSynthetizer = new GenericCrafter("pyrolysis-synthetizer") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -509,7 +510,7 @@ public class SWCrafting {
 			);
 		}};
 		oxidationPlant = new GenericCrafter("oxidation-plant") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -526,7 +527,7 @@ public class SWCrafting {
 		}};
 
 		rte = new GenericCrafter("rte") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -546,7 +547,7 @@ public class SWCrafting {
 			);
 		}};
 		crystalFurnace = new GenericCrafter("crystal-furnace") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;
@@ -561,7 +562,7 @@ public class SWCrafting {
 			);
 		}};
 		kitchenGarden = new GenericCrafter("kitchen-garden") {{
-			requirements(Category.crafting, with(
+			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
 			size = 3;
 			health = 240;

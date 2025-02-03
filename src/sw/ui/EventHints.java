@@ -7,7 +7,9 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.ui.fragments.HintsFragment.*;
 import sw.content.blocks.*;
+import sw.world.blocks.production.*;
 import sw.world.blocks.production.StackableGenericCrafter.*;
+import sw.world.meta.*;
 
 
 public enum EventHints implements Hint {
@@ -17,7 +19,18 @@ public enum EventHints implements Hint {
 	),
 	hydraulicDrill(
 		() -> false,
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWProduction.hydraulicDrill).size > 0
+		() -> Vars.control.input.block instanceof AreaDrill
+	),
+	rotationBuilds(
+		() -> false,
+		() -> {
+			try {
+				SpinConfig config = Reflect.get(SpinConfig.class, Vars.control.input.block, "spinConfig");
+				return config.hasSpin;
+			} catch (Exception ignored) {
+				return false;
+			}
+		}
 	);
 
 	final Boolp complete, shown;
