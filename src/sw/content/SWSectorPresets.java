@@ -17,7 +17,7 @@ public class SWSectorPresets {
 			alwaysUnlocked = true;
 
 			rules = r -> {
-				r.winWave = 4;
+				r.winWave = 5;
 				r.weather.add(new Weather.WeatherEntry(
 					SWWeathers.souesiteDust,
 					5f * Time.toMinutes,

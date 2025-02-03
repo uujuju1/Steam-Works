@@ -6,6 +6,7 @@ import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.graphics.g3d.*;
 import mindustry.type.*;
+import mindustry.world.meta.*;
 import sw.content.blocks.*;
 import sw.maps.generators.*;
 
@@ -18,11 +19,12 @@ public class SWPlanets {
 
 			sectorSeed = 2;
 			allowWaves = true;
-			hasAtmosphere = true;
 			allowLaunchToNumbered = updateLighting = drawOrbit = false;
 			alwaysUnlocked = true;
 			orbitRadius = 12831f;
 
+			defaultEnv = Env.terrestrial | Env.groundWater | Env.oxygen;
+			clearSectorOnLose = true;
 			ruleSetter = r -> {
 				r.waveTeam = Team.crux;
 				r.placeRangeCheck = false;
@@ -30,9 +32,6 @@ public class SWPlanets {
 			};
 
 			iconColor = Pal.lancerLaser;
-			atmosphereColor = Pal.lancerLaser.cpy().mul(0.3f);
-			atmosphereRadIn = 0f;
-			atmosphereRadOut = 0.2f;
 			startSector = 0;
 
 			itemWhitelist.addAll(
