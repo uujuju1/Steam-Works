@@ -18,6 +18,8 @@ public class DrawAxles extends DrawBlock {
 
 	public @Nullable Floatf<Building> rotationOverride;
 
+	public float layer = -1;
+
 	public DrawAxles(Axle... axles) {
 		this.axles.add(axles);
 	}
@@ -27,8 +29,16 @@ public class DrawAxles extends DrawBlock {
 		this.axles.add(axles);
 	}
 
+	public DrawAxles(Floatf<Building> rotationOverride, float layer, Axle... axles) {
+		this.rotationOverride = rotationOverride;
+		this.layer = layer;
+		this.axles.add(axles);
+	}
+
 	@Override
 	public void draw(Building build) {
+		float z = Draw.z();
+		if (layer > 0) Draw.z(layer);
 		axles.each(axle -> {
 			float rot = build.block.rotate ? ((build.rotdeg() + 90f + axle.rotation) % 180f - 90f) : axle.rotation;
 			float spin = (rotationOverride != null ? rotationOverride.get(build) : build.totalProgress()) * axle.spinScl;
@@ -43,6 +53,7 @@ public class DrawAxles extends DrawBlock {
 			Draws.palette();
 		});
 		Draw.reset();
+		Draw.z(z);
 	}
 	@Override
 	public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {

@@ -12,6 +12,8 @@ import mindustry.world.draw.*;
 public class DrawBitmask extends DrawBlock {
 	public String suffix;
 
+	public float layer = -1f;
+
 	public Intf<Building> index;
 
 	public int tileWidth = 32;
@@ -26,13 +28,20 @@ public class DrawBitmask extends DrawBlock {
 	}
 
 	public DrawBitmask(String suffix, Intf<Building> index, int tileSize) {
-		this.suffix = suffix;
-		this.index = index;
+		this(suffix, index);
 		tileWidth = tileHeight = tileSize;
 	}
 
+	public DrawBitmask(String suffix, Intf<Building> index, int tileSize, float layer) {
+		this(suffix, index, tileSize);
+		this.layer = layer;
+	}
+
 	@Override public void draw(Building build) {
+		float z = Draw.z();
+		if (layer > 0) Draw.z(layer);
 		Draw.rect(regions[build.rotation][index.get(build)], build.x, build.y);
+		Draw.z(z);
 	}
 	@Override public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
 		Draw.rect(regions[plan.rotation][0], plan.drawx(), plan.drawy());

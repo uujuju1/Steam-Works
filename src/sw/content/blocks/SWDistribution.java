@@ -1,21 +1,29 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.draw.*;
 import sw.content.*;
+import sw.graphics.*;
 import sw.world.blocks.distribution.*;
+import sw.world.draw.*;
+import sw.world.draw.DrawAxles.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWDistribution {
 	public static Block
 
-		mechanicalConveyor, suspensionConveyor,
+		mechanicalConveyor, suspensionConveyor, belt,
+
 		mechanicalDistributor, mechanicalSorter, mechanicalBridge,
 		mechanicalGate,
 		mechanicalUnloader,
@@ -47,6 +55,67 @@ public class SWDistribution {
 			speed = 0.04f;
 			displayedSpeed = 5f;
 			armored = true;
+		}};
+
+		belt = new BeltConveyor("belt") {{
+			requirements(Category.distribution, with(
+//				SWItems.iron, 1
+			));
+
+			drawer = new DrawMulti(
+				new DrawBitmask(
+					"-frames",
+					b -> {
+						int frames = 4 * Mathf.mod((int) (((BeltConveyorBuild) b).spinGraph().rotation * ((BeltConveyorBuild) b).spinSection().ratio / 360f * movementScale), 4);
+						int tile = 0;
+						if (b.front() instanceof BeltConveyorBuild && b.front().team == b.team && b.rotation == b.front().rotation) tile |= 1;
+						if (b.back() instanceof BeltConveyorBuild && b.back().team == b.team && b.rotation == b.back().rotation) tile |= 2;
+						return tile | frames;
+					},
+					32,
+					Layer.block - 0.2f
+				),
+				new DrawConveyor() {{
+					layer = Layer.block - 0.1f;
+				}},
+				new DrawBitmask(
+					"-cover-bottom",
+					b -> ((BeltConveyorBuild) b).nextBuilds().contains(other -> !(other instanceof BeltConveyorBuild)) ? 0 : 1,
+					32
+				),
+				new DrawCondition(
+					new DrawAxles(
+						new Axle("-cover-axle") {{
+							rotation = -90f;
+
+							width = 8f;
+							height = 3.5f;
+
+							pixelWidth = 32;
+							pixelHeight = 7;
+
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}}
+					),
+					b -> ((BeltConveyorBuild) b).nextBuilds().contains(other -> !(other instanceof BeltConveyorBuild))
+				),
+				new DrawBitmask(
+					"-cover",
+					b -> ((BeltConveyorBuild) b).nextBuilds().contains(other -> !(other instanceof BeltConveyorBuild)) ? 0 : 1,
+					32
+				)
+			);
+
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][]{
+					new int[]{1, 3},
+					new int[]{0, 2},
+					new int[]{3, 1},
+					new int[]{2, 0}
+				};
+			}};
 		}};
 
 		mechanicalDistributor = new Router("mechanical-distributor") {{
