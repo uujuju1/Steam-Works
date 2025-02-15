@@ -241,6 +241,19 @@ public class SWFx {
       Tmp.v1.trns(e.rotation, 40f * e.finpow());
       Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
     }),
+
+    weld = new Effect(20f, e -> {
+      Draw.color(Pal.accent);
+
+      Fill.circle(e.x, e.y, e.foutpowdown() * 2f);
+
+      for(int i : Mathf.signs) Drawf.tri(e.x, e.y, 2f, 4f * e.foutpowdown(), i * 90f + 90f);
+
+      Draw.alpha(1f - Mathf.clamp(Core.camera.position.dst(e.x, e.y)));
+
+      Draw.rect();
+    }),
+
     accelSparks = new Effect(20f, e -> {
       Angles.randLenVectors(e.id, 2, 10 * e.finpow(), e.rotation, 15, (x, y) -> {
         Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4 * e.foutpow());

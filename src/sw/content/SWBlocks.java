@@ -17,6 +17,7 @@ public class SWBlocks {
 		SWPower.load();
 		SWStorage.load();
 		SWTurrets.load();
+		SWUnits.load();
 
 		// region sandbox
 		allSource = new ResourceSource("all-source") {{
