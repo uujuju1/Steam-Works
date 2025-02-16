@@ -249,6 +249,11 @@ public class SWFx {
 
       for(int i : Mathf.signs) Drawf.tri(e.x, e.y, 2f, 4f * e.foutpowdown(), i * 90f + 90f);
 
+	    Lines.stroke(e.fout());
+	    Angles.randLenVectors(e.id, 10, 16f * e.finpow(), (x, y) -> {
+		    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.foutpow());
+	    });
+
       Draw.alpha(1f - Mathf.clamp(Core.camera.position.dst(e.x, e.y)));
 
       Draw.rect();

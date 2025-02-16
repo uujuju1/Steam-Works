@@ -3,7 +3,6 @@ package sw.type;
 import arc.*;
 import arc.audio.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -22,6 +21,9 @@ public class SWUnitType extends UnitType {
 
   //general unit stuff
   public float outlineLayerOffset = 0f;
+
+  public int wrecks = -1;
+  public TextureRegion[] wreckRegions;
 
   public SWUnitType(String name) {
     super(name);
@@ -53,6 +55,13 @@ public class SWUnitType extends UnitType {
   public void load() {
     super.load();
     Seq<UnitRotor> rotorSeq = new Seq<>();
+
+    if (wrecks > 0) {
+      wreckRegions = new TextureRegion[wrecks];
+      for(int i = 0; i < wrecks; i++) {
+        wreckRegions[i] = Core.atlas.find(name + "-wreck-" + (i + 1));
+      }
+    }
 
     rotors.each(rotor -> {
       rotorSeq.add(rotor);

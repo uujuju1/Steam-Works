@@ -193,6 +193,8 @@ public class SWUnitTypes {
 			rotateSpeed = 6f;
 			fallSpeed = 0.005f;
 
+			wrecks = 4;
+
       hitSize = 10;
 			engineSize = 0f;
 			rotorSound = Sounds.cutter;

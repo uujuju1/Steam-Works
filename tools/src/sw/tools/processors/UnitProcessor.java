@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.noise.*;
 import mindustry.*;
 import sw.tools.GeneratedAtlas.*;
 import sw.tools.*;
@@ -184,6 +185,33 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 
 					unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
+				}
+
+				if (unit instanceof SWUnitType type && type.wrecks > 0) {
+					VoronoiNoise noise = new VoronoiNoise(unit.id, true);
+					for(int i = 0; i < type.wrecks; i++) {
+						Pixmap wreck = Tools.atlas.castRegion(unit.fullIcon).pixmap().copy();
+						int finalI = i;
+						wreck.each((x, y) -> {
+							float angle = Mathf.mod(
+								(float) (
+									Angles.angle(x, y, wreck.width/2f, wreck.height/2f) +
+									noise.noise(x, y, type.wrecks/90f) * 360f/type.wrecks +
+									noise.noise(x, y, type.wrecks/45f) * 180f/type.wrecks
+								),
+								360f
+							);
+							if (
+								angle < 360f/type.wrecks * finalI ||
+								angle > 360f/type.wrecks * (finalI + 1)
+							) wreck.set(x, y, Color.clear);
+						});
+						type.wreckRegions[i] = new GeneratedRegion(
+							unit.name + "-wreck-" + (i + 1),
+							wreck,
+							Tools.atlas.castRegion(unit.fullIcon).file.sibling(unit.name.substring("sw-".length()) + "-wreck-" + (i + 1) + ".png")
+						).save(true);
+					}
 				}
 			} catch (Exception e) {
 				Log.err(e);

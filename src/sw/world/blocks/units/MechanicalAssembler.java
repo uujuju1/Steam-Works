@@ -6,6 +6,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -21,10 +22,12 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
 import sw.entities.*;
 import sw.math.*;
+import sw.type.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -94,6 +97,8 @@ public class MechanicalAssembler extends Block {
 				build.pos.clear();
 			} else {
 				build.pos.set(plans.get(index).pos);
+				build.pos.reverse();
+				build.arm.changePos(build.pos.peek());
 			}
 		});
 		configClear((MechanicalAssemblerBuild build) -> {
@@ -126,6 +131,12 @@ public class MechanicalAssembler extends Block {
 		spinConfig.drawPlace(this, x, y, rotation, valid);
 
 		Drawf.dashRect(valid ? Pal.accent : Pal.remove, getRect(Tmp.r1, x * tilesize + offset, y * tilesize + offset, rotation));
+	}
+
+	@Override
+	public void init() {
+		updateClipRadius(areaSize * tilesize);
+		super.init();
 	}
 
 	@Override
@@ -192,8 +203,24 @@ public class MechanicalAssembler extends Block {
             }).left();
 
 						planTable.pane(Styles.smallPane, req -> {
-							for(ItemStack[] requirement : plan.requirements) {
-								req.image(plan.unit.uiIcon).height(40).pad(10).left().scaling(Scaling.fit).growX();
+							for(int i = 0; i < plan.requirements.length; i++) {
+								ItemStack[] requirement = plan.requirements[i];
+
+								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
+									Stack icon = new Stack();
+
+									if (i >= type.wrecks) {
+										icon.add(new Image(type.uiIcon).setScaling(Scaling.fit));
+									} else {
+										for(int j = 0; j < i; j++) {
+											icon.add(new Image(type.wreckRegions[j]).setScaling(Scaling.fit));
+										}
+									}
+
+									req.add(icon).height(40).pad(10).left().growX();
+								} else {
+									req.image(plan.unit.uiIcon).height(40).pad(10).left().scaling(Scaling.fit).growX();
+								}
 
 								for(ItemStack stack : requirement) {
 									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
@@ -261,6 +288,18 @@ public class MechanicalAssembler extends Block {
 		@Override
 		public void draw() {
 			Draw.rect(region, x, y);
+			Draw.z(Layer.blockUnder);
+
+			if (getPlan() != null && getPlan().unit instanceof SWUnitType type && type.wrecks > 0) {
+				for (int i = 0; i < Math.min(type.wrecks, (getPlan().pos.length - 1) - (pos.size - 1)); i++) {
+					Draw.rect(
+						type.wreckRegions[i],
+						x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f),
+						y + Angles.trnsy(rotdeg(), tilesize * (areaSize + size)/2f)
+					);
+				}
+			}
+
 			drawArm();
 
 			if (getPlan() != null) {
@@ -284,8 +323,8 @@ public class MechanicalAssembler extends Block {
 				);
 
 				Draw.reset();
-				Draw.z(Layer.block);
 			}
+			Draw.z(Layer.block);
 		}
 
 		public void drawArm() {
@@ -312,7 +351,6 @@ public class MechanicalAssembler extends Block {
 			Lines.line(armRegion, Tmp.v2.x + Tmp.v4.x, Tmp.v2.y + Tmp.v4.y, Tmp.v3.x, Tmp.v3.y, false);
 
 			Draw.reset();
-			Draw.z(Layer.block);
 		}
 
 		public float getArmTime() {
@@ -423,8 +461,11 @@ public class MechanicalAssembler extends Block {
 					}
 
 					pos.set(getPlan().pos);
+					pos.reverse();
+					arm.changePos(pos.peek());
 				} else {
-					arm.changePos(pos.pop());
+					pos.pop();
+					arm.changePos(pos.peek());
 				}
 				stepEffect.at(
 					rect.x + rect.width/2f,
@@ -438,7 +479,7 @@ public class MechanicalAssembler extends Block {
 			if (
 				getPlan() != null &&
 				(
-					(getPlan().unit.flying || collisions.overlapsTile(rect, EntityCollisions::solid)) ||
+					(!getPlan().unit.flying && collisions.overlapsTile(rect, EntityCollisions::solid)) ||
 					Units.anyEntities(
 						rect.x, rect.y, rect.width, rect.height, unit ->
 						!unit.spawnedByCore &&(

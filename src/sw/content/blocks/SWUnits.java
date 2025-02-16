@@ -22,6 +22,8 @@ public class SWUnits {
 
 			size = 2;
 
+			itemCapacity = 30;
+
 			stepSound = ModSounds.hitMetal;
 			stepSoundPitchMax = 2f;
 			stepSoundPitchMin = 0.5f;
@@ -43,24 +45,26 @@ public class SWUnits {
 			}});
 
 			plans.add(new MechanicalAssembler.UnitPlan() {{
-				unit = UnitTypes.dagger;
+				unit = SWUnitTypes.soar;
 				requirements = new ItemStack[][]{
-					with(Items.silicon, 5),
-					with(Items.lead, 5),
-					with(Items.silicon, 5),
-					with(Items.lead, 5)
+					with(Items.silicon, 10),
+					with(SWItems.verdigris, 5),
+					with(Items.silicon, 10),
+					with(SWItems.verdigris, 10),
+					with(Items.graphite, 15)
 				};
 				pos = new Vec2[]{
-					new Vec2(),
-					new Vec2(),
-					new Vec2(),
+					new Vec2(-4, 8),
+					new Vec2(4, 8),
+					new Vec2(6, 0),
+					new Vec2(-4, -8),
 					new Vec2()
 				};
-				for(Vec2 p : pos) p.setToRandomDirection().scl(8f);
-				stepTime = 3.75f * 60f;
+				stepTime = 4f * 60f;
 			}});
 
 			spinConfig = new SpinConfig() {{
+				resistance = 1f/60f;
 				allowedEdges = new int[][]{
 					new int[]{3, 6},
 					new int[]{0, 5},
