@@ -44,24 +44,44 @@ public class SWUnits {
 				curve = Interp.one;
 			}});
 
-			plans.add(new MechanicalAssembler.UnitPlan() {{
-				unit = SWUnitTypes.soar;
-				requirements = new ItemStack[][]{
-					with(Items.silicon, 10),
-					with(SWItems.verdigris, 5),
-					with(Items.silicon, 10),
-					with(SWItems.verdigris, 10),
-					with(Items.graphite, 15)
-				};
-				pos = new Vec2[]{
-					new Vec2(-4, 8),
-					new Vec2(4, 8),
-					new Vec2(6, 0),
-					new Vec2(-4, -8),
-					new Vec2()
-				};
-				stepTime = 4f * 60f;
-			}});
+			plans.add(
+				new MechanicalAssembler.UnitPlan() {{
+					unit = SWUnitTypes.soar;
+					requirements = new ItemStack[][]{
+						with(Items.silicon, 10),
+						with(SWItems.verdigris, 5),
+						with(Items.silicon, 10),
+						with(SWItems.verdigris, 10),
+						with(Items.graphite, 15)
+					};
+					pos = new Vec2[]{
+						new Vec2(-4, 8),
+						new Vec2(4, 8),
+						new Vec2(6, 0),
+						new Vec2(-4, -8),
+						new Vec2()
+					};
+					stepTime = 4f * 60f;
+				}},
+				new MechanicalAssembler.UnitPlan() {{
+					unit = SWUnitTypes.barrage;
+					requirements = new ItemStack[][]{
+						with(Items.silicon, 10),
+						with(SWItems.verdigris, 5),
+						with(Items.silicon, 5),
+						with(SWItems.verdigris, 10),
+						with(Items.graphite, 10)
+					};
+					pos = new Vec2[]{
+						new Vec2(-4, 8),
+						new Vec2(4, 8),
+						new Vec2(6, 0),
+						new Vec2(-4, -8),
+						new Vec2()
+					};
+					stepTime = 6f * 60f;
+				}}
+			);
 
 			spinConfig = new SpinConfig() {{
 				resistance = 1f/60f;

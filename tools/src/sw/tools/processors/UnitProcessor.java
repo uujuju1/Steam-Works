@@ -14,19 +14,38 @@ public class UnitProcessor implements SpriteProcessor {
 
 	@Override
 	public void process() {
-		Vars.content.units().select(u -> u.minfo != null && u.minfo.mod == Tools.mod).each(unit -> {
+		Vars.content.units().select(u -> u.minfo != null && u.minfo.mod == Tools.mod && u instanceof SWUnitType).map(u -> (SWUnitType) u).each(unit -> {
 			try {
 				unit.init();
 				unit.load();
 				unit.loadIcon();
 
 				if (!unit.outlineRegion.found()) {
+					Pixmap reg = outline(Tools.atlas.castRegion(unit.region).pixmap(), unit.outlineRadius, unit.outlineColor);
+
+					if (unit.treadRegion.found() && unit.treadsCutOutline) {
+						reg.each((x, y) -> {
+							if (Tools.atlas.castRegion(unit.treadRegion).pixmap().in(x, y) && Tools.atlas.castRegion(unit.treadRegion).pixmap().getA(x, y) > 0) {
+								reg.set(x, y, Color.clear);
+							}
+						});
+					}
+
 					unit.outlineRegion = new GeneratedRegion(
 						unit.name + "-outline",
-						outline(Tools.atlas.castRegion(unit.region).pixmap(), unit.outlineRadius, unit.outlineColor),
+						reg,
 						Tools.atlas.castRegion(unit.region).file.sibling(unit.name.substring("sw-".length()) + "-outline.png")
 					).save(true);
 				}
+
+				Seq.with(unit.treadRegion, unit.legRegion, unit.legBaseRegion, unit.jointRegion, unit.baseJointRegion, unit.footRegion).each(region -> {
+					if (region.found()) {
+						Tools.atlas.castRegion(region).pixmap().draw(
+							outline(Tools.atlas.castRegion(region).pixmap(), unit.outlineRadius, unit.outlineColor, true)
+						);
+						Tools.atlas.castRegion(region).save(false);
+					}
+				});
 
 				unit.weapons.each(weapon -> {
 					if (!weapon.outlineRegion.found()) {
@@ -51,9 +70,8 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 				});
 
-				if (unit instanceof SWUnitType type) {
-					type.rotors.each(rotor -> !rotor.flipped, rotor -> {
-						if (!rotor.blurRegion.found()) {
+				unit.rotors.each(rotor -> !rotor.flipped, rotor -> {
+					if (!rotor.blurRegion.found()) {
 							rotor.blurRegion = new GeneratedRegion(
 								(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-blur",
 								radialSprite(outline(Tools.atlas.castRegion(rotor.region).pixmap(), unit.outlineRadius, unit.outlineColor, true), rotor.blades),
@@ -63,7 +81,7 @@ public class UnitProcessor implements SpriteProcessor {
 							).save(true);
 						}
 
-						if (!rotor.shineRegion.found()) {
+					if (!rotor.shineRegion.found()) {
 							rotor.shineRegion = new GeneratedRegion(
 								(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-shine",
 								shine(Tools.atlas.castRegion(rotor.blurRegion), rotor.blades),
@@ -73,54 +91,54 @@ public class UnitProcessor implements SpriteProcessor {
 							).save(true);
 						}
 
-						Pixmap full = new Pixmap(rotor.region.width, rotor.region.height);
-						for (int i = 0; i < rotor.blades; i++) {
+					Pixmap full = new Pixmap(rotor.region.width, rotor.region.height);
+					for (int i = 0; i < rotor.blades; i++) {
 							float deg = 360f / rotor.blades * i;
 							Pixmap copy = Tools.atlas.castRegion(rotor.region).pixmap().copy();
 							full.draw(rotate(copy, deg), 0, 0, true);
 						}
-						Tools.atlas.castRegion(rotor.region).pixmap().draw(outline(full, unit.outlineRadius, unit.outlineColor, true));
-						Tools.atlas.castRegion(rotor.region).save(true);
+					Tools.atlas.castRegion(rotor.region).pixmap().draw(outline(full, unit.outlineRadius, unit.outlineColor, true));
+					Tools.atlas.castRegion(rotor.region).save(true);
 
-						if (rotor.topRegion.found()) {
-							rotor.topRegion = new GeneratedRegion(
-								Tools.atlas.castRegion(rotor.topRegion).name,
-								outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true),
-								Tools.atlas.castRegion(rotor.topRegion).file
-							).save(true);
-						}
-					});
-				}
+					if (rotor.topRegion.found()) {
+						rotor.topRegion = new GeneratedRegion(
+							Tools.atlas.castRegion(rotor.topRegion).name,
+							outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true),
+							Tools.atlas.castRegion(rotor.topRegion).file
+						).save(true);
+					}
+				});
+
 
 				if (unit.fullIcon == unit.region) {
 					Seq<GeneratedRegion> fullRegions = new Seq<>();
 
-					if (unit instanceof SWUnitType type) {
-						type.rotors.each(rotor -> rotor.layerOffset < 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
-							fullRegions.add(new GeneratedRegion(
-								"uwu",
-								grow(
-									Tools.atlas.castRegion(rotor.region).pixmap(),
-									(int) Mathf.maxZero((rotor.x * 4 * 2)),
-									(int) Mathf.maxZero((rotor.x * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * 2))
-								),
-								null
-							));
-							if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
-								"uwu",
-								grow(
-									Tools.atlas.castRegion(rotor.topRegion).pixmap(),
-									(int) Mathf.maxZero((rotor.x * 4 * 2)),
-									(int) Mathf.maxZero((rotor.x * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * 2))
-								),
-								null
-							));
-						});
-					}
+					unit.rotors.each(rotor -> rotor.layerOffset < 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+						fullRegions.add(new GeneratedRegion(
+							"uwu",
+							grow(
+								Tools.atlas.castRegion(rotor.region).pixmap(),
+								(int) Mathf.maxZero((rotor.x * 4 * 2)),
+								(int) Mathf.maxZero((rotor.x * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * 2))
+							),
+							null
+						));
+						if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
+							"uwu",
+							grow(
+								Tools.atlas.castRegion(rotor.topRegion).pixmap(),
+								(int) Mathf.maxZero((rotor.x * 4 * 2)),
+								(int) Mathf.maxZero((rotor.x * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * 2))
+							),
+							null
+						));
+					});
+
+					fullRegions.add(Tools.atlas.castRegion(unit.treadRegion));
 
 					unit.weapons.each(w -> w.layerOffset < 0, w -> {
 						Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
@@ -157,56 +175,55 @@ public class UnitProcessor implements SpriteProcessor {
 						fullRegions.add(new GeneratedRegion("uwu", pix, null));
 					});
 
-					if (unit instanceof SWUnitType type) {
-						type.rotors.each(rotor -> rotor.layerOffset >= 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
-							fullRegions.add(new GeneratedRegion(
-								"uwu",
-								grow(
-									Tools.atlas.castRegion(rotor.region).pixmap(),
-									(int) Mathf.maxZero((rotor.x * 4 * 2)),
-									(int) Mathf.maxZero((rotor.x * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * 2))
-								),
-								null
-							));
-							if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
-								"uwu",
-								grow(
-									Tools.atlas.castRegion(rotor.topRegion).pixmap(),
-									(int) Mathf.maxZero((rotor.x * 4 * 2)),
-									(int) Mathf.maxZero((rotor.x * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * -2)),
-									(int) Mathf.maxZero((rotor.y * 4 * 2))
-								),
-								null
-							));
-						});
-					}
+					unit.rotors.each(rotor -> rotor.layerOffset >= 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+						fullRegions.add(new GeneratedRegion(
+							"uwu",
+							grow(
+								Tools.atlas.castRegion(rotor.region).pixmap(),
+								(int) Mathf.maxZero((rotor.x * 4 * 2)),
+								(int) Mathf.maxZero((rotor.x * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * 2))
+							),
+							null
+						));
+						if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
+							"uwu",
+							grow(
+								Tools.atlas.castRegion(rotor.topRegion).pixmap(),
+								(int) Mathf.maxZero((rotor.x * 4 * 2)),
+								(int) Mathf.maxZero((rotor.x * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * -2)),
+								(int) Mathf.maxZero((rotor.y * 4 * 2))
+							),
+							null
+						));
+					});
+
 
 					unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
 				}
 
-				if (unit instanceof SWUnitType type && type.wrecks > 0) {
+				if (unit.wrecks > 0) {
 					VoronoiNoise noise = new VoronoiNoise(unit.id, true);
-					for(int i = 0; i < type.wrecks; i++) {
+					for(int i = 0; i < unit.wrecks; i++) {
 						Pixmap wreck = Tools.atlas.castRegion(unit.fullIcon).pixmap().copy();
 						int finalI = i;
 						wreck.each((x, y) -> {
 							float angle = Mathf.mod(
 								(float) (
 									Angles.angle(x, y, wreck.width/2f, wreck.height/2f) +
-									noise.noise(x, y, type.wrecks/90f) * 360f/type.wrecks +
-									noise.noise(x, y, type.wrecks/45f) * 180f/type.wrecks
+									noise.noise(x, y, unit.wrecks/90f) * 360f/unit.wrecks +
+									noise.noise(x, y, unit.wrecks/45f) * 180f/unit.wrecks
 								),
 								360f
 							);
 							if (
-								angle < 360f/type.wrecks * finalI ||
-								angle > 360f/type.wrecks * (finalI + 1)
+								angle < 360f/unit.wrecks * finalI ||
+								angle > 360f/unit.wrecks * (finalI + 1)
 							) wreck.set(x, y, Color.clear);
 						});
-						type.wreckRegions[i] = new GeneratedRegion(
+						unit.wreckRegions[i] = new GeneratedRegion(
 							unit.name + "-wreck-" + (i + 1),
 							wreck,
 							Tools.atlas.castRegion(unit.fullIcon).file.sibling(unit.name.substring("sw-".length()) + "-wreck-" + (i + 1) + ".png")

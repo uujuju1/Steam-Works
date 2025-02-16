@@ -20,6 +20,7 @@ public class SWUnitType extends UnitType {
   // endregion
 
   //general unit stuff
+  public boolean treadsCutOutline = true;
   public float outlineLayerOffset = 0f;
 
   public int wrecks = -1;
@@ -27,6 +28,7 @@ public class SWUnitType extends UnitType {
 
   public SWUnitType(String name) {
     super(name);
+    outlines = false;
   }
 
   @Override

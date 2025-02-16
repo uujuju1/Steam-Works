@@ -1,5 +1,6 @@
 package sw.content;
 
+import arc.math.geom.*;
 import ent.anno.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -14,6 +15,10 @@ public class SWUnitTypes {
   @EntityDef({Copterc.class, Unitc.class}) public static UnitType
 		soar,
 	  fly, spin, gyro;
+
+	public static UnitType
+		barrage;
+
 	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
 
   public static void load() {
@@ -245,7 +250,39 @@ public class SWUnitTypes {
 		}};
 		//endregion
 
-    lambda = new UnitType("lambda") {{
+	  //region tanks
+	  barrage = new SWUnitType("barrage") {{
+			constructor = TankUnit::create;
+
+		  omniMovement = false;
+		  health = 250;
+		  speed = 0.75f;
+		  rotateSpeed = 3f;
+
+			wrecks = 4;
+
+			hitSize = 8;
+
+			treadFrames = 8;
+			treadRects = new Rect[]{
+				new Rect(6, -28, 16, 56)
+			};
+
+			weapons.add(new Weapon("sw-barrage-cannon") {{
+				x = y = 0;
+
+				reload = 300f;
+
+				shoot = new ShootPattern() {{
+					firstShotDelay = 60f;
+				}};
+
+				mirror = false;
+			}});
+	  }};
+	  //endregion
+
+    lambda = new SWUnitType("lambda") {{
 			health = 300;
 			speed = 1;
 			hitSize = 8f;

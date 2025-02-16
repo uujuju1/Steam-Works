@@ -330,7 +330,8 @@ public class MechanicalAssembler extends Block {
 		public void drawArm() {
 			Draw.z(Layer.groundUnit + 1);
 
-			Tmp.v1.set(arm.startPos).lerp(arm.targetPos, armCurve.apply(Mathf.clamp(arm.time/getArmTime())));
+			Tmp.v1.set(arm.startPos);
+			if (!arm.startPos.equals(arm.targetPos)) Tmp.v1.lerp(arm.targetPos, armCurve.apply(Mathf.clamp(arm.time/getArmTime())));
 
 			float sx = x + Tmp.v1.x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f);
 			float sy = y + Tmp.v1.y + Angles.trnsy(rotdeg(), tilesize * (areaSize + size)/2f);
