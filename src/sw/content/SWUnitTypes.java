@@ -321,6 +321,8 @@ public class SWUnitTypes {
 						lifetime = 50f;
 						trailLength = 10;
 						trailWidth = 1f;
+
+						buildingDamageMultiplier = 0.01f;
 					}};
 				}}
 			);
