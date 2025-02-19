@@ -11,6 +11,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.*;
 import sw.graphics.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;

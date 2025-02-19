@@ -11,6 +11,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
+import sw.entities.*;
 import sw.graphics.*;
 
 public class DrawAxles extends DrawBlock {
@@ -44,13 +45,16 @@ public class DrawAxles extends DrawBlock {
 			float spin = (rotationOverride != null ? rotationOverride.get(build) : build.totalProgress()) * axle.spinScl;
 			float dx = build.x + Angles.trnsx(build.block.rotate ? build.rotdeg() : 0, axle.x, axle.y);
 			float dy = build.y + Angles.trnsy(build.block.rotate ? build.rotdeg() : 0, axle.x, axle.y);
+
 			Draws.palette(axle.paletteLight, axle.paletteMedium, axle.paletteDark);
 			if (axle.hasSprites) {
-				Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot);
+				Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
 			} else {
-				Draws.polyCylinder(axle.polySides, dx, dy, axle.width, axle.height, spin, rot);
+				Draws.polyCylinder(axle.polySides, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
 			}
 			Draws.palette();
+
+			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, rot);
 		});
 		Draw.reset();
 		Draw.z(z);
@@ -71,38 +75,9 @@ public class DrawAxles extends DrawBlock {
 	@Override
 	public void load(Block block) {
 		axles.each(axle -> {
-			axle.regions = Core.atlas.find(block.name + axle.suffix).split(axle.pixelWidth, axle.pixelHeight)[0];
-			axle.iconRegion = Core.atlas.find(axle.iconOverride == null ? block.name + axle.suffix + "-icon" : axle.iconOverride);
+			if (axle.hasSprites) axle.regions = Core.atlas.find(block.name + axle.suffix).split(axle.pixelWidth, axle.pixelHeight)[0];
+			if (axle.hasIcon) axle.iconRegion = Core.atlas.find(axle.iconOverride == null ? block.name + axle.suffix + "-icon" : axle.iconOverride);
+			if (axle.circular) axle.shadowRegion = Core.atlas.find(block.name + axle.suffix + "-shadow");
 		});
-	}
-
-	public static class Axle {
-		public String suffix;
-		public @Nullable String iconOverride;
-
-		public float x, y, rotation;
-
-		public float width = 8f, height = 8f;
-
-		public float spinScl = 1;
-
-		public int pixelWidth = 32;
-		public int pixelHeight = 32;
-
-		public int polySides = 1;
-
-		public boolean hasSprites = true;
-		public boolean hasIcon = true;
-
-		public TextureRegion[] regions;
-		public TextureRegion iconRegion;
-
-		public Color paletteLight = Color.clear;
-		public Color paletteMedium = Color.clear;
-		public Color paletteDark = Color.clear;
-
-		public Axle(String suffix) {
-			this.suffix = suffix;
-		}
 	}
 }

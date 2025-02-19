@@ -13,6 +13,7 @@ import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
+import sw.entities.*;
 import sw.graphics.*;
 import sw.math.*;
 import sw.world.blocks.production.*;

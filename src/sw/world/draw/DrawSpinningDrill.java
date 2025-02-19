@@ -7,6 +7,7 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
+import sw.entities.*;
 import sw.util.*;
 import sw.world.blocks.production.RangedDrill.*;
 import sw.world.draw.DrawAxles.*;

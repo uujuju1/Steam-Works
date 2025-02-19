@@ -7,6 +7,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.*;
 import sw.graphics.*;
 import sw.math.*;
 import sw.world.blocks.power.*;
@@ -77,6 +78,7 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
 				new DrawAxles(
 					new Axle("-shaft") {{
 						iconOverride = "sw-wire-shaft-router-shaft-icon-horizontal";
@@ -123,10 +125,31 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
 				new DrawAxles(
 					new Axle("-shaft") {{
-						iconOverride = "sw-shaft-gearbox-shaft-icon-top";
+						circular = true;
 
+						pixelWidth = 32;
+						pixelHeight = 7;
+
+						y = 4f;
+
+						width = 8f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft") {{
+						circular = true;
+
+						pixelWidth = 32;
+						pixelHeight = 7;
+
+						y = -4f;
+
+						width = 8f;
+						height = 3.5f;
+					}},
+					new Axle("-shaft-out") {{
 						pixelWidth = 64;
 						pixelHeight = 7;
 
@@ -134,10 +157,12 @@ public class SWPower {
 
 						width = 16f;
 						height = 3.5f;
-					}},
-					new Axle("-shaft") {{
-						iconOverride = "sw-shaft-gearbox-shaft-icon-bottom";
 
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-shaft-out") {{
 						pixelWidth = 64;
 						pixelHeight = 7;
 
@@ -145,8 +170,16 @@ public class SWPower {
 
 						width = 16f;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}},
 					new Axle("-shaft-middle") {{
+						iconOverride = "sw-shaft-gearbox-shaft-icon";
+
+						circular = true;
+
 						pixelHeight = 9;
 						pixelWidth = 16;
 

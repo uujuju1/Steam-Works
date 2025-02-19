@@ -11,6 +11,7 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.*;
 import sw.graphics.*;
 import sw.world.blocks.distribution.*;
 import sw.world.draw.*;
