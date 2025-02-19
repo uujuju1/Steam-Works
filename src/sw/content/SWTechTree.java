@@ -47,6 +47,7 @@ public class SWTechTree {
         node(mechanicalSorter);
       });
       node(suspensionConveyor);
+      node(belt, with(new NonUnlockable()), () -> {});
       node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
         node(mechanicalConduitJunction);
         node(mechanicalConduitRouter);
@@ -60,7 +61,7 @@ public class SWTechTree {
     root.add(node(evaporator, () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
-          node(shaftGearbox, Seq.with(new NonUnlockable()), () -> {});
+          node(shaftGearbox, () -> {});
         });
         node(shaftTransmission, Seq.with(new NonUnlockable()), () -> {});
       });
