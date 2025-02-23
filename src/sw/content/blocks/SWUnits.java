@@ -3,12 +3,17 @@ package sw.content.blocks;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.draw.*;
 import sw.audio.*;
 import sw.content.*;
+import sw.entities.*;
+import sw.graphics.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
+import sw.world.draw.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -33,10 +38,36 @@ public class SWUnits {
 			progressEffect = SWFx.weld;
 			progressEffectChance = 0.25f;
 
-			armExtension = 8f;
-			armLength = 28f;
-			armBaseLength = 12f;
-			armCurve = Interp.smooth;
+			armStartingOffset = 2f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(new Axle("-axle") {{
+					x = -4;
+					y = 0;
+
+					pixelWidth = 64;
+					pixelHeight = 7;
+
+					width = 16f;
+					height = 3.5f;
+
+					rotation = -90f;
+
+					paletteLight = SWPal.axleLight;
+					paletteMedium = SWPal.axleMedium;
+					paletteDark = SWPal.axleDark;
+				}}),
+				new DrawBitmask("-tiles", u -> 0, 64),
+				new DrawArm() {{
+					layer = Layer.groundUnit + 1;
+
+					armExtension = 8f;
+					armOffset = (4f + 2f) * 8f/2f;
+					armLength = 28f;
+					armCurve = Interp.smooth;
+				}}
+			);
 
 			consume(new ConsumeRotation() {{
 				startSpeed = 0.5f;

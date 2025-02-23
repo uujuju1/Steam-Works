@@ -14,7 +14,7 @@ public class Arm {
 	}
 
 	public Arm reset(float rotation, float armLength) {
-		startPos.trns(rotation, armLength/2f - 0.001f);
+		startPos.trns(rotation, armLength/2f);
 		targetPos.trns(rotation, armLength/2f);
 		return this;
 	}

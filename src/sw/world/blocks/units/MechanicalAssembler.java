@@ -14,6 +14,7 @@ import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -22,11 +23,10 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.*;
+import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.entities.*;
-import sw.math.*;
 import sw.type.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -41,14 +41,11 @@ public class MechanicalAssembler extends Block {
 
 	public SpinConfig spinConfig = new SpinConfig();
 
-
 	public Seq<UnitPlan> plans = new Seq<>();
 
 	public int areaSize = 4;
 
-
 	public float warmupSpeed = 0.014f;
-
 
 	public Sound stepSound = Sounds.none;
 	public float stepSoundVolume = 1f;
@@ -58,22 +55,22 @@ public class MechanicalAssembler extends Block {
 	public Sound progressSound = Sounds.none;
 	public float progressSoundVolume = 1;
 
-
 	public Effect stepEffect = Fx.none;
 
 	public Effect progressEffect = Fx.none;
 	public float progressEffectChance = 0.1f;
 
+	public float armStartingOffset = 0;
+
+	public DrawBlock drawer = new DrawDefault();
 
 	public float armSpeed = 1;
-	public float armHeight = 0.5f;
-	public float armExtension = 0;
-	public float armLength = 10f, armBaseLength = 10f;
-	public Interp armCurve = Interp.linear;
-
-
-	public TextureRegion armRegion, armBaseRegion;
-
+//	public float armHeight = 0.5f;
+//	public float armExtension = 0;
+//	public float armLength = 10f, armBaseLength = 10f;
+//	public Interp armCurve = Interp.linear;
+//
+//	public TextureRegion armRegion, armBaseRegion;
 
 	public MechanicalAssembler(String name) {
 		super(name);
@@ -105,7 +102,7 @@ public class MechanicalAssembler extends Block {
 			build.currentPlan = -1;
 			build.warmup = build.progress = 0f;
 			build.pos.clear();
-			build.arm.changePos(Tmp.v1.trns(build.rotdeg(), (-tilesize * (areaSize + size) + (armLength + armExtension))/2f));
+			build.arm.changePos(Tmp.v1.trns(build.rotdeg(), (-tilesize * (areaSize + size) + (armStartingOffset))/2f));
 		});
 	}
 
@@ -133,6 +130,18 @@ public class MechanicalAssembler extends Block {
 		Drawf.dashRect(valid ? Pal.accent : Pal.remove, getRect(Tmp.r1, x * tilesize + offset, y * tilesize + offset, rotation));
 	}
 
+	@Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
+	}
+
+	@Override public void getRegionsToOutline(Seq<TextureRegion> out) {
+		drawer.getRegionsToOutline(this, out);
+	}
+
+	@Override protected TextureRegion[] icons() {
+		return drawer.finalIcons(this);
+	}
+
 	@Override
 	public void init() {
 		updateClipRadius(areaSize * tilesize);
@@ -142,8 +151,7 @@ public class MechanicalAssembler extends Block {
 	@Override
 	public void load() {
 		super.load();
-		armRegion = Core.atlas.find(name + "-arm", "sw-mechanical-arm");
-		armBaseRegion = Core.atlas.find(name + "-arm-base", "sw-mechanical-arm-base");
+		drawer.load(this);
 	}
 
 	@Override
@@ -245,10 +253,10 @@ public class MechanicalAssembler extends Block {
 		public Vec2[] pos;
 	}
 
-	public class MechanicalAssemblerBuild extends Building implements HasSpin {
+	public class MechanicalAssemblerBuild extends Building implements HasSpin, HasArm {
 		public SpinModule spin = new SpinModule();
 
-		public Arm arm = new Arm().reset(rotdeg(), (-tilesize * (areaSize + size) + (armLength + armExtension))/2f);
+		public Arm arm = new Arm().reset(rotdeg(), armStartingOffset);
 
 		public int currentPlan = -1;
 
@@ -262,12 +270,16 @@ public class MechanicalAssembler extends Block {
 		public float progress;
 
 		@Override
-		public boolean acceptItem(Building source, Item item){
+		public boolean acceptItem(Building source, Item item) {
 			return
 				getPlan() != null && items.get(item) < getMaximumAccepted(item) &&
 				Structs.contains(getPlan().requirements, req ->
 					Structs.contains(req, stack -> stack.item == item)
 				);
+		}
+
+		@Override public Arm arm() {
+			return arm;
 		}
 
 		@Override
@@ -287,7 +299,7 @@ public class MechanicalAssembler extends Block {
 
 		@Override
 		public void draw() {
-			Draw.rect(region, x, y);
+			drawer.draw(this);
 			Draw.z(Layer.blockUnder);
 
 			if (getPlan() != null && getPlan().unit instanceof SWUnitType type && type.wrecks > 0) {
@@ -300,7 +312,7 @@ public class MechanicalAssembler extends Block {
 				}
 			}
 
-			drawArm();
+//			drawArm();
 
 			if (getPlan() != null) {
 				Draw.z(Layer.buildBeam);
@@ -326,34 +338,39 @@ public class MechanicalAssembler extends Block {
 			}
 			Draw.z(Layer.block);
 		}
-
-		public void drawArm() {
-			Draw.z(Layer.groundUnit + 1);
-
-			Tmp.v1.set(arm.startPos);
-			if (!arm.startPos.equals(arm.targetPos)) Tmp.v1.lerp(arm.targetPos, armCurve.apply(Mathf.clamp(arm.time/getArmTime())));
-
-			float sx = x + Tmp.v1.x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f);
-			float sy = y + Tmp.v1.y + Angles.trnsy(rotdeg(), tilesize * (areaSize + size)/2f);
-			float tx = x, ty = y;
-
-			Tmp.v3.set(sx, sy);
-			Tmp.v1.set(tx, ty).sub(Tmp.v3);
-
-			InverseKinematics.solve(armLength, armBaseLength, Tmp.v1, true, Tmp.v2);
-
-			Tmp.v2.add(Tmp.v3);
-			Tmp.v1.add(Tmp.v3);
-			Tmp.v4.set(Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight)).sub(Tmp.v3).setLength(armExtension);
-
-			Lines.stroke(armBaseRegion.height/4f);
-			Lines.line(armBaseRegion, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
-			Lines.stroke(armRegion.height/4f);
-			Lines.line(armRegion, Tmp.v2.x + Tmp.v4.x, Tmp.v2.y + Tmp.v4.y, Tmp.v3.x, Tmp.v3.y, false);
-
-			Draw.reset();
+		@Override
+		public void drawLight() {
+			drawer.drawLight(this);
 		}
 
+//		public void drawArm() {
+//			Draw.z(Layer.groundUnit + 1);
+//
+//			Tmp.v1.set(arm.startPos);
+//			if (!arm.startPos.equals(arm.targetPos)) Tmp.v1.lerp(arm.targetPos, armCurve.apply(Mathf.clamp(arm.time/getArmTime())));
+//
+//			float sx = x + Tmp.v1.x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f);
+//			float sy = y + Tmp.v1.y + Angles.trnsy(rotdeg(), tilesize * (areaSize + size)/2f);
+//			float tx = x, ty = y;
+//
+//			Tmp.v3.set(sx, sy);
+//			Tmp.v1.set(tx, ty).sub(Tmp.v3);
+//
+//			InverseKinematics.solve(armLength, armBaseLength, Tmp.v1, true, Tmp.v2);
+//
+//			Tmp.v2.add(Tmp.v3);
+//			Tmp.v1.add(Tmp.v3);
+//			Tmp.v4.set(Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight)).sub(Tmp.v3).setLength(armExtension);
+//
+//			Lines.stroke(armBaseRegion.height/4f);
+//			Lines.line(armBaseRegion, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
+//			Lines.stroke(armRegion.height/4f);
+//			Lines.line(armRegion, Tmp.v2.x + Tmp.v4.x, Tmp.v2.y + Tmp.v4.y, Tmp.v3.x, Tmp.v3.y, false);
+//
+//			Draw.reset();
+//		}
+
+		@Override
 		public float getArmTime() {
 			return arm.startPos.dst(arm.targetPos) / armSpeed;
 		}
