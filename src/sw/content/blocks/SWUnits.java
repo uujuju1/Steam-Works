@@ -19,7 +19,7 @@ import sw.world.meta.*;
 import static mindustry.type.ItemStack.*;
 
 public class SWUnits {
-	public static Block mechanicalAssembler;
+	public static Block mechanicalAssembler, assemblerArm;
 
 	public static void load() {
 		mechanicalAssembler = new MechanicalAssembler("mechanical-assembler") {{
@@ -117,6 +117,71 @@ public class SWUnits {
 
 			spinConfig = new SpinConfig() {{
 				resistance = 1f/60f;
+				allowedEdges = new int[][]{
+					new int[]{3, 6},
+					new int[]{0, 5},
+					new int[]{2, 7},
+					new int[]{1, 4}
+				};
+			}};
+		}};
+
+		assemblerArm = new AssemblerArm("assembler-arm") {{
+			requirements(Category.units, with());
+
+			size = 2;
+
+			itemCapacity = 30;
+
+			stepSound = ModSounds.hitMetal;
+			stepSoundPitchMax = 2f;
+			stepSoundPitchMin = 0.5f;
+			stepSoundVolume = 0.25f;
+
+			progressSound = ModSounds.welding;
+			progressEffect = SWFx.weld;
+			progressEffectChance = 0.25f;
+
+			armSpeed = 0.5f;
+			armStartingOffset = 2f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(new Axle("-axle") {{
+					x = -4;
+					y = 0;
+
+					pixelWidth = 64;
+					pixelHeight = 7;
+
+					width = 16f;
+					height = 3.5f;
+
+					rotation = -90f;
+
+					paletteLight = SWPal.axleLight;
+					paletteMedium = SWPal.axleMedium;
+					paletteDark = SWPal.axleDark;
+				}}),
+				new DrawBitmask("-tiles", u -> 0, 64),
+				new DrawArm() {{
+					layer = Layer.groundUnit + 1;
+
+					armExtension = 8f;
+					armOffset = (4f + 2f) * 8f/2f;
+					armLength = 28f;
+					armCurve = new Interp.SwingOut(1);
+				}}
+			);
+
+			consume(new ConsumeRotation() {{
+				startSpeed = 0.5f;
+				endSpeed = 1f;
+				curve = Interp.one;
+			}});
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f/600f;
 				allowedEdges = new int[][]{
 					new int[]{3, 6},
 					new int[]{0, 5},

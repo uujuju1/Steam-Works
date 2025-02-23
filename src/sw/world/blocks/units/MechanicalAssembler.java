@@ -37,7 +37,7 @@ import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
 public class MechanicalAssembler extends Block {
-	private final Rect tmp = new Rect();
+	private static final Rect tmp = new Rect();
 
 	public SpinConfig spinConfig = new SpinConfig();
 
@@ -60,11 +60,10 @@ public class MechanicalAssembler extends Block {
 	public Effect progressEffect = Fx.none;
 	public float progressEffectChance = 0.1f;
 
+	public float armSpeed = 1;
 	public float armStartingOffset = 0;
 
 	public DrawBlock drawer = new DrawDefault();
-
-	public float armSpeed = 1;
 
 	public MechanicalAssembler(String name) {
 		super(name);
@@ -79,38 +78,49 @@ public class MechanicalAssembler extends Block {
 
 		consume(new ConsumeItemDynamic((MechanicalAssemblerBuild build) -> {
 			if (build.getPlan() == null) return empty;
-			return build.getPlan().requirements[(build.getPlan().pos.length - 1) - (build.pos.size - 1)];
+			for (int i = 0; i < build.getPlan().pos.length; i++) {
+				if (build.getPlan().pos[i].equals(build.arm.targetPos)) return build.getPlan().requirements[i];
+			}
+			return empty;
 		}));
 
 		config(Integer.class, (MechanicalAssemblerBuild build, Integer index) -> {
 			build.currentPlan = index;
 			build.warmup = build.progress = 0f;
+			build.progressCounter = 0;
 			if (index == -1) {
 				build.pos.clear();
+				build.arm.reset(build.rotdeg(), armStartingOffset);
+
+				build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
+					if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
+				});
+
 			} else {
 				build.pos.set(plans.get(index).pos);
 				build.pos.reverse();
-				build.arm.changePos(build.pos.peek());
+				build.arm.changePos(build.pos.pop());
+
+				build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
+					if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.changePos(build.pos.pop());
+				});
 			}
 		});
 		configClear((MechanicalAssemblerBuild build) -> {
 			build.currentPlan = -1;
 			build.warmup = build.progress = 0f;
+			build.progressCounter = 0;
 			build.pos.clear();
-			build.arm.changePos(Tmp.v1.trns(build.rotdeg(), (-tilesize * (areaSize + size) + (armStartingOffset))/2f));
+			build.arm.reset(build.rotdeg(), armStartingOffset);
+
+			build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
+				if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
+			});
 		});
 	}
 
-	public Rect getRect(Rect rect, float x, float y, int rotation) {
-		float len = tilesize * (areaSize + size)/2f;
-
-		rect.setCentered(x + Geometry.d4x(rotation) * len, y + Geometry.d4y(rotation) * len, areaSize * tilesize);
-
-		return rect;
-	}
-
 	@Override
-	public boolean canPlaceOn(Tile tile, Team team, int rotation){
+	public boolean canPlaceOn(Tile tile, Team team, int rotation) {
 		Rect rect = getRect(Tmp.r1, tile.worldx() + offset, tile.worldy() + offset, rotation);
 		return !team.data().buildings.contains(
 			b -> b.block instanceof MechanicalAssembler a && a.getRect(Tmp.r2, b.x, b.y, b.rotation).overlaps(rect)
@@ -127,6 +137,14 @@ public class MechanicalAssembler extends Block {
 
 	@Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
 		drawer.drawPlan(this, plan, list);
+	}
+
+	public Rect getRect(Rect rect, float x, float y, int rotation) {
+		float len = tilesize * (areaSize + size)/2f;
+
+		rect.setCentered(x + Geometry.d4x(rotation) * len, y + Geometry.d4y(rotation) * len, areaSize * tilesize);
+
+		return rect;
 	}
 
 	@Override public void getRegionsToOutline(Seq<TextureRegion> out) {
@@ -158,7 +176,7 @@ public class MechanicalAssembler extends Block {
 			new Bar(
 				"bar.progress",
 				Pal.ammo,
-				() -> e.getPlan() == null ? 0 : ((e.getPlan().pos.length - 1) - (e.pos.size - 1)) / (e.getPlan().pos.length - 1f)
+				() -> e.getPlan() == null ? 0 : e.progressCounter/(e.getPlan().pos.length - 1f)
 			)
 		);
 
@@ -256,6 +274,7 @@ public class MechanicalAssembler extends Block {
 		public int currentPlan = -1;
 
 		public Seq<Vec2> pos = new Seq<>();
+		public int progressCounter = 0;
 
 		public @Nullable Vec2 commandPos;
 
@@ -298,7 +317,7 @@ public class MechanicalAssembler extends Block {
 			Draw.z(Layer.blockUnder);
 
 			if (getPlan() != null && getPlan().unit instanceof SWUnitType type && type.wrecks > 0) {
-				for (int i = 0; i < Math.min(type.wrecks, (getPlan().pos.length - 1) - (pos.size - 1)); i++) {
+				for (int i = 0; i < Math.min(type.wrecks, progressCounter); i++) {
 					Draw.rect(
 						type.wreckRegions[i],
 						x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f),
@@ -306,8 +325,6 @@ public class MechanicalAssembler extends Block {
 					);
 				}
 			}
-
-//			drawArm();
 
 			if (getPlan() != null) {
 				Draw.z(Layer.buildBeam);
@@ -387,6 +404,7 @@ public class MechanicalAssembler extends Block {
 			for(int i = 0; i < size; i++) {
 				pos.add(TypeIO.readVec2(read));
 			}
+			progressCounter = read.i();
 
 			arm.startPos = TypeIO.readVec2(read);
 			arm.targetPos = TypeIO.readVec2(read);
@@ -396,8 +414,8 @@ public class MechanicalAssembler extends Block {
 		@Override
 		public boolean shouldConsume() {
 			return
-				getPlan() != null &&
-				super.shouldConsume() &&
+				getPlan() != null && super.shouldConsume() &&
+				!(pos.isEmpty() && progressCounter != getPlan().pos.length - 1) &&
 				!invalid && team.data().countType(getPlan().unit) < Units.getCap(team);
 		}
 
@@ -434,7 +452,7 @@ public class MechanicalAssembler extends Block {
 			}
 
 			if (getPlan() != null && progress >= 1f) {
-				if (pos.size == 1) {
+				if (progressCounter == getPlan().pos.length - 1) {
 					if (!Vars.net.client()) {
 						Unit u = getPlan().unit.create(team);
 						u.set(
@@ -448,10 +466,11 @@ public class MechanicalAssembler extends Block {
 
 					pos.set(getPlan().pos);
 					pos.reverse();
-					arm.changePos(pos.peek());
+					arm.changePos(pos.pop());
+					progressCounter = 0;
 				} else {
-					pos.pop();
-					arm.changePos(pos.peek());
+					arm.changePos(pos.pop());
+					progressCounter++;
 				}
 				stepEffect.at(
 					rect.x + rect.width/2f,
@@ -466,6 +485,7 @@ public class MechanicalAssembler extends Block {
 				getPlan() != null &&
 				(
 					(!getPlan().unit.flying && collisions.overlapsTile(rect, EntityCollisions::solid)) ||
+					(getPlan().unit.naval && collisions.overlapsTile(rect, EntityCollisions::waterSolid)) ||
 					Units.anyEntities(
 						rect.x, rect.y, rect.width, rect.height, unit ->
 						!unit.spawnedByCore &&(
@@ -501,6 +521,7 @@ public class MechanicalAssembler extends Block {
 			for(Vec2 vec : pos) {
 				TypeIO.writeVec2(write, vec);
 			}
+			write.i(progressCounter);
 
 			TypeIO.writeVec2(write, arm.startPos);
 			TypeIO.writeVec2(write, arm.targetPos);

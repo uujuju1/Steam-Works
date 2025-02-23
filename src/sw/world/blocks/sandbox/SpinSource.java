@@ -34,6 +34,11 @@ public class SpinSource extends AxleBlock {
 		public float targetSpeed, force;
 
 		@Override
+		public SpinSourceEntry config() {
+			return new SpinSourceEntry(targetSpeed, force);
+		}
+
+		@Override
 		public void buildConfiguration(Table table) {
 			table.table(Styles.black6, cont -> {
 				cont.add(SWStat.spinOutput.localized()).padRight(5f);
