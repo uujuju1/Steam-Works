@@ -41,7 +41,7 @@ public class MechanicalAssembler extends Block {
 
 	public SpinConfig spinConfig = new SpinConfig();
 
-	public Seq<UnitPlan> plans = new Seq<>();
+	public Seq<MechanicalAssemblerPlan> plans = new Seq<>();
 
 	public int areaSize = 4;
 
@@ -65,12 +65,6 @@ public class MechanicalAssembler extends Block {
 	public DrawBlock drawer = new DrawDefault();
 
 	public float armSpeed = 1;
-//	public float armHeight = 0.5f;
-//	public float armExtension = 0;
-//	public float armLength = 10f, armBaseLength = 10f;
-//	public Interp armCurve = Interp.linear;
-//
-//	public TextureRegion armRegion, armBaseRegion;
 
 	public MechanicalAssembler(String name) {
 		super(name);
@@ -81,6 +75,7 @@ public class MechanicalAssembler extends Block {
 		rotate = true;
 		configurable = true;
 		commandable = true;
+		saveConfig = true;
 
 		consume(new ConsumeItemDynamic((MechanicalAssemblerBuild build) -> {
 			if (build.getPlan() == null) return empty;
@@ -246,7 +241,7 @@ public class MechanicalAssembler extends Block {
 		});
 	}
 
-	public static class UnitPlan {
+	public static class MechanicalAssemblerPlan {
 		public UnitType unit;
 		public ItemStack[][] requirements;
 		public float stepTime = 60f;
@@ -343,33 +338,6 @@ public class MechanicalAssembler extends Block {
 			drawer.drawLight(this);
 		}
 
-//		public void drawArm() {
-//			Draw.z(Layer.groundUnit + 1);
-//
-//			Tmp.v1.set(arm.startPos);
-//			if (!arm.startPos.equals(arm.targetPos)) Tmp.v1.lerp(arm.targetPos, armCurve.apply(Mathf.clamp(arm.time/getArmTime())));
-//
-//			float sx = x + Tmp.v1.x + Angles.trnsx(rotdeg(), tilesize * (areaSize + size)/2f);
-//			float sy = y + Tmp.v1.y + Angles.trnsy(rotdeg(), tilesize * (areaSize + size)/2f);
-//			float tx = x, ty = y;
-//
-//			Tmp.v3.set(sx, sy);
-//			Tmp.v1.set(tx, ty).sub(Tmp.v3);
-//
-//			InverseKinematics.solve(armLength, armBaseLength, Tmp.v1, true, Tmp.v2);
-//
-//			Tmp.v2.add(Tmp.v3);
-//			Tmp.v1.add(Tmp.v3);
-//			Tmp.v4.set(Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight)).sub(Tmp.v3).setLength(armExtension);
-//
-//			Lines.stroke(armBaseRegion.height/4f);
-//			Lines.line(armBaseRegion, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
-//			Lines.stroke(armRegion.height/4f);
-//			Lines.line(armRegion, Tmp.v2.x + Tmp.v4.x, Tmp.v2.y + Tmp.v4.y, Tmp.v3.x, Tmp.v3.y, false);
-//
-//			Draw.reset();
-//		}
-
 		@Override
 		public float getArmTime() {
 			return arm.startPos.dst(arm.targetPos) / armSpeed;
@@ -380,7 +348,7 @@ public class MechanicalAssembler extends Block {
 			return commandPos;
 		}
 
-		public @Nullable UnitPlan getPlan() {
+		public @Nullable MechanicalAssemblerPlan getPlan() {
 			return currentPlan == -1 ? null : plans.get(currentPlan);
 		}
 

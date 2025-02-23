@@ -1,15 +1,14 @@
 package sw.world.blocks.power;
 
 import arc.graphics.g2d.*;
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -24,6 +23,7 @@ public class AxleBlock extends Block {
 		super(name);
 		update = true;
 		rotate = true;
+		group = BlockGroup.power;
 	}
 
 	@Override
@@ -70,12 +70,8 @@ public class AxleBlock extends Block {
 		spinConfig.addStats(stats);
 	}
 
-	public class WireShaftBuild extends Building implements HasSpin {
+	public class AxleBlockBuild extends Building implements HasSpin {
 		public SpinModule spin = new SpinModule();
-
-//		@Override public boolean connectTo(HasSpin other) {
-//			return HasSpin.super.connectTo(other) && (!rotate || other == front() || other == back() || !proximity.contains((Building) other));
-//		}
 
 		@Override public void draw() {
 			drawer.draw(this);

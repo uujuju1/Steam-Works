@@ -2,7 +2,6 @@ package sw.world.draw;
 
 import arc.*;
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -61,7 +60,7 @@ public class DrawAxles extends DrawBlock {
 	}
 	@Override
 	public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
-		axles.each(axle -> Draw.rect(axle.iconRegion, plan.drawx(), plan.drawy(), plan.rotation * 90));
+		axles.each(axle -> axle.hasIcon, axle -> Draw.rect(axle.iconRegion, plan.drawx(), plan.drawy(), plan.rotation * 90));
 	}
 
 	@Override

@@ -38,6 +38,7 @@ public class SWUnits {
 			progressEffect = SWFx.weld;
 			progressEffectChance = 0.25f;
 
+			armSpeed = 0.5f;
 			armStartingOffset = 2f;
 
 			drawer = new DrawMulti(
@@ -65,7 +66,7 @@ public class SWUnits {
 					armExtension = 8f;
 					armOffset = (4f + 2f) * 8f/2f;
 					armLength = 28f;
-					armCurve = Interp.smooth;
+					armCurve = new Interp.SwingOut(1);
 				}}
 			);
 
@@ -76,7 +77,7 @@ public class SWUnits {
 			}});
 
 			plans.add(
-				new MechanicalAssembler.UnitPlan() {{
+				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.soar;
 					requirements = new ItemStack[][]{
 						with(Items.silicon, 10),
@@ -94,7 +95,7 @@ public class SWUnits {
 					};
 					stepTime = 4f * 60f;
 				}},
-				new MechanicalAssembler.UnitPlan() {{
+				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.barrage;
 					requirements = new ItemStack[][]{
 						with(Items.silicon, 10),
