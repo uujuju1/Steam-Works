@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.scene.ui.layout.Stack;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -32,6 +33,8 @@ import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
+
+import java.util.*;
 
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
@@ -65,6 +68,8 @@ public class MechanicalAssembler extends Block {
 
 	public DrawBlock drawer = new DrawDefault();
 
+	public static Seq<ObjectMap.Entry<ItemStack[], Vec2>> tmpEntries = new Seq<>();
+
 	public MechanicalAssembler(String name) {
 		super(name);
 		solid = true;
@@ -77,10 +82,7 @@ public class MechanicalAssembler extends Block {
 		saveConfig = true;
 
 		consume(new ConsumeItemDynamic((MechanicalAssemblerBuild build) -> {
-			if (build.getPlan() == null) return empty;
-			for (int i = 0; i < build.getPlan().pos.length; i++) {
-				if (build.getPlan().pos[i].equals(build.arm.targetPos)) return build.getPlan().requirements[i];
-			}
+			if (build.currentStep != null) return build.currentStep.key;
 			return empty;
 		}));
 
@@ -88,34 +90,50 @@ public class MechanicalAssembler extends Block {
 			build.currentPlan = index;
 			build.warmup = build.progress = 0f;
 			build.progressCounter = 0;
-			if (index == -1) {
-				build.pos.clear();
-				build.arm.reset(build.rotdeg(), armStartingOffset);
+			build.requiredSteps.clear();
 
-				build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
-					if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
-				});
+			if (index != -1) {
+				build.getPlan().steps.each((req, pos) -> build.requiredSteps.add(new ObjectMap.Entry<>() {{
+					key = req;
+					value = pos;
+				}}));
 
+				build.pick();
+				if (build.currentStep != null) build.arm.changePos(build.currentStep.value);
+
+				build.team.data().buildings.each(
+					b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build,
+					b -> {
+					  ((AssemblerArm.AssemblerArmBuild) b).pick();
+					  if (((AssemblerArm.AssemblerArmBuild) b).currentStep != null) ((AssemblerArm.AssemblerArmBuild) b).arm.changePos(((AssemblerArm.AssemblerArmBuild) b).currentStep.value);
+					}
+				);
 			} else {
-				build.pos.set(plans.get(index).pos);
-				build.pos.reverse();
-				build.arm.changePos(build.pos.pop());
-
-				build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
-					if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.changePos(build.pos.pop());
-				});
+				build.arm.reset(build.rotdeg(), armStartingOffset);
+				build.team.data().buildings.each(
+					b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build,
+					b -> {
+						((AssemblerArm.AssemblerArmBuild) b).currentStep = null;
+						((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
+					}
+				);
 			}
 		});
 		configClear((MechanicalAssemblerBuild build) -> {
 			build.currentPlan = -1;
 			build.warmup = build.progress = 0f;
 			build.progressCounter = 0;
-			build.pos.clear();
+			build.requiredSteps.clear();
+			build.currentStep = null;
 			build.arm.reset(build.rotdeg(), armStartingOffset);
 
-			build.team.data().buildings.each(b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build, b -> {
-				if (build.pos.size > 1) ((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
-			});
+			build.team.data().buildings.each(
+				b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == build,
+				b -> {
+					((AssemblerArm.AssemblerArmBuild) b).currentStep = null;
+					((AssemblerArm.AssemblerArmBuild) b).arm.reset(b.rotdeg(), ((AssemblerArm) b.block).armStartingOffset);
+				}
+			);
 		});
 	}
 
@@ -176,7 +194,7 @@ public class MechanicalAssembler extends Block {
 			new Bar(
 				"bar.progress",
 				Pal.ammo,
-				() -> e.getPlan() == null ? 0 : e.progressCounter/(e.getPlan().pos.length - 1f)
+				() -> e.getPlan() == null ? 0 : e.progressCounter/(e.getPlan().steps.size - 1f)
 			)
 		);
 
@@ -212,28 +230,52 @@ public class MechanicalAssembler extends Block {
 						return;
 					}
 
-					if(plan.unit.unlockedNow()){
+					if(plan.unit.unlockedNow()) {
 						planTable.image(plan.unit.uiIcon).size(40).pad(10).left().scaling(Scaling.fit);
 
 						planTable.table(info -> {
 							info.add(plan.unit.localizedName).left();
 							info.row();
 							info.add(
-								Strings.autoFixed(plan.stepTime * plan.pos.length / 60, 1) + " " + Core.bundle.get("unit.seconds")
+								Strings.autoFixed(plan.stepTime * plan.steps.size / 60, 1) + " " + Core.bundle.get("unit.seconds")
 							).color(Color.lightGray);
             }).left();
 
 						planTable.pane(Styles.smallPane, req -> {
-							for(int i = 0; i < plan.requirements.length; i++) {
-								ItemStack[] requirement = plan.requirements[i];
+//							for(int i = 0; i < plan.requirements.length; i++) {
+//								ItemStack[] requirement = plan.requirements[i];
+//
+//								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
+//									Stack icon = new Stack();
+//
+//									if (i >= type.wrecks) {
+//										icon.add(new Image(type.uiIcon).setScaling(Scaling.fit));
+//									} else {
+//										for(int j = 0; j < i; j++) {
+//											icon.add(new Image(type.wreckRegions[j]).setScaling(Scaling.fit));
+//										}
+//									}
+//
+//									req.add(icon).height(40).pad(10).left().growX();
+//								} else {
+//									req.image(plan.unit.uiIcon).height(40).pad(10).left().scaling(Scaling.fit).growX();
+//								}
+//
+//								for(ItemStack stack : requirement) {
+//									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
+//								}
+//
+//								req.row();
+//              }
+							plan.steps.each((requirement, pos) -> {
 
 								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
 									Stack icon = new Stack();
 
-									if (i >= type.wrecks) {
+									if (plan.steps.keys().toSeq().indexOf(requirement) >= type.wrecks) {
 										icon.add(new Image(type.uiIcon).setScaling(Scaling.fit));
 									} else {
-										for(int j = 0; j < i; j++) {
+										for(int j = 0; j < plan.steps.keys().toSeq().indexOf(requirement); j++) {
 											icon.add(new Image(type.wreckRegions[j]).setScaling(Scaling.fit));
 										}
 									}
@@ -248,9 +290,9 @@ public class MechanicalAssembler extends Block {
 								}
 
 								req.row();
-              }
+              });
             }).growX().right().pad(10).height(60);
-					}else{
+					} else {
 						planTable.image(Icon.lock).color(Pal.darkerGray).size(40);
 					}
 				}).growX().pad(5);
@@ -264,6 +306,8 @@ public class MechanicalAssembler extends Block {
 		public ItemStack[][] requirements;
 		public float stepTime = 60f;
 		public Vec2[] pos;
+
+		public ObjectMap<ItemStack[], Vec2> steps = new ObjectMap<>();
 	}
 
 	public class MechanicalAssemblerBuild extends Building implements HasSpin, HasArm {
@@ -273,8 +317,10 @@ public class MechanicalAssembler extends Block {
 
 		public int currentPlan = -1;
 
-		public Seq<Vec2> pos = new Seq<>();
 		public int progressCounter = 0;
+
+		public Seq<ObjectMap.Entry<ItemStack[], Vec2>> requiredSteps = new Seq<>();
+		public ObjectMap.Entry<ItemStack[], Vec2> currentStep;
 
 		public @Nullable Vec2 commandPos;
 
@@ -306,8 +352,7 @@ public class MechanicalAssembler extends Block {
 			);
 		}
 
-		@Override
-		public Integer config() {
+		@Override public Integer config() {
 			return currentPlan;
 		}
 
@@ -350,18 +395,15 @@ public class MechanicalAssembler extends Block {
 			}
 			Draw.z(Layer.block);
 		}
-		@Override
-		public void drawLight() {
+		@Override public void drawLight() {
 			drawer.drawLight(this);
 		}
 
-		@Override
-		public float getArmTime() {
+		@Override public float getArmTime() {
 			return arm.startPos.dst(arm.targetPos) / armSpeed;
 		}
 
-		@Override
-		public Vec2 getCommandPosition(){
+		@Override public Vec2 getCommandPosition() {
 			return commandPos;
 		}
 
@@ -369,8 +411,7 @@ public class MechanicalAssembler extends Block {
 			return currentPlan == -1 ? null : plans.get(currentPlan);
 		}
 
-		@Override
-		public void onCommand(Vec2 target){
+		@Override public void onCommand(Vec2 target) {
 			commandPos = target;
 		}
 
@@ -387,6 +428,14 @@ public class MechanicalAssembler extends Block {
 			spinGraph().remove(this, true);
 		}
 
+		public void pick() {
+			if (getPlan() != null) {
+				currentStep = requiredSteps.pop();
+			} else {
+				currentStep = null;
+			}
+		}
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
@@ -400,11 +449,24 @@ public class MechanicalAssembler extends Block {
 
 			commandPos = TypeIO.readVecNullable(read);
 
-			byte size = read.b();
-			for(int i = 0; i < size; i++) {
-				pos.add(TypeIO.readVec2(read));
-			}
 			progressCounter = read.i();
+
+			if (getPlan() != null) {
+				tmpEntries.clear();
+				getPlan().steps.each((req, pos) -> tmpEntries.add(new ObjectMap.Entry<>() {{
+					key = req;
+					value = pos;
+				}}));
+
+				byte size = read.b();
+				for (int i = 0; i < size; i++) {
+					int index = read.i();
+					if (index != -1) requiredSteps.add(tmpEntries.get(index));
+				}
+
+				int index = read.i();
+				if (index != -1) currentStep = tmpEntries.get(index);
+			}
 
 			arm.startPos = TypeIO.readVec2(read);
 			arm.targetPos = TypeIO.readVec2(read);
@@ -415,7 +477,7 @@ public class MechanicalAssembler extends Block {
 		public boolean shouldConsume() {
 			return
 				getPlan() != null && super.shouldConsume() &&
-				!(pos.isEmpty() && progressCounter != getPlan().pos.length - 1) &&
+				(!requiredSteps.isEmpty() || progressCounter == getPlan().steps.size - 1) &&
 				!invalid && team.data().countType(getPlan().unit) < Units.getCap(team);
 		}
 
@@ -426,8 +488,7 @@ public class MechanicalAssembler extends Block {
 			return spinConfig;
 		}
 
-		@Override
-		public float totalProgress() {
+		@Override public float totalProgress() {
 			return spinGraph().rotation * spinSection().ratio;
 		}
 
@@ -452,7 +513,7 @@ public class MechanicalAssembler extends Block {
 			}
 
 			if (getPlan() != null && progress >= 1f) {
-				if (progressCounter == getPlan().pos.length - 1) {
+				if (progressCounter == getPlan().steps.size - 1) {
 					if (!Vars.net.client()) {
 						Unit u = getPlan().unit.create(team);
 						u.set(
@@ -463,15 +524,26 @@ public class MechanicalAssembler extends Block {
 						if (u.isCommandable()) u.command().commandPosition(commandPos);
 						u.add();
 					}
-
-					pos.set(getPlan().pos);
-					pos.reverse();
-					arm.changePos(pos.pop());
 					progressCounter = 0;
+
+					getPlan().steps.each((req, pos) -> requiredSteps.add(new ObjectMap.Entry<>() {{
+						key = req;
+						value = pos;
+					}}));
+
+					team.data().buildings.each(
+						b -> b instanceof AssemblerArm.AssemblerArmBuild other && other.link == this,
+						b -> {
+							((AssemblerArm.AssemblerArmBuild) b).pick();
+							if (((AssemblerArm.AssemblerArmBuild) b).currentStep != null) ((AssemblerArm.AssemblerArmBuild) b).arm.changePos(((AssemblerArm.AssemblerArmBuild) b).currentStep.value);
+						}
+					);
 				} else {
-					arm.changePos(pos.pop());
 					progressCounter++;
 				}
+				pick();
+				if (currentStep != null) arm.changePos(currentStep.value);
+
 				stepEffect.at(
 					rect.x + rect.width/2f,
 					rect.y + rect.height/2f
@@ -517,11 +589,22 @@ public class MechanicalAssembler extends Block {
 
 			TypeIO.writeVecNullable(write, commandPos);
 
-			write.b(pos.size);
-			for(Vec2 vec : pos) {
-				TypeIO.writeVec2(write, vec);
-			}
 			write.i(progressCounter);
+
+			if (getPlan() != null) {
+				tmpEntries.clear();
+				getPlan().steps.each((req, pos) -> tmpEntries.add(new ObjectMap.Entry<>() {{
+					key = req;
+					value = pos;
+				}}));
+
+				write.b(requiredSteps.size);
+				for (ObjectMap.Entry<ItemStack[], Vec2> entry : requiredSteps) {
+					write.i(tmpEntries.indexOf(val -> Arrays.equals(entry.key, val.key) && val.value.equals(entry.value)));
+				}
+
+				write.i(tmpEntries.indexOf(val -> Arrays.equals(currentStep.key, val.key) && val.value.equals(currentStep.value)));
+			}
 
 			TypeIO.writeVec2(write, arm.startPos);
 			TypeIO.writeVec2(write, arm.targetPos);

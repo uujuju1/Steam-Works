@@ -79,40 +79,75 @@ public class SWUnits {
 			plans.add(
 				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.soar;
-					requirements = new ItemStack[][]{
-						with(Items.silicon, 10),
-						with(SWItems.verdigris, 5),
-						with(Items.silicon, 10),
-						with(SWItems.verdigris, 10),
-						with(Items.graphite, 15)
-					};
-					pos = new Vec2[]{
-						new Vec2(-4, 8),
-						new Vec2(4, 8),
-						new Vec2(6, 0),
-						new Vec2(-4, -8),
-						new Vec2()
-					};
+//					requirements = new ItemStack[][]{
+//						with(Items.silicon, 10),
+//						with(SWItems.verdigris, 5),
+//						with(Items.silicon, 10),
+//						with(SWItems.verdigris, 10),
+//						with(Items.graphite, 15)
+//					};
+//					pos = new Vec2[]{
+//						new Vec2(-4, 8),
+//						new Vec2(4, 8),
+//						new Vec2(6, 0),
+//						new Vec2(-4, -8),
+//						new Vec2()
+//					};
 					stepTime = 4f * 60f;
+					steps.putAll(
+						with(Items.silicon, 10), new Vec2(-4, 8),
+						with(SWItems.verdigris, 5), new Vec2(4, 8),
+						with(Items.silicon, 10), new Vec2(6, 0),
+						with(SWItems.verdigris, 10), new Vec2(-4, -8),
+						with(Items.graphite, 15), new Vec2()
+					);
 				}},
 				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.barrage;
-					requirements = new ItemStack[][]{
-						with(Items.silicon, 10),
-						with(SWItems.verdigris, 5),
-						with(Items.silicon, 5),
-						with(SWItems.verdigris, 10),
-						with(Items.graphite, 10)
-					};
-					pos = new Vec2[]{
-						new Vec2(-4, 8),
-						new Vec2(4, 8),
-						new Vec2(6, 0),
-						new Vec2(-4, -8),
-						new Vec2()
-					};
+//					requirements = new ItemStack[][]{
+//						with(Items.silicon, 10),
+//						with(SWItems.verdigris, 5),
+//						with(Items.silicon, 5),
+//						with(SWItems.verdigris, 10),
+//						with(Items.graphite, 10)
+//					};
+//					pos = new Vec2[]{
+//						new Vec2(-4, 8),
+//						new Vec2(4, 8),
+//						new Vec2(6, 0),
+//						new Vec2(-4, -8),
+//						new Vec2()
+//					};
 					stepTime = 6f * 60f;
+					steps.putAll(
+						with(Items.silicon, 10), new Vec2(-4, 8),
+						with(SWItems.verdigris, 5), new Vec2(4, 8),
+						with(Items.silicon, 5), new Vec2(6, 0),
+						with(SWItems.verdigris, 10), new Vec2(-4, -8),
+						with(Items.graphite, 10), new Vec2()
+					);
 				}}
+//				new MechanicalAssemblerPlan() {{
+//					unit = UnitTypes.flare;
+//					stepTime = 60f;
+//					steps.putAll(
+//						with(Items.silicon, 10), new Vec2(-4, 8),
+//						with(SWItems.verdigris, 5), new Vec2(4, 8),
+//						with(Items.silicon, 5), new Vec2(6, 0),
+//						with(SWItems.verdigris, 10), new Vec2(-4, -8),
+//						with(Items.graphite, 10), new Vec2(),
+//						with(Items.silicon, 10), new Vec2(-4, 8),
+//						with(SWItems.verdigris, 5), new Vec2(4, 8),
+//						with(Items.silicon, 5), new Vec2(6, 0),
+//						with(SWItems.verdigris, 10), new Vec2(-4, -8),
+//						with(Items.graphite, 10), new Vec2(),
+//						with(Items.silicon, 10), new Vec2(-4, 8),
+//						with(SWItems.verdigris, 5), new Vec2(4, 8),
+//						with(Items.silicon, 5), new Vec2(6, 0),
+//						with(SWItems.verdigris, 10), new Vec2(-4, -8),
+//						with(Items.graphite, 10), new Vec2()
+//					);
+//				}}
 			);
 
 			spinConfig = new SpinConfig() {{

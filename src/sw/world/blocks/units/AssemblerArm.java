@@ -28,6 +28,7 @@ import sw.world.modules.*;
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
+// TODO saving fix
 public class AssemblerArm extends Block {
 	private static final Rect tmp = new Rect();
 
@@ -136,7 +137,9 @@ public class AssemblerArm extends Block {
 
 		public Arm arm = new Arm().reset(rotdeg(), armStartingOffset);
 
-		MechanicalAssembler.MechanicalAssemblerBuild link;
+		public MechanicalAssembler.MechanicalAssemblerBuild link;
+
+		public ObjectMap.Entry<ItemStack[], Vec2> currentStep;
 
 		public float warmup, progress;
 
@@ -166,10 +169,10 @@ public class AssemblerArm extends Block {
 		}
 
 		public ItemStack[] getRecipe() {
-			if (link == null || link.getPlan() == null) return empty;
-			for (int i = 0; i < link.getPlan().pos.length; i++) {
-				if (link.getPlan().pos[i].equals(arm.targetPos)) return link.getPlan().requirements[i];
-			}
+//			f (link == null || link.getPlan() == null) return empty;
+//			for (int i = 0; i < link.getPlan().pos.length; i++) {
+//				if (link.getPlan().pos[i].equals(arm.targetPos)) return link.getPlan().requirements[i];
+//			}i
 			return empty;
 		}
 
@@ -185,7 +188,18 @@ public class AssemblerArm extends Block {
 
 			spinGraph().remove(this, true);
 
-			if (link != null && getRecipe() != empty) link.pos.add(arm.targetPos);
+			if (link != null && currentStep != null) link.requiredSteps.add(currentStep);
+		}
+
+		public void pick() {
+			if (
+				link != null && link.getPlan() != null &&
+				link.requiredSteps.size > 1
+			) {
+				currentStep = link.requiredSteps.pop();
+			} else {
+				currentStep = null;
+			}
 		}
 
 		@Override
@@ -207,7 +221,7 @@ public class AssemblerArm extends Block {
 
 			return
 				super.shouldConsume() &&
-					(link.pos.size >= 1 || getRecipe() != empty) &&
+				currentStep != null &&
 				!link.invalid && team.data().countType(link.getPlan().unit) < Units.getCap(team);
 		}
 
@@ -227,12 +241,10 @@ public class AssemblerArm extends Block {
 		public void updateTile() {
 			Rect rect = getRect(tmp, x, y, rotation);
 
-			if (link == null || link.invalid || link.dead) {
+			if (link == null || !link.isValid()) {
 				link = getLink(tile, team, rotation);
 
-				if (link != null && link.getPlan() != null) {
-					if (link.pos.size > 1) arm.changePos(link.pos.pop());
-				}
+				if (link != null && currentStep != null) pick();
 				return;
 			}
 
@@ -253,12 +265,12 @@ public class AssemblerArm extends Block {
 			}
 
 			if (link.getPlan() != null && progress >= 1f) {
-				if (link.pos.size > 1) {
-					arm.changePos(link.pos.pop());
-					link.progressCounter++;
-				} else {
-					arm.changePos(Tmp.v1.trns(rotdeg(), armStartingOffset));
-				}
+				link.progressCounter++;
+				currentStep = null;
+				pick();
+
+				if (currentStep != null) arm.changePos(currentStep.value);
+
 				stepEffect.at(
 					rect.x + rect.width/2f,
 					rect.y + rect.height/2f
