@@ -139,16 +139,44 @@ public class SWFx {
       });
     }),
 
-    cokeBurn = new Effect(120f, e -> {
+    cokeBurn = new Effect(60f, e -> {
       rand.setSeed(e.id);
 
       Draw.blend(Blending.additive);
-      Parallax.getParallaxFrom(temp.set(e.x + rand.range(1), e.y + rand.range(10.5f)), Core.camera.position, rand.random(1f, 5f) * e.finpow());
-
-      Draw.color(Pal.accentBack, Pal.darkerGray, rand.random(1f));
+      Parallax.getParallaxFrom(
+        temp.set(e.x + rand.range(1f), e.y + rand.range(4f)),
+        Core.camera.position,
+        rand.random(1f, 5f) * e.finpow()
+      );
+      Draw.color(Pal.turretHeat, Pal.accent, rand.random(1f));
       Draw.alpha(e.foutpowdown());
       Fill.circle(temp.x, temp.y, rand.random(1f, 2f));
       Draw.blend();
+    }),
+    cokeCraft = new Effect(120, e -> {
+      rand.setSeed(e.id);
+
+      for(int j = 0; j < 5; j++) {
+        float fin = 2f * (e.fin() - j/30f);
+        if (fin < 0f || fin > 1f) continue;
+
+        float finpow = Interp.exp10Out.apply(fin);
+        float foutpow = Interp.exp10In.apply(1f - fin);
+        float foutpowdown = Interp.pow2Out.apply(1f - fin);
+
+        for(int i : Mathf.signs) {
+          Draw.blend(Blending.additive);
+          Parallax.getParallaxFrom(
+            temp.set(e.x + rand.range(1f), e.y + rand.range(4f)),
+            Core.camera.position,
+            rand.random(1f, 2f) * finpow
+          ).add(i * 8f * foutpow, 0f);
+          Draw.color(Pal.turretHeat, Pal.accent, rand.random(1f));
+          Draw.alpha(foutpowdown);
+          Fill.circle(temp.x, temp.y, rand.random(1f, 2f));
+          Draw.blend();
+        }
+      }
     }),
 
     combust = new Effect(60f, e -> {

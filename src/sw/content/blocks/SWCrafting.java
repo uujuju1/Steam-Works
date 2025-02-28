@@ -19,7 +19,6 @@ import sw.math.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
-import sw.world.draw.DrawAxles.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
@@ -234,43 +233,39 @@ public class SWCrafting {
 
 			ambientSound = Sounds.smelter;
 			updateEffectStatic = SWFx.cokeBurn;
-			updateEffectChance = 0.2f;
+			updateEffectChance = 0.1f;
+			craftEffect = SWFx.cokeCraft;
 
 			consumeItems(with(Items.graphite, 2));
 			consumeLiquid(Liquids.water, 0.1f);
 			outputItems = with(SWItems.coke, 1);
 
 			drawer = new DrawMulti(
-				new DrawAxles(
-					new Axle("-barrel") {{
-						pixelWidth = 8;
-						pixelHeight = 14;
+				new DrawRegion("-bottom"),
+				new DrawParticles() {{
+					particles = 15;
 
-						x = 8;
-						y = 0;
+					color = Pal.turretHeat;
 
-						width = 2;
-						height = 21f;
+					blending = Blending.additive;
 
-						paletteLight = Color.valueOf("ffffff55");
-						paletteMedium = Color.valueOf("00000000");
-						paletteDark = Color.valueOf("00000099");
-					}},
-					new Axle("-barrel") {{
-						pixelWidth = 8;
-						pixelHeight = 14;
+					particleInterp = Interp.linear;
 
-						x = -8;
-						y = 0;
+					particleRad = 5f;
+					particleSize = 3f;
+				}},
+				new DrawParticles() {{
+					particles = 15;
 
-						width = 2;
-						height = 21f;
+					color = Pal.turretHeat;
 
-						paletteLight = Color.valueOf("ffffff55");
-						paletteMedium = Color.valueOf("00000000");
-						paletteDark = Color.valueOf("00000099");
-					}}
-				),
+					blending = Blending.additive;
+
+					particleInterp = Interp.one;
+
+					particleRad = 8f;
+					particleSize = 3f;
+				}},
 				new DrawBitmask("-tiles", b -> {
 					Point2[] edges = Edges.getEdges(3);
 					int offset = Mathf.floor((size - 1f)/2f);
@@ -309,7 +304,7 @@ public class SWCrafting {
 					return out;
 				}, 96),
 				new DrawGlowRegion() {{
-					color = Pal.accentBack;
+					color = Pal.turretHeat;
 
 					glowScale = 5f;
 					glowIntensity = 0.1f;
