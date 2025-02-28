@@ -29,12 +29,12 @@ public class SWDefense {
 			health = 90 * 4 * 4;
 		}};
 		ironWall = new Wall("iron-wall") {{
-			requirements(Category.defense, BuildVisibility.hidden, with(SWItems.iron, 6));
+			requirements(Category.defense, with(SWItems.iron, 6));
 			health = 100 * 4;
 			absorbLasers = true;
 		}};
 		ironWallLarge = new Wall("iron-wall-large") {{
-			requirements(Category.defense, BuildVisibility.hidden, mult(ironWall.requirements, 4));
+			requirements(Category.defense, mult(ironWall.requirements, 4));
 			size = 2;
 			health = 100 * 4 * 4;
 			absorbLasers = true;

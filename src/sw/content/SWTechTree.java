@@ -13,11 +13,13 @@ import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
 import static sw.content.blocks.SWCrafting.*;
+import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
 import static sw.content.blocks.SWPower.*;
 import static sw.content.blocks.SWProduction.*;
 import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
+import static sw.content.blocks.SWUnits.*;
 
 public class SWTechTree {
   public static void load() {
@@ -33,7 +35,9 @@ public class SWTechTree {
     root.peek().icon = Icon.crafting;
     // endregion
     // region defense
-    root.add(node(imber, with(new Produce(coke)), () -> {}));
+    root.add(node(imber, with(new Produce(coke)), () -> {
+      node(ironWall, () -> node(ironWallLarge));
+    }));
     root.peek().name = "sw-defense";
     root.peek().icon = Icon.turret;
     // endregion
@@ -103,6 +107,13 @@ public class SWTechTree {
     root.peek().name = "sw-sectors";
     root.peek().icon = Icon.terrain;
     // endregion
+    //region units
+    root.add(node(mechanicalAssembler, with(new NonUnlockable()), () -> {
+      node(assemblerArm, with(new NonUnlockable()), () -> {});
+    }));
+    root.peek().name = "sw-units";
+    root.peek().icon = Icon.units;
+    //endregion
   }
 
   public static class NonUnlockable implements Objectives.Objective {

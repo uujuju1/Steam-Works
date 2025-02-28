@@ -2,7 +2,6 @@ package sw;
 
 import arc.*;
 import arc.assets.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -13,13 +12,10 @@ import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
 import sw.ui.*;
-import sw.world.*;
 
 import java.util.*;
 
 public class SWVars implements Loadable {
-	public static Seq<FluidArea> fluidAreas = new Seq<>();
-
 	public static EnvProcess envProcess;
 
 	public static boolean showSectorLaunchDialog = true;
