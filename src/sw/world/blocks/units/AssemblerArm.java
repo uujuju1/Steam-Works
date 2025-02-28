@@ -28,7 +28,6 @@ import sw.world.modules.*;
 import static mindustry.Vars.*;
 import static mindustry.type.ItemStack.*;
 
-// TODO saving fix
 public class AssemblerArm extends Block {
 	private static final Rect tmp = new Rect();
 
@@ -146,10 +145,9 @@ public class AssemblerArm extends Block {
 		@Override
 		public boolean acceptItem(Building source, Item item) {
 			return
-				link != null && link.getPlan() != null && items.get(item) < getMaximumAccepted(item) &&
-				Structs.contains(link.getPlan().requirements, req ->
-					Structs.contains(req, stack -> stack.item == item)
-				);
+				link != null && link.getPlan() != null && currentStep != null &&
+				Structs.contains(currentStep.key, stack -> stack.item == item) &&
+				items.get(item) < Structs.find(currentStep.key, stack -> stack.item == item).amount * 2;
 		}
 
 		@Override public Arm arm() {
@@ -210,6 +208,20 @@ public class AssemblerArm extends Block {
 			warmup = read.f();
 			progress = read.f();
 
+			boolean hasStep = read.bool();
+			if (hasStep) {
+				int len = read.i();
+				ItemStack[] stack = new ItemStack[len];
+				for(int i = 0; i < len; i++) {
+					stack[i] =  TypeIO.readItems(read);
+				}
+
+				currentStep = new ObjectMap.Entry<>() {{
+					key = stack;
+					value = TypeIO.readVec2(read);
+				}};
+			}
+
 			arm.startPos = TypeIO.readVec2(read);
 			arm.targetPos = TypeIO.readVec2(read);
 			arm.time = read.f();
@@ -244,7 +256,7 @@ public class AssemblerArm extends Block {
 			if (link == null || !link.isValid()) {
 				link = getLink(tile, team, rotation);
 
-				if (link != null && currentStep != null) pick();
+				if (link != null && currentStep == null) pick();
 				return;
 			}
 
@@ -288,6 +300,16 @@ public class AssemblerArm extends Block {
 
 			write.f(warmup);
 			write.f(progress);
+
+			write.bool(currentStep != null);
+			if (currentStep != null) {
+				write.i(currentStep.key.length);
+				for(ItemStack stack : currentStep.key) {
+					TypeIO.writeItems(write, stack);
+				}
+
+				TypeIO.writeVec2(write, currentStep.value);
+			}
 
 			TypeIO.writeVec2(write, arm.startPos);
 			TypeIO.writeVec2(write, arm.targetPos);

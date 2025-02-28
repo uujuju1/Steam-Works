@@ -27,8 +27,6 @@ public class SWUnits {
 
 			size = 2;
 
-			itemCapacity = 30;
-
 			stepSound = ModSounds.hitMetal;
 			stepSoundPitchMax = 2f;
 			stepSoundPitchMin = 0.5f;
@@ -165,8 +163,6 @@ public class SWUnits {
 			requirements(Category.units, with());
 
 			size = 2;
-
-			itemCapacity = 30;
 
 			stepSound = ModSounds.hitMetal;
 			stepSoundPitchMax = 2f;

@@ -332,10 +332,9 @@ public class MechanicalAssembler extends Block {
 		@Override
 		public boolean acceptItem(Building source, Item item) {
 			return
-				getPlan() != null && items.get(item) < getMaximumAccepted(item) &&
-				Structs.contains(getPlan().requirements, req ->
-					Structs.contains(req, stack -> stack.item == item)
-				);
+				getPlan() != null && currentStep != null &&
+				Structs.contains(currentStep.key, stack -> stack.item == item) &&
+				items.get(item) < Structs.find(currentStep.key, stack -> stack.item == item).amount * 2;
 		}
 
 		@Override public Arm arm() {

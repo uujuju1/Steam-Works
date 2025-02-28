@@ -3,6 +3,7 @@ package sw.world.blocks.sandbox;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.io.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
@@ -60,6 +61,22 @@ public class SpinSource extends AxleBlock {
 		}
 		@Override public float getTargetSpeed() {
 			return targetSpeed/10f;
+		}
+
+		@Override
+		public void write(Writes write) {
+			super.write(write);
+
+			write.f(targetSpeed);
+			write.f(force);
+		}
+
+		@Override
+		public void read(Reads read, byte revision) {
+			super.read(read, revision);
+
+			targetSpeed = read.f();
+			force = read.f();
 		}
 	}
 
