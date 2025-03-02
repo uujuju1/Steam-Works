@@ -1,6 +1,7 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
@@ -253,7 +254,12 @@ public class SWCrafting {
 
 					particleRad = 5f;
 					particleSize = 3f;
-				}},
+				}
+					@Override
+					public TextureRegion[] icons(Block block) {
+						return new TextureRegion[]{};
+					}
+				},
 				new DrawParticles() {{
 					particles = 15;
 
@@ -265,7 +271,12 @@ public class SWCrafting {
 
 					particleRad = 8f;
 					particleSize = 3f;
-				}},
+				}
+					@Override
+					public TextureRegion[] icons(Block block) {
+						return new TextureRegion[]{};
+					}
+				},
 				new DrawBitmask("-tiles", b -> {
 					Point2[] edges = Edges.getEdges(3);
 					int offset = Mathf.floor((size - 1f)/2f);
@@ -308,7 +319,12 @@ public class SWCrafting {
 
 					glowScale = 5f;
 					glowIntensity = 0.1f;
-				}}
+				}
+					@Override
+					public TextureRegion[] icons(Block block) {
+						return new TextureRegion[]{};
+					}
+				}
 			);
 		}};
 		engineSmelter = new SWGenericCrafter("engine-smelter") {{
