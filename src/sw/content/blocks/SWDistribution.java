@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
@@ -14,8 +13,8 @@ import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
 import sw.world.blocks.distribution.*;
+import sw.world.blocks.liquid.*;
 import sw.world.draw.*;
-import sw.world.draw.DrawAxles.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -197,25 +196,25 @@ public class SWDistribution {
 		//endregion
 
 		//region liquids
+		mechanicalConduit = new LiquidPipe("mechanical-conduit") {{
+			requirements(Category.liquid, with(
+				SWItems.iron, 2
+			));
+			padding = 1.25f;
+		}};
 		mechanicalConduitRouter = new LiquidRouter("mechanical-conduit-router") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 2,
-				Items.silicon, 2
+				Items.graphite, 2
 			));
 		}};
 		mechanicalConduitJunction = new LiquidJunction("mechanical-conduit-junction") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 3,
-				Items.silicon, 3
+				Items.graphite, 3
 			));
-		}};
-		mechanicalConduit = new Conduit("mechanical-conduit") {{
-			requirements(Category.liquid, with(
-				SWItems.iron, 2
-			));
-			leaks = false;
-			junctionReplacement = mechanicalConduitJunction;
-			botColor = Color.white;
+
+			((LiquidPipe) mechanicalConduit).junctionReplacement = this;
 		}};
 		//endregion
 	}
