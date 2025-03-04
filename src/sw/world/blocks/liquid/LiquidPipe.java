@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.meta.*;
+import sw.world.blocks.liquid.LiquidPipeBridge.*;
 
 public class LiquidPipe extends Block {
 	public final int timerFlow = timers++;
@@ -85,11 +86,26 @@ public class LiquidPipe extends Block {
 		public boolean acceptLiquid(Building source, Liquid liquid){
 			noSleep();
 			return (liquids.current() == liquid || liquids.currentAmount() < 0.2f)
-				       && (tile == null || source == this || (source.relativeTo(tile.x, tile.y) + 2) % 4 != rotation);
+			&& (tile == null || source == this || (source.relativeTo(tile.x, tile.y) + 2) % 4 != rotation);
 		}
 
 		@Override
 		public void draw() {
+			tiling = 0;
+
+			for(int i = 0; i < 4; i++) {
+				if (
+					nearby(i) != null &&
+					(nearby(i) != front() ? nearby(i).block.outputsLiquid : nearby(i).block.hasLiquids) &&
+					nearby(i).team == team &&
+					(!(nearby(i) instanceof LiquidPipeBuild) || (nearby(i).front() == this ^ front() == nearby(i))) &&
+					(!(nearby(i) instanceof LiquidPipeBridgeBuild b) || (
+						(b.next != null && b.back() == this) ||
+						(b.next == null && b.front() == this)
+					) && (b.prev == null || b.next == null))
+				) tiling |= 1 << i;
+			}
+
 			Draw.z(Layer.blockUnder);
 			Draw.rect(bottomRegion, x, y);
 
@@ -103,17 +119,6 @@ public class LiquidPipe extends Block {
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-
-			tiling = 0;
-
-			for(int i = 0; i < 4; i++) {
-				if (
-					nearby(i) != null &&
-					(nearby(i) != front() ? nearby(i).block.outputsLiquid : nearby(i).block.hasLiquids) &&
-					nearby(i).team == team &&
-					(!(nearby(i) instanceof LiquidPipeBuild) || (nearby(i).front() == this ^ front() == nearby(i)))
-				) tiling |= 1 << i;
-			}
 		}
 
 		@Override

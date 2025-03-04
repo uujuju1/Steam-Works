@@ -53,10 +53,10 @@ public class SWTechTree {
       node(suspensionConveyor);
       node(belt, with(new NonUnlockable()), () -> {});
       node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
-        node(mechanicalConduitJunction);
+        node(mechanicalConduitJunction, () -> node(mechanicalConduitBridge));
         node(mechanicalConduitRouter);
       });
-      node(compactContainer, with(new NonUnlockable()), () -> {});
+      node(compactContainer);
     }));
     root.peek().name = "sw-distribution";
     root.peek().icon = Icon.distribution;

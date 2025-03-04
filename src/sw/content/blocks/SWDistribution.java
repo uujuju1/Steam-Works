@@ -32,7 +32,7 @@ public class SWDistribution {
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
 
 
-		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction;
+		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge;
 
 	public static void load() {
 		// region items
@@ -215,6 +215,14 @@ public class SWDistribution {
 			));
 
 			((LiquidPipe) mechanicalConduit).junctionReplacement = this;
+		}};
+		mechanicalConduitBridge = new LiquidPipeBridge("mechanical-conduit-bridge") {{
+			requirements(Category.liquid, with(
+				SWItems.iron, 10,
+				Items.graphite, 10
+			));
+
+			range = 3;
 		}};
 		//endregion
 	}
