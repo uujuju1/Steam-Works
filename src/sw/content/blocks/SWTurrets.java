@@ -358,7 +358,7 @@ public class SWTurrets {
 			);
 		}};
 
-		curve = new SWConsumeTurret("curve") {{
+		curve = new ConsumeTurret("curve") {{
 			requirements(Category.turret, BuildVisibility.hidden, with());
 			size = 3;
 			scaledHealth = 220f;
@@ -425,7 +425,7 @@ public class SWTurrets {
 
 			spinConfig.hasSpin = false;
 		}};
-		sonar = new SWConsumeTurret("sonar") {{
+		sonar = new ConsumeTurret("sonar") {{
 			requirements(Category.turret, BuildVisibility.hidden, with());
 			size = 2;
 			scaledHealth = 220;
@@ -459,7 +459,7 @@ public class SWTurrets {
 			spinConfig.hasSpin = false;
 		}};
 
-		push = new SWConsumeTurret("push") {{
+		push = new ConsumeTurret("push") {{
 			requirements(Category.turret, BuildVisibility.hidden, with());
 			size = 3;
 			scaledHealth = 220f;
@@ -498,7 +498,7 @@ public class SWTurrets {
 
 			spinConfig.hasSpin = false;
 		}};
-		thermikos = new SWConsumeTurret("thermikos") {{
+		thermikos = new ConsumeTurret("thermikos") {{
 			requirements(Category.turret, BuildVisibility.hidden, with());
 			size = 3;
 			scaledHealth = 220f;
@@ -542,7 +542,7 @@ public class SWTurrets {
 
 			spinConfig.hasSpin = false;
 		}};
-		swing = new SWConsumeTurret("swing") {{
+		swing = new ConsumeTurret("swing") {{
 			requirements(Category.turret, BuildVisibility.hidden, with());
 			size = 3;
 			scaledHealth = 220f;
