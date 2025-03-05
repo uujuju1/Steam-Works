@@ -1,7 +1,9 @@
 package sw.world.blocks.defense;
 
+import arc.struct.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.world.meta.*;
 
 public class ConsumeTurret extends SWTurret {
 	public BulletType shootType = Bullets.placeholder;
@@ -10,22 +12,23 @@ public class ConsumeTurret extends SWTurret {
 		super(name);
 	}
 
+	@Override
+	public void setStats() {
+		super.setStats();
+		stats.add(Stat.ammo, StatValues.ammo(ObjectMap.of(this, shootType)));
+	}
+
 	public class ConsumeTurretBuild extends SWTurretBuild {
-		@Override public boolean hasAmmo(){
+		@Override public boolean hasAmmo() {
 			return canConsume();
 		}
 
-		@Override public BulletType peekAmmo(){
+		@Override public BulletType peekAmmo() {
 			return shootType;
 		}
 
-		@Override
-		protected void shoot(BulletType type) {
-			super.shoot(type);
+		@Override public BulletType useAmmo() {
 			consume();
-		}
-
-		@Override public BulletType useAmmo(){
 			return shootType;
 		}
 	}

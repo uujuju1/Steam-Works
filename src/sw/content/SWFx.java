@@ -217,6 +217,17 @@ public class SWFx {
       });
     }),
 
+    hydrogenBurn = new Effect(30f, e -> {
+      rand.setSeed(e.id + 1);
+
+      Angles.randLenVectors(e.id, 20, 160f * e.finpow(), e.rotation, 5f, (x, y) -> {
+        Draw.color(Pal.place, Pal.lancerLaser, rand.random(1f));
+        Draw.alpha(e.foutpowdown() * rand.random(1f));
+
+        Fill.circle(e.x + x, e.y + y, rand.random(1f, 2.5f));
+      });
+    }),
+
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);
 

@@ -19,13 +19,14 @@ import sw.audio.*;
 import sw.content.*;
 import sw.entities.bullet.*;
 import sw.world.blocks.defense.*;
+import sw.world.consumers.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWTurrets {
 	public static Block
-//		flow, trail, vniz, rozpad,
-		imber,
+//		flow, vniz, rozpad,
+		imber, trail,
 		curve, sonar,
 		push, thermikos, swing;
 
@@ -77,52 +78,6 @@ public class SWTurrets {
 //					trailLength = 5;
 //					homingRange = 35f;
 //					homingPower = 0.03f;
-//					collidesAir = false;
-//				}}
-//			);
-//		}};
-//		trail = new ItemTurret("trail") {{
-//			requirements(Category.turret, with(
-//				SWItems.verdigris, 40,
-//				SWItems.iron, 45,
-//				Items.graphite, 20
-//			));
-//			size = 2;
-//			scaledHealth = 200;
-//			reload = 30f;
-//			range = 180f;
-//			targetAir = false;
-//
-//			shoot = new ShootSummon(0f, 0f, 0f, 5f) {{
-//				shots = 3;
-//				shotDelay = 1f;
-//			}};
-//
-//			ammo(
-//				SWItems.verdigris, new BasicBulletType(4, 15) {{
-//					frontColor = trailColor = Color.valueOf("A1A7AB");
-//					backColor = Color.valueOf("595E61");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 45f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 35f;
-//					homingPower = 0.04f;
-//					collidesAir = false;
-//				}},
-//				SWItems.iron, new BasicBulletType(4, 20) {{
-//					frontColor = trailColor = Color.valueOf("A1A1B8");
-//					backColor = Color.valueOf("6F6F85");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 45f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 35f;
-//					homingPower = 0.04f;
 //					collidesAir = false;
 //				}}
 //			);
@@ -356,6 +311,68 @@ public class SWTurrets {
 					}};
 				}}
 			);
+		}};
+		trail = new SWContinuousTurret("trail") {{
+			requirements(Category.turret, with(
+				SWItems.verdigris, 40,
+				SWItems.iron, 45,
+				Items.graphite, 20
+			));
+			size = 2;
+			scaledHealth = 200;
+			reload = 5f;
+			range = 160f;
+
+			minWarmup = 0.95f;
+
+			outlineIcon = false;
+
+			targetAir = false;
+
+			consumeLiquid(Liquids.hydrogen, 3f/60f);
+			consume(new ConsumeRotation() {{
+				startSpeed = 0.1f;
+				endSpeed = 1f;
+				curve = t -> Mathf.clamp(2f * t);
+			}});
+
+			shootType = new ContinuousFlameBulletType(15) {{
+				shootEffect = SWFx.hydrogenBurn;
+
+				width = 4f;
+				length = 160f;
+
+				flareWidth = 6f;
+				flareLength = 4f;
+
+				flareColor = Color.valueOf("FFFFFF80");
+				colors = new Color[]{
+					Color.valueOf("8A97FF16"),
+					Color.valueOf("8A97FF32"),
+					Color.valueOf("C7CDFF48"),
+					Color.valueOf("C7CDFF64"),
+					Color.valueOf("FFFFFF80")
+				};
+
+				collidesAir = false;
+			}};
+
+			drawer = new DrawTurret() {{
+				parts.add(new RegionPart("-side") {{
+					progress = PartProgress.warmup;
+
+					moveX = -1f;
+					moveRot = 45f;
+
+					mirror = true;
+					under = true;
+
+					moves.add(new PartMove(PartProgress.heat, 0, -2f, 0f));
+				}});
+			}
+				// ANUKE WHY DID YOU MAKE ME DO THIS
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
 		}};
 
 		curve = new ConsumeTurret("curve") {{
