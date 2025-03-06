@@ -13,7 +13,6 @@ import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.draw.*;
-import sw.world.draw.DrawAxles.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
@@ -22,7 +21,7 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		evaporator,
-		wireShaft, wireShaftRouter, shaftGearbox,
+		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt,
 
 		shaftTransmission;
 
@@ -192,6 +191,46 @@ public class SWPower {
 				new DrawBitmask("-tiles", build -> 0) {{
 					tileWidth = tileHeight = 64;
 				}}
+			);
+		}};
+		overheadBelt = new AxleBridge("overhead-belt") {{
+			requirements(Category.power, with(
+				SWItems.verdigris, 5,
+				Items.graphite, 5,
+				Items.silicon, 10
+			));
+
+			spinConfig = new SpinConfig() {{
+				resistance = 3f/600f;
+				allowedEdges = new int[][]{
+					new int[]{0},
+					new int[]{1},
+					new int[]{2},
+					new int[]{3}
+				};
+			}};
+
+			spinScl = 1/8f;
+			stroke = 0.75f;
+			spacing = 3;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(new Axle("-axle") {{
+					x = 2;
+					y = 0;
+
+					width = 4f;
+					height = 3.5f;
+
+					pixelWidth = 16;
+					pixelHeight = 1;
+
+					paletteLight = SWPal.axleLight;
+					paletteMedium = SWPal.axleMedium;
+					paletteDark = SWPal.axleDark;
+				}}),
+				new DrawBitmask("-tiles", b -> 0)
 			);
 		}};
 

@@ -65,7 +65,8 @@ public class SWTechTree {
     root.add(node(evaporator, () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
-          node(shaftGearbox, () -> {});
+          node(shaftGearbox);
+          node(overheadBelt);
         });
         node(shaftTransmission, Seq.with(new NonUnlockable()), () -> {});
       });
