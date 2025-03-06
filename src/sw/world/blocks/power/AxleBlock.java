@@ -23,6 +23,7 @@ public class AxleBlock extends Block {
 		super(name);
 		update = true;
 		rotate = true;
+		drawArrow = false;
 		group = BlockGroup.power;
 	}
 
