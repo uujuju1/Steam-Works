@@ -1,8 +1,10 @@
 package sw.content;
 
 import arc.*;
+import arc.scene.style.*;
 import arc.struct.*;
 import mindustry.content.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.game.Objectives.*;
 import mindustry.gen.*;
@@ -28,21 +30,17 @@ public class SWTechTree {
 
   public static void init(Seq<TechNode> root) {
     // region crafting
-    root.add(node(engineSmelter, () -> {
+    root.add(root("sw-crafting", Icon.crafting, engineSmelter, () -> {
       node(cokeOven);
     }));
-    root.peek().name = "sw-crafting";
-    root.peek().icon = Icon.crafting;
     // endregion
     // region defense
-    root.add(node(imber, with(new Produce(coke)), () -> {
+    root.add(root("sw-defense", Icon.turret, imber, with(new Produce(coke)), () -> {
       node(ironWall, () -> node(ironWallLarge));
     }));
-    root.peek().name = "sw-defense";
-    root.peek().icon = Icon.turret;
     // endregion
     // region distribution
-    root.add(node(mechanicalConveyor, () -> {
+    root.add(root("sw-distribution", Icon.distribution, mechanicalConveyor, () -> {
       node(mechanicalDistributor, () -> {
         node(mechanicalBridge, () -> {
           node(mechanicalUnloader, with(new Research(compactContainer)), () -> {});
@@ -58,11 +56,9 @@ public class SWTechTree {
       });
       node(compactContainer);
     }));
-    root.peek().name = "sw-distribution";
-    root.peek().icon = Icon.distribution;
     // endregion
     //region power
-    root.add(node(evaporator, () -> {
+    root.add(root("sw-power", Icon.power, evaporator, () -> {
       node(wireShaft, () -> {
         node(wireShaftRouter, () -> {
           node(shaftGearbox);
@@ -71,11 +67,9 @@ public class SWTechTree {
         node(shaftTransmission, Seq.with(new NonUnlockable()), () -> {});
       });
     }));
-    root.peek().name = "sw-power";
-    root.peek().icon = Icon.power;
     //endregion
     // region production
-    root.add(node(mechanicalBore, () -> {
+    root.add(root("sw-production", Icon.production, mechanicalBore, () -> {
       node(hydraulicDrill, () -> {
         node(mechanicalFracker, () -> {});
       });
@@ -85,11 +79,9 @@ public class SWTechTree {
         ), () -> {});
       });
     }));
-    root.peek().name = "sw-production";
-    root.peek().icon = Icon.production;
     // endregion
     // region resources
-    root.add(nodeProduce(verdigris, () -> {
+    root.add(rootProduce("sw-resources", Icon.wrench, verdigris, () -> {
       nodeProduce(Items.graphite, () -> {
         nodeProduce(coke, () -> {});
       });
@@ -100,21 +92,34 @@ public class SWTechTree {
         nodeProduce(Liquids.water, () -> {});
       });
     }));
-    root.peek().name = "sw-resources";
-    root.peek().icon = Icon.wrench;
     // endregion
     // region sectors
-    root.add(node(crevasse, () -> {}));
-    root.peek().name = "sw-sectors";
-    root.peek().icon = Icon.terrain;
+    root.add(root("sw-sectors", Icon.terrain, crevasse, () -> {}));
     // endregion
     //region units
-    root.add(node(mechanicalAssembler, with(new NonUnlockable()), () -> {
+    root.add(root("sw-units", Icon.units, mechanicalAssembler, with(new NonUnlockable()), () -> {
       node(assemblerArm, with(new NonUnlockable()), () -> {});
     }));
-    root.peek().name = "sw-units";
-    root.peek().icon = Icon.units;
     //endregion
+  }
+
+  public static TechNode root(String name, Drawable icon, UnlockableContent content, Runnable children) {
+    TechNode root = node(content, children);
+    root.name = name;
+    root.icon = icon;
+    return root;
+  }
+  public static TechNode root(String name, Drawable icon, UnlockableContent content, Seq<Objective> objectives, Runnable children) {
+    TechNode root = node(content, objectives, children);
+    root.name = name;
+    root.icon = icon;
+    return root;
+  }
+  public static TechNode rootProduce(String name, Drawable icon, UnlockableContent content, Runnable children) {
+    TechNode root = nodeProduce(content, children);
+    root.name = name;
+    root.icon = icon;
+    return root;
   }
 
   public static class NonUnlockable implements Objectives.Objective {
