@@ -5,12 +5,9 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import sw.content.*;
-import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
-	cliff,
-
 	oreVerdigris, oreIron, fissure, oreGraphite,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
@@ -23,14 +20,9 @@ public class SWEnvironment {
 	solvent,
 	solventCrystal,
 
-	plate, plateCross, plateVent, plateWall,
-
-	limiter;
+	plate, plateCross, plateVent, plateWall;
 
 	public static void load() {
-		cliff = new SWCliff("cliff");
-		limiter = new Limiter("limiter");
-
 		// region ores
 		oreVerdigris = new OreBlock(SWItems.verdigris) {{
 			variants = 4;
