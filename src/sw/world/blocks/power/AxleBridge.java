@@ -223,9 +223,9 @@ public class AxleBridge extends AxleBlock {
 				if (link == b.pos()) Drawf.select(b.x, b.y, b.block.size * 4 + 2, Pal.place);
 			});
 
-			if (links <= maxConnections) findBridges(tile, team, b -> b.link != pos() && link != b.pos() && b != this, b -> {
-				Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove);
-			});
+			if (links <= maxConnections) {
+				findBridges(tile, team, b -> b.link != pos() && link != b.pos() && b != this, b -> Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove));
+			}
 		}
 
 		@Override
@@ -288,7 +288,7 @@ public class AxleBridge extends AxleBlock {
 		@Override
 		public Seq<HasSpin> nextBuilds() {
 			var seq = super.nextBuilds();
-			if (getLink() != null) seq.add(getLink());
+			findBridges(tile, team, b -> b.link == pos() || link == b.pos(), seq::add);
 			return seq;
 		}
 
