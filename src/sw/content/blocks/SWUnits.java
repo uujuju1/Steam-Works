@@ -23,7 +23,12 @@ public class SWUnits {
 
 	public static void load() {
 		mechanicalAssembler = new MechanicalAssembler("mechanical-assembler") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.verdigris, 20,
+				SWItems.iron, 30,
+				Items.graphite, 25,
+				Items.silicon, 35
+			));
 
 			size = 2;
 
@@ -160,7 +165,12 @@ public class SWUnits {
 		}};
 
 		assemblerArm = new AssemblerArm("assembler-arm") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.verdigris, 20,
+				SWItems.iron, 30,
+				Items.graphite, 15,
+				Items.silicon, 20
+			));
 
 			size = 2;
 
