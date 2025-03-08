@@ -31,6 +31,7 @@ public class TechtreeDialog extends BaseDialog {
 	public TreeView view;
 	public ResourceDisplay resources;
 	public Table content;
+	public Table categories;
 
 	public int currentRoot = -1;
 	public TechTreeNode currentContent;
@@ -48,31 +49,8 @@ public class TechtreeDialog extends BaseDialog {
 		}}, this::hide).size(210f, 48f);
 		titleTable.top();
 
-		SWTechTree.init(roots);
-
 		buttons.remove();
-		buttons.pane(cat -> {
-			roots.each(root -> {
-				ImageButtonStyle style = new ImageButtonStyle() {{
-					up = Tex.pane;
-					down = checked = Tex.buttonSelectTrans;
-				}};
-				if (roots.first() == root) {
-					style.up = Tex.buttonEdge1;
-					style.down = style.checked = Tex.buttonEdgeOver1;
-				}
-				if (roots.peek() == root) {
-					style.up = Tex.buttonEdge3;
-					style.down = style.checked = Tex.buttonEdgeOver3;
-				}
-				ImageButton button = buttons.button(root.icon(), style, 32f, () -> {
-					currentRoot = roots.indexOf(root);
-					Core.settings.put("settings-sw-techtree-category", currentRoot);
-					view.rebuild(root);
-				}).size(64f).tooltip(root.localizedName()).get();
-				button.update(() -> button.setChecked(currentRoot == roots.indexOf(root)));
-			});
-		}).maxWidth(320f).height(64f).get().setOverscroll(false, false);
+		buttons.pane(cat -> categories = cat).maxWidth(320f).height(64f).get().setOverscroll(false, false);
 		buttons.center().bottom();
 
 		cont.stack(
@@ -101,9 +79,10 @@ public class TechtreeDialog extends BaseDialog {
 		}));
 
 		shown(() -> {
+			displayTree(SWPlanets.wendi.techTree);
 			resources.rebuild();
 			currentRoot = Core.settings.getInt("settings-sw-techtree-category", -1);
-			if (currentRoot != -1) view.rebuild(roots.get(currentRoot));
+			if (roots.contains(root -> roots.indexOf(root) == currentRoot)) view.rebuild(roots.get(currentRoot));
 		});
 
 		shouldPause = true;
@@ -153,6 +132,31 @@ public class TechtreeDialog extends BaseDialog {
 			}).left().maxHeight(200f);
 		}
 		content.margin(10f);
+	}
+
+	public void displayTree(TechNode nodeRoot) {
+		categories.clear();
+		roots = nodeRoot.children;
+		roots.each(root -> {
+			ImageButtonStyle style = new ImageButtonStyle() {{
+				up = Tex.pane;
+				down = checked = Tex.buttonSelectTrans;
+			}};
+			if (roots.first() == root) {
+				style.up = Tex.buttonEdge1;
+				style.down = style.checked = Tex.buttonEdgeOver1;
+			}
+			if (roots.peek() == root) {
+				style.up = Tex.buttonEdge3;
+				style.down = style.checked = Tex.buttonEdgeOver3;
+			}
+			ImageButton button = categories.button(root.icon(), style, 32f, () -> {
+				currentRoot = roots.indexOf(root);
+				Core.settings.put("settings-sw-techtree-category", currentRoot);
+				view.rebuild(root);
+			}).size(64f).tooltip(root.localizedName()).get();
+			button.update(() -> button.setChecked(currentRoot == roots.indexOf(root)));
+		});
 	}
 
 	public void spend(TechNode node) {
