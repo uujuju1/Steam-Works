@@ -157,4 +157,128 @@ public class SpinGraph {
 	public void updateInertia() {
 		speed = builds.sumf(b -> b.spin().inertia)/builds.size;
 	}
+
+	public void updateRatios() {
+		/*
+		let b = Vars.world.build(59, 59)
+Draw.z(Layer.blockOver)
+
+let transmission = SWPower.shaftTransmission
+let highHalf = transmission.scaledEdges
+let lowHalf = [0, 3]
+let mul = transmission.multiplier
+
+let tmp = Seq.with(b)
+let builds = Seq.with(b)
+let layerBuilds = new ObjectFloatMap()
+let froms = ObjectMap.of(b, b)
+layerBuilds.put(b, 1)
+
+let last
+
+while (!tmp.isEmpty()) {
+  let build = tmp.pop()
+
+  let edges = Edges.getEdges(build.block.size)
+
+  build.nextBuilds().each(other => {
+    let edgesOther = Edges.getEdges(build.block.size)
+    if (!builds.contains(other)) {
+      tmp.add(other)
+      builds.add(other)
+      froms.put(other, build)
+      last = froms.get(build)
+
+      if (build.block == transmission) {
+        let isHigh = false
+        for (let i = 0; i < highHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
+          ) == other) isHigh = true
+        }
+        let isLow = false
+        for (let i = 0; i < lowHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].y
+          ) == other) isLow = true
+        }
+        let sameLast = false
+        for (let i = 0; i < highHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
+          ) == last) sameLast = true
+        }
+        let h = layerBuilds.get(build, 1) * (isHigh ? mul : 1/mul)
+        if (isHigh ^ sameLast && !(isHigh && isLow) && !(layerBuilds.get(build, 1) == 1 && layerBuilds.get(last, 1) != 1)) {
+          layerBuilds.put(other, h)
+        } else {
+          layerBuilds.put(other, layerBuilds.get(!(isHigh && isLow) && !(layerBuilds.get(build, 1) == 1 && layerBuilds.get(last, 1) != 1) ? last : build, 1))
+          if ((isHigh && isLow) && (other.block != transmission || other.rotation != build.rotation)) {
+            Fill.square(other.x, other.y, 2)
+          }
+        }
+      } else layerBuilds.put(other, layerBuilds.get(build, 1))
+    } else {
+      last = froms.get(build)
+      let h = 1;
+      if (build.block == transmission) {
+        let isHigh = false
+        for (let i = 0; i < highHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
+          ) == other) isHigh = true
+        }
+        let isLow = false
+        for (let i = 0; i < lowHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].y
+          ) == other) isLow = true
+        }
+        let sameLast = false
+        for (let i = 0; i < highHalf.length; i++) {
+          if (build.nearby(
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
+            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
+          ) == last) sameLast = true
+        }
+
+        if (isHigh ^ sameLast && !(isHigh && isLow) && !(layerBuilds.get(last, 1) == mul && h == 1/mul)) {
+          h = layerBuilds.get(build, 1) * (isHigh ? mul : 1/mul)
+        } else {
+          h = layerBuilds.get(!(isHigh && isLow) && !(layerBuilds.get(last, 1) == mul && h == 1/mul) ? last : build, 1)
+        }
+      } else h = layerBuilds.get(build, 1)
+
+      if (
+        other != last &&
+        (
+          other.block == transmission ?
+          (layerBuilds.get(other, 1) * mul < h || h < layerBuilds.get(other, 1) / mul) :
+          (h != layerBuilds.get(other, 1))
+        )
+      ) {
+        Fill.square(other.x, other.y, 2)
+        Lines.line(other.x, other.y, build.x, build.y)
+      }
+
+    }
+  })
+
+  last = build
+}
+
+builds.each(build => {
+  build.block.drawPlaceText(
+    "" + (layerBuilds.get(build, 0)),
+    build.tileX(), build.tileY(),
+    true
+  )
+})
+		*/
+	}
 }
