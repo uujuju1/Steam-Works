@@ -19,6 +19,11 @@ public class SpinConfig {
 	public boolean hasSpin = true;
 
 	/**
+	 * If true, this block is classified as a spin producer and will be accounted during ratio calculations.
+	 */
+	public boolean outputsSpin = false;
+
+	/**
 	 * Resistance of rotation speed in rpm/10/sec.
 	 */
 	public float resistance = 0;
@@ -31,7 +36,7 @@ public class SpinConfig {
 	/**
 	 * List of possible positions whene a building can connect to from 0 to 3 based on rotation.
 	 */
-	public Seq<Point2>[] connections = new Seq[]{
+	@Deprecated public Seq<Point2>[] connections = new Seq[]{
 		BlockGeometry.full1,
 		BlockGeometry.full1,
 		BlockGeometry.full1,
