@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -9,7 +8,6 @@ import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
-import sw.math.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.draw.*;
@@ -242,13 +240,14 @@ public class SWPower {
 			));
 			size = 2;
 
+			scaledEdges = new int[]{1, 2};
 			spinConfig = new SpinConfig() {{
 				resistance = 3f/600f;
-				connections = new Seq[]{
-					BlockGeometry.sides21,
-					BlockGeometry.sides22,
-					BlockGeometry.sides23,
-					BlockGeometry.sides24
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 4, 5},
+					new int[]{2, 3, 6, 7},
+					new int[]{4, 5, 0, 1},
+					new int[]{6, 7, 2, 3}
 				};
 			}};
 
