@@ -1,6 +1,5 @@
 package sw.world.interfaces;
 
-import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -32,13 +31,6 @@ public interface HasSpin extends Buildingc {
 			}
 		} else isEdge = true;
 		return hasSpin && sameTeam && isEdge;
-	}
-
-	/**
-	 * Returns the current offsets to connect based on rotation
-	 */
-	default Seq<Point2> connectionPoints(int rotation) {
-		return spinConfig().connections[rotation];
 	}
 
 	/**
@@ -85,6 +77,13 @@ public interface HasSpin extends Buildingc {
 	}
 
 	/**
+	 * @return true whenever the connection is invalid, if true, the graph should not move and should break if it tries.
+	 */
+	default boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
+		return false;
+	}
+
+	/**
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
@@ -99,5 +98,12 @@ public interface HasSpin extends Buildingc {
 	 */
 	default void onGraphUpdate() {
 		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
+	}
+
+	/**
+	 * @return the ratio of other relative to this build and the last build before this on the floodFill for the ratios.
+	 */
+	default float ratioOf(HasSpin other, HasSpin last, float startRatio, float lastRatio) {
+		return startRatio;
 	}
 }

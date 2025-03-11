@@ -160,12 +160,10 @@ public class SpinGraph {
 
 	public void updateRatios() {
 		/*
-		let b = Vars.world.build(59, 59)
+       let b = Vars.world.build(59, 59)
 Draw.z(Layer.blockOver)
 
 let transmission = SWPower.shaftTransmission
-let highHalf = transmission.scaledEdges
-let lowHalf = [0, 3]
 let mul = transmission.multiplier
 
 let tmp = Seq.with(b)
@@ -189,70 +187,10 @@ while (!tmp.isEmpty()) {
       froms.put(other, build)
       last = froms.get(build)
 
-      if (build.block == transmission) {
-        let isHigh = false
-        for (let i = 0; i < highHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
-          ) == other) isHigh = true
-        }
-        let isLow = false
-        for (let i = 0; i < lowHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].y
-          ) == other) isLow = true
-        }
-        let sameLast = false
-        for (let i = 0; i < highHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
-          ) == last) sameLast = true
-        }
-        let h = layerBuilds.get(build, 1) * (isHigh ? mul : 1/mul)
-        if (isHigh ^ sameLast && !(isHigh && isLow) && !(layerBuilds.get(build, 1) == 1 && layerBuilds.get(last, 1) != 1)) {
-          layerBuilds.put(other, h)
-        } else {
-          layerBuilds.put(other, layerBuilds.get(!(isHigh && isLow) && !(layerBuilds.get(build, 1) == 1 && layerBuilds.get(last, 1) != 1) ? last : build, 1))
-          if ((isHigh && isLow) && (other.block != transmission || other.rotation != build.rotation)) {
-            Fill.square(other.x, other.y, 2)
-          }
-        }
-      } else layerBuilds.put(other, layerBuilds.get(build, 1))
+      layerBuilds.put(other, build.ratioOf(other, last, layerBuilds.get(build, 1), layerBuilds.get(last, 1)))
     } else {
       last = froms.get(build)
-      let h = 1;
-      if (build.block == transmission) {
-        let isHigh = false
-        for (let i = 0; i < highHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
-          ) == other) isHigh = true
-        }
-        let isLow = false
-        for (let i = 0; i < lowHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][lowHalf[i]]].y
-          ) == other) isLow = true
-        }
-        let sameLast = false
-        for (let i = 0; i < highHalf.length; i++) {
-          if (build.nearby(
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].x,
-            edges[build.spinConfig().allowedEdges[build.rotation][highHalf[i]]].y
-          ) == last) sameLast = true
-        }
-
-        if (isHigh ^ sameLast && !(isHigh && isLow) && !(layerBuilds.get(last, 1) == mul && h == 1/mul)) {
-          h = layerBuilds.get(build, 1) * (isHigh ? mul : 1/mul)
-        } else {
-          h = layerBuilds.get(!(isHigh && isLow) && !(layerBuilds.get(last, 1) == mul && h == 1/mul) ? last : build, 1)
-        }
-      } else h = layerBuilds.get(build, 1)
+      let h = build.ratioOf(other, last, layerBuilds.get(build, 1), layerBuilds.get(last, 1))
 
       if (
         other != last &&
@@ -265,7 +203,6 @@ while (!tmp.isEmpty()) {
         Fill.square(other.x, other.y, 2)
         Lines.line(other.x, other.y, build.x, build.y)
       }
-
     }
   })
 
