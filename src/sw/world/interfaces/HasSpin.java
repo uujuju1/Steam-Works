@@ -4,6 +4,7 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.*;
+import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -31,6 +32,10 @@ public interface HasSpin extends Buildingc {
 			}
 		} else isEdge = true;
 		return hasSpin && sameTeam && isEdge;
+	}
+
+	default boolean consumesSpin() {
+		return block().findConsumer(c -> c instanceof ConsumeRotation) != null;
 	}
 
 	/**
@@ -98,6 +103,10 @@ public interface HasSpin extends Buildingc {
 	 */
 	default void onGraphUpdate() {
 		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
+	}
+
+	default boolean outputsSpin() {
+		return false;
 	}
 
 	/**

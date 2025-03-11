@@ -33,6 +33,7 @@ public class SpinGraph {
 	 */
 	public final Seq<HasSpin> builds = new Seq<>();
 	public final Seq<HasSpin> producers = new Seq<>();
+	public final Seq<HasSpin> consumers = new Seq<>();
 
 	/**
 	 * Temporary seqs for use in flood.
@@ -44,7 +45,8 @@ public class SpinGraph {
 	 */
 	public void addBuild(HasSpin build) {
 		builds.add(build);
-		if (build.spinConfig().outputsSpin) producers.add(build);
+		if (build.outputsSpin()) producers.add(build);
+		if (build.consumesSpin()) consumers.add(build);
 		checkEntity();
 		build.spinGraph().remove(build, false);
 		build.spin().graph = this;
@@ -103,6 +105,7 @@ public class SpinGraph {
 	public void remove(HasSpin build, boolean split) {
 		builds.remove(build);
 		producers.remove(build);
+		consumers.remove(build);
 		if (split) build.nextBuilds().each(p -> {
 			new SpinGraph().mergeFlood(p);
 		});
