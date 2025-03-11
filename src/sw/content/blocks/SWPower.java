@@ -68,31 +68,40 @@ public class SWPower {
 				Items.graphite, 2,
 				Items.silicon, 4
 			));
-			rotate = false;
 
 			spinConfig = new SpinConfig() {{
 				resistance = 2f/600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 3},
+					new int[]{1, 2, 0},
+					new int[]{2, 3, 1},
+					new int[]{3, 0, 2}
+				};
 			}};
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-					new Axle("-shaft") {{
-						iconOverride = "sw-wire-shaft-router-shaft-icon-horizontal";
-						pixelHeight = 7;
+					new Axle("-axle") {{
+						pixelHeight = 1;
 
 						height = 3.5f;
+
+						rotation = -90f;
 
 						paletteLight = SWPal.axleLight;
 						paletteMedium = SWPal.axleMedium;
 						paletteDark = SWPal.axleDark;
 					}},
-					new Axle("-shaft") {{
-						iconOverride = "sw-wire-shaft-router-shaft-icon-vertical";
-						pixelHeight = 7;
+					new Axle("-axle-middle") {{
+						hasIcon = false;
 
-						rotation = -90f;
+						pixelWidth = 16;
+						pixelHeight = 1;
 
+						x = 2f;
+
+						width = 4f;
 						height = 3.5f;
 
 						paletteLight = SWPal.axleLight;
@@ -100,7 +109,7 @@ public class SWPower {
 						paletteDark = SWPal.axleDark;
 					}}
 				),
-				new DrawDefault()
+				new DrawBitmask("-tiles", b -> 0)
 			);
 		}};
 		shaftGearbox = new AxleBlock("shaft-gearbox") {{
