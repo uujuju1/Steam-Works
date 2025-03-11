@@ -75,6 +75,12 @@ public interface HasSpin extends Buildingc {
 		return spinConfig().resistance;
 	}
 	/**
+	 * @return the current rotation of this system scaled by this build's ratio
+	 */
+	default float getRotation() {
+		return spinGraph().rotation / spinGraph().ratios.get(this, 1);
+	}
+	/**
 	 * Returns the speed that this block should try to reach.
 	 */
 	default float getTargetSpeed() {

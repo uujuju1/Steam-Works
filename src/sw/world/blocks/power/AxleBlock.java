@@ -95,6 +95,11 @@ public class AxleBlock extends Block {
 		}
 
 		@Override
+		public boolean outputsSpin() {
+			return true;
+		}
+
+		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			spin.read(read);
@@ -107,9 +112,8 @@ public class AxleBlock extends Block {
 			return spinConfig;
 		}
 
-		@Override
-		public float totalProgress() {
-			return spinGraph().rotation * spinSection().ratio;
+		@Override public float totalProgress() {
+			return getRotation();
 		}
 
 		@Override

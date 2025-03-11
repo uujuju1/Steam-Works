@@ -39,6 +39,11 @@ public class SpinGraph {
 	 * Temporary seqs for use in flood.
 	 */
 	public static final Seq<HasSpin> tmp = new Seq<>(), tmp2 = new Seq<>();
+	public static final ObjectMap<HasSpin, HasSpin> mainConnection = new ObjectMap<>();
+
+	public final ObjectFloatMap<HasSpin> ratios = new ObjectFloatMap<>();
+	public final ObjectMap<HasSpin, ObjectFloatMap<HasSpin>> relativeRatios = new ObjectMap<>();
+	public boolean invalid;
 
 	/**
 	 * Adds a build to this graph, and removes the build from its older graph.
@@ -134,6 +139,13 @@ public class SpinGraph {
 	 */
 	public void update() {
 		if (changed) {
+			updateRatios(builds.first());
+			var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
+			consumers.each(consumer -> {
+				updateRatios(consumer);
+				relativeRatios.put(consumer, new ObjectFloatMap<>(ratios));
+			});
+			updateRatios(fastest);
 			builds.each(b -> {
 				b.spin().section = new SpinSection();
 				b.spinSection().addBuild(b);
@@ -142,10 +154,6 @@ public class SpinGraph {
 			updateInertia();
 			changed = false;
 		}
-
-		// use delta?
-//		speed += (force() - resistance()) * Time.delta;
-//		speed = Mathf.clamp(speed, 0, targetSpeed());
 
 		speed = Mathf.approachDelta(speed, targetSpeed(), Math.abs(force() - resistance()));
 
@@ -161,64 +169,38 @@ public class SpinGraph {
 		speed = builds.sumf(b -> b.spin().inertia)/builds.size;
 	}
 
-	public void updateRatios() {
-		/*
-       let b = Vars.world.build(59, 59)
-Draw.z(Layer.blockOver)
+	public void updateRatios(HasSpin start) {
+		invalid = false;
+		tmp.clear().add(start);
+		ratios.clear();
+		ratios.put(start, 1);
+		mainConnection.clear();
+		mainConnection.put(start, start);
 
-let transmission = SWPower.shaftTransmission
-let mul = transmission.multiplier
+		final HasSpin[] last = new HasSpin[1];
 
-let tmp = Seq.with(b)
-let builds = Seq.with(b)
-let layerBuilds = new ObjectFloatMap()
-let froms = ObjectMap.of(b, b)
-layerBuilds.put(b, 1)
+		while (!tmp.isEmpty()) {
+      HasSpin build = tmp.pop();
 
-let last
+		  build.nextBuilds().each(other -> {
+		    if (!mainConnection.containsKey(other)) {
+		      tmp.add(other);
+		      mainConnection.put(other, build);
+		      last[0] = mainConnection.get(build);
 
-while (!tmp.isEmpty()) {
-  let build = tmp.pop()
+			    invalid |= other != last[0] && (build.invalidConnection(other, ratios.get(other, 1), ratios.get(other, 1)));
 
-  let edges = Edges.getEdges(build.block.size)
+			    ratios.put(other, build.ratioOf(other, last[0], ratios.get(build, 1), ratios.get(last[0], 1)));
+		    } else {
+		      last[0] = mainConnection.get(build);
+		      float h = build.ratioOf(other, last[0], ratios.get(build, 1), ratios.get(last[0], 1));
 
-  build.nextBuilds().each(other => {
-    let edgesOther = Edges.getEdges(build.block.size)
-    if (!builds.contains(other)) {
-      tmp.add(other)
-      builds.add(other)
-      froms.put(other, build)
-      last = froms.get(build)
+		      invalid |= other != last[0] && (build.invalidConnection(other, h, ratios.get(other, 1)));
 
-      layerBuilds.put(other, build.ratioOf(other, last, layerBuilds.get(build, 1), layerBuilds.get(last, 1)))
-    } else {
-      last = froms.get(build)
-      let h = build.ratioOf(other, last, layerBuilds.get(build, 1), layerBuilds.get(last, 1))
+		    }
+		  });
 
-      if (
-        other != last &&
-        (
-          other.block == transmission ?
-          (layerBuilds.get(other, 1) * mul < h || h < layerBuilds.get(other, 1) / mul) :
-          (h != layerBuilds.get(other, 1))
-        )
-      ) {
-        Fill.square(other.x, other.y, 2)
-        Lines.line(other.x, other.y, build.x, build.y)
-      }
-    }
-  })
-
-  last = build
-}
-
-builds.each(build => {
-  build.block.drawPlaceText(
-    "" + (layerBuilds.get(build, 0)),
-    build.tileX(), build.tileY(),
-    true
-  )
-})
-		*/
+		  last[0] = build;
+		}
 	}
 }
