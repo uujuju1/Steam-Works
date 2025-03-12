@@ -3,6 +3,7 @@ package sw.world.graph;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.content.*;
 import sw.gen.*;
 import sw.world.interfaces.*;
 
@@ -155,7 +156,18 @@ public class SpinGraph {
 			changed = false;
 		}
 
-		speed = Mathf.approachDelta(speed, targetSpeed(), Math.abs(force() - resistance()));
+		float accel = Math.abs(force() - resistance());
+		speed = Mathf.approachDelta(speed, targetSpeed(), accel);
+
+		if (invalid) {
+			speed = 0;
+			if (Mathf.maxZero(force() - resistance()) > 0) {
+				var b = builds.random();
+
+				b.damage(Mathf.maxZero(force() - resistance()));
+				Fx.smoke.at(b);
+			}
+		}
 
 		if (lastSpeed != speed) {
 			lastSpeed = speed;

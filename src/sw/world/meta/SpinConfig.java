@@ -19,11 +19,6 @@ public class SpinConfig {
 	public boolean hasSpin = true;
 
 	/**
-	 * If true, this block is classified as a spin producer and will be accounted during ratio calculations.
-	 */
-	public boolean outputsSpin = false;
-
-	/**
 	 * Resistance of rotation speed in rpm/10/sec.
 	 */
 	public float resistance = 0;
@@ -55,9 +50,9 @@ public class SpinConfig {
 		block.addBar("gas", building -> {
 			HasSpin b = building.as();
 			return new Bar(
-				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed * b.spinSection().ratio * 10f, 2)),
+				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f) * 10f, 2)),
 				() -> barColor,
-				() -> topSpeed > 0 ? Mathf.clamp((b.spinGraph().speed * b.spinSection().ratio) / topSpeed) : 1f
+				() -> topSpeed > 0 ? Mathf.clamp((b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f)) / topSpeed) : 1f
 			);
 		});
 	}
