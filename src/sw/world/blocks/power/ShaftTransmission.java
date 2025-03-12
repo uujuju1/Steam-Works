@@ -17,25 +17,26 @@ public class ShaftTransmission extends AxleBlock {
 	public class ShaftTransmissionBuild extends AxleBlockBuild {
 		@Override
 		public boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
-			boolean otherHigh = false;
-			for(int i : highEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherHigh = true;
-			}
-			boolean otherLow = false;
-			for(int i : lowEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherLow = true;
-			}
-
-			return
-				other instanceof ShaftTransmissionBuild ?
-				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || other.rotation() != rotation) :
-				(ratio != lastRatio || (otherHigh && otherLow));
+			return false;
+//			boolean otherHigh = false;
+//			for(int i : highEdges) {
+//				if (nearby(
+//					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
+//					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
+//				) == other) otherHigh = true;
+//			}
+//			boolean otherLow = false;
+//			for(int i : lowEdges) {
+//				if (nearby(
+//					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
+//					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
+//				) == other) otherLow = true;
+//			}
+//
+//			return
+//				other instanceof ShaftTransmissionBuild ?
+//				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || other.rotation() != rotation) :
+//				(ratio != lastRatio || (otherHigh && otherLow));
 
 		}
 
@@ -64,11 +65,10 @@ public class ShaftTransmission extends AxleBlock {
 			}
 
 			float h = startRatio * (otherHigh ? multiplier : 1f / multiplier);
-			if (otherHigh ^ lastHigh && !(otherHigh && otherLow) && !(startRatio == 1f && lastRatio != 1f)) {
-				return h;
-			} else {
-				return !(otherHigh && otherLow) && !(startRatio == 1 && lastRatio != 1) ? lastRatio : startRatio;
-			}
+
+			if (startRatio == 1 && lastRatio != 1) return 1;
+
+			return otherHigh ^ lastHigh && !(otherHigh && otherLow) ? h : startRatio;
 		}
 	}
 }

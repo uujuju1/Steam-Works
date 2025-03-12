@@ -64,6 +64,11 @@ public class SpinSource extends AxleBlock {
 		}
 
 		@Override
+		public boolean outputsSpin() {
+			return true;
+		}
+
+		@Override
 		public void write(Writes write) {
 			super.write(write);
 

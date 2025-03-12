@@ -95,11 +95,6 @@ public class AxleBlock extends Block {
 		}
 
 		@Override
-		public boolean outputsSpin() {
-			return true;
-		}
-
-		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			spin.read(read);
