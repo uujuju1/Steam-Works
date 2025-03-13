@@ -264,42 +264,92 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-					new Axle("-shaft-end") {{
-						iconOverride = "sw-shaft-transmission-shaft-end-icon-top";
+					new Axle("-axle-end") {{
+						iconOverride = "sw-shaft-transmission-axle-icon";
 
-						pixelWidth = 64;
-						pixelHeight = 7;
+						pixelWidth = 16;
+						pixelHeight = 1;
 
 						spinScl = 0.5f;
 
+						x = 6f;
 						y = 4f;
 
-						width = 16f;
+						width = 4f;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}},
-					new Axle("-shaft-end") {{
-						iconOverride = "sw-shaft-transmission-shaft-end-icon-bottom";
+					new Axle("-axle-end") {{
+						hasIcon = false;
 
-						pixelWidth = 64;
-						pixelHeight = 7;
+						pixelWidth = 16;
+						pixelHeight = 1;
 
+						x = 6f;
 						y = -4f;
 
-						width = 16f;
+						width = 4f;
 						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
 					}},
-					new Axle("-shaft-small") {{
-						pixelHeight = 4;
+					new Axle("-axle-end") {{
+						hasIcon = false;
+
+						pixelWidth = 16;
+						pixelHeight = 1;
+
+						spinScl = 0.5f;
+
+						x = -6f;
+						y = 4f;
+
+						width = 4f;
+						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle-end") {{
+						hasIcon = false;
+
+						pixelWidth = 16;
+						pixelHeight = 1;
+
+						x = -6f;
+						y = -4f;
+
+						width = 4f;
+						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle-small") {{
+						hasIcon = false;
+						circular = true;
+
 						pixelWidth = 32;
+						pixelHeight = 1;
 
 						y = -4;
 
 						width = 8f;
 						height = 2f;
 					}},
-					new Axle("-shaft-middle") {{
-						pixelHeight = 9;
+					new Axle("-axle-middle") {{
+						hasIcon = false;
+						circular = true;
+
 						pixelWidth = 16;
+						pixelHeight = 1;
 
 						spinScl = -(35f/60f);
 
@@ -308,9 +358,12 @@ public class SWPower {
 						width = 4f;
 						height = 4.5f;
 					}},
-					new Axle("-shaft-big") {{
-						pixelHeight = 10;
+					new Axle("-axle-large") {{
+						hasIcon = false;
+						circular = true;
+
 						pixelWidth = 32;
+						pixelHeight = 1;
 
 						spinScl = 0.5f;
 
