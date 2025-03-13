@@ -41,6 +41,6 @@ public class ConsumeRotation extends Consume {
 	}
 
 	public float getSpeed(Building build) {
-		return cast(build).spinGraph().speed * cast(build).spinSection().ratio;
+		return cast(build).spinGraph().speed / cast(build).spinGraph().ratios.get(cast(build), 1);
 	}
 }

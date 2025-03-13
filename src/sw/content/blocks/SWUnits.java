@@ -74,8 +74,8 @@ public class SWUnits {
 			);
 
 			consume(new ConsumeRotation() {{
-				startSpeed = 0.5f;
-				endSpeed = 1f;
+				startSpeed = 0.1f;
+				endSpeed = 0.6f;
 				curve = Interp.one;
 			}});
 
@@ -216,8 +216,8 @@ public class SWUnits {
 			);
 
 			consume(new ConsumeRotation() {{
-				startSpeed = 0.5f;
-				endSpeed = 1f;
+				startSpeed = 0.1f;
+				endSpeed = 0.6f;
 				curve = Interp.one;
 			}});
 

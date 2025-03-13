@@ -79,7 +79,7 @@ public class ShaftTransmission extends AxleBlock {
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
 				);
-				if (b != null && HasSpin.connects(this, b.as())) lowBuild = b.as();
+				if (b instanceof HasSpin build && HasSpin.connects(this, build)) lowBuild = build;
 			}
 			HasSpin highBuild = null;
 			for(int i : highEdges) {
@@ -87,7 +87,7 @@ public class ShaftTransmission extends AxleBlock {
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
 				);
-				if (b != null && HasSpin.connects(this, b.as())) highBuild = b.as();
+				if (b instanceof HasSpin build && HasSpin.connects(this, build)) highBuild = build;
 			}
 			float ratio = spinGraph().ratios.get(
 				(highBuild == null && lowBuild == null ?

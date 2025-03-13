@@ -488,7 +488,7 @@ public class MechanicalAssembler extends Block {
 		}
 
 		@Override public float totalProgress() {
-			return spinGraph().rotation * spinSection().ratio;
+			return spinGraph().rotation / spinGraph().ratios.get(this, 1);
 		}
 
 		@Override
