@@ -41,11 +41,14 @@ public class SWSectorPresets {
 
 			rules = r -> {
 				r.winWave = 15;
+				r.weather.add(new Weather.WeatherEntry(
+					SWWeathers.souesiteDust,
+					5f * Time.toMinutes,
+					7.5f * Time.toMinutes,
+					2.5f * Time.toMinutes,
+					5f * Time.toMinutes
+				));
 			};
 		}};
-	}
-
-	public static Sector getSector(int id) {
-		return SWPlanets.wendi.sectors.get(id);
 	}
 }
