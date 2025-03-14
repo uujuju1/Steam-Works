@@ -32,7 +32,8 @@ public class SWTechTree {
       // endregion
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
-        node(ironWall, () -> node(ironWallLarge));
+        node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
+        node(trail, with(new SectorComplete(theDelta)), () -> {});
       });
       // endregion
       // region distribution
@@ -60,7 +61,7 @@ public class SWTechTree {
             node(shaftGearbox);
             node(overheadBelt);
           });
-          node(shaftTransmission, Seq.with(new NonUnlockable()), () -> {});
+          node(shaftTransmission, Seq.with(new OnSector(theDelta)), () -> {});
         });
       });
       //endregion
@@ -90,11 +91,14 @@ public class SWTechTree {
       });
       // endregion
       // region sectors
-      root("sw-sectors", crevasse, () -> {});
+      root("sw-sectors", crevasse, () -> {
+        node(theDelta);
+        node(kettle, with(new Research(mechanicalAssembler)), () -> {});
+      });
       // endregion
       //region units
-      root("sw-units", mechanicalAssembler, with(new NonUnlockable()), () -> {
-        node(assemblerArm, with(new NonUnlockable()), () -> {});
+      root("sw-units", mechanicalAssembler, with(new Research(shaftTransmission)), () -> {
+        node(assemblerArm, with(new OnSector(kettle)), () -> {});
       });
       //endregion
     });

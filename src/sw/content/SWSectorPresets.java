@@ -7,7 +7,7 @@ import sw.type.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		crevasse;
+		crevasse, theDelta, kettle;
 
 	public static void load() {
 		crevasse = new PositionSectorPreset("crevasse", SWPlanets.wendi, 0) {{
@@ -25,6 +25,22 @@ public class SWSectorPresets {
 					2.5f * Time.toMinutes,
 					5f * Time.toMinutes
 				));
+			};
+		}};
+		theDelta = new PositionSectorPreset("the-delta", SWPlanets.wendi, 1) {{
+			x = 300;
+			y = 100;
+			width = height = 200;
+			icon = () -> Icon.units;
+		}};
+		kettle = new PositionSectorPreset("kettle", SWPlanets.wendi, 2) {{
+			x = 200;
+			y = -200;
+			width = height = 300;
+			icon = () -> Icon.waves;
+
+			rules = r -> {
+				r.winWave = 15;
 			};
 		}};
 	}
