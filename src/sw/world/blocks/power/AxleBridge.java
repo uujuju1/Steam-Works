@@ -57,7 +57,9 @@ public class AxleBridge extends AxleBlock {
 		float dst = Mathf.dst(from.worldx(), from.worldy(), to.worldx(), to.worldy());
 		float rad = Mathf.PI * radius;
 
-		Lines.stroke(stroke * 3, outlineColor);
+		var mxcol = Draw.getMixColor();
+
+		Lines.stroke(stroke * 3, Tmp.c1.set(outlineColor).lerp(Color.white, mxcol.a));
 		Lines.arc(from.worldx(), from.worldy(), radius, 0.52f, angle + 90);
 		Lines.arc(to.worldx(), to.worldy(), radius, 0.52f, angle - 90);
 		for(int i : Mathf.signs) {
@@ -70,7 +72,7 @@ public class AxleBridge extends AxleBlock {
 			);
 		}
 
-		Lines.stroke(stroke, inColor);
+		Lines.stroke(stroke, Tmp.c1.set(inColor).lerp(Color.white, mxcol.a));
 		Lines.arc(from.worldx(), from.worldy(), radius, 0.52f, angle + 90);
 		Lines.arc(to.worldx(), to.worldy(), radius, 0.52f, angle - 90);
 		for(int i : Mathf.signs) {
@@ -86,6 +88,8 @@ public class AxleBridge extends AxleBlock {
 		float maxLen = (dst + rad) * 2f;
 		int divisions = Mathf.floor(maxLen/spacing);
 
+
+		Draw.color(Tmp.c1.set(boltColor).lerp(Color.white, mxcol.a));
 		for(int i = 0; i < divisions; i++) {
 			float num = Mathf.mod(spin * spinScl + maxLen/divisions * i, rad * 2 + dst * 2);
 
@@ -118,12 +122,11 @@ public class AxleBridge extends AxleBlock {
 					(num - rad * 2 - dst)/dst
 				);
 			}
-
-			Draw.color(boltColor);
 			Fill.circle(res.x, res.y, stroke);
 		}
 
 		Draw.reset();
+		Draw.mixcol(mxcol, mxcol.a);
 
 		float map = Mathf.map(Mathf.mod(spin * spinScl, rad * 2), 0f, rad * 2f, 0, 360f);
 
