@@ -91,7 +91,7 @@ public interface HasSpin extends Buildingc {
 	 * @return true whenever the connection is invalid, if true, the graph should not move and should break if it tries.
 	 */
 	default boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
-		return false;
+		return ratio != lastRatio;
 	}
 
 	/**

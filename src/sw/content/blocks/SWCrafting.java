@@ -361,7 +361,7 @@ public class SWCrafting {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-					b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio,
+					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
 					new Axle("-axle") {{
 						x = 8f;
 						y = 0f;

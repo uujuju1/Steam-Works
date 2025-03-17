@@ -179,7 +179,7 @@ public class BeltConveyor extends Block {
 		}
 
 		public float conveyorSpeed() {
-			return spinGraph().speed * spinSection().ratio/360f * movementScale;
+			return spinGraph().speed / (spinGraph().ratios.get(this, 1) * 360f) * movementScale;
 		}
 
 		@Override public SpinModule spin() {
