@@ -1,5 +1,6 @@
 package sw.world.blocks.power;
 
+import arc.math.geom.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import sw.world.interfaces.*;
@@ -20,18 +21,35 @@ public class ShaftTransmission extends AxleBlock {
 		public boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
 			boolean otherHigh = false;
 			for(int i : highEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherHigh = true;
+				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+				if (nearby(edge.x, edge.y) == other) {
+					if (other.spinConfig().allowedEdges == null) {
+						otherHigh = true;
+						break;
+					}
+					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+						if (
+							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+						) otherHigh = true;
+					}
+				}
 			}
 			boolean otherLow = false;
 			for(int i : lowEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherLow = true;
+				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+				if (nearby(edge.x, edge.y) == other) {
+					if (other.spinConfig().allowedEdges == null) {
+						otherLow = true;
+						break;
+					}
+					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+						if (
+							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+						) otherLow = true;
+					}
+				}
 			}
+			relativeToEdge(tile);
 
 			return
 				other instanceof ShaftTransmissionBuild ?
@@ -44,24 +62,48 @@ public class ShaftTransmission extends AxleBlock {
 		public float ratioOf(HasSpin other, HasSpin last, float startRatio, float lastRatio) {
 			boolean otherHigh = false;
 			for(int i : highEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherHigh = true;
+				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+				if (nearby(edge.x, edge.y) == other) {
+					if (other.spinConfig().allowedEdges == null) {
+						otherHigh = true;
+						break;
+					}
+					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+						if (
+							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+						) otherHigh = true;
+					}
+				}
 			}
 			boolean otherLow = false;
 			for(int i : lowEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == other) otherLow = true;
+				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+				if (nearby(edge.x, edge.y) == other) {
+					if (other.spinConfig().allowedEdges == null) {
+						otherLow = true;
+						break;
+					}
+					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+						if (
+							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+						) otherLow = true;
+					}
+				}
 			}
 			boolean lastHigh = false;
 			for(int i : highEdges) {
-				if (nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				) == last) lastHigh = true;
+				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+				if (nearby(edge.x, edge.y) == last) {
+					if (last.spinConfig().allowedEdges == null) {
+						lastHigh = true;
+						break;
+					}
+					for(int lastI : last.spinConfig().allowedEdges[last.rotation()]) {
+						if (
+							last.tile().nearby(Edges.getInsideEdges(last.block().size)[lastI]) == tile.nearby(edge)
+						) lastHigh = true;
+					}
+				}
 			}
 
 			float h = startRatio * (otherHigh ? multiplier : 1f / multiplier);
