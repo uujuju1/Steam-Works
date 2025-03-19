@@ -16,7 +16,6 @@ import sw.graphics.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
-import sw.world.draw.DrawAxles.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
@@ -108,28 +107,33 @@ public class SWProduction {
 			}});
 
 			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
 				new DrawAxles(
-					b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio,
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
+					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
+					new Axle("-axle") {{
+						pixelWidth = 16;
+						pixelHeight = 1;
 
+						x = -6f;
 						y = 4;
 
-						width = 16f;
+						width = 4f;
 						height = 3.5f;
 
 						paletteLight = SWPal.axleLight;
 						paletteMedium = SWPal.axleMedium;
 						paletteDark = SWPal.axleDark;
 					}},
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
+					new Axle("-axle") {{
+						hasIcon = false;
 
-						y = -4;
+						pixelWidth = 16;
+						pixelHeight = 1;
 
-						width = 16f;
+						x = -6f;
+						y = -4f;
+
+						width = 4f;
 						height = 3.5f;
 
 						paletteLight = SWPal.axleLight;
@@ -142,6 +146,8 @@ public class SWProduction {
 				}},
 				new DrawSpinningDrill() {{
 					startAxle = new Axle("-bore-start") {{
+						circular = true;
+
 						pixelWidth = 96;
 						pixelHeight = 7;
 
@@ -149,6 +155,8 @@ public class SWProduction {
 						height = 3.5f;
 					}};
 					middleAxle = new Axle("-bore-middle") {{
+						circular = true;
+
 						pixelWidth = 32;
 						pixelHeight = 7;
 
@@ -156,6 +164,8 @@ public class SWProduction {
 						height = 3.5f;
 					}};
 					endAxle = new Axle("-bore-end") {{
+						circular = true;
+
 						pixelWidth = 8;
 						pixelHeight = 7;
 

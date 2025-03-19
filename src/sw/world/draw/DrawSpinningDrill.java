@@ -8,9 +8,8 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.entities.*;
-import sw.util.*;
+import sw.graphics.*;
 import sw.world.blocks.production.RangedDrill.*;
-import sw.world.draw.DrawAxles.*;
 
 import static mindustry.Vars.*;
 
@@ -54,7 +53,13 @@ public class DrawSpinningDrill extends DrawBlock {
 					dx = face.worldx(),
 					dy = face.worldy();
 
-				SWDraw.rotatingRects(startAxle.regions, dsx, dsy, startAxle.width, startAxle.height, build.rotdeg(), (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl);
+				Draws.palette(startAxle.paletteLight, startAxle.paletteMedium, startAxle.paletteDark);
+				if (startAxle.hasSprites) {
+					Draws.regionCylinder(startAxle.regions, dsx, dsy, startAxle.width, startAxle.height, (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl, build.rotdeg(), startAxle.circular);
+				} else {
+					Draws.polyCylinder(startAxle.polySides, dsx, dsy, startAxle.width, startAxle.height, (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl, build.rotdeg(), startAxle.circular);
+				}
+				Draws.palette();
 
 				if (build.rotation == 1 || build.rotation == 2) Draw.yscl = -1;
 				Draw.rect(startBoreRegion, dsx, dsy, build.rotdeg());
@@ -63,7 +68,13 @@ public class DrawSpinningDrill extends DrawBlock {
 					for(int j = 0; j < dst; j++) {
 						float lx = (dx - dsx)/dst * j + dsx, ly = (dy - dsy)/dst * j + dsy;
 
-						SWDraw.rotatingRects(middleAxle.regions, lx, ly, middleAxle.width, middleAxle.height, rot, spin * middleAxle.spinScl);
+						Draws.palette(middleAxle.paletteLight, middleAxle.paletteMedium, middleAxle.paletteDark);
+						if (middleAxle.hasSprites) {
+							Draws.regionCylinder(middleAxle.regions, lx, ly, middleAxle.width, middleAxle.height, spin * middleAxle.spinScl, rot, middleAxle.circular);
+						} else {
+							Draws.polyCylinder(middleAxle.polySides, lx, ly, middleAxle.width, middleAxle.height, spin * middleAxle.spinScl, rot, middleAxle.circular);
+						}
+						Draws.palette();
 
 						if (build.rotation == 1 || build.rotation == 2) Draw.yscl = -1;
 						Draw.rect((j != dst - 1) ? boreRegion : endBoreRegion, lx, ly, build.rotdeg());
@@ -72,11 +83,24 @@ public class DrawSpinningDrill extends DrawBlock {
 				}
 				for(int j : new int[]{-1, 1, 0}) {
 					Tmp.v1.trns(30f * j + build.rotdeg(), -4f).add(dx, dy);
-					SWDraw.rotatingRects(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, rot + 30f * j, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl);
 
+					Draws.palette(endAxle.paletteLight, endAxle.paletteMedium, endAxle.paletteDark);
+					if (endAxle.hasSprites) {
+						Draws.regionCylinder(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
+					} else {
+						Draws.polyCylinder(endAxle.polySides, Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
+					}
+					Draws.palette();
 
 					Tmp.v1.trns(30f * j + build.rotdeg(), -4f + endAxle.width * 3f/4f).add(dx, dy);
-					SWDraw.rotatingRects(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, rot + 30f * j, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl);
+
+					Draws.palette(endAxle.paletteLight, endAxle.paletteMedium, endAxle.paletteDark);
+					if (endAxle.hasSprites) {
+						Draws.regionCylinder(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
+					} else {
+						Draws.polyCylinder(endAxle.polySides, Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
+					}
+					Draws.palette();
 				}
 				Draw.z(z);
 			}
@@ -103,8 +127,13 @@ public class DrawSpinningDrill extends DrawBlock {
 		boreRegion = Core.atlas.find(block.name + "-bore-middle-top");
 		endBoreRegion = Core.atlas.find(block.name + "-bore-end-top");
 
-		startAxle.regions = Core.atlas.find(block.name + startAxle.suffix).split(startAxle.pixelWidth, startAxle.pixelHeight)[0];
-		endAxle.regions = Core.atlas.find(block.name + endAxle.suffix).split(endAxle.pixelWidth, endAxle.pixelHeight)[0];
-		middleAxle.regions = Core.atlas.find(block.name + middleAxle.suffix).split(middleAxle.pixelWidth, middleAxle.pixelHeight)[0];
+		if (startAxle.hasSprites) startAxle.regions = Core.atlas.find(block.name + startAxle.suffix).split(startAxle.pixelWidth, startAxle.pixelHeight)[0];
+		if (startAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+
+		if (endAxle.hasSprites) endAxle.regions = Core.atlas.find(block.name + endAxle.suffix).split(endAxle.pixelWidth, endAxle.pixelHeight)[0];
+		if (endAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+
+		if (middleAxle.hasSprites) middleAxle.regions = Core.atlas.find(block.name + middleAxle.suffix).split(middleAxle.pixelWidth, middleAxle.pixelHeight)[0];
+		if (middleAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
 	}
 }
