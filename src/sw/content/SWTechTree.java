@@ -12,6 +12,7 @@ import static mindustry.content.TechTree.*;
 import static sw.content.SWItems.*;
 import static sw.content.SWLiquids.*;
 import static sw.content.SWSectorPresets.*;
+import static sw.content.SWUnitTypes.*;
 import static sw.content.blocks.SWCrafting.*;
 import static sw.content.blocks.SWDefense.*;
 import static sw.content.blocks.SWDistribution.*;
@@ -98,6 +99,7 @@ public class SWTechTree {
       // endregion
       //region units
       root("sw-units", mechanicalAssembler, with(new Research(shaftTransmission)), () -> {
+				node(soar);
         node(assemblerArm, with(new OnSector(kettle)), () -> {});
       });
       //endregion
