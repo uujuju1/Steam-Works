@@ -31,6 +31,10 @@ public enum EventHints implements Hint {
 				return false;
 			}
 		}
+	),
+	transmission(
+		() -> false,
+		() -> !Vars.state.rules.defaultTeam.data().getBuildings(SWPower.shaftTransmission).isEmpty()
 	);
 
 	final Boolp complete, shown;

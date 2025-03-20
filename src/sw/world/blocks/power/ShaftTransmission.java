@@ -121,7 +121,18 @@ public class ShaftTransmission extends AxleBlock {
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
 				);
-				if (b instanceof HasSpin build && HasSpin.connects(this, build)) lowBuild = build;
+				if (b instanceof HasSpin build && HasSpin.connects(this, build)) {
+					Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+					if (build.spinConfig().allowedEdges == null) {
+						lowBuild = build;
+						break;
+					}
+					for(int otherI : build.spinConfig().allowedEdges[build.rotation()]) {
+						if (
+							build.tile().nearby(Edges.getInsideEdges(build.block().size)[otherI]) == tile.nearby(edge)
+						) lowBuild = build;
+					}
+				}
 			}
 			HasSpin highBuild = null;
 			for(int i : highEdges) {
@@ -129,7 +140,18 @@ public class ShaftTransmission extends AxleBlock {
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
 					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
 				);
-				if (b instanceof HasSpin build && HasSpin.connects(this, build)) highBuild = build;
+				if (b instanceof HasSpin build && HasSpin.connects(this, build)) {
+					Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
+					if (build.spinConfig().allowedEdges == null) {
+						highBuild = build;
+						break;
+					}
+					for(int otherI : build.spinConfig().allowedEdges[build.rotation()]) {
+						if (
+							build.tile().nearby(Edges.getInsideEdges(build.block().size)[otherI]) == tile.nearby(edge)
+						) highBuild = build;
+					}
+				}
 			}
 			float ratio = spinGraph().ratios.get(
 				(highBuild == null && lowBuild == null ?
