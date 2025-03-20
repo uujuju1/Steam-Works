@@ -25,8 +25,7 @@ public enum EventHints implements Hint {
 		() -> false,
 		() -> {
 			try {
-				SpinConfig config = Reflect.get(SpinConfig.class, Vars.control.input.block, "spinConfig");
-				return config.hasSpin;
+				return ((SpinConfig) Vars.control.input.block.getClass().getField("spinConfig").get(Vars.control.input.block)).hasSpin;
 			} catch (Exception ignored) {
 				return false;
 			}
