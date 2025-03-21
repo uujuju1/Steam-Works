@@ -33,18 +33,18 @@ public class AxleBlock extends Block {
 	}
 
 	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		super.drawPlace(x, y, rotation, valid);
-		spinConfig.drawPlace(this, x, y, rotation, valid);
-	}
-
-	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
 
 	@Override
-	public void getRegionsToOutline(Seq<TextureRegion> out){
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
+	}
+
+	@Override
+	public void getRegionsToOutline(Seq<TextureRegion> out) {
 		drawer.getRegionsToOutline(this, out);
 	}
 
@@ -79,6 +79,9 @@ public class AxleBlock extends Block {
 		}
 		@Override public void drawLight() {
 			drawer.drawLight(this);
+		}
+		@Override public void drawSelect() {
+			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override

@@ -148,12 +148,17 @@ public class MechanicalAssembler extends Block {
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
 		super.drawPlace(x, y, rotation, valid);
-		spinConfig.drawPlace(this, x, y, rotation, valid);
-
 		Drawf.dashRect(valid ? Pal.accent : Pal.remove, getRect(Tmp.r1, x * tilesize + offset, y * tilesize + offset, rotation));
 	}
 
-	@Override public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		drawer.drawPlan(this, plan, list);
+	}
+
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
 		drawer.drawPlan(this, plan, list);
 	}
 
@@ -396,6 +401,9 @@ public class MechanicalAssembler extends Block {
 		}
 		@Override public void drawLight() {
 			drawer.drawLight(this);
+		}
+		@Override public void drawSelect() {
+			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override public float getArmTime() {

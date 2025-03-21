@@ -2,19 +2,15 @@ package sw.world.blocks.production;
 
 import arc.audio.*;
 import arc.func.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -53,9 +49,14 @@ public class SWGenericCrafter extends GenericCrafter {
 	}
 
 	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		super.drawPlace(x, y, rotation, valid);
-		spinConfig.drawPlace(this, x, y, rotation, valid);
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		drawer.drawPlan(this, plan, list);
+	}
+
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
 	}
 
 	@Override
@@ -108,6 +109,10 @@ public class SWGenericCrafter extends GenericCrafter {
 		public void craft() {
 			super.craft();
 			craftSound.at(x, y, 1f, craftSoundVolume);
+		}
+
+		@Override public void drawSelect() {
+			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override public float getForce() {

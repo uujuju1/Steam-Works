@@ -1,6 +1,8 @@
 package sw.world.blocks.defense;
 
+import arc.util.*;
 import arc.util.io.*;
+import mindustry.entities.units.*;
 import mindustry.world.blocks.defense.turrets.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -15,9 +17,14 @@ public class SWTurret extends Turret {
 	}
 
 	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		super.drawPlace(x, y, rotation, valid);
-		spinConfig.drawPlace(this, x, y, rotation, valid);
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		drawDefaultPlanRegion(plan, list);
+	}
+
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawDefaultPlanRegion(plan, list);
 	}
 
 	@Override
@@ -35,9 +42,14 @@ public class SWTurret extends Turret {
 	public class SWTurretBuild extends TurretBuild implements HasSpin {
 		public SpinModule spin = new SpinModule();
 
+		@Override public void drawSelect() {
+			spinConfig.drawPlace(block, tileX(), tileY(), rotation(), true);
+		}
+
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
+			front();
 
 			new SpinGraph().mergeFlood(this);
 		}

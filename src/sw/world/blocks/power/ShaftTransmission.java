@@ -1,6 +1,10 @@
 package sw.world.blocks.power;
 
+import arc.graphics.g2d.*;
 import arc.math.geom.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import sw.world.interfaces.*;
@@ -14,6 +18,23 @@ public class ShaftTransmission extends AxleBlock {
 
 	public ShaftTransmission(String name) {
 		super(name);
+	}
+
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (spinConfig.allowedEdges != null) {
+			for(int i : highEdges) {
+				Draw.rect("sw-icon-spin-edge", (plan.x + Edges.getEdges(size)[spinConfig.allowedEdges[plan.rotation][i]].x) * Vars.tilesize, (plan.y + Edges.getEdges(size)[spinConfig.allowedEdges[plan.rotation][i]].y) * Vars.tilesize, 6, 6, 0);
+			}
+			for(int i : lowEdges) {
+				Draw.rect("sw-icon-spin-edge", (plan.x + Edges.getEdges(size)[spinConfig.allowedEdges[plan.rotation][i]].x) * Vars.tilesize, (plan.y + Edges.getEdges(size)[spinConfig.allowedEdges[plan.rotation][i]].y) * Vars.tilesize, 2, 2, 0);
+			}
+		} else {
+			for(Point2 i : Edges.getEdges(size)) {
+				Draw.rect("sw-icon-spin-edge", (plan.x + i.x) * Vars.tilesize, (plan.y + i.y) * Vars.tilesize, 4, 4, 0);
+			}
+		}
+		drawer.drawPlan(this, plan, list);
 	}
 
 	public class ShaftTransmissionBuild extends AxleBlockBuild {
@@ -56,6 +77,22 @@ public class ShaftTransmission extends AxleBlock {
 				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || (otherHigh && otherLow && other.rotation() != rotation)) :
 				(ratio != lastRatio || (otherHigh && otherLow));
 
+		}
+
+		@Override
+		public void drawSelect() {
+			if (spinConfig.allowedEdges != null) {
+				for(int i : highEdges) {
+					Draw.rect("sw-icon-spin-edge", (tileX() + Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x) * Vars.tilesize, (tileY() + Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y) * Vars.tilesize, 6, 6, 0);
+				}
+				for(int i : lowEdges) {
+					Draw.rect("sw-icon-spin-edge", (tileX() + Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x) * Vars.tilesize, (tileY() + Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y) * Vars.tilesize, 2, 2, 0);
+				}
+			} else {
+				for(Point2 i : Edges.getEdges(size)) {
+					Draw.rect("sw-icon-spin-edge", (tileX() + i.x) * Vars.tilesize, (tileY() + i.y) * Vars.tilesize, 4, 4, 0);
+				}
+			}
 		}
 
 		@Override
