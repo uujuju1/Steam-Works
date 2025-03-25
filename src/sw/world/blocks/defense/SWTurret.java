@@ -49,7 +49,6 @@ public class SWTurret extends Turret {
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-			front();
 
 			new SpinGraph().mergeFlood(this);
 		}
