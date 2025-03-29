@@ -4,6 +4,7 @@ import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 
 public class SWEnvironment {
@@ -48,20 +49,28 @@ public class SWEnvironment {
 		souesiteCrater = new Floor("souesite-crater", 2) {{
 			wall = souesiteWall;
 			decoration = souesiteBoulder;
+
+			attributes.set(Attribute.water, 2f);
 		}};
 		largeSouesiteCrater = new SteamVent("large-souesite-crater") {{
 			variants = 0;
 			effect = Fx.none;
+
+			attributes.set(Attribute.water, 2f);
 		}};
 		souesite = new Floor("souesite", 4) {{
 			wall = souesiteWall;
 			decoration = souesiteBoulder;
 			((SteamVent) largeSouesiteCrater).parent = this;
 			((SteamVent) largeSouesiteCrater).blendGroup = this;
+
+			attributes.set(Attribute.water, 1f);
 		}};
 		fissuredSouesite = new Floor("fissured-souesite", 4) {{
 			wall = souesiteWall;
 			decoration = souesiteBoulder;
+
+			attributes.set(Attribute.water, 1.5f);
 		}};
 
 		agedSouesiteWall = new StaticWall("aged-souesite-wall");

@@ -72,7 +72,7 @@ public class SWTechTree {
           node(mechanicalFracker, () -> {});
         });
         node(liquidCollector, () -> {
-          node(fogCollector, with(
+          node(artesianWell, with(
             new Produce(solvent)
           ), () -> {});
         });

@@ -9,8 +9,10 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
@@ -20,10 +22,14 @@ import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public class SWGenericCrafter extends GenericCrafter {
+public class SWGenericCrafter extends AttributeCrafter {
 	public SpinConfig spinConfig = new SpinConfig();
 
 	public boolean researchConsumers = true;
+
+	public boolean hasAttribute = false;
+
+	public boolean consumerScaleEfficiency = true;
 
 	public float outputRotation = -1;
 	public float outputRotationForce = 0;
@@ -35,6 +41,11 @@ public class SWGenericCrafter extends GenericCrafter {
 
 	public SWGenericCrafter(String name) {
 		super(name);
+		displayEfficiency = false;
+	}
+
+	@Override public boolean canPlaceOn(Tile tile, Team team, int rotation) {
+		return super.canPlaceOn(tile, team, rotation) || !hasAttribute;
 	}
 
 	public void consumeSpin(float start, float end, Interp interp) {
@@ -90,6 +101,8 @@ public class SWGenericCrafter extends GenericCrafter {
 	public void setBars() {
 		super.setBars();
 		spinConfig.addBars(this);
+
+		if (displayEfficiency && !hasAttribute) removeBar("efficiency");
 	}
 
 	@Override
@@ -100,9 +113,11 @@ public class SWGenericCrafter extends GenericCrafter {
 			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
 			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.spinMinuteSecond));
 		}
+
+		if (!hasAttribute) stats.remove(baseEfficiency <= 0.0001f ? Stat.tiles : Stat.affinities);
 	}
 
-	public class SWGenericCrafterBuild extends GenericCrafterBuild implements HasSpin {
+	public class SWGenericCrafterBuild extends AttributeCrafterBuild implements HasSpin {
 		public SpinModule spin = new SpinModule();
 
 		@Override
@@ -113,6 +128,15 @@ public class SWGenericCrafter extends GenericCrafter {
 
 		@Override public void drawSelect() {
 			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+		}
+
+		@Override
+		public float efficiencyMultiplier() {
+			float mul = 1f;
+			if (consumerScaleEfficiency) for(Consume cons : consumers) {
+				mul *= cons.efficiencyMultiplier(this);
+			}
+			return (hasAttribute ? super.efficiencyMultiplier() : 1f) * mul;
 		}
 
 		@Override public float getForce() {

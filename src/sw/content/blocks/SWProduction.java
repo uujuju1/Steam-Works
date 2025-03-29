@@ -1,15 +1,16 @@
 package sw.content.blocks;
 
-import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
@@ -25,7 +26,7 @@ public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
 
-		liquidCollector, fogCollector;
+		liquidCollector, artesianWell;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -141,9 +142,7 @@ public class SWProduction {
 						paletteDark = SWPal.axleDark;
 					}}
 				),
-				new DrawBitmask("-tiles", b -> 0) {{
-					tileWidth = tileHeight = 64;
-				}},
+				new DrawBitmask("-tiles", b -> 0, 64),
 				new DrawSpinningDrill() {{
 					startAxle = new Axle("-bore-start") {{
 						circular = true;
@@ -201,7 +200,7 @@ public class SWProduction {
 			);
 		}};
 
-		fogCollector = new SpaciousGenericCrafter("fog-collector") {{
+		artesianWell = new SWGenericCrafter("artesian-well") {{
 			requirements(Category.production, with(
 				SWItems.iron, 20,
 				Items.graphite, 35
@@ -211,8 +210,21 @@ public class SWProduction {
 				Items.graphite, 70
 			);
 			size = 3;
+			rotate = true;
 
-			ambientSound = Sounds.wind2;
+			consumeSpin(new ConsumeRotation() {{
+				startSpeed = 0.5f;
+				endSpeed = 35f;
+				curve = t -> Mathf.pow(t, 20f) + 1f;
+			}});
+
+			hasAttribute = true;
+			displayEfficiency = true;
+			attribute = Attribute.water;
+			baseEfficiency = 0f;
+			boostScale = 1f / 9f;
+			maxBoost = 2f;
+			minEfficiency = 1f;
 
 			outputLiquids = LiquidStack.with(
 				Liquids.water, 3f/60f
@@ -220,17 +232,82 @@ public class SWProduction {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawLiquidTile(Liquids.water, 2f),
-				new DrawDefault(),
-				new DrawNet() {{
-					radius = 8f;
-					height = 2f;
-
-					netColor = Pal.shadow;
-					coverColor = Color.valueOf("9799A3");
+				new DrawLiquidTile(Liquids.water, 3f) {{
+					alpha = 0.75f;
 				}},
-				new DrawIcon()
+				new DrawParts() {{
+					for (int i : Mathf.signs) parts.add(
+						new RegionPart("-rotator") {{
+							outline = false;
+
+							x = 0f;
+							y = 2f * i;
+
+							moveRot = 360f * i;
+
+							progress = p -> p.recoil / 360f % 1f;
+
+							moves.add(new PartMove(PartProgress.charge.clamp().curve(Interp.circleOut), 0f, 3f * i, 0f));
+						}}
+					);
+				}},
+				new DrawAxles(
+					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
+					new Axle("-axle-in") {{
+						iconOverride = "sw-artesian-well-axle-icon";
+						circular = true;
+
+						pixelWidth = 32;
+						pixelHeight = 7;
+
+						x = y = 0;
+						width = 8f;
+						height = 3.5f;
+					}},
+					new Axle("-axle-out") {{
+						hasIcon = false;
+
+						pixelWidth = 32;
+						pixelHeight = 1;
+
+						x = 8f;
+						y = 0f;
+						width = 8f;
+						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle-out") {{
+						hasIcon = false;
+
+						pixelWidth = 32;
+						pixelHeight = 1;
+
+						x = -8f;
+						y = 0f;
+						width = 8f;
+						height = 3.5f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawBitmask("-tiles", b -> 0, 96)
 			);
+
+			spinConfig = new SpinConfig() {{
+				topSpeed = 1f;
+				resistance = 0.25f/60f;
+				allowedEdges = new int[][]{
+					new int[]{0, 6},
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3}
+				};
+			}};
 		}};
 	}
 }
