@@ -12,6 +12,7 @@ import sw.core.*;
 import sw.dream.*;
 import sw.graphics.*;
 import sw.ui.*;
+import sw.ui.dialog.*;
 
 import java.util.*;
 
@@ -19,6 +20,7 @@ public class SWVars implements Loadable {
 	public static EnvProcess envProcess;
 
 	public static boolean showSectorLaunchDialog = true;
+	public static boolean showTechTreeDialog = true;
 
 	public static boolean isMod = true;
 
@@ -38,7 +40,7 @@ public class SWVars implements Loadable {
 	}
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
-		SWUI.techtreeDialog.clearTree();
+		TechTreeDialog.clearTree();
 		Core.settings.put("settings-sw-techtree-category", -1);
 	}
 	/**cheating privileges*/
@@ -74,8 +76,8 @@ public class SWVars implements Loadable {
 		Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.content.blocks\")");
-		Vars.mods.getScripts().runConsole("importModClass(\"sw.dream\")");
-		Vars.mods.getScripts().runConsole("importModClass(\"sw.dream.events\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.ui\")");
+		Vars.mods.getScripts().runConsole("importModClass(\"sw.audio\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.maps.generators\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.math\")");
