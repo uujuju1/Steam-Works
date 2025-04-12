@@ -15,6 +15,9 @@ buildscript{
 
     repositories{
         if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+
+        maven("https://maven.xpdustry.com/mindustry")
+
         maven("https://jitpack.io")
     }
 }
@@ -82,6 +85,9 @@ allprojects{
 
         // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
         if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+
+        maven("https://maven.xpdustry.com/mindustry")
+
         maven("https://jitpack.io")
     }
 
