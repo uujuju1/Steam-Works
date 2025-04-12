@@ -34,21 +34,6 @@ public class SWPlanets {
 			iconColor = Pal.lancerLaser;
 			startSector = 0;
 
-			itemWhitelist.addAll(
-				SWItems.verdigris,
-				SWItems.iron,
-				SWItems.compound,
-				SWItems.denseAlloy,
-				SWItems.thermite,
-				SWItems.aluminium,
-				SWItems.steel,
-				SWItems.oxycarbide,
-				SWItems.coke,
-				SWItems.iron,
-				Items.graphite,
-				Items.silicon
-			);
-
 			defaultCore = SWStorage.coreScaffold;
 
 			generator = new ModularPlanetGenerator() {{
