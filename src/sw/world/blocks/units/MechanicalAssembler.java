@@ -291,7 +291,8 @@ public class MechanicalAssembler extends Block {
 								}
 
 								for(ItemStack stack : requirement) {
-									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
+//									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
+									req.add("dont forget to fix this :3");
 								}
 
 								req.row();

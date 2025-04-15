@@ -4,10 +4,9 @@ import arc.*;
 import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import sw.gen.*;
+//import sw.gen.*;
 
 public class SWUnitType extends UnitType {
   // region rotor unit stuff
@@ -34,7 +33,7 @@ public class SWUnitType extends UnitType {
   @Override
   public void draw(Unit unit) {
     super.draw(unit);
-    if (unit instanceof Copterc u) drawRotors(u);
+//    if (unit instanceof Copterc u) drawRotors(u);
   }
 
   @Override
@@ -45,9 +44,9 @@ public class SWUnitType extends UnitType {
     Draw.z(z);
   }
 
-  public void drawRotors(Copterc unit) {
-    rotors.each(rotor -> rotor.draw(unit));
-  }
+//  public void drawRotors(Copterc unit) {
+//    rotors.each(rotor -> rotor.draw(unit));
+//  }
 
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
     if (outlines) super.getRegionsToOutline(out);
@@ -130,25 +129,25 @@ public class SWUnitType extends UnitType {
       }
     }
 
-    public void draw(Copterc unit) {
-			float z = Draw.z();
-			Draw.z(z + layerOffset);
-
-      Tmp.v1.trns(unit.rotation() - 90f, x, y).add(unit.x(), unit.y());
-      float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
-
-      if (flipped) Draw.xscl = -1f;
-
-      Draw.alpha(1f - unit.rotorBlur());
-      Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
-      Draw.alpha(unit.rotorBlur() * blurAlpha);
-      Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
-      Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * shineSpeed);
-      Draw.reset();
-
-      if (topRegion.found() && (mirrored || !flipped)) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90f);
-			Draw.z(z);
-    }
+//    public void draw(Copterc unit) {
+//			float z = Draw.z();
+//			Draw.z(z + layerOffset);
+//
+//      Tmp.v1.trns(unit.rotation() - 90f, x, y).add(unit.x(), unit.y());
+//      float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+//
+//      if (flipped) Draw.xscl = -1f;
+//
+//      Draw.alpha(1f - unit.rotorBlur());
+//      Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
+//      Draw.alpha(unit.rotorBlur() * blurAlpha);
+//      Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
+//      Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * shineSpeed);
+//      Draw.reset();
+//
+//      if (topRegion.found() && (mirrored || !flipped)) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90f);
+//			Draw.z(z);
+//    }
 
     public void flip() {
       if (mirrored) x *= -1f;

@@ -151,21 +151,21 @@ project(":tools") {
 }
 
 project(":"){
-    apply(plugin = "com.github.GlennFolker.EntityAnno")
-    configure<EntityAnnoExtension>{
-        modName = project.properties["modName"].toString()
-        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
-        isJitpack = useJitpack
-        revisionDir = layout.projectDirectory.dir("revisions").asFile
-        fetchPackage = modFetch
-        genSrcPackage = modGenSrc
-        genPackage = modGen
-    }
+//    apply(plugin = "com.github.GlennFolker.EntityAnno")
+//    configure<EntityAnnoExtension>{
+//        modName = project.properties["modName"].toString()
+//        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
+//        isJitpack = useJitpack
+//        revisionDir = layout.projectDirectory.dir("revisions").asFile
+//        fetchPackage = modFetch
+//        genSrcPackage = modGenSrc
+//        genPackage = modGen
+//    }
 
     dependencies{
         // Use the entity generation annotation processor.
         compileOnly(entity(":entity"))
-        add("kapt", entity(":entity"))
+//        add("kapt", entity(":entity"))
 
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))

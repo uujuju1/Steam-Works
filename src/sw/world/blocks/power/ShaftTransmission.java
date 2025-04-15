@@ -48,9 +48,9 @@ public class ShaftTransmission extends AxleBlock {
 						otherHigh = true;
 						break;
 					}
-					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
-							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) otherHigh = true;
 					}
 				}
@@ -63,9 +63,9 @@ public class ShaftTransmission extends AxleBlock {
 						otherLow = true;
 						break;
 					}
-					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
-							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) otherLow = true;
 					}
 				}
@@ -74,7 +74,7 @@ public class ShaftTransmission extends AxleBlock {
 
 			return
 				other instanceof ShaftTransmissionBuild ?
-				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || (otherHigh && otherLow && other.rotation() != rotation)) :
+				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || (otherHigh && otherLow && other.asBuilding().rotation != rotation)) :
 				(ratio != lastRatio || (otherHigh && otherLow));
 
 		}
@@ -105,9 +105,9 @@ public class ShaftTransmission extends AxleBlock {
 						otherHigh = true;
 						break;
 					}
-					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
-							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) otherHigh = true;
 					}
 				}
@@ -120,9 +120,9 @@ public class ShaftTransmission extends AxleBlock {
 						otherLow = true;
 						break;
 					}
-					for(int otherI : other.spinConfig().allowedEdges[other.rotation()]) {
+					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
-							other.tile().nearby(Edges.getInsideEdges(other.block().size)[otherI]) == tile.nearby(edge)
+							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) otherLow = true;
 					}
 				}
@@ -135,9 +135,9 @@ public class ShaftTransmission extends AxleBlock {
 						lastHigh = true;
 						break;
 					}
-					for(int lastI : last.spinConfig().allowedEdges[last.rotation()]) {
+					for(int lastI : last.spinConfig().allowedEdges[last.asBuilding().rotation]) {
 						if (
-							last.tile().nearby(Edges.getInsideEdges(last.block().size)[lastI]) == tile.nearby(edge)
+							last.asBuilding().tile.nearby(Edges.getInsideEdges(last.asBuilding().block.size)[lastI]) == tile.nearby(edge)
 						) lastHigh = true;
 					}
 				}
@@ -164,9 +164,9 @@ public class ShaftTransmission extends AxleBlock {
 						lowBuild = build;
 						break;
 					}
-					for(int otherI : build.spinConfig().allowedEdges[build.rotation()]) {
+					for(int otherI : build.spinConfig().allowedEdges[build.asBuilding().rotation]) {
 						if (
-							build.tile().nearby(Edges.getInsideEdges(build.block().size)[otherI]) == tile.nearby(edge)
+							build.asBuilding().tile.nearby(Edges.getInsideEdges(build.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) lowBuild = build;
 					}
 				}
@@ -183,9 +183,9 @@ public class ShaftTransmission extends AxleBlock {
 						highBuild = build;
 						break;
 					}
-					for(int otherI : build.spinConfig().allowedEdges[build.rotation()]) {
+					for(int otherI : build.spinConfig().allowedEdges[build.asBuilding().rotation]) {
 						if (
-							build.tile().nearby(Edges.getInsideEdges(build.block().size)[otherI]) == tile.nearby(edge)
+							build.asBuilding().tile.nearby(Edges.getInsideEdges(build.asBuilding().block.size)[otherI]) == tile.nearby(edge)
 						) highBuild = build;
 					}
 				}

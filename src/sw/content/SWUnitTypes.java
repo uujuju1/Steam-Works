@@ -2,7 +2,6 @@ package sw.content;
 
 import arc.graphics.*;
 import arc.math.geom.*;
-import ent.anno.Annotations.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
@@ -12,18 +11,19 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import sw.entities.*;
 import sw.entities.part.*;
-import sw.gen.*;
 import sw.type.*;
 
 public class SWUnitTypes {
-  @EntityDef({Copterc.class, Unitc.class}) public static UnitType
+//  @EntityDef({Copterc.class, Unitc.class})
+  public static UnitType
 		soar,
 	  fly, spin, gyro;
 
 	public static UnitType
 		barrage;
 
-	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class}) public static UnitType lambda;
+//	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class})
+	public static UnitType lambda;
 
   public static void load() {
 	  //region copter
@@ -39,7 +39,7 @@ public class SWUnitTypes {
       flying = lowAltitude = true;
 
       loopSound = Sounds.cutter;
-      constructor = UnitCopter::create;
+      constructor = UnitEntity::create;
 
       rotors.add(
         new UnitRotor("-rotor", true) {{
@@ -83,7 +83,7 @@ public class SWUnitTypes {
 		  flying = lowAltitude = true;
 
       loopSound = Sounds.cutter;
-		  constructor = UnitCopter::create;
+		  constructor = UnitEntity::create;
 
       rotors.add(
         new UnitRotor("sw-bottom-rotor", false) {{
@@ -144,7 +144,7 @@ public class SWUnitTypes {
       flying = lowAltitude = true;
 
       loopSound = Sounds.cutter;
-      constructor = UnitCopter::create;
+      constructor = UnitEntity::create;
 
       rotors.add(
         new UnitRotor("-rotor", true) {{
@@ -194,7 +194,7 @@ public class SWUnitTypes {
     }};
 
 		soar = new SWUnitType("soar") {{
-			constructor = UnitCopter::create;
+			constructor = UnitEntity::create;
 
 			health = 250;
 			speed = 2f;
@@ -329,7 +329,7 @@ public class SWUnitTypes {
 	    legLength = 14f;
 			legContinuousMove = true;
 
-			constructor = UnitLegsIntangible::create;
+			constructor = LegsUnit::create;
 
 			weapons.add(
 				new Weapon("sw-lambda-weapon") {{

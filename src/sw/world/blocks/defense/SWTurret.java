@@ -3,6 +3,7 @@ package sw.world.blocks.defense;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.units.*;
+import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -43,7 +44,7 @@ public class SWTurret extends Turret {
 		public SpinModule spin = new SpinModule();
 
 		@Override public void drawSelect() {
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation(), true);
+			spinConfig.drawPlace(block, tileX(), tileY(), ((Building) this).rotation, true);
 		}
 
 		@Override
