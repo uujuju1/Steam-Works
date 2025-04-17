@@ -4,7 +4,7 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
-//import sw.gen.*;
+import sw.entities.units.*;
 import sw.world.interfaces.*;
 
 /**
@@ -27,7 +27,7 @@ public class SpinGraph {
 	/**
 	 * Entity of this graph.
 	 */
-//	public final SpinGraphUpdater updater = SpinGraphUpdater.create().setGraph(this);
+	public final SpinGraphUpdater updater = new SpinGraphUpdater().setGraph(this);
 
 	/**
 	 * List of buildings of this graph.
@@ -64,9 +64,9 @@ public class SpinGraph {
 	 */
 	public void checkEntity() {
 		if (builds.size > 0) {
-//			updater.add();
+			updater.add();
 		} else {
-//			updater.remove();
+			updater.remove();
 		}
 	}
 
