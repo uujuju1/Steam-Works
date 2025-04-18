@@ -84,14 +84,14 @@ public class BeltConveyor extends Block {
 		@Override
 		public boolean connectTo(HasSpin other) {
 			boolean hasSpin = spinConfig.hasSpin;
-			boolean sameTeam = other.team() == team();
-			boolean isEdge = !proximity().contains((Building) other);
+			boolean sameTeam = other.asBuilding().team == team;
+			boolean isEdge = !proximity.contains((Building) other);
 			if (spinConfig().allowedEdges != null) {
-				for(int i : spinConfig().allowedEdges[rotation()]) {
-					isEdge |= nearby(Edges.getEdges(block().size)[i].x, Edges.getEdges(block().size)[i].y) == other;
+				for(int i : spinConfig().allowedEdges[rotation]) {
+					isEdge |= nearby(Edges.getEdges(block.size)[i].x, Edges.getEdges(block.size)[i].y) == other;
 				}
 			} else isEdge = true;
-			return hasSpin && sameTeam && (isEdge || (other instanceof BeltConveyorBuild && other.rotation() == rotation));
+			return hasSpin && sameTeam && (isEdge || (other instanceof BeltConveyorBuild && other.asBuilding().rotation == rotation));
 		}
 
 		@Override public void draw() {

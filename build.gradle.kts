@@ -15,6 +15,9 @@ buildscript{
 
     repositories{
         if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+
+        maven("https://maven.xpdustry.com/mindustry")
+
         maven("https://jitpack.io")
     }
 }
@@ -82,6 +85,9 @@ allprojects{
 
         // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
         if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
+
+        maven("https://maven.xpdustry.com/mindustry")
+
         maven("https://jitpack.io")
     }
 
@@ -145,21 +151,21 @@ project(":tools") {
 }
 
 project(":"){
-    apply(plugin = "com.github.GlennFolker.EntityAnno")
-    configure<EntityAnnoExtension>{
-        modName = project.properties["modName"].toString()
-        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
-        isJitpack = useJitpack
-        revisionDir = layout.projectDirectory.dir("revisions").asFile
-        fetchPackage = modFetch
-        genSrcPackage = modGenSrc
-        genPackage = modGen
-    }
+//    apply(plugin = "com.github.GlennFolker.EntityAnno")
+//    configure<EntityAnnoExtension>{
+//        modName = project.properties["modName"].toString()
+//        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
+//        isJitpack = useJitpack
+//        revisionDir = layout.projectDirectory.dir("revisions").asFile
+//        fetchPackage = modFetch
+//        genSrcPackage = modGenSrc
+//        genPackage = modGen
+//    }
 
     dependencies{
         // Use the entity generation annotation processor.
         compileOnly(entity(":entity"))
-        add("kapt", entity(":entity"))
+//        add("kapt", entity(":entity"))
 
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))

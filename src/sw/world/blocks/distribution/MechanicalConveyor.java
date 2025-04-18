@@ -11,7 +11,6 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
-import sw.util.*;
 
 import static mindustry.Vars.*;
 
@@ -73,7 +72,7 @@ public class MechanicalConveyor extends Conveyor {
 
 		@Override
 		public boolean acceptItem(Building source, Item item){
-			return super.acceptItem(source, item) && (!armored || (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile(), tile).relativeTo(tile) == rotation));
+			return super.acceptItem(source, item) && (!armored || (source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation));
 		}
 
 		@Override

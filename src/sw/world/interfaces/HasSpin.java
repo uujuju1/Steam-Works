@@ -9,7 +9,10 @@ import sw.world.graph.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
 
-public interface HasSpin extends Buildingc {
+public interface HasSpin {
+	default Building asBuilding() {
+		return (Building) this;
+	}
 	/**
 	 * Method indicating if a gas building can connect to another building. Mutually inclusive.
 	 */
@@ -24,18 +27,21 @@ public interface HasSpin extends Buildingc {
 	 */
 	default boolean connectTo(HasSpin other) {
 		boolean hasSpin = spinConfig().hasSpin;
-		boolean sameTeam = other.team() == team();
-		boolean isEdge = !proximity().contains((Building) other);
+		boolean sameTeam = other.asBuilding().team == asBuilding().team;
+		boolean isEdge = !asBuilding().proximity.contains((Building) other);
 		if (spinConfig().allowedEdges != null) {
-			for(int i : spinConfig().allowedEdges[rotation()]) {
-				isEdge |= nearby(Edges.getEdges(block().size)[i].x, Edges.getEdges(block().size)[i].y) == other;
+			for(int i : spinConfig().allowedEdges[asBuilding().rotation]) {
+				isEdge |= asBuilding().nearby(
+					Edges.getEdges(asBuilding().block.size)[i].x,
+					Edges.getEdges(asBuilding().block.size)[i].y
+				) == other;
 			}
 		} else isEdge = true;
 		return hasSpin && sameTeam && isEdge;
 	}
 
 	default boolean consumesSpin() {
-		return block().findConsumer(c -> c instanceof ConsumeRotation) != null;
+		return asBuilding().block.findConsumer(c -> c instanceof ConsumeRotation) != null;
 	}
 
 	/**
@@ -98,7 +104,7 @@ public interface HasSpin extends Buildingc {
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
-		return proximity()
+		return asBuilding().proximity
 			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
 			     .map(a -> ((HasSpin) a)
 				   .getSpinGraphDestination(this));
