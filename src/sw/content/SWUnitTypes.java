@@ -1,27 +1,18 @@
 package sw.content;
 
-import arc.graphics.*;
-import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
-import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import sw.entities.*;
-import sw.entities.part.*;
 import sw.type.*;
 
 public class SWUnitTypes {
   public static UnitType
 		soar,
-	  fly, spin, gyro;
-
-	public static UnitType
-		barrage;
-
-	public static UnitType lambda;
+	  fly, spin, gyro,
+	  lambda;
 
   public static void load() {
 	  //region copter
@@ -247,60 +238,6 @@ public class SWUnitTypes {
 		}};
 		//endregion
 
-	  //region tanks
-	  barrage = new SWUnitType("barrage") {{
-			constructor = TankUnit::create;
-
-		  omniMovement = false;
-		  health = 250;
-		  speed = 0.75f;
-		  rotateSpeed = 3f;
-
-			wrecks = 4;
-
-			hitSize = 8;
-
-			treadFrames = 8;
-			treadRects = new Rect[]{
-				new Rect(6, -28, 16, 56)
-			};
-
-			weapons.add(new Weapon("sw-barrage-cannon") {{
-				x = y = 0;
-
-				reload = 300f;
-
-				parts.add(
-					new AxlePart() {{
-						axle = new Axle("-axle") {{
-							y = 0.75f;
-
-							width = 3.5f;
-							height = 12f;
-
-							circular = true;
-							polySides = 3;
-							hasSprites = false;
-
-							paletteLight = Color.valueOf("B0BAC0");
-							paletteMedium = Color.valueOf("B0BAC0");
-							paletteDark = Color.valueOf("B0BAC0");
-						}};
-					}},
-					new RegionPart("") {{
-						layerOffset = 0.001f;
-					}}
-				);
-
-				shoot = new ShootPattern() {{
-					firstShotDelay = 60f;
-				}};
-
-				mirror = false;
-			}});
-	  }};
-	  //endregion
-
     lambda = new SWUnitType("lambda") {{
 			health = 300;
 			speed = 1;
@@ -311,7 +248,6 @@ public class SWUnitTypes {
 			mineTier = 1;
 			mineSpeed = 5;
 	    coreUnitDock = lowAltitude = true;
-			//shocking
 			flying = true;
 
 			legCount = 8;
@@ -321,8 +257,6 @@ public class SWUnitTypes {
 	    legExtension = -2f;
 	    legLength = 14f;
 			legContinuousMove = true;
-
-			constructor = LegsUnit::create;
 
 			weapons.add(
 				new Weapon("sw-lambda-weapon") {{

@@ -10,6 +10,8 @@ public class EntityMaps {
 	public static void load() {
 		registerEntity(CopterUnit.class, CopterUnit::new);
 		registerUnit("sw-soar", CopterUnit::new);
+		registerEntity(CollisionlessLegsUnit.class, CollisionlessLegsUnit::new);
+		registerUnit("sw-lambda", CollisionlessLegsUnit::new);
 	}
 
 	public static <T extends Entityc> void registerEntity(Class<T> type, Prov<T> provider) {
