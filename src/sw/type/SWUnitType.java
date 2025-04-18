@@ -6,8 +6,10 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import sw.audio.*;
 import sw.entities.*;
 import sw.entities.units.*;
 //import sw.gen.*;
@@ -15,11 +17,7 @@ import sw.entities.units.*;
 public class SWUnitType extends UnitType {
   // region rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
-  public float rotorSlowDown = 0.014f;
   public float rotateDeathSpeed = 1f;
-  public Sound rotorSound = Sounds.none;
-  public float rotorSoundVolumeFrom = 1f;
-  public float rotorSoundVolumeTo = 0.1f;
   // endregion
 
   //general unit stuff
@@ -119,6 +117,9 @@ public class SWUnitType extends UnitType {
      */
     public boolean followParent = true;
 
+    public Sound rotorSound = ModSounds.helicopter;
+    public float rotorSoundVolume = 1f;
+
     public String name;
 
     public TextureRegion region, topRegion, blurRegion, shineRegion;
@@ -177,6 +178,13 @@ public class SWUnitType extends UnitType {
 			mount.shineRotation += (shineSpeed * mount.opacity * Time.delta);
 
 			mount.opacity = Mathf.approachDelta(mount.opacity, unit.dead ? 0f : 1f, slowDownSpeed);
+
+      if (followParent) {
+        Tmp.v1.trns(unit.rotation - 90f, x, y);
+      } else Tmp.v1.setZero();
+      Tmp.v1.add(unit);
+
+      Vars.control.sound.loop(rotorSound, Tmp.v1, rotorSoundVolume * mount.opacity);
     }
   }
 }

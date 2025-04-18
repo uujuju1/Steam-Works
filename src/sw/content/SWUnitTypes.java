@@ -14,7 +14,6 @@ import sw.entities.part.*;
 import sw.type.*;
 
 public class SWUnitTypes {
-//  @EntityDef({Copterc.class, Unitc.class})
   public static UnitType
 		soar,
 	  fly, spin, gyro;
@@ -22,7 +21,6 @@ public class SWUnitTypes {
 	public static UnitType
 		barrage;
 
-//	@EntityDef({Intangiblec.class, Legsc.class, Unitc.class})
 	public static UnitType lambda;
 
   public static void load() {
@@ -194,8 +192,6 @@ public class SWUnitTypes {
     }};
 
 		soar = new SWUnitType("soar") {{
-//			constructor = UnitEntity::create;
-
 			health = 250;
 			speed = 2f;
 			accel = drag = 0.05f;
@@ -206,9 +202,6 @@ public class SWUnitTypes {
 
       hitSize = 10;
 			engineSize = 0f;
-			rotorSound = Sounds.cutter;
-			rotorSoundVolumeFrom = 0.05f;
-			rotorSoundVolumeTo = 0f;
 
 			flying = lowAltitude = true;
 
