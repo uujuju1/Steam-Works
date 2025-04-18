@@ -3,9 +3,13 @@ package sw.type;
 import arc.*;
 import arc.audio.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import sw.entities.*;
+import sw.entities.units.*;
 //import sw.gen.*;
 
 public class SWUnitType extends UnitType {
@@ -33,7 +37,8 @@ public class SWUnitType extends UnitType {
   @Override
   public void draw(Unit unit) {
     super.draw(unit);
-//    if (unit instanceof Copterc u) drawRotors(u);
+
+    if (unit instanceof CopterUnit u) drawRotors(u);
   }
 
   @Override
@@ -44,9 +49,11 @@ public class SWUnitType extends UnitType {
     Draw.z(z);
   }
 
-//  public void drawRotors(Copterc unit) {
-//    rotors.each(rotor -> rotor.draw(unit));
-//  }
+  public void drawRotors(CopterUnit unit) {
+    for (RotorMount mount : unit.rotors) {
+      mount.rotor.draw(unit, mount);
+    }
+  }
 
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
     if (outlines) super.getRegionsToOutline(out);
@@ -82,7 +89,7 @@ public class SWUnitType extends UnitType {
     /**
      * Speed
      */
-    public float speed = 1f, shineSpeed = -1f;
+    public float speed = 1f, shineSpeed = -1f, slowDownSpeed = 0.005f;
     /**
      * Amount of blades this rotor has
      */
@@ -129,25 +136,25 @@ public class SWUnitType extends UnitType {
       }
     }
 
-//    public void draw(Copterc unit) {
-//			float z = Draw.z();
-//			Draw.z(z + layerOffset);
-//
-//      Tmp.v1.trns(unit.rotation() - 90f, x, y).add(unit.x(), unit.y());
-//      float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
-//
-//      if (flipped) Draw.xscl = -1f;
-//
-//      Draw.alpha(1f - unit.rotorBlur());
-//      Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
-//      Draw.alpha(unit.rotorBlur() * blurAlpha);
-//      Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * speed);
-//      Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + Time.time * shineSpeed);
-//      Draw.reset();
-//
-//      if (topRegion.found() && (mirrored || !flipped)) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90f);
-//			Draw.z(z);
-//    }
+    public void draw(Unit unit, RotorMount mount) {
+			float z = Draw.z();
+			Draw.z(z + layerOffset);
+
+      Tmp.v1.trns(unit.rotation() - 90f, x, y).add(unit);
+      float drawX = Tmp.v1.x, drawY = Tmp.v1.y;
+
+      if (flipped) Draw.xscl = -1f;
+
+      Draw.alpha(1f - mount.opacity);
+      Draw.rect(region, drawX, drawY, (followParent ? unit.rotation() : 0f) + mount.rotation);
+      Draw.alpha(mount.opacity * blurAlpha);
+      Draw.rect(blurRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + mount.rotation);
+      Draw.rect(shineRegion, drawX, drawY, (followParent ? unit.rotation() : 0f) + mount.shineRotation);
+      Draw.reset();
+
+      if (topRegion.found() && (mirrored || !flipped)) Draw.rect(topRegion, drawX, drawY, unit.rotation() - 90f);
+			Draw.z(z);
+    }
 
     public void flip() {
       if (mirrored) x *= -1f;
@@ -163,6 +170,13 @@ public class SWUnitType extends UnitType {
       topRegion = Core.atlas.find(regionName + "-top");
       blurRegion = Core.atlas.find(regionName + "-blur");
       shineRegion = Core.atlas.find(regionName + "-shine");
+    }
+
+    public void update(Unit unit, RotorMount mount) {
+			mount.rotation += (speed * mount.opacity * Time.delta);
+			mount.shineRotation += (shineSpeed * mount.opacity * Time.delta);
+
+			mount.opacity = Mathf.approachDelta(mount.opacity, unit.dead ? 0f : 1f, slowDownSpeed);
     }
   }
 }

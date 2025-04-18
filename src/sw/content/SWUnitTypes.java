@@ -194,7 +194,7 @@ public class SWUnitTypes {
     }};
 
 		soar = new SWUnitType("soar") {{
-			constructor = UnitEntity::create;
+//			constructor = UnitEntity::create;
 
 			health = 250;
 			speed = 2f;

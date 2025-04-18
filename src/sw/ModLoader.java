@@ -2,6 +2,7 @@ package sw;
 
 import mindustry.mod.*;
 import sw.core.*;
+import sw.entities.units.*;
 //import sw.gen.*;
 
 @SuppressWarnings("unused")
@@ -18,7 +19,7 @@ public class ModLoader extends Mod {
 
   @Override
   public void loadContent() {
-//    EntityRegistry.register();
+    EntityMaps.load();
     SWVars.loadContent();
   }
 }

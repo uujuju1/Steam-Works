@@ -61,7 +61,7 @@ public class SWVars implements Loadable {
 			"""
 				function importModClass(name){
 
-				let constr = Class.forName("rhino.NativeJavaPackage").getDeclaredConstructor(java.lang.Boolean.TYPE, java.lang.String, ClassLoader);
+				let constr = java.lang.Class.forName("rhino.NativeJavaPackage").getDeclaredConstructor(java.lang.Boolean.TYPE, java.lang.String, java.lang.ClassLoader);
 				constr.setAccessible(true);
 
 				let p = constr.newInstance(true, name, Vars.mods.mainLoader());
