@@ -14,6 +14,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -247,31 +248,6 @@ public class MechanicalAssembler extends Block {
             }).left();
 
 						planTable.pane(Styles.smallPane, req -> {
-//							for(int i = 0; i < plan.requirements.length; i++) {
-//								ItemStack[] requirement = plan.requirements[i];
-//
-//								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
-//									Stack icon = new Stack();
-//
-//									if (i >= type.wrecks) {
-//										icon.add(new Image(type.uiIcon).setScaling(Scaling.fit));
-//									} else {
-//										for(int j = 0; j < i; j++) {
-//											icon.add(new Image(type.wreckRegions[j]).setScaling(Scaling.fit));
-//										}
-//									}
-//
-//									req.add(icon).height(40).pad(10).left().growX();
-//								} else {
-//									req.image(plan.unit.uiIcon).height(40).pad(10).left().scaling(Scaling.fit).growX();
-//								}
-//
-//								for(ItemStack stack : requirement) {
-//									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
-//								}
-//
-//								req.row();
-//              }
 							plan.steps.each((requirement, pos) -> {
 
 								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
@@ -291,8 +267,16 @@ public class MechanicalAssembler extends Block {
 								}
 
 								for(ItemStack stack : requirement) {
-//									req.add(new ItemDisplay(stack.item, stack.amount, false)).pad(5).right();
-									req.add("dont forget to fix this :3");
+									req.stack(
+										new Table(o -> {
+											o.left();
+											o.image(stack.item.uiIcon).size(32f).scaling(Scaling.fit);
+										}),
+										new Table(i -> {
+											i.left().bottom();
+											i.add(stack.amount > 1000 ? UI.formatAmount(stack.amount) : stack.amount + "").style(Styles.outlineLabel);
+										})
+									).pad(5f).right();
 								}
 
 								req.row();
