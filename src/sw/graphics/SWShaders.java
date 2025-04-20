@@ -8,9 +8,11 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
+import sw.*;
 
 public class SWShaders {
-	public static PitfallShader pitfall, chasm;
+	public static PitfallShader pitfall;
+	public static ChasmShader chasm;
 
 	public static UIShader sectorDialogBackground, techtreeBackground;
 
@@ -24,7 +26,7 @@ public class SWShaders {
 		pitfallLayer = new CacheLayer.ShaderLayer(pitfall);
 		CacheLayer.add(pitfallLayer);
 
-		chasm = new PitfallShader("chasm");
+		chasm = new ChasmShader("chasm");
 		chasmLayer = new CacheLayer.ShaderLayer(chasm);
 		CacheLayer.add(chasmLayer);
 	}
@@ -46,7 +48,7 @@ public class SWShaders {
 		}
 	}
 
-	public static class PitfallShader extends Shader {
+	public static class ChasmShader extends Shader {
 		TextureRegion toplayer;
 		TextureRegion bottomlayer;
 		TextureRegion truss;
@@ -61,7 +63,7 @@ public class SWShaders {
 		public float sampleLen = 20;
 		public float epsilonp1 = 1.01f;
 
-		public PitfallShader(String frag) {
+		public ChasmShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
 			loadNoise();
 		}
@@ -90,12 +92,14 @@ public class SWShaders {
 			setUniformf("bvariants", bottomlayer.width/32f);
 			setUniformf("u_truss", truss.u, truss.v, truss.u2, truss.v2);
 
+			setUniformf("u_maskSize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
+
 			setUniformf("samplelen", sampleLen);
 			setUniformf("epsilonp1", epsilonp1);
 
 			texture.bind(2);
 			noiseTex.bind(1);
-			Vars.renderer.effectBuffer.getTexture().bind(0);
+			SWVars.renderer.pitfall.bind(0);
 			setUniformi("u_noise", 1);
 			setUniformi("u_texture2", 2);
 		}
@@ -109,6 +113,34 @@ public class SWShaders {
 
 		public String textureName(){
 			return noiseTexName;
+		}
+	}
+
+	public static class PitfallShader extends Shader {
+		public float spacing = 1;
+		public Vec2 scl = new Vec2(3, 1);
+		public Vec2 clip = new Vec2();
+
+		public PitfallShader(String frag) {
+			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
+		}
+
+		@Override
+		public void apply(){
+			setUniformf("u_campos", Core.camera.position.x, Core.camera.position.y);
+			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+			setUniformf("u_time", Time.time);
+
+			setUniformf("u_maskSize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
+
+			setUniformf("u_spacing", spacing);
+			setUniformf("u_scl", scl.x / Vars.renderer.getDisplayScale(), scl.y / Vars.renderer.getDisplayScale());
+			setUniformf("u_clip", clip.x, clip.y);
+
+			Vars.renderer.effectBuffer.getTexture().bind(0);
+			SWVars.renderer.pitfall.bind(1);
+
+			setUniformi("u_mask", 1);
 		}
 	}
 }

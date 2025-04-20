@@ -7,6 +7,7 @@ import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.graphics.*;
+import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
@@ -113,12 +114,12 @@ public class SWEnvironment {
 			wall = concreteWall;
 		}};
 
-		pitfall = new Floor("pitfall", 0) {{
+		pitfall = new Pitfall("pitfall") {{
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
 		}};
 
-		gratingPitfall = new Floor("pitfall-grating", 0) {{
+		gratingPitfall = new Pitfall("pitfall-grating") {{
 			cacheLayer = SWShaders.chasmLayer;
 			blendGroup = concrete;
 		}};

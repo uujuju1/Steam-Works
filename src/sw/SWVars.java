@@ -19,6 +19,8 @@ import java.util.*;
 public class SWVars implements Loadable {
 	public static EnvProcess envProcess;
 
+	public static SWRenderer renderer;
+
 	public static boolean showSectorLaunchDialog = true;
 	public static boolean showTechTreeDialog = true;
 
@@ -34,7 +36,8 @@ public class SWVars implements Loadable {
 			SWStyles.load();
 			ModSettings.load();
 			envProcess = new EnvProcess();
-//			SWShaders.load();
+			renderer = new SWRenderer();
+			renderer.init();
 			SWUI.load();
 		}
 	}
