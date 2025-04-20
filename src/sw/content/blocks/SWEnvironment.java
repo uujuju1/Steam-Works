@@ -6,6 +6,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
 import mindustry.world.meta.*;
 import sw.content.*;
+import sw.graphics.*;
 
 public class SWEnvironment {
 	public static Block
@@ -14,6 +15,10 @@ public class SWEnvironment {
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
 	agedSouesite, agedSouesiteWall,
+
+	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
+
+	pitfall, gratingPitfall,
 
 	tuff, shapedTuff, tuffWall, columnarTuff, tuffConcretion, tuffPile,
 	tuffShallowerSolvent, tuffShallowSolvent,
@@ -89,6 +94,33 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+		}};
+		//endregion
+
+		//region concrete
+
+		concreteWall = new StaticWall("concrete-wall");
+		concrete = new Floor("concrete", 4) {{
+			wall = concreteWall;
+		}};
+		overrunConcrete = new Floor("overrun-concrete", 4) {{
+			wall = concreteWall;
+		}};
+		smoothConcrete = new Floor("smooth-concrete", 4) {{
+			wall = concreteWall;
+		}};
+		concreteStripes = new Floor("concrete-stripes", 4) {{
+			wall = concreteWall;
+		}};
+
+		pitfall = new Floor("pitfall", 0) {{
+			cacheLayer = SWShaders.pitfallLayer;
+			blendGroup = concrete;
+		}};
+
+		gratingPitfall = new Floor("pitfall-grating", 0) {{
+			cacheLayer = SWShaders.chasmLayer;
+			blendGroup = concrete;
 		}};
 		//endregion
 

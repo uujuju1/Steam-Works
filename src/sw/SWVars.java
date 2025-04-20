@@ -34,7 +34,7 @@ public class SWVars implements Loadable {
 			SWStyles.load();
 			ModSettings.load();
 			envProcess = new EnvProcess();
-			SWShaders.load();
+//			SWShaders.load();
 			SWUI.load();
 		}
 	}

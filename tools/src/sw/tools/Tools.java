@@ -46,6 +46,7 @@ public class Tools {
 		// create a mockup mindustry to load the mod
 		Vars.headless = true;
 		SWVars.isMod = false;
+		Core.app = new MockApplication();
 		Core.files = new MockFiles();
 		Core.assets = new AssetManager(Vars.tree = new FileTree() {
 			@Override
