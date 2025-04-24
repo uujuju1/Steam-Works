@@ -117,9 +117,9 @@ public class SWShaders {
 	}
 
 	public static class PitfallShader extends Shader {
-		public float spacing = 1;
-		public Vec2 scl = new Vec2(3, 1);
-		public Vec2 clip = new Vec2();
+		public float spacing = 2;
+		public Vec2 scl = new Vec2(1, 1);
+		public Vec2 clip = new Vec2(10, 12);
 
 		public PitfallShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
@@ -134,7 +134,8 @@ public class SWShaders {
 			setUniformf("u_maskSize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
 
 			setUniformf("u_spacing", spacing);
-			setUniformf("u_scl", scl.x / Vars.renderer.getDisplayScale(), scl.y / Vars.renderer.getDisplayScale());
+			setUniformf("u_camScl", Vars.renderer.getDisplayScale());
+			setUniformf("u_scl", scl.x, scl.y);
 			setUniformf("u_clip", clip.x, clip.y);
 
 			Vars.renderer.effectBuffer.getTexture().bind(0);
