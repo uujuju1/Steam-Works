@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -27,6 +28,7 @@ public class SWEnvironment {
 	solvent,
 	solventCrystal,
 
+	truss, beam,
 	plate, plateCross, plateVent, plateWall;
 
 	public static void load() {
@@ -99,7 +101,6 @@ public class SWEnvironment {
 		//endregion
 
 		//region concrete
-
 		concreteWall = new StaticWall("concrete-wall");
 		concrete = new Floor("concrete", 4) {{
 			wall = concreteWall;
@@ -232,6 +233,20 @@ public class SWEnvironment {
 
 		// region plate
 		plateWall = new StaticWall("plate-wall");
+
+		truss = new SwayingBeam("truss") {{
+			baseRotation = -60f;
+			rotationOffset = 30f;
+			swayScale = 4 * Mathf.pi * 60 * 4;
+			swayMagnitude = 30f;
+		}};
+		beam = new SwayingBeam("beam") {{
+			baseRotation = -67.5f;
+			rotationOffset = 22.5f;
+			swayScale = 4 * Mathf.pi * 60 * 6;
+			swayMagnitude = 22.5f;
+		}};
+
 		plate = new Floor("plate", 4) {{
 			wall = plateWall;
 		}};
