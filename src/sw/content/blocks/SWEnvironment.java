@@ -28,8 +28,9 @@ public class SWEnvironment {
 	solvent,
 	solventCrystal,
 
+	plateWall, agedPlateWall,
 	truss, beam,
-	plate, plateCross, plateVent, plateWall;
+	plate, waterloggedPlate, agedPlate, plateCross, plateVent;
 
 	public static void load() {
 		// region ores
@@ -233,7 +234,7 @@ public class SWEnvironment {
 
 		// region plate
 		plateWall = new StaticWall("plate-wall");
-
+		agedPlateWall = new StaticWall("aged-plate-wall");
 		truss = new SwayingBeam("truss") {{
 			baseRotation = -60f;
 			rotationOffset = 30f;
@@ -246,9 +247,15 @@ public class SWEnvironment {
 			swayScale = 4 * Mathf.pi * 60 * 6;
 			swayMagnitude = 22.5f;
 		}};
-
 		plate = new Floor("plate", 4) {{
 			wall = plateWall;
+		}};
+		waterloggedPlate = new Floor("waterlogged-plate", 4) {{
+			wall = plateWall;
+			cacheLayer = CacheLayer.water;
+		}};
+		agedPlate = new Floor("aged-plate", 4) {{
+			wall = agedPlateWall;
 		}};
 		plateVent = new Floor("plate-vent", 0) {{
 			wall = plateWall;
