@@ -9,6 +9,7 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
 import sw.*;
+import sw.content.blocks.*;
 
 public class SWShaders {
 	public static PitfallShader pitfall;
@@ -117,9 +118,7 @@ public class SWShaders {
 	}
 
 	public static class PitfallShader extends Shader {
-		public float spacing = 2;
-		public Vec2 scl = new Vec2(1, 1);
-		public Vec2 clip = new Vec2(10, 12);
+		public Vec2 clip = new Vec2(0, 64);
 
 		public PitfallShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
@@ -131,17 +130,33 @@ public class SWShaders {
 			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
 			setUniformf("u_time", Time.time);
 
-			setUniformf("u_maskSize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
+			Core.camera.project(Tmp.v1.setZero());
+			setUniformf(
+				"u_maskprojectionuv",
+				Tmp.v1.x / Core.graphics.getWidth(),
+				Tmp.v1.y / Core.graphics.getHeight()
+			);
+			Core.camera.project(Tmp.v1.set(Vars.world.unitWidth(), Vars.world.unitWidth()));
+			setUniformf(
+				"u_maskprojectionuv2",
+				Tmp.v1.x / Core.graphics.getWidth(),
+				Tmp.v1.y / Core.graphics.getHeight()
+			);
 
-			setUniformf("u_spacing", spacing);
-			setUniformf("u_camScl", Vars.renderer.getDisplayScale());
-			setUniformf("u_scl", scl.x, scl.y);
+			setUniformf("u_masksize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
+
 			setUniformf("u_clip", clip.x, clip.y);
+
+			setUniformf("u_camscale", Vars.renderer.getDisplayScale());
 
 			Vars.renderer.effectBuffer.getTexture().bind(0);
 			SWVars.renderer.pitfall.bind(1);
-
 			setUniformi("u_mask", 1);
+
+			TextureRegion plate = SWEnvironment.plate.variantRegions[0];
+			plate.texture.bind(2);
+			setUniformi("u_wall", 2);
+			setUniformf("u_walluv", plate.u, plate.v, plate.u2, plate.v2);
 		}
 	}
 }

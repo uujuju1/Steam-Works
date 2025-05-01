@@ -2,15 +2,16 @@
 
 uniform sampler2D u_texture;
 uniform sampler2D u_mask;
-uniform vec2 u_maskSize;
 
-uniform vec2 u_scl;
+uniform sampler2D u_wall;
+uniform vec4 u_walluv;
 
-uniform float u_spacing;
-
-uniform float u_camScl;
+uniform vec2 u_maskprojectionuv;
+uniform vec2 u_maskprojectionuv2;
+uniform vec2 u_masksize;
 
 uniform vec2 u_clip;
+uniform float u_camscale;
 
 uniform vec2 u_campos;
 uniform vec2 u_resolution;
@@ -18,75 +19,93 @@ uniform float u_time;
 
 varying vec2 v_texCoords;
 
-const int dstPrecision = 4;
-const float dstSpacing = 8.0;
+const int marchPrecision = 6;
 
-float interp(float a) {
-    return 1 - pow(1 - a, u_spacing);
+float interpCircle(float a) {
+    return sin(a * 3.14/2.0);
 }
 
-float dst(vec2 start, vec2 dir, float step, vec2 res, float maxLen) {
-    start = start * res;
-    float len = 0;
-    float curStep = step;
-    int curPrecision = 0;
+float map(float value, float froma, float toa, float fromb, float tob) {
+    return fromb + (value - froma) * (tob - fromb) / (toa - froma);
+}
+vec2 mapVec2(vec2 value, vec2 froma, vec2 toa, vec2 fromb, vec2 tob) {
+    return fromb + (value - froma) * (tob - fromb) / (toa - froma);
+}
+
+vec2 projectMask(vec2 coords) {
+    return mapVec2(
+        coords,
+        u_maskprojectionuv,
+        u_maskprojectionuv2,
+        vec2(0.0),
+        vec2(1.0)
+    );
+}
+vec2 unProjectMask(vec2 coords) {
+    return mapVec2(
+        coords,
+        vec2(0.0),
+        vec2(1.0),
+        u_maskprojectionuv,
+        u_maskprojectionuv2
+    );
+}
+
+vec2 raycast(vec2 center, vec2 pos, float step, float maxLength) {
+    vec2 worldCoords = pos * u_masksize;
+    vec2 worldCenter = center * u_masksize;
+
+    vec2 dir = normalize(worldCoords - worldCenter);
+
     bool reverse = false;
-    for(float i = 0; i < maxLen * 2; i++) {
-        len += curStep;
-        start += dir * curStep;
-        vec4 col = texture2D(u_mask, start / res);
+    int level = 0;
+    for(float i = 0; i < maxLength * 2; i++) {
+        if (length(worldCoords - pos * u_masksize) > maxLength || level > marchPrecision) {
+            break;
+        }
+        worldCoords += dir * step;
+
+        vec4 col = texture2D(u_mask, worldCoords / u_masksize);
+
         if (
-            (col.w < 0.9 && !reverse) ||
-            (col.w > 0.9 && reverse)
+            (col.a < 0.9 && !reverse) ||
+            (col.a > 0.9 && reverse)
         ) {
             reverse = !reverse;
-            curStep *= -0.5;
-            curPrecision++;
-            if (curPrecision > dstPrecision) break;
-            continue;
+            level++;
+            step *= -0.5;
         }
-        if (len > maxLen) break;
     }
 
-    return len;
+    return worldCoords;
 }
 
-vec2 dstToZ(vec2 dst, vec2 pos, vec2 center) {
-    vec2 diff = (pos - center) * u_resolution;
-    vec2 diffTotal = diff + dst;
-
-    vec2 p = diff/diffTotal;
-
-    return vec2(1.0) - p;
-}
-
-// Original by Xelo
 void main() {
     vec2 uv = v_texCoords;
-    vec2 ir = vec2(1.0)/u_resolution;
-    vec2 ar = u_maskSize / u_resolution;
+    vec2 projectedUV = projectMask(uv);
 
-    vec2 pos = (uv + ((u_campos - u_resolution / 2.0) * ir)) / ar;
-    vec2 center = (vec2(0.5) + ((u_campos - u_resolution / 2.0) * ir)) / ar;
+    vec4 baseColor = texture2D(u_texture, uv);
+    vec4 maskColor = texture2D(u_mask, projectedUV);
 
-    vec4 col = texture2D(u_mask, pos);
-    if (col.a < 1) discard;
+    if (baseColor.a < 0.9 || maskColor.a < 0.9) discard;
 
-    vec2 dir = normalize((uv - vec2(0.5)));
-//    dir /= max(abs(dir.x), abs(dir.y));
-    dir /= (ar * ar);
-    dir *= u_camScl;
+    vec2 worldCoords = projectedUV * u_masksize;
+    vec2 worldCenter = projectMask(vec2(0.5)) * u_masksize;
 
-    vec2 dirH = normalize(vec2(dir.x, 0.0)) / (ar * ar) * u_camScl;
-    vec2 dirV = normalize(vec2(0.0, dir.y)) / (ar * ar) * u_camScl;
+    vec2 hitPos = raycast(projectMask(vec2(0.5)), projectedUV, 16, 200.0);
+    float dstPos = length(hitPos - worldCoords);
+    float dstCenter = length(hitPos - worldCenter);
 
-//    float dst = dst(pos, dir, dstSpacing, u_resolution, 100);
-    float dstH = dst(pos, dirH, dstSpacing, u_resolution, 100);
-    float dstV = dst(pos, dirV, dstSpacing, u_resolution, 100);
+    float mapped = map(dstPos, 0.0, dstCenter, 0.0, 1.0);
 
-    vec2 z = dstToZ((normalize(dirH) + normalize(dirV)) * vec2(dstH, dstV) * u_scl, pos, center);
+    float z = (1/(1 - mapped) - 1) * u_clip.y / log(2, u_camscale * 2);
 
-    gl_FragColor = vec4(z.x, z.y, 0.0, 1.0);
+    gl_FragColor = vec4(vec3(0.0), 1.0);
 
-    if (z.x > u_clip.x && z.x < u_clip.y) gl_FragColor = vec4(1.0) - gl_FragColor;
+    if (z <= 16) {
+        vec2 plateUV = vec2(mod(hitPos.x + hitPos.y, 8.0)/8.0, mod(z, 1));
+        vec4 color = texture2D(u_wall, mapVec2(plateUV, vec2(0.0), vec2(1.0), u_walluv.xy, u_walluv.zw));
+        vec3 fade = vec3(16.0 - z)/ 16.0;
+        gl_FragColor = color * vec4(fade, 1.0);
+    }
 }
