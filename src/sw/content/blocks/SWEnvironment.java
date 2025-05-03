@@ -13,7 +13,7 @@ import sw.world.blocks.environment.*;
 
 public class SWEnvironment {
 	public static Block
-	oreVerdigris, oreIron, fissure, oreGraphite,
+	oreVerdigris, oreIron, fissure, oreGraphite, collapsedSilicon,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
@@ -48,6 +48,10 @@ public class SWEnvironment {
 		oreGraphite = new OreBlock(Items.graphite) {{
 			wallOre = true;
 			variants = 4;
+		}};
+
+		collapsedSilicon = new StaticWall("collapsed-silicon") {{
+			itemDrop = Items.silicon;
 		}};
 		// endregion
 
