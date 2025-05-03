@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
@@ -119,11 +120,16 @@ public class SWEnvironment {
 		pitfall = new Pitfall("pitfall") {{
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
 
 		gratingPitfall = new Pitfall("pitfall-grating") {{
-			cacheLayer = SWShaders.chasmLayer;
+			maskColor = SWPal.pitfallGratingMask;
+			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
 		//endregion
 

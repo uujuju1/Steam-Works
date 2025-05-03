@@ -20,9 +20,11 @@ public class SWRenderer {
 
 			Draw.proj().setOrtho(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
 
-			Draw.color();
 			Vars.world.tiles.eachTile(tile -> {
-				if (tile.floor() instanceof Pitfall) Fill.square(tile.worldx(), tile.worldy(), Vars.tilesize/2f);
+				if (tile.floor() instanceof Pitfall floor) {
+					Draw.color(floor.maskColor);
+					Fill.square(tile.worldx(), tile.worldy(), Vars.tilesize/2f);
+				}
 			});
 
 			frameBuffer.end();
