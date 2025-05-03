@@ -246,12 +246,16 @@ public class SWEnvironment {
 			rotationOffset = 30f;
 			swayScale = 4 * Mathf.pi * 60 * 4;
 			swayMagnitude = 30f;
+
+			clipSize = 64f;
 		}};
 		beam = new SwayingBeam("beam") {{
 			baseRotation = -67.5f;
 			rotationOffset = 22.5f;
 			swayScale = 4 * Mathf.pi * 60 * 6;
 			swayMagnitude = 22.5f;
+
+			clipSize = 64f;
 		}};
 		plate = new Floor("plate", 4) {{
 			wall = plateWall;
