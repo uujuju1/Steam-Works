@@ -20,8 +20,8 @@ public class SWEnvironment {
 	agedSouesite, agedSouesiteWall,
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
-
-	pitfall, gratingPitfall,
+	slagPlug,
+	pitfall, gratingPitfall, waterfall,
 
 	tuff, shapedTuff, tuffWall, columnarTuff, tuffConcretion, tuffPile,
 	tuffShallowerSolvent, tuffShallowSolvent,
@@ -121,19 +121,32 @@ public class SWEnvironment {
 			wall = concreteWall;
 		}};
 
+		slagPlug = new SteamVent("slag-plug") {{
+			variants = 0;
+			effect = Fx.none;
+
+			attributes.set(Attribute.heat, 1f);
+		}};
+
 		pitfall = new Pitfall("pitfall") {{
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
 
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
-
 		gratingPitfall = new Pitfall("pitfall-grating") {{
 			maskColor = SWPal.pitfallGratingMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
 
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
+		}};
+		waterfall = new Pitfall("waterfall") {{
+			maskColor = SWPal.waterfallMask;
+			cacheLayer = SWShaders.pitfallLayer;
+			blendGroup = concrete;
+
+			mapColor = Color.valueOf("71727d").lerp(Pal.water, 0.2f).lerp(Color.black, 0.5f);
 		}};
 		//endregion
 

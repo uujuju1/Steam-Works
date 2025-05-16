@@ -16,7 +16,8 @@ uniform float u_time;
 
 varying vec2 v_texCoords;
 
-const int marchPrecision = 6;
+// make sure it's an odd number so that the hitPos ends up inside the mask
+const int marchPrecision = 7;
 
 
 uniform sampler2D u_wall;
@@ -83,7 +84,10 @@ void main() {
     vec4 baseColor = texture2D(u_texture, uv);
     vec4 maskColor = texture2D(u_mask, projectedUV);
 
-    if (maskColor.a < 0.9) discard;
+    if (maskColor.a < 0.9) {
+        gl_FragColor = baseColor;
+        return;
+    }
 
     vec2 worldCoords = projectedUV * u_masksize;
     vec2 worldCenter = projectMask(vec2(0.5)) * u_masksize;
@@ -94,9 +98,10 @@ void main() {
 
     float mapped = map(dstPos, 0.0, dstCenter, 0.0, 1.0);
 
+    // in tiles
     float z = (1/(1 - mapped) - 1) * u_scale;
 
-    gl_FragColor = vec4(vec3(0.0), 1.0);
+    gl_FragColor = vec4(0, 0, 0, 1);
 
     // walls
     if (z <= 32) {
@@ -115,17 +120,38 @@ void main() {
         }
     }
 
-    // TODO proper grating positioning when alongside ungrated pitfalls
+    // waterfall
+    if (z <= 32 && texture2D(u_mask, hitPos / u_masksize).g < 0.9) {
+        vec4 color = vec4(110.0, 112.0, 155.0, 0)/255.0;
+        for(float i = 0.0; i < 3; i++) {
+            float offsetX = rand(vec2(i));
+            float offsetY = rand(vec2(z));
+            float scl = pow(2, i);
+            vec2 noiseUV = vec2((hitPos.x + hitPos.y + offsetX)/32.0, z/64/scl - u_time/120.0);
+            vec4 col = texture2D(u_noise, noiseUV);
+            col = pow(col, vec4(2 - z/32));
+
+            if (col.a > 0.25) {
+                color = mix(color, col, vec4(col.a));
+            }
+        }
+        vec3 fade = vec3(32.0 - z)/ 32.0;
+        if (color.r > 0) gl_FragColor = vec4(color.rgb * fade, 1.0);
+    }
+
     // grating
-    if (z >= 4 && maskColor.b < 0.9) {
+    if (z >= 4) {
         float unMapped = 1 - 1/(4/u_scale + 1);
         vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1 - unMapped));
-        vec2 gratingUV = mod(unProjected * 4 / u_gratingsize, vec2(1));
-        vec4 color = texture2D(u_grating, mapVec2(gratingUV, vec2(0.0), vec2(1.0), u_gratinguv.xy, u_gratinguv.zw));
-        float dstPos = length(raycast(worldCenter, unProjected, vec2(0.707), 8, 40) - unProjected);
-        if (color.a > 0) {
-            gl_FragColor = color;
-            if (dstPos < 32) gl_FragColor = vec4(mix(color.rgb, vec3(0), vec3(0.3)), 1.0);
+
+        if (texture2D(u_mask, unProjected / u_masksize).b < 0.9) {
+            vec2 gratingUV = mod(unProjected * 4 / u_gratingsize, vec2(1));
+            vec4 color = texture2D(u_grating, mapVec2(gratingUV, vec2(0.0), vec2(1.0), u_gratinguv.xy, u_gratinguv.zw));
+            float dstPos = length(raycast(worldCenter, unProjected, vec2(0.707), 8, 40) - unProjected);
+            if (color.a > 0) {
+                gl_FragColor = color;
+                if (dstPos < 32) gl_FragColor = vec4(mix(color.rgb, vec3(0), vec3(0.3)), 1.0);
+            }
         }
     }
 }

@@ -46,7 +46,7 @@ public class SWShaders {
 
 	public static class SWSurfaceShader extends Shader {
 		public Texture noise;
-		public String noiseName = "noise";
+		public String noiseName = "noiseAlpha";
 
 		public SWSurfaceShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
@@ -93,7 +93,10 @@ public class SWShaders {
 
 		@Override
 		public void apply(){
-			super.apply();
+			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+			setUniformf("u_time", Time.time);
+//			super.apply();
 
 			Core.camera.project(Tmp.v1.setZero());
 			setUniformf(
@@ -118,6 +121,7 @@ public class SWShaders {
 
 			applyWall();
 			applyGrating();
+			applyWaterfall();
 		}
 
 		public void applyWall() {
@@ -141,6 +145,17 @@ public class SWShaders {
 			setUniformi("u_grating", 3);
 			setUniformf("u_gratinguv", grating.u, grating.v, grating.u2, grating.v2);
 			setUniformf("u_gratingsize", grating.width, grating.height);
+		}
+
+		public void applyWaterfall() {
+			if(hasUniform("u_noise")){
+				if(noise == null){
+					noise = Core.assets.get("sprites/" + noiseName + ".png", Texture.class);
+				}
+
+				noise.bind(4);
+				setUniformi("u_noise", 4);
+			}
 		}
 	}
 }
