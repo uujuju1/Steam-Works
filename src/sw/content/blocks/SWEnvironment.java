@@ -21,7 +21,7 @@ public class SWEnvironment {
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
 	slagPlug,
-	pitfall, gratingPitfall, waterfall,
+	pitfall, gratingPitfall, waterfall, chasm,
 
 	tuff, shapedTuff, tuffWall, columnarTuff, tuffConcretion, tuffPile,
 	tuffShallowerSolvent, tuffShallowSolvent,
@@ -147,6 +147,13 @@ public class SWEnvironment {
 			blendGroup = concrete;
 
 			mapColor = Color.valueOf("71727d").lerp(Pal.water, 0.2f).lerp(Color.black, 0.5f);
+		}};
+		chasm = new Pitfall("chasm") {{
+			maskColor = SWPal.chasmMask;
+			cacheLayer = SWShaders.pitfallLayer;
+			blendGroup = concrete;
+
+			mapColor = Color.valueOf("71727d").lerp(Pal.turretHeat, 0.25f).lerp(Color.black, 0.5f);
 		}};
 		//endregion
 

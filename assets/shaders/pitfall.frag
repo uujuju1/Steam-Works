@@ -120,6 +120,32 @@ void main() {
         }
     }
 
+    // TODO fix connecting with other pitfalls
+    // chasm
+    if (z >= 48 && texture2D(u_mask, hitPos / u_masksize).r < 0.9) {
+        float unMapped = 1 - 1/(64/u_scale + 1);
+        vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1 - unMapped));
+
+        if (
+            texture2D(u_mask, unProjected / u_masksize).r < 0.9
+        ) {
+            float startOffset = texture2D(u_noise, hitPos / 32 + vec2(u_time, -u_time * 2)/3600).a * 8;
+            float endOffset = texture2D(u_noise, hitPos / 32 + vec2(-u_time * 3, u_time)/3600).a * 8;
+
+            float fadeNoise = 0;
+            for (int i = 0; i < 4; i++) {
+                float randX = rand(vec2(i, 1)) * 2 - 1;
+                float randY = rand(vec2(1, i)) * 2 - 1;
+                fadeNoise += texture2D(u_noise, unProjected / 128 + vec2(u_time * randX, u_time * randY)/3600).a;
+            }
+            fadeNoise /= 2;
+            fadeNoise *= fadeNoise;
+
+            vec3 fade = vec3(min(1, map(z, 56 - startOffset, 64 - endOffset, 0, 1)));
+            gl_FragColor = vec4(fade * fadeNoise, 1.0) * vec4(115, 16, 7, 255)/255;
+        }
+    }
+
     // waterfall
     if (z <= 32 && texture2D(u_mask, hitPos / u_masksize).g < 0.9) {
         vec4 color = vec4(110.0, 112.0, 155.0, 0)/255.0;

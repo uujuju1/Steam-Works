@@ -10,4 +10,5 @@ public class SWPal {
 	public static final Color pitfallMask = Color.valueOf("ffffff");
 	public static final Color pitfallGratingMask = Color.valueOf("ffff00");
 	public static final Color waterfallMask = Color.valueOf("ff00ff");
+	public static final Color chasmMask = Color.valueOf("00ffff");
 }
