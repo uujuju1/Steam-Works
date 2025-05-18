@@ -1,12 +1,6 @@
 pluginManagement{
     repositories{
         gradlePluginPortal()
-        maven("https://raw.githubusercontent.com/GlennFolker/EntityAnnoMaven/main")
-    }
-
-    plugins{
-        val entVersion: String by settings
-        id("com.github.GlennFolker.EntityAnno") version(entVersion)
     }
 }
 

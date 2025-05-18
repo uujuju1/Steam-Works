@@ -6,30 +6,24 @@ import java.util.regex.*
 
 buildscript{
     val arcVersion: String by project
-    val useJitpack = property("mindustryBE").toString().toBooleanStrict()
 
     dependencies{
         classpath("com.github.Anuken.Arc:arc-core:$arcVersion")
     }
 
     repositories{
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-
         maven("https://maven.xpdustry.com/mindustry")
-
         maven("https://jitpack.io")
     }
 }
 
 plugins{
     java
-    id("com.github.GlennFolker.EntityAnno") apply false
 }
 
 val arcVersion: String by project
 val mindustryVersion: String by project
-val mindustryBEVersion: String by project
-val entVersion: String by project
+val jabelVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
@@ -41,52 +35,27 @@ val androidSdkVersion: String by project
 val androidBuildVersion: String by project
 val androidMinVersion: String by project
 
-val useJitpack = property("mindustryBE").toString().toBooleanStrict()
-
 fun arc(module: String): String{
     return "com.github.Anuken.Arc$module:$arcVersion"
 }
-
 fun mindustry(module: String): String{
     return "com.github.Anuken.Mindustry$module:$mindustryVersion"
 }
-
-fun entity(module: String): String{
-    return "com.github.GlennFolker.EntityAnno$module:$entVersion"
+fun jabel(): String{
+    return "com.github.Anuken:jabel:$jabelVersion"
 }
 
 allprojects{
     apply(plugin = "java")
     sourceSets["main"].java.setSrcDirs(listOf(layout.projectDirectory.dir("src")))
 
-    configurations.configureEach{
-        // Resolve the correct Mindustry dependency, and force Arc version.
-        resolutionStrategy.eachDependency{
-            if(useJitpack && requested.group == "com.github.Anuken.Mindustry"){
-                useTarget("com.github.Anuken.MindustryJitpack:${requested.module.name}:$mindustryBEVersion")
-            }else if(requested.group == "com.github.Anuken.Arc"){
-                useVersion(arcVersion)
-            }
-        }
-    }
-
     dependencies{
-        // Downgrade Java 9+ syntax into being available in Java 8.
-        annotationProcessor(entity(":downgrader"))
+        annotationProcessor(jabel())
     }
 
     repositories{
-        // Necessary Maven repositories to pull dependencies from.
         mavenCentral()
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://oss.sonatype.org/content/repositories/releases/")
-        maven("https://raw.githubusercontent.com/GlennFolker/EntityAnnoMaven/main")
-
-        // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-
         maven("https://maven.xpdustry.com/mindustry")
-
         maven("https://jitpack.io")
     }
 
@@ -150,22 +119,8 @@ project(":tools") {
 }
 
 project(":"){
-//    apply(plugin = "com.github.GlennFolker.EntityAnno")
-//    configure<EntityAnnoExtension>{
-//        modName = project.properties["modName"].toString()
-//        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
-//        isJitpack = useJitpack
-//        revisionDir = layout.projectDirectory.dir("revisions").asFile
-//        fetchPackage = modFetch
-//        genSrcPackage = modGenSrc
-//        genPackage = modGen
-//    }
-
     dependencies{
-        // Use the entity generation annotation processor.
-        compileOnly(entity(":entity"))
-//        add("kapt", entity(":entity"))
-
+        compileOnly(jabel())
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
     }
