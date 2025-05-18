@@ -30,7 +30,7 @@ public class RegionsProcessor extends BaseProcessor {
 	@Override
 	public Set<String> getSupportedAnnotationTypes() {
 		Set<String> types = new HashSet<>();
-		String prefix = processingEnv.getOptions().get("modName") + ".annotations.Annotations.";
+		String prefix = modName + ".annotations.Annotations.";
 		types.add(prefix + "Load");
 		types.add(prefix + "EnsureLoad");
 		return types;
@@ -41,7 +41,7 @@ public class RegionsProcessor extends BaseProcessor {
 		if (round == 1) {
 			TypeSpec.Builder regionsClass = TypeSpec.classBuilder(classPrefix + "ContentRegionRegistry")
 			.addModifiers(Modifier.PUBLIC)
-			.addJavadoc("Class generated for loading regions annotated with {@link template.annotations.Annotations.Load load}");
+			.addJavadoc("Class generated for loading regions annotated with {@link sw.annotations.Annotations.Load load}");
 
 			MethodSpec.Builder loadMethod = MethodSpec.methodBuilder("load")
 			.addModifiers(Modifier.PUBLIC, Modifier.STATIC)

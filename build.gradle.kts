@@ -84,21 +84,21 @@ project(":annotations") {
     }
 
     tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = "17"
+        sourceCompatibility = "8"
         options.compilerArgs.remove("--release")
         options.compilerArgs.remove("8")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED")
-        options.compilerArgs.add("--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED")
     }
 }
 
@@ -167,6 +167,7 @@ project(":"){
     }
 
     dependencies{
+        compileOnly(project(":annotations"))
         compileOnly(jabel())
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
