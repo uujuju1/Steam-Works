@@ -29,7 +29,17 @@ import java.util.Map.Entry;
 /**
  * @author Liz
  */
+@SuppressWarnings("ALL")
 public class Annotations{
+    //region assets
+    /**
+     * Annotation flag required so that the AssetsProcessor runs.
+     */
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ProcessAssets{}
+    //endregion
+
+    //region load
 		/**
 		 * Fields annotated with this will be put on the ContentRegionRegistry, separated by enclosing class.
 		 * Names are parsed based on the following:
@@ -69,6 +79,7 @@ public class Annotations{
      */
     @Retention(RetentionPolicy.SOURCE)
     public @interface EnsureLoad{}
+    //endregion
 
     //anuke's implementation of annotation proxy maker, to replace the broken one from oracle
     //thanks, anuke

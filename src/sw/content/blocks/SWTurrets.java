@@ -15,7 +15,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import sw.audio.*;
 import sw.content.*;
 import sw.entities.bullet.*;
 import sw.world.blocks.defense.*;
@@ -465,7 +464,6 @@ public class SWTurrets {
 			}};
 
 			shootY = 0f;
-			shootSound = ModSounds.sonarShoot;
 			shootType = new SoundLaserBulletType() {{
 				damage = 30f;
 				width = 16f;
