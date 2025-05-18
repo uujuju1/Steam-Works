@@ -24,6 +24,7 @@ plugins{
 val arcVersion: String by project
 val mindustryVersion: String by project
 val jabelVersion: String by project
+val javapoetVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
@@ -44,6 +45,9 @@ fun mindustry(module: String): String{
 fun jabel(): String{
     return "com.github.Anuken:jabel:$jabelVersion"
 }
+fun javapoet(): String{
+    return "com.squareup:javapoet:$javapoetVersion"
+}
 
 allprojects{
     apply(plugin = "java")
@@ -60,11 +64,9 @@ allprojects{
     }
 
     tasks.withType<JavaCompile>().configureEach{
-        // Use Java 17+ syntax, but target Java 8 bytecode version.
-        sourceCompatibility = "17"
-        options.apply{
-            release = 8
+        options.apply {
             compilerArgs.add("-Xlint:-options")
+            compilerArgs.add("-Xlint:-deprecation")
 
             isIncremental = true
             encoding = "UTF-8"
@@ -72,9 +74,46 @@ allprojects{
     }
 }
 
+project(":annotations") {
+    sourceSets["main"].resources.setSrcDirs(listOf(layout.projectDirectory.dir("assets")))
+
+    dependencies {
+        implementation(javapoet())
+        implementation(mindustry(":core"))
+        implementation(arc(":arc-core"))
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = "17"
+        options.compilerArgs.remove("--release")
+        options.compilerArgs.remove("8")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED")
+        options.compilerArgs.add("--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED")
+    }
+}
+
 project(":tools") {
+    tasks.withType<JavaCompile>().configureEach{
+        // Use Java 17+ syntax, but target Java 8 bytecode version.
+        sourceCompatibility = "17"
+        options.apply{
+            release = 8
+        }
+    }
     dependencies{
         implementation(rootProject)
+
+        annotationProcessor(project(":annotations"))
 
         implementation(mindustry(":core"))
         implementation(arc(":arc-core"))
@@ -119,10 +158,20 @@ project(":tools") {
 }
 
 project(":"){
+    tasks.withType<JavaCompile>().configureEach{
+        // Use Java 17+ syntax, but target Java 8 bytecode version.
+        sourceCompatibility = "17"
+        options.apply{
+            release = 8
+        }
+    }
+
     dependencies{
         compileOnly(jabel())
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
+
+        annotationProcessor(project(":annotations"))
     }
 
     val list = tasks.register<DefaultTask>("list") {
