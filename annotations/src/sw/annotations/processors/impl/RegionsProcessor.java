@@ -1,7 +1,6 @@
 package sw.annotations.processors.impl;
 
 import arc.*;
-import arc.graphics.g2d.*;
 import arc.struct.*;
 import com.squareup.javapoet.*;
 import mindustry.ctype.*;
@@ -10,7 +9,6 @@ import sw.annotations.processors.*;
 
 import javax.annotation.processing.*;
 import javax.lang.model.element.*;
-import javax.lang.model.type.*;
 import java.util.*;
 
 /**
@@ -48,22 +46,10 @@ public class RegionsProcessor extends BaseProcessor {
 			.addParameter(tName(MappableContent.class), "content");
 
 			for (Element element : roundEnv.getElementsAnnotatedWith(Load.class)) {
-				TypeMirror type = element.asType();
-				while (type.getKind() == TypeKind.ARRAY) {
-					type = ((ArrayType) type).getComponentType();
-				}
-				if (!types.isSameType(type, toType(TextureRegion.class).asType())) {
-					throw new IllegalAccessException("Only TextureRegions should be annotated with @Load");
-				}
-
 				annotated.get(element.getEnclosingElement(), Seq::new).add(element);
 			}
 
 			for (Element base : annotated.keys().toSeq()) {
-				if (!types.isSameType(base.asType(), toType(MappableContent.class).asType())) {
-					throw new IllegalAccessException("@Load annotated TextureRegions must have a MappableContent enclosing class");
-				}
-
 				loadMethod.beginControlFlow("if (content instanceof $T)", cName(base));
 
 				for (Element field : annotated.get(base)) {

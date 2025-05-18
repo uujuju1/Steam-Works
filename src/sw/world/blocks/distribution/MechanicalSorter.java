@@ -14,10 +14,11 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.distribution.*;
+import sw.annotations.Annotations.*;
 import sw.content.*;
 
 public class MechanicalSorter extends Sorter {
-	public TextureRegion invertRegion;
+	public @Load("@-invert") TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
 	public Effect changeEffect = SWFx.changeEffect;
 	public Color crossColor = Color.valueOf("2D2F39");
@@ -34,12 +35,6 @@ public class MechanicalSorter extends Sorter {
 
 	@Override protected TextureRegion[] icons() {
 		return new TextureRegion[]{Core.atlas.find("sw-mechanical-conduit-router-bottom"), region};
-	}
-
-	@Override
-	public void load() {
-		super.load();
-		invertRegion = Core.atlas.find(name + "-invert");
 	}
 
 	public class MechanicalSorterBuild extends SorterBuild {
