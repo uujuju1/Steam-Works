@@ -6,30 +6,25 @@ import java.util.regex.*
 
 buildscript{
     val arcVersion: String by project
-    val useJitpack = property("mindustryBE").toString().toBooleanStrict()
 
     dependencies{
         classpath("com.github.Anuken.Arc:arc-core:$arcVersion")
     }
 
     repositories{
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-
         maven("https://maven.xpdustry.com/mindustry")
-
         maven("https://jitpack.io")
     }
 }
 
 plugins{
     java
-    id("com.github.GlennFolker.EntityAnno") apply false
 }
 
 val arcVersion: String by project
 val mindustryVersion: String by project
-val mindustryBEVersion: String by project
-val entVersion: String by project
+val jabelVersion: String by project
+val javapoetVersion: String by project
 
 val modName: String by project
 val modArtifact: String by project
@@ -41,61 +36,37 @@ val androidSdkVersion: String by project
 val androidBuildVersion: String by project
 val androidMinVersion: String by project
 
-val useJitpack = property("mindustryBE").toString().toBooleanStrict()
-
 fun arc(module: String): String{
     return "com.github.Anuken.Arc$module:$arcVersion"
 }
-
 fun mindustry(module: String): String{
     return "com.github.Anuken.Mindustry$module:$mindustryVersion"
 }
-
-fun entity(module: String): String{
-    return "com.github.GlennFolker.EntityAnno$module:$entVersion"
+fun jabel(): String{
+    return "com.github.Anuken:jabel:$jabelVersion"
+}
+fun javapoet(): String{
+    return "com.squareup:javapoet:$javapoetVersion"
 }
 
 allprojects{
     apply(plugin = "java")
     sourceSets["main"].java.setSrcDirs(listOf(layout.projectDirectory.dir("src")))
 
-    configurations.configureEach{
-        // Resolve the correct Mindustry dependency, and force Arc version.
-        resolutionStrategy.eachDependency{
-            if(useJitpack && requested.group == "com.github.Anuken.Mindustry"){
-                useTarget("com.github.Anuken.MindustryJitpack:${requested.module.name}:$mindustryBEVersion")
-            }else if(requested.group == "com.github.Anuken.Arc"){
-                useVersion(arcVersion)
-            }
-        }
-    }
-
     dependencies{
-        // Downgrade Java 9+ syntax into being available in Java 8.
-        annotationProcessor(entity(":downgrader"))
+        annotationProcessor(jabel())
     }
 
     repositories{
-        // Necessary Maven repositories to pull dependencies from.
         mavenCentral()
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-        maven("https://oss.sonatype.org/content/repositories/releases/")
-        maven("https://raw.githubusercontent.com/GlennFolker/EntityAnnoMaven/main")
-
-        // Use Zelaux's non-buggy repository for release Mindustry and Arc builds.
-        if(!useJitpack) maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-
         maven("https://maven.xpdustry.com/mindustry")
-
         maven("https://jitpack.io")
     }
 
     tasks.withType<JavaCompile>().configureEach{
-        // Use Java 17+ syntax, but target Java 8 bytecode version.
-        sourceCompatibility = "17"
-        options.apply{
-            release = 8
+        options.apply {
             compilerArgs.add("-Xlint:-options")
+            compilerArgs.add("-Xlint:-deprecation")
 
             isIncremental = true
             encoding = "UTF-8"
@@ -103,9 +74,46 @@ allprojects{
     }
 }
 
+project(":annotations") {
+    sourceSets["main"].resources.setSrcDirs(listOf(layout.projectDirectory.dir("assets")))
+
+    dependencies {
+        implementation(javapoet())
+        implementation(mindustry(":core"))
+        implementation(arc(":arc-core"))
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        sourceCompatibility = "8"
+        options.compilerArgs.remove("--release")
+        options.compilerArgs.remove("8")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED")
+//        options.compilerArgs.add("--add-exports=java.base/sun.reflect.annotation=ALL-UNNAMED")
+    }
+}
+
 project(":tools") {
+    tasks.withType<JavaCompile>().configureEach{
+        // Use Java 17+ syntax, but target Java 8 bytecode version.
+        sourceCompatibility = "17"
+        options.apply{
+            release = 8
+        }
+    }
     dependencies{
         implementation(rootProject)
+
+        annotationProcessor(project(":annotations"))
 
         implementation(mindustry(":core"))
         implementation(arc(":arc-core"))
@@ -150,24 +158,21 @@ project(":tools") {
 }
 
 project(":"){
-//    apply(plugin = "com.github.GlennFolker.EntityAnno")
-//    configure<EntityAnnoExtension>{
-//        modName = project.properties["modName"].toString()
-//        mindustryVersion = project.properties[if(useJitpack) "mindustryBEVersion" else "mindustryVersion"].toString()
-//        isJitpack = useJitpack
-//        revisionDir = layout.projectDirectory.dir("revisions").asFile
-//        fetchPackage = modFetch
-//        genSrcPackage = modGenSrc
-//        genPackage = modGen
-//    }
+    tasks.withType<JavaCompile>().configureEach{
+        // Use Java 17+ syntax, but target Java 8 bytecode version.
+        sourceCompatibility = "17"
+        options.apply{
+            release = 8
+        }
+    }
 
     dependencies{
-        // Use the entity generation annotation processor.
-        compileOnly(entity(":entity"))
-//        add("kapt", entity(":entity"))
-
+        compileOnly(project(":annotations"))
+        compileOnly(jabel())
         compileOnly(mindustry(":core"))
         compileOnly(arc(":arc-core"))
+
+        annotationProcessor(project(":annotations"))
     }
 
     val list = tasks.register<DefaultTask>("list") {

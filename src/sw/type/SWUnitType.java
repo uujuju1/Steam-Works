@@ -9,10 +9,9 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
-import sw.audio.*;
 import sw.entities.*;
 import sw.entities.units.*;
-//import sw.gen.*;
+import sw.gen.*;
 
 public class SWUnitType extends UnitType {
   // region rotor unit stuff
@@ -117,7 +116,7 @@ public class SWUnitType extends UnitType {
      */
     public boolean followParent = true;
 
-    public Sound rotorSound = ModSounds.helicopter;
+    public Sound rotorSound = SWSounds.helicopter;
     public float rotorSoundVolume = 1f;
 
     public String name;

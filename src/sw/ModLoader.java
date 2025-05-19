@@ -3,16 +3,19 @@ package sw;
 import arc.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.ctype.*;
 import mindustry.game.*;
 import mindustry.mod.*;
 import mindustry.ui.fragments.*;
-import sw.audio.*;
+import sw.annotations.Annotations.*;
 import sw.entities.units.*;
+import sw.gen.*;
 import sw.graphics.*;
 import sw.ui.*;
-//import sw.gen.*;
 
 @SuppressWarnings("unused")
+@EnsureLoad // Needed for the ContentRegionRegistry
+@ProcessAssets // Needed for the asset classes
 public class ModLoader extends Mod {
   public ModLoader() {
     Events.on(EventType.ClientLoadEvent.class, e -> {
@@ -28,7 +31,10 @@ public class ModLoader extends Mod {
 		Events.on(EventType.FileTreeInitEvent.class, e -> {
       if (SWVars.isMod) Core.app.post(SWShaders::load);
     });
-    Events.on(EventType.MusicRegisterEvent.class, e -> ModMusic.load());
+    Events.on(EventType.MusicRegisterEvent.class, e -> SWMusics.load());
+    Events.on(EventType.ContentInitEvent.class, e -> Vars.content.each(c -> {
+      if (c instanceof MappableContent content) SWContentRegionRegistry.load(content);
+    }));
   }
 
   @Override

@@ -7,9 +7,9 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
-import sw.audio.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.gen.*;
 import sw.graphics.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
@@ -32,12 +32,12 @@ public class SWUnits {
 
 			size = 2;
 
-			stepSound = ModSounds.hitMetal;
+			stepSound = SWSounds.hitMetal;
 			stepSoundPitchMax = 2f;
 			stepSoundPitchMin = 0.5f;
 			stepSoundVolume = 0.25f;
 
-			progressSound = ModSounds.welding;
+			progressSound = SWSounds.welding;
 			progressEffect = SWFx.weld;
 			progressEffectChance = 0.25f;
 
@@ -149,12 +149,12 @@ public class SWUnits {
 
 			size = 2;
 
-			stepSound = ModSounds.hitMetal;
+			stepSound = SWSounds.hitMetal;
 			stepSoundPitchMax = 2f;
 			stepSoundPitchMin = 0.5f;
 			stepSoundVolume = 0.25f;
 
-			progressSound = ModSounds.welding;
+			progressSound = SWSounds.welding;
 			progressEffect = SWFx.weld;
 			progressEffectChance = 0.25f;
 

@@ -11,12 +11,13 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.distribution.*;
+import sw.annotations.Annotations.*;
 import sw.content.*;
 
 import static mindustry.Vars.*;
 
 public class MechanicalGate extends OverflowGate {
-	public TextureRegion invertRegion;
+	public @Load("@-invert") TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
 	public Effect changeEffect = SWFx.changeEffect;
 
@@ -30,12 +31,6 @@ public class MechanicalGate extends OverflowGate {
 
 	@Override public void drawPlanConfig(BuildPlan plan, Eachable<BuildPlan> list) {
 		if (plan.config == Boolean.TRUE) Draw.rect(invertRegion, plan.drawx(), plan.drawy(), 0);
-	}
-
-	@Override
-	public void load() {
-		super.load();
-		invertRegion = Core.atlas.find(name + "-invert");
 	}
 
 	public class MechanicalGateBuild extends OverflowGateBuild {

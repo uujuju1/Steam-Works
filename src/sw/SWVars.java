@@ -6,10 +6,10 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.ui.fragments.*;
-import sw.audio.*;
 import sw.content.*;
 import sw.core.*;
 import sw.dream.*;
+import sw.gen.*;
 import sw.graphics.*;
 import sw.ui.*;
 import sw.ui.dialog.*;
@@ -102,7 +102,7 @@ public class SWVars implements Loadable {
 	 *  ModTechTree.load()
 	**/
 	public static void loadContent() {
-		ModSounds.load();
+		SWSounds.load();
 		SWItems.load();
 		SWLiquids.load();
 		SWWeathers.load();
