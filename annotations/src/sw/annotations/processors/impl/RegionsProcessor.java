@@ -3,7 +3,6 @@ package sw.annotations.processors.impl;
 import arc.*;
 import arc.struct.*;
 import com.squareup.javapoet.*;
-import mindustry.ctype.*;
 import sw.annotations.Annotations.*;
 import sw.annotations.processors.*;
 
@@ -38,19 +37,18 @@ public class RegionsProcessor extends BaseProcessor {
 	public void process(RoundEnvironment roundEnv) throws Exception {
 		if (round == 1) {
 			TypeSpec.Builder regionsClass = TypeSpec.classBuilder(classPrefix + "ContentRegionRegistry")
-			.addModifiers(Modifier.PUBLIC)
-			.addJavadoc("Class generated for loading regions annotated with {@link sw.annotations.Annotations.Load load}");
-
+			.addModifiers(Modifier.PUBLIC);
+			
 			MethodSpec.Builder loadMethod = MethodSpec.methodBuilder("load")
 			.addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-			.addParameter(tName(MappableContent.class), "content");
+			.addParameter(tName(Object.class), "content");
 
 			for (Element element : roundEnv.getElementsAnnotatedWith(Load.class)) {
 				annotated.get(element.getEnclosingElement(), Seq::new).add(element);
 			}
 
 			for (Element base : annotated.keys().toSeq()) {
-				loadMethod.beginControlFlow("if (content instanceof $T)", cName(base));
+				loadMethod.beginControlFlow("if (content instanceof $T mapped)", cName(base));
 
 				for (Element field : annotated.get(base)) {
 					Load annotation = field.getAnnotation(Load.class);
@@ -66,8 +64,7 @@ public class RegionsProcessor extends BaseProcessor {
 					}
 
 					loadMethod.addStatement(
-						"(($T) content).$L$L = $T.atlas.find($L, $L)",
-						cName(base),
+						"mapped.$L$L = $T.atlas.find($L, $L)",
 						field.getSimpleName(),
 						depth.toString(),
 						cName(Core.class),
@@ -93,8 +90,8 @@ public class RegionsProcessor extends BaseProcessor {
 		other = '"' + other + '"';
 		return other
 		.replace("@modname", modName)
-		.replace("@size", "\" + ((mindustry.world.Block) content).size + \"")
-		.replace("@", "\" + content.name + \"")
+		.replace("@size", "\" + mapped.size + \"")
+		.replace("@", "\" + mapped.name + \"")
 		.replace("#", "\" + INDEX")
 		.replace("$", " + \"");
 	}
