@@ -124,6 +124,8 @@ public class SWEnvironment {
 		slagPlug = new SteamVent("slag-plug") {{
 			variants = 0;
 			effect = Fx.none;
+			
+			blendGroup = concreteStripes;
 
 			attributes.set(Attribute.heat, 1f);
 		}};
