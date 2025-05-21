@@ -47,7 +47,7 @@ public class SpinConfig {
 
 	public void addBars(Block block) {
 		if (!hasSpin) return;
-		block.addBar("gas", building -> {
+		block.addBar("sw-spin", building -> {
 			HasSpin b = building.as();
 			return new Bar(
 				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f) * 10f, 2)),

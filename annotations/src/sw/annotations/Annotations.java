@@ -1,7 +1,6 @@
 package sw.annotations;
 
 import arc.func.*;
-import arc.graphics.g2d.*;
 import com.sun.tools.javac.code.*;
 import com.sun.tools.javac.code.Attribute.Array;
 import com.sun.tools.javac.code.Attribute.Enum;
@@ -44,19 +43,22 @@ public class Annotations{
 		 * Fields annotated with this will be put on the ContentRegionRegistry, separated by enclosing class.
 		 * Names are parsed based on the following:
 		 * <ul>
-		 * <p> @ -> content name(modname included)
-		 * <p> @modname -> mod name
-		 * <p> @size -> block size
-		 * <p> #0$, #1$, #2$ -> index number, for arrays
-		 * <ul>
-		 * <p> # -> INDEX, Regular prefix for array variable. Number suffix starts at 0 for each dimension of array.
-     * <P> The following characters up to an $ are appended right after INDEX without being separated by a string
-		 * <p> $ Is required so that the annotation processor knows when the array variable ends.
-     * <p> Examples: #$ -> INDEX, #0$ ->  INDEX0, #1$ ->  INDEX1, #2$ ->  INDEX2
+		 *   <p> @$ -> content variable
+     *   <ul>
+     *     <p> @ -> mapped., mapped is the enclosing class already properly casted
+     *     <p> The following characters up to an $ are appended right after mapped. withoput being separated by a string
+     *     <p> $ Is required so that the annotation processor knows when the content variable ends.
+     *     <p> Examples: @name$ -> mapped.name, @size$ -> mapped.size
+     *   </ul>
+		 *   <p> % -> mod name
+		 *   <p> #0$, #1$, #2$ -> index number, for arrays
+		 *   <ul>
+		 *     <p> # -> INDEX, Regular prefix for array variable. Number suffix starts at 0 for each dimension of array
+     *     <P> The following characters up to an $ are appended right after INDEX without being separated by a string
+		 *     <p> $ Is required so that the annotation processor knows when the array variable ends.
+     *     <p> Examples: #$ -> INDEX, #0$ ->  INDEX0, #1$ ->  INDEX1, #2$ ->  INDEX2
+		 *   </ul>
 		 * </ul>
-		 * </ul>
-		 * <p> Will throw an {@link IllegalArgumentException} if this annotation is used outside a {@link TextureRegion TextureRegion} field whose enclosing class is
-		 * an instance of {@link mindustry.ctype.MappableContent MappableContent}
 		 */
 		@Target(ElementType.FIELD)
 		@Retention(RetentionPolicy.SOURCE)

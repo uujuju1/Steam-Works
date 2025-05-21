@@ -1,20 +1,23 @@
 package sw.world.draw;
 
-import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
-import mindustry.world.draw.*;
+import sw.annotations.Annotations.*;
 import sw.world.blocks.production.RangedDrill.*;
 
 import static mindustry.Vars.*;
 
-public class DrawRangedDrill extends DrawBlock {
-	public TextureRegion
-		itemRegion, itemBoreRegion,
-		startBoreRegion, boreRegion, endBoreRegion, rotatorRegion;
+public class DrawRangedDrill extends BlockDrawer {
+	public @Load(value = "@loadBlock.name$-item", fallBack = "drill-item-@loadBlock.size$") TextureRegion itemRegion;
+	public @Load(value = "@loadBlock.name$-bore-item", fallBack = "drill-item-2") TextureRegion itemBoreRegion;
+	
+	public @Load("@loadBlock.name$-start-bore") TextureRegion startBoreRegion;
+	public @Load("@loadBlock.name$-bore") TextureRegion boreRegion;
+	public @Load("@loadBlock.name$-bore-end") TextureRegion endBoreRegion;
+	public @Load("@loadBlock.name$-rotator") TextureRegion rotatorRegion;
 
 	public RangedDrillBuild cast(Building build) {
 		try {
@@ -73,16 +76,5 @@ public class DrawRangedDrill extends DrawBlock {
 		}
 
 		Draw.reset();
-	}
-
-	@Override
-	public void load(Block block) {
-		itemRegion = Core.atlas.find(block.name + "-item", "drill-item-" + block.size);
-		itemBoreRegion = Core.atlas.find(block.name + "-bore-item", "drill-item-2");
-
-		startBoreRegion = Core.atlas.find(block.name + "-start-bore");
-		boreRegion = Core.atlas.find(block.name + "-bore");
-		endBoreRegion = Core.atlas.find(block.name + "-bore-end");
-		rotatorRegion = Core.atlas.find(block.name + "-rotator");
 	}
 }

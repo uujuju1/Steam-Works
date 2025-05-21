@@ -1,16 +1,15 @@
 package sw.world.draw;
 
-import arc.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.world.*;
-import mindustry.world.draw.*;
+import sw.annotations.Annotations.*;
 
-public class DrawIcon extends DrawBlock {
+public class DrawIcon extends BlockDrawer {
 	public String suffix;
 
-	public TextureRegion iconRegion;
+	public @Load("@loadBlock.name$@suffix$") TextureRegion iconRegion;
 
 	public DrawIcon() {
 		this("-icon");
@@ -27,10 +26,5 @@ public class DrawIcon extends DrawBlock {
 	@Override
 	public TextureRegion[] icons(Block block) {
 		return new TextureRegion[]{iconRegion};
-	}
-
-	@Override
-	public void load(Block block) {
-		iconRegion = Core.atlas.find(block.name + suffix);
 	}
 }

@@ -20,6 +20,7 @@ public class SWPower {
 	public static Block
 		evaporator,
 		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt,
+		torqueGauge,
 
 		shaftTransmission;
 
@@ -44,8 +45,8 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-					new Axle("-shaft") {{
-						pixelHeight = 7;
+					new Axle("-axle") {{
+						pixelHeight = 1;
 						height = 3.5f;
 
 						paletteLight = SWPal.axleLight;
@@ -238,6 +239,40 @@ public class SWPower {
 					paletteDark = SWPal.axleDark;
 				}}),
 				new DrawBitmask("-tiles", b -> 0)
+			);
+		}};
+		torqueGauge = new TorqueGauge("torque-gauge") {{
+			requirements(Category.power, with(
+				SWItems.verdigris, 4,
+				Items.graphite, 2,
+				Items.silicon, 4
+			));
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 1f/600f;
+				
+				topSpeed = 128;
+				allowedEdges = new int[][]{
+					new int[]{0, 2},
+					new int[]{1, 3},
+					new int[]{2, 0},
+					new int[]{3, 1}
+				};
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+				new Axle("-axle") {{
+					pixelHeight = 1;
+					height = 3.5f;
+					
+					paletteLight = SWPal.axleLight;
+					paletteMedium = SWPal.axleMedium;
+					paletteDark = SWPal.axleDark;
+				}}
+			),
+				new DrawBitmask("-tiles", build -> 0)
 			);
 		}};
 

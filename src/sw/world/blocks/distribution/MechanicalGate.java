@@ -17,7 +17,7 @@ import sw.content.*;
 import static mindustry.Vars.*;
 
 public class MechanicalGate extends OverflowGate {
-	public @Load("@-invert") TextureRegion invertRegion;
+	public @Load("@name$-invert") TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
 	public Effect changeEffect = SWFx.changeEffect;
 

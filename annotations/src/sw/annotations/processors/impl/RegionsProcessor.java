@@ -89,9 +89,8 @@ public class RegionsProcessor extends BaseProcessor {
 	public String parse(String other) {
 		other = '"' + other + '"';
 		return other
-		.replace("@modname", modName)
-		.replace("@size", "\" + mapped.size + \"")
-		.replace("@", "\" + mapped.name + \"")
+		.replace("%", modName)
+		.replace("@", "\" + mapped.")
 		.replace("#", "\" + INDEX")
 		.replace("$", " + \"");
 	}

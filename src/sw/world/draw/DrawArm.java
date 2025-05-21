@@ -7,12 +7,12 @@ import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.draw.*;
+import sw.annotations.Annotations.*;
 import sw.entities.*;
 import sw.math.*;
 import sw.world.interfaces.*;
 
-public class DrawArm extends DrawBlock {
+public class DrawArm extends BlockDrawer {
 	public float layer = -1;
 
 	public float armHeight = 0.5f;
@@ -21,7 +21,8 @@ public class DrawArm extends DrawBlock {
 	public float armOffset = 0;
 	public Interp armCurve = Interp.linear;
 
-	public TextureRegion armRegion, armBaseRegion;
+	public @Load(value = "@loadBlock.name$-arm", fallBack = "%-mechanical-arm") TextureRegion armRegion;
+	public @Load(value = "@loadBlock.name$-arm-base", fallBack = "%-mechanical-arm-base") TextureRegion armBaseRegion;
 
 	public HasArm cast(Building build) {
 		try {
@@ -73,15 +74,5 @@ public class DrawArm extends DrawBlock {
 
 		Draw.z(z);
 		Draw.reset();
-	}
-
-	public TextureRegion[] icons(Block block) {
-		return new TextureRegion[]{};
-	}
-
-	@Override
-	public void load(Block block) {
-		armRegion = Core.atlas.find(block.name + "-arm", "sw-mechanical-arm");
-		armBaseRegion = Core.atlas.find(block.name + "-arm-base", "sw-mechanical-arm-base");
 	}
 }

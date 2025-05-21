@@ -18,7 +18,7 @@ import sw.annotations.Annotations.*;
 import sw.content.*;
 
 public class MechanicalSorter extends Sorter {
-	public @Load("@-invert") TextureRegion invertRegion;
+	public @Load("@name$-invert") TextureRegion invertRegion;
 	public Sound changeSound = Sounds.door;
 	public Effect changeEffect = SWFx.changeEffect;
 	public Color crossColor = Color.valueOf("2D2F39");
