@@ -184,6 +184,9 @@ public class SWDistribution {
 				SWItems.verdigris, 10
 			));
 			canOverdrive = false;
+			
+			interp = Interp.linear;
+			payloadLimit = 2f;
 		}};
 		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
 			requirements(Category.units, with(
@@ -192,6 +195,9 @@ public class SWDistribution {
 				SWItems.verdigris, 10
 			));
 			canOverdrive = false;
+			
+			interp = Interp.linear;
+			payloadLimit = 2f;
 		}};
 		//endregion
 

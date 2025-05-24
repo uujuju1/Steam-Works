@@ -47,7 +47,11 @@ public class SWTechTree {
           node(mechanicalSorter);
         });
         node(suspensionConveyor);
-        node(belt, with(new NonUnlockable()), () -> {});
+        node(belt, with(new NonUnlockable()), () -> {
+          node(mechanicalPayloadConveyor, () -> {
+            node(mechanicalPayloadRouter);
+          });
+        });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
           node(mechanicalConduitJunction, () -> node(mechanicalConduitBridge));
           node(mechanicalConduitRouter);
@@ -62,6 +66,7 @@ public class SWTechTree {
             node(shaftGearbox);
             node(overheadBelt);
           });
+          node(torqueGauge);
           node(shaftTransmission, Seq.with(new OnSector(theDelta)), () -> {});
         });
       });
