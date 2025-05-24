@@ -2,6 +2,7 @@ package sw.content;
 
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -12,7 +13,7 @@ public class SWUnitTypes {
   public static UnitType
 		soar,
 	  fly, spin, gyro,
-	  lambda;
+	  lambda, rho;
 
   public static void load() {
 	  //region copter
@@ -237,7 +238,8 @@ public class SWUnitTypes {
 			);
 		}};
 		//endregion
-
+	  
+	  //region core
     lambda = new SWUnitType("lambda") {{
 			health = 300;
 			speed = 1;
@@ -280,5 +282,31 @@ public class SWUnitTypes {
 				}}
 			);
     }};
+		
+		rho = new SWUnitType("rho") {{
+			health = 250;
+			speed = 2;
+			hitSize = 8f;
+			range = maxRange = 100f;
+			engineSize = engineOffset = shadowElevationScl = 0;
+			fallSpeed = 1f;
+			buildSpeed = 1f;
+			coreUnitDock = true;
+			lowAltitude = true;
+			flying = true;
+			
+			outlineLayerOffset = -0.002f;
+			
+			parts.add(new RegionPart("-gear") {{
+				x = 0f;
+				y = -3.5f;
+				
+				layerOffset = -0.001f;
+				
+				progress = DrawPart.PartProgress.time.mul(1/300f).mod(1);
+				moveRot =  360f;
+			}});
+		}};
+		//endregion
   }
 }
