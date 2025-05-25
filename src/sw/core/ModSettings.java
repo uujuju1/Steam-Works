@@ -1,13 +1,10 @@
 package sw.core;
 
 import arc.*;
-import arc.scene.ui.layout.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import sw.*;
 import sw.content.*;
 import sw.ui.*;
@@ -61,15 +58,30 @@ public class ModSettings {
           "@settings.sw-menu-enabled",
           Core.settings.getBool("sw-menu-enabled", true),
           check -> Core.settings.put("sw-menu-enabled", check)
-        ).update(check -> check.setChecked(Core.settings.getBool("sw-menu-enabled", true)));
+        )
+          .left().pad(1f)
+          .update(check -> check.setChecked(Core.settings.getBool("sw-menu-enabled", true)))
+          .tooltip("@settings.sw-menu-enabled-description");
+        
+        settings.row();
+        
+        settings.check(
+          "@settings.sw-menu-override",
+          Core.settings.getBool("sw-menu-override", true),
+          check -> Core.settings.put("sw-menu-override", check)
+        )
+          .left().pad(1f)
+          .update(check -> check.setChecked(Core.settings.getBool("sw-menu-override", true)))
+          .tooltip("@settings.sw-menu-override-description");
       }).width(400f);
 
       buttons.button("@settings.reset", () -> {
         Core.settings.put("sw-menu-enabled", true);
+        Core.settings.put("sw-menu-override", true);
       }).size(210f, 64f).pad(6f);
     }};
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.pref(new TableSetting("sw-categories", new Table(Tex.button, t -> {
+      table.table(Tex.button, t -> {
         t.button(
           "@settings.sw-moddata",
           Icon.save,
@@ -84,44 +96,11 @@ public class ModSettings {
           iconMed,
           () -> graphics.show()
         ).growX().minWidth(400f).marginLeft(8f).height(50f).row();
-      })));
+      });
 //      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
 //        title = Core.bundle.get("sw-menu-enabled");
 //        description = Core.bundle.get("sw-menu-enabled-description");
 //      }});
     });
-  }
-
-  static class TableSetting extends Setting {
-    Table table;
-
-    public TableSetting(String name, Table table) {
-      super(name);
-      this.table = table;
-    }
-
-    @Override
-    public void add(SettingsTable s) {
-      s.add(table).growX();
-      addDesc(table);
-      s.row();
-    }
-  }
-
-  static class ButtonSetting extends Setting {
-    String name;
-    Runnable listener;
-
-    public ButtonSetting(String name, Runnable listener){
-      super(name);
-      this.name = name;
-      this.listener = listener;
-    }
-
-    @Override
-    public void add(SettingsTable table) {
-      table.button(b -> b.add(Core.bundle.get(name, name)), SWStyles.settingButton, listener).margin(14).width(240f).pad(6f);
-      table.row();
-    }
   }
 }
