@@ -1,15 +1,23 @@
 package sw.ui.dialog;
 
 import arc.*;
+import arc.scene.*;
+import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.fragments.MenuFragment.*;
+import sw.content.*;
+import sw.type.*;
 
 public class SectorLaunchDialog extends BaseDialog {
+	public SectorView view;
+	
 	public SectorLaunchDialog() {
 		super("@sector.view");
 		shouldPause = true;
@@ -18,19 +26,35 @@ public class SectorLaunchDialog extends BaseDialog {
 		addToMenu();
 		
 		titleTable.remove();
-		titleTable.button("@quit", Icon.left, new TextButton.TextButtonStyle() {{
-			font = Fonts.def;
-			up = Tex.buttonSideRightDown;
-			down = Tex.buttonSideRightOver;
-		}}, this::hide).size(210f, 48f);
-		titleTable.setBackground(Styles.black6);
+		titleTable.clear();
+		titleTable.add(title).row();
+		titleTable.table(titleBottom -> {
+			titleBottom.image(Tex.whiteui, Pal.accent).growX();
+			titleBottom.button("@quit", Icon.left, new TextButton.TextButtonStyle() {{
+				font = Fonts.def;
+				up = Tex.buttonSideRightDown;
+				down = Tex.buttonSideRightOver;
+			}}, this::hide).size(210f, 48f);
+		}).growX();
 		titleTable.margin(10);
 		
 		cont.clear();
 		cont.stack(
+			new Table(t -> t.add(view = new SectorView())),
 			new Table(t -> t.add(titleTable).growX()).top(),
 			new Table(t -> t.add(buttons)).bottom().right()
 		).grow();
+		
+		shown(() -> {
+			view.rebuild(SWPlanets.wendi);
+		});
+		
+		addCaptureListener(new ElementGestureListener(){
+			@Override
+			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+				view.move(deltaX, deltaY);
+			}
+		});
 	}
 	
 	public void addToMenu() {
@@ -52,6 +76,28 @@ public class SectorLaunchDialog extends BaseDialog {
 				})
 			);
 			Vars.ui.menufrag.desktopButtons.first().submenu.replace(old, newButton);
+		}
+	}
+	
+	public static class SectorView extends Group {
+		public float offsetX, offsetY;
+		
+		public void rebuild(Planet planet) {
+			clear();
+			planet.sectors.each(sector -> {
+				if (sector.preset instanceof PositionSectorPreset preset) {
+					Button button = new Button(Tex.button);
+					button.setPosition(preset.x + offsetX, preset.y + offsetY);
+					button.setSize(preset.width, preset.height);
+					addChild(button);
+				}
+			});
+		}
+		
+		public void move(float deltaX, float deltaY) {
+			offsetX += deltaX;
+			offsetY += deltaY;
+			children.each(e -> e.moveBy(deltaX, deltaY));
 		}
 	}
 }
