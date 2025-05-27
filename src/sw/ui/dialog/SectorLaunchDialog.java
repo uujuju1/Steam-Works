@@ -1,10 +1,12 @@
 package sw.ui.dialog;
 
 import arc.*;
+import arc.graphics.g2d.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -13,9 +15,12 @@ import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.fragments.MenuFragment.*;
 import sw.content.*;
+import sw.graphics.*;
+import sw.graphics.SWShaders.*;
 import sw.type.*;
 
 public class SectorLaunchDialog extends BaseDialog {
+	public static float minX, minY;
 	public SectorView view;
 	
 	public SectorLaunchDialog() {
@@ -37,6 +42,8 @@ public class SectorLaunchDialog extends BaseDialog {
 			}}, this::hide).size(210f, 48f);
 		}).growX();
 		titleTable.margin(10);
+		
+		buttons.remove();
 		
 		cont.clear();
 		cont.stack(
@@ -80,18 +87,48 @@ public class SectorLaunchDialog extends BaseDialog {
 	}
 	
 	public static class SectorView extends Group {
+		public SectorLaunchShader shader;
+		
 		public float offsetX, offsetY;
+		
+		public SectorView() {
+			shader = SWShaders.sectorLaunchShader;
+		}
+		
+		@Override
+		public void draw() {
+			shader.pos.set(offsetX, offsetY);
+			shader.opacity = parentAlpha * color.a;
+			shader.points.clear();
+			children.each(child -> {
+				shader.points.add(child.x + x + child.getWidth() / 2f);
+				shader.points.add(child.y + y + child.getHeight() / 2f);
+				shader.points.add(child.getWidth());
+				shader.points.add(child.getHeight());
+			});
+			Draw.blit(shader);
+			
+			super.draw();
+		}
 		
 		public void rebuild(Planet planet) {
 			clear();
 			planet.sectors.each(sector -> {
 				if (sector.preset instanceof PositionSectorPreset preset) {
-					Button button = new Button(Tex.button);
+					Button button = new Button(new Button.ButtonStyle());
 					button.setPosition(preset.x + offsetX, preset.y + offsetY);
 					button.setSize(preset.width, preset.height);
 					addChild(button);
+					
+					button.table(Styles.black6, icon -> {
+						icon.image(preset.icon.get()).grow().pad(10).scaling(Scaling.fit);
+					}).size(preset.width / 3f, preset.height / 3f);
+					
+					minX = Math.min(minX, preset.x);
+					minY = Math.min(minY, preset.y);
 				}
 			});
+			children.each(e -> e.moveBy(-minX, -minY));
 		}
 		
 		public void move(float deltaX, float deltaY) {

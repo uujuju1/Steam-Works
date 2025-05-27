@@ -6,44 +6,60 @@ import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
 import sw.*;
 
 public class SWShaders {
+	public static SectorLaunchShader sectorLaunchShader;
+	
 	public static PitfallShader pitfall;
-
-	public static UIShader sectorDialogBackground, techtreeBackground;
 
 	public static CacheLayer pitfallLayer;
 
 	public static void load() {
-		sectorDialogBackground = new UIShader("sectorDialogBackground");
-		techtreeBackground = new UIShader("techtreeBackground");
-
+		sectorLaunchShader = new SectorLaunchShader("sectorMap");
+		
 		pitfall = new PitfallShader("pitfall");
 		pitfallLayer = new CacheLayer.ShaderLayer(pitfall);
 		CacheLayer.add(pitfallLayer);
 	}
-
-	public static class UIShader extends Shader {
+	
+	public static class SectorLaunchShader extends Shader {
 		public Vec2 pos = new Vec2();
-		public float alpha = 1;
-
-		public UIShader(String frag) {
+		public float opacity = 1f;
+		public FloatSeq points = new FloatSeq();
+		
+		public Texture texture;
+		public String texturePath = "textures/the-land-map.png";
+		
+		public SectorLaunchShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
 		}
-
+		
 		@Override
 		public void apply() {
+			if(texture == null) {
+				texture = new Texture(Vars.tree.get(texturePath));
+			}
+			
+			texture.bind(0);
+			
 			setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
-			setUniformf("u_position", pos.x, pos.y);
-			setUniformf("u_opacity", alpha);
-			setUniformf("u_time", Time.globalTime);
+			
+			setUniformf("u_position", pos);
+			setUniformf("u_size", texture.width, texture.height);
+			setUniformf("u_opacity", opacity);
+			
+			if (points.size > 40) throw new RuntimeException("too many points" + (points.size) + " / " + 40);
+			
+			setUniformi("u_points_length", points.size);
+			setUniform1fv("u_points", points.toArray(), 0, points.size);
 		}
 	}
-
+	
 	public static class SWSurfaceShader extends Shader {
 		public Texture noise;
 		public String noiseName = "noiseAlpha";
