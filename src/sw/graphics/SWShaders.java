@@ -35,6 +35,9 @@ public class SWShaders {
 		public Texture texture;
 		public String texturePath = "textures/the-land-map.png";
 		
+		public Texture noise;
+		public String noisePath = "textures/noise.png";
+		
 		public SectorLaunchShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
 		}
@@ -44,8 +47,13 @@ public class SWShaders {
 			if(texture == null) {
 				texture = new Texture(Vars.tree.get(texturePath));
 			}
+//			if(noise == null) {
+//				noise = new Texture(Vars.tree.get(noisePath));
+//			}
 			
 			texture.bind(0);
+//			noise.bind(1);
+//			setUniformi("u_noise", 1);
 			
 			setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
 			
@@ -53,11 +61,19 @@ public class SWShaders {
 			setUniformf("u_size", texture.width, texture.height);
 			setUniformf("u_opacity", opacity);
 			
+			setUniformf("u_time", Time.time);
+			
 			if (points.size > 40) throw new RuntimeException("too many points" + (points.size) + " / " + 40);
 			
 			setUniformi("u_points_length", points.size);
 			setUniform1fv("u_points", points.toArray(), 0, points.size);
 		}
+//
+//		@Override
+//		public void dispose() {
+//			super.dispose();
+//			texture.dispose();
+//		}
 	}
 	
 	public static class SWSurfaceShader extends Shader {
