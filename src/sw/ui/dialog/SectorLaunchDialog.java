@@ -4,7 +4,9 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
 import arc.scene.event.*;
+import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.Button.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -19,13 +21,14 @@ import sw.content.*;
 import sw.graphics.*;
 import sw.graphics.SWShaders.*;
 import sw.type.*;
+import sw.ui.*;
 
 public class SectorLaunchDialog extends BaseDialog {
 	public static float minX, minY;
 	public SectorView view;
 	
 	public SectorLaunchDialog() {
-		super("@sector.view");
+		super("");
 		shouldPause = true;
 		
 		closeOnBack();
@@ -33,7 +36,6 @@ public class SectorLaunchDialog extends BaseDialog {
 		
 		titleTable.remove();
 		titleTable.clear();
-		titleTable.add(title).row();
 		titleTable.table(titleBottom -> {
 			titleBottom.image(Tex.whiteui, Pal.accent).growX();
 			titleBottom.button("@quit", Icon.left, new TextButton.TextButtonStyle() {{
@@ -45,12 +47,19 @@ public class SectorLaunchDialog extends BaseDialog {
 		titleTable.margin(10);
 		
 		buttons.remove();
+		buttons.right();
+		buttons.button(button -> {
+			button.margin(10);
+			button.left();
+			button.image(Icon.tree).size(Vars.iconMed).scaling(Scaling.fit).padRight(10);
+			button.add("@techtree");
+		}, () -> SWUI.techtreeDialog.show()).size(200, 54);
 		
 		cont.clear();
 		cont.stack(
 			new Table(t -> t.add(view = new SectorView())),
 			new Table(t -> t.add(titleTable).growX()).top(),
-			new Table(t -> t.add(buttons)).bottom().right()
+			new Table(t -> t.add(buttons).growX()).bottom()
 		).grow();
 		
 		shown(() -> {
@@ -121,13 +130,18 @@ public class SectorLaunchDialog extends BaseDialog {
 			sectors.clear();
 			planet.sectors.each(sector -> {
 				if (sector.preset instanceof PositionSectorPreset preset) {
-					Button button = new Button(new Button.ButtonStyle());
+					ButtonStyle style = new ButtonStyle();
+					Button button = new Button(style);
+					if (preset.unlocked() && !preset.sector.hasSave()) {
+						style.up = Tex.whitePane;
+						style.down = style.checked = ((ScaledNinePatchDrawable) Tex.whitePane).tint(Pal.accent);
+					}
 					button.setPosition(preset.x + offsetX, preset.y + offsetY);
 					button.setSize(preset.width, preset.height);
 					addChild(button);
 					sectors.put(button, preset);
 					
-					button.table(Styles.black6, icon -> {
+					if (preset.unlocked()) button.table(Styles.black6, icon -> {
 						icon.image(preset.icon.get()).grow().pad(10).scaling(Scaling.fit);
 					}).size(preset.width / 3f, preset.height / 3f);
 					
