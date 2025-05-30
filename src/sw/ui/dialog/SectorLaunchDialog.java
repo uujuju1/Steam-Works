@@ -6,6 +6,7 @@ import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
@@ -91,6 +92,8 @@ public class SectorLaunchDialog extends BaseDialog {
 		
 		public float offsetX, offsetY;
 		
+		public ObjectMap<Element, PositionSectorPreset> sectors = new ObjectMap<>();
+		
 		public SectorView() {
 			shader = SWShaders.sectorLaunchShader;
 		}
@@ -101,10 +104,12 @@ public class SectorLaunchDialog extends BaseDialog {
 			shader.opacity = parentAlpha * color.a;
 			shader.points.clear();
 			children.each(child -> {
-				shader.points.add(child.x + x + child.getWidth() / 2f);
-				shader.points.add(child.y + y + child.getHeight() / 2f);
-				shader.points.add(child.getWidth());
-				shader.points.add(child.getHeight());
+				if (sectors.get(child).clearFog.get(sectors.get(child).sector)) {
+					shader.points.add(child.x + x + child.getWidth() / 2f);
+					shader.points.add(child.y + y + child.getHeight() / 2f);
+					shader.points.add(child.getWidth());
+					shader.points.add(child.getHeight());
+				}
 			});
 			Draw.blit(shader);
 			
@@ -113,12 +118,14 @@ public class SectorLaunchDialog extends BaseDialog {
 		
 		public void rebuild(Planet planet) {
 			clear();
+			sectors.clear();
 			planet.sectors.each(sector -> {
 				if (sector.preset instanceof PositionSectorPreset preset) {
 					Button button = new Button(new Button.ButtonStyle());
 					button.setPosition(preset.x + offsetX, preset.y + offsetY);
 					button.setSize(preset.width, preset.height);
 					addChild(button);
+					sectors.put(button, preset);
 					
 					button.table(Styles.black6, icon -> {
 						icon.image(preset.icon.get()).grow().pad(10).scaling(Scaling.fit);
