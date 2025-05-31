@@ -1,7 +1,9 @@
 package sw.annotations.processors.impl;
 
+import arc.*;
 import arc.audio.*;
 import arc.files.*;
+import arc.scene.style.*;
 import arc.struct.*;
 import arc.util.*;
 import com.squareup.javapoet.*;
@@ -76,6 +78,33 @@ public class AssetsProcessor extends BaseProcessor {
 					@Override public boolean validFile(Fi file) {
 						return file.extEquals("ogg") || file.extEquals("mp3");
 					}
+				},
+				new Asset() {
+					@Override public String className() {
+						return classPrefix + "Tex";
+					}
+					
+					@Override
+					public String fieldName(Fi file) {
+						String filename = file.nameWithoutExtension();
+						return filename.replace(".9", "");
+					}
+					
+					@Override public CodeBlock load() {
+						return CodeBlock.builder().add("return $T.atlas.getDrawable($S + name)", cName(Core.class), modName + "-").build();
+					}
+					
+					@Override public Fi path(Fi root) {
+						return root.child("assets/sprites/ui");
+					}
+					
+					@Override public TypeElement type() {
+						return toType(Drawable.class);
+					}
+					
+					@Override public boolean validFile(Fi file) {
+						return file.extEquals("png");
+					}
 				}
 			);
 		} else if (round == 2) {
@@ -102,14 +131,14 @@ public class AssetsProcessor extends BaseProcessor {
 				
 				asset.path(rootDir).walk(file -> {
 					if (asset.validFile(file)) {
-						String fieldName = Strings.kebabToCamel(file.nameWithoutExtension());
+						String fieldName = Strings.kebabToCamel(asset.fieldName(file));
 						assetClass.addField(
 							FieldSpec.builder(tName(asset.type()), fieldName)
 							.addModifiers(Modifier.PUBLIC, Modifier.STATIC)
 							.build()
 						);
 						
-						loadMethod.addStatement("$L = asset($S)", fieldName, file.nameWithoutExtension());
+						loadMethod.addStatement("$L = asset($S)", fieldName, asset.fieldName(file));
 					}
 				});
 				
@@ -125,6 +154,11 @@ public class AssetsProcessor extends BaseProcessor {
 	interface Asset {
 		// Generated class name
 		String className();
+		
+		// Generated field name based on the file
+		default String fieldName(Fi file) {
+			return file.nameWithoutExtension();
+		}
 		
 		// code inside the asset method
 		CodeBlock load();
