@@ -30,7 +30,7 @@ public class SWShaders {
 	public static class SectorLaunchShader extends Shader {
 		public Vec2 pos = new Vec2();
 		public float opacity = 1f;
-		public FloatSeq points = new FloatSeq();
+		public FloatSeq lights = new FloatSeq(), boxes = new FloatSeq();
 		
 		public Texture texture;
 		public String texturePath = "textures/the-land-map.png";
@@ -55,10 +55,14 @@ public class SWShaders {
 			
 			setUniformf("u_time", Time.time);
 			
-			if (points.size > 40) throw new RuntimeException("too many points" + (points.size) + " / " + 40);
+			if (lights.size > 80) throw new RuntimeException("too many lights" + (lights.size) + " / " + 80);
+			if (boxes.size > 80) throw new RuntimeException("too many boxes" + (boxes.size) + " / " + 80);
 			
-			setUniformi("u_points_length", points.size);
-			setUniform1fv("u_points", points.toArray(), 0, points.size);
+			setUniformi("u_points_length", lights.size);
+			setUniform1fv("u_points", lights.toArray(), 0, lights.size);
+			
+			setUniformi("u_boxes_length", boxes.size);
+			setUniform1fv("u_boxes", boxes.toArray(), 0, boxes.size);
 		}
 
 		@Override

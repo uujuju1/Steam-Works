@@ -111,13 +111,23 @@ public class SectorLaunchDialog extends BaseDialog {
 		public void draw() {
 			shader.pos.set(offsetX, offsetY);
 			shader.opacity = parentAlpha * color.a;
-			shader.points.clear();
+			shader.lights.clear();
 			children.each(child -> {
 				if (sectors.get(child).clearFog.get(sectors.get(child).sector)) {
-					shader.points.add(child.x + x + child.getWidth() / 2f);
-					shader.points.add(child.y + y + child.getHeight() / 2f);
-					shader.points.add(child.getWidth());
-					shader.points.add(child.getHeight());
+					shader.lights.add(child.x + x + child.getWidth() / 2f);
+					shader.lights.add(child.y + y + child.getHeight() / 2f);
+					shader.lights.add(child.getWidth());
+					shader.lights.add(child.getHeight());
+				}
+			});
+			
+			shader.boxes.clear();
+			children.each(child -> {
+				if (sectors.get(child).hasOverlay.get(sectors.get(child).sector)) {
+					shader.boxes.add(child.x + x + child.getWidth() / 2f);
+					shader.boxes.add(child.y + y + child.getHeight() / 2f);
+					shader.boxes.add(child.getWidth());
+					shader.boxes.add(child.getHeight());
 				}
 			});
 			Draw.blit(shader);
@@ -131,19 +141,21 @@ public class SectorLaunchDialog extends BaseDialog {
 			planet.sectors.each(sector -> {
 				if (sector.preset instanceof PositionSectorPreset preset) {
 					ButtonStyle style = new ButtonStyle();
+					style.down = style.checked = ((ScaledNinePatchDrawable) Tex.whitePane).tint(Pal.accent);
+					
 					Button button = new Button(style);
-					if (preset.unlocked() && !preset.sector.hasSave()) {
-						style.up = Tex.whitePane;
-						style.down = style.checked = ((ScaledNinePatchDrawable) Tex.whitePane).tint(Pal.accent);
-					}
 					button.setPosition(preset.x + offsetX, preset.y + offsetY);
 					button.setSize(preset.width, preset.height);
 					addChild(button);
 					sectors.put(button, preset);
 					
-					if (preset.unlocked()) button.table(Styles.black6, icon -> {
-						icon.image(preset.icon.get()).grow().pad(10).scaling(Scaling.fit);
-					}).size(preset.width / 3f, preset.height / 3f);
+					button.touchable = Touchable.disabled;
+					if (preset.visible.get(preset.sector)) {
+						button.table(Styles.black6, icon -> {
+							icon.image(preset.icon.get()).grow().pad(10).scaling(Scaling.fit);
+						}).size(preset.width / 3f, preset.height / 3f);
+						button.touchable = Touchable.enabled;
+					}
 					
 					minX = Math.min(minX, preset.x);
 					minY = Math.min(minY, preset.y);

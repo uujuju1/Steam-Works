@@ -1,6 +1,6 @@
 #define HIGHP
 
-#define LENGTH 40
+#define LENGTH 80
 
 #define TIMESCL 1.0/1200.0
 
@@ -14,6 +14,9 @@ uniform vec2 u_position;
 
 uniform int u_points_length;
 uniform float u_points[LENGTH];
+
+uniform int u_boxes_length;
+uniform float u_boxes[LENGTH];
 
 uniform float u_time;
 
@@ -62,6 +65,47 @@ void main() {
 
     if (p > 1) col *= vec4(0.5, 0.5, 0.5, 1);
     if (p > 1.25) col *= vec4(0, 0, 0, 1);
+
+    for (int i = 0; i < u_boxes_length; i+= 4) {
+        vec2 boxPos = vec2(u_boxes[i], u_resolution.y - u_boxes[i + 1] + overY);
+        vec2 boxSize = vec2(u_boxes[i + 2], u_boxes[i + 3]);
+        boxPos += u_position * vec2(-1, 1);
+        boxPos -= u_resolution * vec2(0.5, -0.5);
+        boxPos /= scale;
+
+        vec2 box = (boxPos - coords * u_resolution) * scale;
+
+        if (
+            abs(box.x) < boxSize.x / 2 &&
+            abs(box.y) < boxSize.y / 2
+        ) {
+
+            vec2 time = box + boxSize / 2 + u_time / 8;
+
+            float bars = mod(time.x + time.y, 60);
+            if (
+                !(
+                    abs(box.x) < boxSize.x / 2 - 5 &&
+                    abs(box.y) < boxSize.y / 2 - 5
+                ) && bars >= 30
+            ) col = mix(col, vec4(1), vec4(0.3));
+
+            if (
+                (
+                    abs(box.x) < boxSize.x / 2 - 5 &&
+                    abs(box.y) < boxSize.y / 2 - 5
+                )
+            ) {
+                if (bars < 30) {
+                    col = mix(col, vec4(1), vec4(0.2));
+                } else {
+                    col = mix(col, vec4(1), vec4(0.1));
+                }
+            }
+        };
+
+
+    }
 
     gl_FragColor = vec4(col.rgb, u_opacity * col.a);
 }
