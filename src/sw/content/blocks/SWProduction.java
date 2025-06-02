@@ -26,7 +26,7 @@ public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
 
-		liquidCollector, artesianWell;
+		liquidCollector, artesianWell, pumpjack;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -199,7 +199,6 @@ public class SWProduction {
 				SWItems.iron, 40
 			);
 		}};
-
 		artesianWell = new SWGenericCrafter("artesian-well") {{
 			requirements(Category.production, with(
 				SWItems.iron, 20,
@@ -307,6 +306,61 @@ public class SWProduction {
 					new int[]{6, 0},
 					new int[]{9, 3}
 				};
+			}};
+		}};
+		pumpjack = new SWGenericCrafter("pumpjack") {{
+			requirements(Category.production, with(
+				SWItems.verdigris, 25,
+				SWItems.iron, 30
+			));
+			
+			size = 3;
+			hasAttribute = true;
+			displayEfficiency = true;
+			attribute = Attribute.heat;
+			baseEfficiency = 0f;
+			boostScale = 1f / 9f;
+			maxBoost = 1f;
+			minEfficiency = 9f;
+			
+			liquidCapacity = 90;
+			outputLiquids = LiquidStack.with(
+				Liquids.slag, 18f/60f
+			);
+			
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawGlowRegion() {{
+					layer = -1f;
+					color = Pal.accent;
+					glowIntensity = 0.3f;
+					glowScale = 20f;
+				}},
+				new DrawParts() {{
+					parts.add(
+						new RegionPart("-gear") {{
+							outline = false;
+							progress = PartProgress.smoothReload.loop(960f);
+							moveRot = 360f;
+						}},
+						new RegionPart("-top") {{
+							outline = false;
+							clampProgress = false;
+							growProgress = PartProgress.smoothReload.loop(180f).curve(Interp.slope).curve(Interp.swing);
+							growX = growY = 0.125f;
+						}},
+						new RegionPart("-top-top") {{
+							outline = false;
+							clampProgress = false;
+							growProgress = PartProgress.smoothReload.add(45f).loop(180f).curve(Interp.slope).curve(Interp.swing);
+							growX = growY = 0.125f;
+						}}
+					);
+				}}
+			);
+			
+			spinConfig = new SpinConfig() {{
+				hasSpin = false;
 			}};
 		}};
 	}
