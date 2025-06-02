@@ -3,6 +3,8 @@ package sw.content;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.world.blocks.storage.*;
+import sw.content.blocks.*;
 import sw.type.*;
 
 public class SWSectorPresets {
@@ -26,12 +28,16 @@ public class SWSectorPresets {
 					5f * Time.toMinutes
 				));
 			};
+			
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 		theDelta = new PositionSectorPreset("the-delta", SWPlanets.wendi, 1) {{
 			x = 300;
 			y = 100;
 			width = height = 200;
 			icon = () -> Icon.units;
+			
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 		kettle = new PositionSectorPreset("kettle", SWPlanets.wendi, 2) {{
 			x = 200;
@@ -49,6 +55,10 @@ public class SWSectorPresets {
 					5f * Time.toMinutes
 				));
 			};
+			
+			core = (CoreBlock) SWStorage.coreScaffold;
+			
+			launcher = (PositionSectorPreset) theDelta;
 		}};
 	}
 }

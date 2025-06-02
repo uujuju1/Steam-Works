@@ -28,14 +28,14 @@ public class SWStorage {
 
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
-				SWItems.verdigris, 1000,
-				Items.graphite, 800
+				SWItems.verdigris, 5000,
+				Items.graphite, 400
 			));
 			size = 3;
 			health = 2000;
 			alwaysUnlocked = true;
 			unitType = SWUnitTypes.lambda;
-			itemCapacity = 1000;
+			itemCapacity = 2000;
 			unitCapModifier = 12;
 		}};
 	}

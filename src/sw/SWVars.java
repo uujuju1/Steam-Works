@@ -33,6 +33,7 @@ public class SWVars implements Loadable {
 		if (isMod) dev();
 
 		if (!Vars.headless) {
+			SWTex.load();
 			SWStyles.load();
 			ModSettings.load();
 			envProcess = new EnvProcess();
