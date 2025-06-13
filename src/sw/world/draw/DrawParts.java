@@ -8,17 +8,17 @@ import mindustry.entities.part.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.draw.*;
+import sw.annotations.Annotations.*;
 import sw.world.interfaces.*;
 
-public class DrawParts extends DrawBlock {
+public class DrawParts extends BlockDrawer {
 	public boolean vanillaOutlines = false;
 
 	public String name = "";
 
 	public Seq<DrawPart> parts = new Seq<>();
 
-	public TextureRegion previewRegion;
+	public @Load("@loadBlock.name$@name$-preview") TextureRegion previewRegion;
 
 	@Override
 	public void draw(Building build) {
@@ -30,7 +30,7 @@ public class DrawParts extends DrawBlock {
 			* smoothReload = totalProgress
 			* heat = efficiency
 			* recoil = graph rotation (spin exclusive)
-			* charge = between 0 and 1 based on graph speed (spin exclusive)
+			* charge = percentage of rotation efficiency, current speed / target speed (spin exclusive)
 			*/
 			DrawPart.PartParams params = DrawPart.params.set(
 				build.warmup(),

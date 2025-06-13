@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import mindustry.content.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
@@ -18,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		evaporator,
+		evaporator, waterWheel,
 		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt,
 		torqueGauge,
 
@@ -462,6 +463,56 @@ public class SWPower {
 
 			outputRotation = 1f;
 			outputRotationForce = 1f/60f;
+		}};
+		waterWheel = new SWGenericCrafter("water-wheel") {{
+			requirements(Category.power, with(
+				Items.silicon, 10
+			));
+			rotate = true;
+			
+			spinConfig = new SpinConfig() {{
+				topSpeed = 2f;
+				
+				allowedEdges = new int[][]{
+					new int[]{1, 3},
+					new int[]{2, 0},
+					new int[]{3, 1},
+					new int[]{0, 2}
+				};
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawAxles(
+					building -> ((HasSpin) building).getRotation() * (building.rotation > 1 ? -1f : 1f),
+					Layer.block + 0.01f,
+					new Axle("-axle") {{
+						circular = true;
+						
+						pixelHeight = 1;
+						height = 3.5f;
+						
+						rotation = -90f;
+					}}
+				),
+				new DrawBitmask("-tiles", building -> 0, 32, Layer.block + 0.01f),
+				new DrawFlaps() {{
+					rotationFunc = building -> ((HasSpin) building).getRotation();
+					layer = Layer.block + 0.01f;
+					layerOffset = 0.01f;
+					
+					width = height = 8f;
+					rotation = 180f;
+					
+					radius = 3f;
+					zScale = 2f;
+					
+					blades = 6;
+				}},
+				new DrawIcon()
+			);
+			
+			outputRotation = 2f;
+			outputRotationForce = 0.25f/60f;
 		}};
 	}
 }
