@@ -10,6 +10,7 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.graphics.*;
 import sw.world.blocks.environment.*;
+import sw.world.meta.*;
 
 public class SWEnvironment {
 	public static Block
@@ -147,6 +148,8 @@ public class SWEnvironment {
 			maskColor = SWPal.waterfallMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+			
+			attributes.set(SWAttribute.gravity, 1f);
 
 			mapColor = Color.valueOf("71727d").lerp(Pal.water, 0.2f).lerp(Color.black, 0.5f);
 		}};
@@ -289,6 +292,8 @@ public class SWEnvironment {
 		waterloggedPlate = new Floor("waterlogged-plate", 4) {{
 			wall = plateWall;
 			cacheLayer = CacheLayer.water;
+			
+			attributes.set(Attribute.water, 1f);
 		}};
 		agedPlate = new Floor("aged-plate", 4) {{
 			wall = agedPlateWall;

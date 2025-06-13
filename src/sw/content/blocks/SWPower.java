@@ -6,6 +6,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
@@ -464,11 +465,18 @@ public class SWPower {
 			outputRotation = 1f;
 			outputRotationForce = 1f/60f;
 		}};
-		waterWheel = new SWGenericCrafter("water-wheel") {{
+		waterWheel = new FrontAttributeCrafter("water-wheel") {{
 			requirements(Category.power, with(
 				Items.silicon, 10
 			));
 			rotate = true;
+			drawArrow = true;
+			hasAttribute = true;
+			
+			attribute = Attribute.water;
+			frontAttribute = SWAttribute.gravity;
+			baseEfficiency = 0f;
+			minEfficiency = 1f;
 			
 			spinConfig = new SpinConfig() {{
 				topSpeed = 2f;
