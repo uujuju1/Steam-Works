@@ -95,7 +95,7 @@ public class AssetsProcessor extends BaseProcessor {
 					}
 					
 					@Override public Fi path(Fi root) {
-						return root.child("assets/sprites/ui");
+						return root.child("assets/sprites-raw/ui");
 					}
 					
 					@Override public TypeElement type() {
