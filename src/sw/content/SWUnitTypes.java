@@ -299,7 +299,7 @@ public class SWUnitTypes {
 			
 			parts.add(new RegionPart("-gear") {{
 				x = 0f;
-				y = -3.5f;
+				y = -5f;
 				
 				layerOffset = -0.001f;
 				

@@ -122,7 +122,7 @@ public class SectorLaunchDialog extends BaseDialog {
 					button.left();
 					button.image(Icon.tree).size(Vars.iconMed).scaling(Scaling.fit).padRight(10).padLeft(2);
 					button.add("@techtree");
-				}, () -> SWUI.techtreeDialog.show()).margin(10);
+				}, () -> Vars.ui.research.show()).margin(10);
 			}).bottom().right()
 		).grow();
 	}

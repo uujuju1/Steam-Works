@@ -4,7 +4,6 @@ import arc.graphics.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
-import mindustry.graphics.g3d.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
 import sw.content.blocks.*;
@@ -15,13 +14,10 @@ public class SWPlanets {
 
 	public static void load() {
 		wendi = new Planet("wendi", Planets.sun, 1f, 3) {{
-			meshLoader = () -> new HexMesh(this, 7);
-
 			sectorSeed = 2;
 			allowWaves = true;
-			allowLaunchToNumbered = updateLighting = drawOrbit = false;
-			alwaysUnlocked = true;
-			orbitRadius = 12831f;
+			visible = accessible = false;
+			updateLighting = false;
 
 			defaultEnv = Env.terrestrial | Env.groundWater | Env.oxygen;
 			clearSectorOnLose = true;

@@ -98,7 +98,7 @@ public class SWTechTree {
       // endregion
       // region sectors
       root("sw-sectors", crevasse, () -> {
-        node(theDelta);
+        node(theDelta, with(new SectorComplete(crevasse)), () -> {});
         node(kettle, with(new Research(mechanicalAssembler)), () -> {});
       });
       // endregion

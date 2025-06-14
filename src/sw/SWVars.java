@@ -4,6 +4,7 @@ import arc.*;
 import arc.assets.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.ctype.*;
 import mindustry.ui.fragments.*;
 import sw.content.*;
@@ -42,9 +43,20 @@ public class SWVars implements Loadable {
 			SWUI.load();
 		}
 	}
+	
+	
+	public static void clearTree() {
+		clearBranch(SWPlanets.wendi.techTree);
+	}
+	public static void clearBranch(TechTree.TechNode root) {
+		root.reset();
+		root.content.clearUnlock();
+		root.children.each(SWVars::clearBranch);
+	}
+	
 	/** code to erase unlocked progress on this mod */
 	public static void clearUnlockModContent() {
-		TechTreeDialog.clearTree();
+		clearTree();
 		Core.settings.put("settings-sw-techtree-category", -1);
 	}
 	/**cheating privileges*/
