@@ -2,10 +2,11 @@ package sw.graphics;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import mindustry.*;
-import mindustry.game.*;
+import mindustry.game.EventType.*;
 import sw.world.blocks.environment.*;
 
 public class SWRenderer {
@@ -14,7 +15,7 @@ public class SWRenderer {
 	public FrameBuffer frameBuffer = new FrameBuffer();
 
 	public void init() {
-		Events.on(EventType.WorldLoadEvent.class, e -> {
+		Events.on(WorldLoadEvent.class, e -> {
 			frameBuffer.resize(Vars.world.unitWidth(), Vars.world.unitHeight());
 			frameBuffer.begin(Color.clear);
 
@@ -29,6 +30,10 @@ public class SWRenderer {
 
 			frameBuffer.end();
 			pitfall = frameBuffer.getTexture();
+			pitfall.setFilter(TextureFilter.nearest);
+		});
+		Events.on(DisposeEvent.class, e -> {
+			frameBuffer.dispose();
 		});
 	}
 }

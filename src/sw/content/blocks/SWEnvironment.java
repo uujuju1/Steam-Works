@@ -1,7 +1,9 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -11,6 +13,8 @@ import sw.content.*;
 import sw.graphics.*;
 import sw.world.blocks.environment.*;
 import sw.world.meta.*;
+
+import java.util.*;
 
 public class SWEnvironment {
 	public static Block
@@ -294,7 +298,39 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.water;
 			
 			attributes.set(Attribute.water, 1f);
-		}};
+		}
+			@Override
+			public void drawBase(Tile tile) {
+				Mathf.rand.setSeed(tile.pos());
+				Draw.rect(variantRegions[variant(tile.x, tile.y)], tile.worldx(), tile.worldy());
+				
+				Draw.alpha(1f);
+				drawOverlay(tile);
+			}
+			
+			@Override
+			public void drawNonLayer(Tile tile, CacheLayer layer) {
+				Mathf.rand.setSeed(tile.pos());
+				
+				Arrays.fill(dirs, 0);
+				blenders.clear();
+				blended.clear();
+				
+				for(int i = 0; i < 8; i++){
+					Point2 point = Geometry.d8[i];
+					Tile other = tile.nearby(point);
+					//special case: empty is, well, empty, so never draw emptiness on top, as that would just be an incorrect black texture
+					if(other != null && other.floor().cacheLayer == layer && other.floor().cacheLayer != SWShaders.pitfallLayer && other.floor() != Blocks.empty){
+						if(!blended.getAndSet(other.floor().id)){
+							blenders.add(other.floor());
+							dirs[i] = other.floorID();
+						}
+					}
+				}
+				
+				drawBlended(tile, false);
+			}
+		};
 		agedPlate = new Floor("aged-plate", 4) {{
 			wall = agedPlateWall;
 		}};
