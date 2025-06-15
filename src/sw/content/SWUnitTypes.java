@@ -1,5 +1,7 @@
 package sw.content;
 
+import arc.graphics.*;
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.part.*;
@@ -7,6 +9,7 @@ import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import sw.entities.bullet.*;
 import sw.type.*;
 
 public class SWUnitTypes {
@@ -286,13 +289,17 @@ public class SWUnitTypes {
 		rho = new SWUnitType("rho") {{
 			health = 250;
 			speed = 2;
+			accel = drag = 0.05f;
 			hitSize = 8f;
-			range = maxRange = 100f;
+			
+			float r = range = maxRange = 100f;
+			
 			engineSize = engineOffset = shadowElevationScl = 0;
+			
 			fallSpeed = 1f;
 			buildSpeed = 1f;
+			
 			coreUnitDock = true;
-			lowAltitude = true;
 			flying = true;
 			
 			outlineLayerOffset = -0.002f;
@@ -305,6 +312,40 @@ public class SWUnitTypes {
 				
 				progress = DrawPart.PartProgress.time.mul(1/300f).mod(1);
 				moveRot =  360f;
+			}});
+			
+			weapons.add(new Weapon() {{
+				x = y = 0;
+				mirror = false;
+				
+				reload = 15f;
+				
+				shootSound = Sounds.plantBreak;
+				
+				bullet = new FissureBulletType() {{
+					layer = Layer.bullet - 0.03f;
+					
+					splashDamage = 5f;
+					splashDamageRadius = 16f;
+					
+					bezierOffsetMag = 128f;
+					divisionOffsetYMag = 4f;
+					
+					fromColor = toColor = hitColor = Color.grays(0.2f);
+					strokeFrom = 3f;
+					strokeTo = 1f;
+					
+					hitFract = 0.5f;
+					hitEffect = SWFx.groundCrack;
+					hitSound = Sounds.dullExplosion;
+					
+					despawnEffect = Fx.none;
+					
+					startCurve = a -> Mathf.clamp(2f * a);
+					endCurve = a -> Mathf.clamp(2f * a - 1f);
+					
+					rangeOverride = r;
+				}};
 			}});
 		}};
 		//endregion
