@@ -14,6 +14,7 @@ import sw.entities.*;
 import sw.graphics.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.liquid.*;
+import sw.world.blocks.payloads.*;
 import sw.world.draw.*;
 import sw.world.meta.*;
 
@@ -30,6 +31,7 @@ public class SWDistribution {
 
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
+		payloadCatapult,
 
 
 		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge;
@@ -198,6 +200,12 @@ public class SWDistribution {
 			
 			interp = Interp.linear;
 			payloadLimit = 2f;
+		}};
+		payloadCatapult = new PayloadCatapult("payload-catapult") {{
+			requirements(Category.units, with(
+			
+			));
+			size = 3;
 		}};
 		//endregion
 
