@@ -1,6 +1,10 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
+import arc.math.*;
+import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -10,6 +14,7 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
+import sw.world.blocks.payloads.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.draw.*;
@@ -21,8 +26,9 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		evaporator, waterWheel,
-		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt,
-		torqueGauge,
+		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt, torqueGauge,
+		hydraulicFlywheel,
+		winder, latch,
 
 		shaftTransmission;
 
@@ -414,6 +420,161 @@ public class SWPower {
 					tileWidth = tileHeight = 64;
 				}}
 			);
+		}};
+		
+		hydraulicFlywheel = new RotationBattery("hydraulic-flywheel") {{
+			requirements(Category.units, with(
+			
+			));
+			size = 2;
+			
+			maxWindup = 6000;
+			speed = 1/10f;
+			resistanceScale = 300;
+			resistanceMagnitude = 1.122f;
+			outputForce = 10/600f;
+			
+			rotate = false;
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					new Axle("-axle") {{
+						pixelWidth = 48;
+						pixelHeight = 6;
+						
+						width = 2.5f;
+						height = 7f;
+						
+						paletteLight = Color.valueOf("BAA697");
+						paletteMedium = Color.valueOf("947D72");
+						paletteDark = Color.valueOf("6A504A");
+					}}
+				),
+				new DrawParts() {{
+					for (int i : Mathf.signs) {
+						parts.add(
+							new RegionPart("-piston" + (i == 1 ? "-top" : "-bottom")) {{
+								outline = false;
+								
+								x = 3.25f * i;
+								y = 5.25f * i;
+								moveY = -3.5f * i;
+								
+								progress = PartProgress.reload;
+							}}
+						);
+					}
+				}},
+				new DrawDefault()
+			);
+		}};
+		
+		winder = new PayloadSpinLoader("winder") {{
+			requirements(Category.units, with(
+			
+			));
+			size = 3;
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom") {{
+					buildingRotate = true;
+				}},
+				new DrawAxles(
+					new Axle("-axle") {{
+						pixelHeight = 1;
+						pixelWidth = 96;
+						
+						width = 24f;
+						height = 3.5f;
+						
+						rotation = -90f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawDefault(),
+				new DrawRegion("-top") {{
+					layer = Layer.blockOver + 0.1f;
+				}},
+				new DrawRegion("-gear", 1f) {{
+					layer = Layer.blockOver + 0.1f;
+				}}
+			);
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 5/600f;
+				
+				allowedEdges = new int[][]{
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+					new int[]{0, 6}
+				};
+			}};
+		}};
+		latch = new PayloadSpinLoader("latch") {{
+			requirements(Category.units, with(
+			
+			));
+			size = 3;
+			
+			reverse = true;
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom") {{
+					buildingRotate = true;
+				}},
+				new DrawAxles(
+					new Axle("-axle") {{
+						pixelHeight = 1;
+						pixelWidth = 96;
+						
+						width = 24f;
+						height = 3.5f;
+						
+						rotation = -90f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawDefault(),
+				new DrawParts() {{
+					name = "-gears";
+					for (int i = 0; i < 4; i++) {
+						int finalI = i;
+						parts.addAll(
+							new RegionPart("-gear") {{
+								x = Geometry.d4x(finalI) * 6.5f;
+								y = Geometry.d4y(finalI) * 6.5f;
+								moveRot = 360f * (finalI % 2 == 0 ? -1f : 1f);
+								
+								layer = Layer.blockOver + 0.1f;
+								
+								outline = false;
+								
+								progress = PartProgress.recoil.loop(360f);
+							}}
+						);
+					}
+				}},
+				new DrawRegion("-top") {{
+					layer = Layer.blockOver + 0.1f;
+				}}
+			);
+			
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][]{
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+					new int[]{0, 6}
+				};
+			}};
 		}};
 
 		evaporator = new SWGenericCrafter("evaporator") {{

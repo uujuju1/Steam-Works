@@ -1,6 +1,5 @@
 package sw.world.draw;
 
-import arc.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
@@ -38,7 +37,7 @@ public class DrawParts extends BlockDrawer {
 				build.totalProgress(),
 				build.efficiency * build.efficiencyScale(),
 				build instanceof HasSpin spin ? (spin.spinGraph().rotation * spin.spinGraph().ratios.get(spin, 1f)) : 0f,
-				build instanceof HasSpin spin ? (spin.spinGraph().speed / spin.spinGraph().builds.max(HasSpin::getTargetSpeed).getTargetSpeed()) : 0f,
+				build instanceof HasSpin spin && spin.spinGraph().builds.max(HasSpin::getTargetSpeed) != null ? (spin.spinGraph().speed / spin.spinGraph().builds.max(HasSpin::getTargetSpeed).getTargetSpeed()) : 0f,
 				build.x,
 				build.y,
 				build.rotation * 90f + 90f
@@ -66,7 +65,8 @@ public class DrawParts extends BlockDrawer {
 
 	@Override
 	public void load(Block block) {
+		super.load(block);
+		
 		parts.each(p -> p.load(block.name + name));
-		previewRegion = Core.atlas.find(block.name + name + "-preview");
 	}
 }
