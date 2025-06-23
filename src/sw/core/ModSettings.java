@@ -73,6 +73,17 @@ public class ModSettings {
           .left().pad(1f)
           .update(check -> check.setChecked(Core.settings.getBool("sw-menu-override", true)))
           .tooltip("@settings.sw-menu-override-description");
+        
+        settings.row();
+        
+        settings.check(
+          "@settings.sw-hide-maps",
+          Core.settings.getBool("sw-hide-maps", true),
+          check -> Core.settings.put("sw-hide-maps", check)
+        )
+          .left().pad(1f)
+          .update(check -> check.setChecked(Core.settings.getBool("sw-hide-maps", true)))
+          .tooltip("@settings.sw-hide-maps-description");
       }).width(400f);
 
       buttons.button("@settings.reset", () -> {

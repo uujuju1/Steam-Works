@@ -32,15 +32,24 @@ public class ModLoader extends Mod {
       if (SWVars.isMod) Core.app.post(SWShaders::load);
     });
     Events.on(EventType.MusicRegisterEvent.class, e -> SWMusics.load());
-    Events.on(EventType.ContentInitEvent.class, e -> Vars.content.each(c -> {
-      if (c instanceof MappableContent content) SWContentRegionRegistry.load(content);
-    }));
+    Events.on(EventType.ContentInitEvent.class, e -> {
+      if (Core.settings.getBool("sw-hide-maps", true)) {
+        Vars.content.sectors().each(this::isMod, sector -> Vars.maps.all().remove(map -> map.file == sector.generator.map.file));
+      }
+      Vars.content.each(c -> {
+        if (isMod(c)) SWContentRegionRegistry.load(c);
+      });
+    });
   }
 
   @Override
   public void init() {
     super.init();
     SWVars.init();
+  }
+  
+  public boolean isMod(Content c) {
+    return c.minfo.mod != null && c.minfo.mod.name.equals("sw");
   }
 
   @Override
