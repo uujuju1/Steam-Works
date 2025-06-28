@@ -1,6 +1,7 @@
 package sw.world.blocks.payloads;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -14,7 +15,13 @@ import sw.annotations.Annotations.*;
 
 public class PayloadCatapult extends PayloadBlock {
 	public float range = 80f;
+	
 	public float maxPayloadSize = 3f;
+	
+	public float launchCooldownTime = 60f;
+	
+	public float launchSpeed = 4f;
+	public float rotateSpeed = 1f;
 	
 	public @Load("@name$-catapult") TextureRegion catapultRegion;
 	public @Load("@name$-catapult-edge") TextureRegion catapultEdgeRegion;
@@ -44,14 +51,14 @@ public class PayloadCatapult extends PayloadBlock {
 		updateClipRadius(range);
 	}
 	
-	// TODO make a proper way of knowing what the catapult is supposed to do
-	// TODO make a proper way of knowing which catapult should launch to this
 	// TODO make a proper "jumping" animation of the payload
 	// TODO make a proper ejecting animation during payload launch
 	public class PayloadCatapultBuild extends PayloadBlockBuild<Payload> implements RotBlock {
 		public int link = -1;
+		public CatapultState catapultState = CatapultState.idle;
 		
 		public float angle;
+		public float cooldown;
 		
 		public Queue<PayloadCatapultBuild> launchers = new Queue<>();
 		
@@ -63,7 +70,7 @@ public class PayloadCatapult extends PayloadBlock {
 		}
 		
 		@Override public boolean acceptPayload(Building source, Payload payload) {
-			return super.acceptPayload(source, payload) && payload.size() <= maxPayloadSize * Vars.tilesize;
+			return payload != null && super.acceptPayload(source, payload) && payload.size() <= maxPayloadSize * Vars.tilesize;
 		}
 		
 		@Override public float buildRotation() {
@@ -115,8 +122,10 @@ public class PayloadCatapult extends PayloadBlock {
 		
 		public void launchPayload(PayloadCatapultBuild to) {
 			to.payload = takePayload();
-			to.payVector.set(to).sub(this);
+			to.payVector.set(this).sub(to);
+			to.payRotation = payRotation;
 			to.launchers.removeLast();
+			to.catapultState = CatapultState.receiving;
 			
 			to.updatePayload();
 		}
@@ -146,23 +155,46 @@ public class PayloadCatapult extends PayloadBlock {
 			
 			link = read.i();
 			
+			int state = read.i();
+			catapultState = CatapultState.values()[state];
+			
 			angle = read.f();
+			cooldown = read.f();
 		}
 		
 		@Override
 		public void updateTile() {
-			if (!launchers.isEmpty() && launchers.last().getLink() != this) getLink().launchers.removeLast();
-			
-			if (payload != null) {
-				if (payVector.isZero() && getLink() != null) {
-					if (!getLink().launchers.contains(this)) getLink().launchers.addFirst(this);
-					if (getLink().acceptLauncher(this, payload)) launchPayload(getLink());
-				} else {
+			while (launchers.indexOf(b -> !b.isValid()) != -1) launchers.remove(b -> !b.isValid());
+			switch (catapultState) {
+				case idle -> {
 					if (getLink() != null) {
-						payVector.approachDelta(Vec2.ZERO, payloadSpeed);
-					} else {
+						if (moveInPayload(false) && Mathf.zero(angle - angleTo(getLink()), 0.001f) && (cooldown -= edelta()) <= 0) {
+							catapultState = CatapultState.launching;
+						}
+						angle = Angles.moveToward(angle, angleTo(getLink()), rotateSpeed);
+						payRotation = Angles.moveToward(payRotation, angleTo(getLink()), payloadRotateSpeed);
+					} else catapultState = CatapultState.received;
+				}
+				case launching -> {
+					if (getLink() != null) {
+						payRotation = Angles.moveToward(payRotation, angleTo(getLink()), payloadRotateSpeed);
+						if (!getLink().launchers.contains(this)) getLink().launchers.addFirst(this);
+						if (getLink().acceptLauncher(this, payload)) {
+							launchPayload(getLink());
+							catapultState = CatapultState.idle;
+							cooldown = launchCooldownTime;
+						}
+					} else catapultState = CatapultState.received;
+				}
+				case receiving -> {
+					payVector.approachDelta(Vec2.ZERO, launchSpeed);
+					if (hasArrived()) catapultState = CatapultState.received;
+				}
+				case received -> {
+					if (payload != null && getLink() == null) {
 						moveOutPayload();
-					}
+						payRotation = Angles.moveToward(payRotation, rotdeg(), payloadRotateSpeed);
+					} else catapultState = CatapultState.idle;
 				}
 			}
 		}
@@ -182,7 +214,14 @@ public class PayloadCatapult extends PayloadBlock {
 			
 			write.i(link);
 			
+			write.i(catapultState.ordinal());
+			
 			write.f(angle);
+			write.f(cooldown);
 		}
+	}
+	
+	public enum CatapultState {
+		idle, launching, receiving, received
 	}
 }
