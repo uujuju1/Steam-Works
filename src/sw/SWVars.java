@@ -2,18 +2,15 @@ package sw;
 
 import arc.*;
 import arc.assets.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.ui.fragments.*;
 import sw.content.*;
 import sw.core.*;
 import sw.dream.*;
 import sw.gen.*;
 import sw.graphics.*;
 import sw.ui.*;
-import sw.ui.dialog.*;
 
 import java.util.*;
 
@@ -43,7 +40,6 @@ public class SWVars implements Loadable {
 			SWUI.load();
 		}
 	}
-	
 	
 	public static void clearTree() {
 		clearBranch(SWPlanets.wendi.techTree);
@@ -104,15 +100,15 @@ public class SWVars implements Loadable {
 
 	/**This is where you initialize your content lists. But do not forget about correct order.
 	 *  correct order:
-	 *  ModItems.load()
-	 *  ModStatusEffects.load()
-	 *  ModLiquids.load()
-	 *  ModBullets.load()
-	 *  ModUnitTypes.load()
-	 *  ModBlocks.load()
-	 *  ModPlanets.load()
-	 *  ModSectorPresets.load()
-	 *  ModTechTree.load()
+	 *  <p>ModItems.load()
+	 *  <p>ModStatusEffects.load()
+	 *  <p>ModLiquids.load()
+	 *  <p>ModBullets.load()
+	 *  <p>ModUnitTypes.load()
+	 *  <p>ModBlocks.load()
+	 *  <p>ModPlanets.load()
+	 *  <p>ModSectorPresets.load()
+	 *  <p>ModTechTree.load()
 	**/
 	public static void loadContent() {
 		SWSounds.load();
@@ -125,14 +121,5 @@ public class SWVars implements Loadable {
 		SWPlanets.load();
 		SWSectorPresets.load();
 		SWTechTree.load();
-	}
-
-	public static SWMenuRenderer getMenuRenderer() {
-		try{
-			return Reflect.get(MenuFragment.class, Vars.ui.menufrag, "renderer");
-		}catch(Exception ex){
-			Log.err("Failed to return renderer", ex);
-			return new SWMenuRenderer();
-		}
 	}
 }
