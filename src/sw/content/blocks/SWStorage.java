@@ -3,6 +3,7 @@ package sw.content.blocks;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.storage.*;
 import sw.content.*;
 
@@ -11,6 +12,7 @@ import static mindustry.type.ItemStack.*;
 public class SWStorage {
 	public static Block
 		compactContainer,
+		liquidBasin,
 		coreScaffold;
 
 	public static void load() {
@@ -24,6 +26,17 @@ public class SWStorage {
 			health = 500;
 			itemCapacity = 500;
 			coreMerge = false;
+		}};
+		
+		liquidBasin = new LiquidRouter("liquid-basin") {{
+			requirements(Category.liquid, with(
+				SWItems.iron, 50,
+				SWItems.verdigris, 30
+			));
+			size = 3;
+			health = 500;
+			solid = true;
+			liquidCapacity = 1000;
 		}};
 
 		coreScaffold = new CoreBlock("core-scaffold") {{

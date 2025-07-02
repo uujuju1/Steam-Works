@@ -334,6 +334,8 @@ project(":"){
     }
 
     tasks.register<DefaultTask>("rungame"){
+        mustRunAfter(dep);
+
         doLast{
             exec {
                 workingDir = project.rootDir
