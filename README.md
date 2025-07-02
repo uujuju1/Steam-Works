@@ -22,6 +22,21 @@ Building locally takes more time to set up, but shouldn't be a problem if you've
 3. Add a build-tools folder to your PATH. For example, if you have `30.0.1` installed, that would be `$ANDROID_HOME/build-tools/30.0.1`.
 4. Run `gradlew deploy`. If you did everything correctly, this will create a jar file in the `build/libs` directory that can be run on both Android and desktop. 
 
+## Processing Assets
+
+1. Place the unprocessed sprites in the assets/sprites-raw folder
+2. Run `gradlew tools:run`
+3. Your packed sprites will be on the assets/sprites folder, keep in mind that this folder will not be pushed to github.
+
+## Running the game with the mod
+
+To automatically process, copy file into mod folder and run mindustry, do the following:
+1. add a shortcut to your copy of mindustry into the mod folder, only .lnk files are supported and it has to be named "app"
+2. Run `gradlew toors:run install rungame`
+3. `tools:run` will process sprites
+4. `install` will move the built jar from build/libs to /appdata/mindustry/mods
+5. `rungame` will execute the app.lnk file in the root project folder, if no app.lnk file is there, it will cause an error
+
 ## Adding Dependencies
 
 Please note that all dependencies on Mindustry, Arc or its submodules **must be declared as compileOnly in Gradle**. Never use `implementation` for core Mindustry or Arc dependencies. 

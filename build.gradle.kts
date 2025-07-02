@@ -332,4 +332,16 @@ project(":"){
             logger.lifecycle("Copied :jar output to $folder.")
         }
     }
+
+    tasks.register<DefaultTask>("rungame"){
+        doLast{
+            exec {
+                workingDir = project.rootDir
+                executable = "cmd"
+                args = listOf("/C", "app.lnk & exit")
+            }
+
+            logger.lifecycle(project.rootDir.toString())
+        }
+    }
 }
