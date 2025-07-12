@@ -25,6 +25,8 @@ import static mindustry.type.ItemStack.*;
 public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
+	
+		castingOutlet,
 
 		liquidCollector, artesianWell, pumpjack;
 
@@ -75,7 +77,6 @@ public class SWProduction {
 			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
 			liquidBoostIntensity = 1.5f;
 		}};
-
 		mechanicalFracker = new RangedDrill("mechanical-fracker") {{
 			requirements(Category.production, with(
 				SWItems.iron, 20,
@@ -189,6 +190,36 @@ public class SWProduction {
 					new int[]{2, 3}
 				};
 			}};
+		}};
+		
+		castingOutlet = new SingleItemMultiCrafter("casting-outlet") {{
+			requirements(Category.production, with(
+			
+			));
+			rotate = true;
+			drawArrow = true;
+			
+			consume(new ConsumeBuilding(b ->
+				b.back() != null &&
+				b.back().block == SWStorage.liquidBasin &&
+				b.back().liquids != null &&
+				b.back().liquids.get(Liquids.slag) > 0
+			));
+			consumeLiquid(Liquids.slag, 10f / 60f);
+			
+			outputItems = with(
+				SWItems.verdigris, 1,
+				SWItems.iron, 2
+			);
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.slag, 2f),
+				new DrawDefault(),
+				new DrawRegion("-top")
+			);
+			
+			spinConfig.hasSpin = false;
 		}};
 
 		liquidCollector = new Pump("liquid-collector") {{

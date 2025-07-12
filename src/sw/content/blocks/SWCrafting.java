@@ -1,10 +1,8 @@
 package sw.content.blocks;
 
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -16,7 +14,6 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
-import sw.math.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -27,18 +24,16 @@ import static mindustry.type.ItemStack.*;
 
 public class SWCrafting {
 	public static Block
-
 		cokeOven, engineSmelter, mechanocatalysisChamber,
-
+		
 		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
-
-		crystalFurnace, rte, kitchenGarden,
-
-		compoundSmelter, chalkSeparator,
-		densePress, thermiteMixer;
-
+		
+		crystalFurnace, rte, kitchenGarden;
+	
+	public static Block compoundSmelter;
+	public static Block densePress;
+	
 	public static void load() {
-
 		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
 			requirements(Category.crafting, BuildVisibility.hidden, with(
 				SWItems.iron, 80,
@@ -70,64 +65,6 @@ public class SWCrafting {
 
 			outputItem = new ItemStack(SWItems.compound, 1);
 		}};
-		chalkSeparator = new SWGenericCrafter("chalk-separator") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-				SWItems.iron, 50,
-				SWItems.compound, 35,
-				Items.silicon, 30
-			));
-			size = 2;
-			health = 160;
-			
-			rotate = true;
-
-			spinConfig = new SpinConfig() {{
-				connections = new Seq[]{
-					BlockGeometry.sides21,
-					BlockGeometry.sides22,
-					BlockGeometry.sides23,
-					BlockGeometry.sides24
-				};
-			}};
-
-			drawer = new DrawMulti(
-				new DrawAxles(
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
-
-						y = 4;
-
-						width = 16f;
-						height = 3.5f;
-					}},
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
-
-						y = -4;
-
-						width = 16f;
-						height = 3.5f;
-					}}
-				) {{
-					rotationOverride = b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio;
-				}},
-				new DrawRegion("-bottom"),
-				new DrawBitmask("-tiles", b -> 0) {{
-					tileWidth = tileHeight = 64;
-				}}
-			);
-
-			craftTime = 120f;
-			consumeItems(with(
-				Items.sand, 1,
-				SWItems.compound, 2
-			));
-			consumeSpin(2f, 4f, a -> Interp.sine.apply(Interp.slope.apply(a)));
-
-			outputItem = new ItemStack(SWItems.chalk, 2);
-		}};
 
 		densePress = new SWGenericCrafter("dense-press") {{
 			requirements(Category.crafting, BuildVisibility.hidden, with(
@@ -152,64 +89,6 @@ public class SWCrafting {
 			consumeLiquid(SWLiquids.solvent, 0.1f);
 
 			outputItem = new ItemStack(SWItems.denseAlloy, 2);
-		}};
-		thermiteMixer = new SWGenericCrafter("thermite-mixer") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-				SWItems.iron, 50,
-				SWItems.denseAlloy, 35,
-				Items.silicon, 30
-			));
-			size = 2;
-			health = 160;
-
-			rotate = true;
-
-			spinConfig = new SpinConfig() {{
-				connections = new Seq[]{
-					BlockGeometry.sides21,
-					BlockGeometry.sides22,
-					BlockGeometry.sides23,
-					BlockGeometry.sides24
-				};
-			}};
-
-			consumeItem(SWItems.denseAlloy, 1);
-			consumeSpin(6f, 18f, a -> Interp.sine.apply(Interp.slope.apply(a)));
-
-			drawer = new DrawMulti(
-				new DrawAxles(
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
-
-						y = 4;
-
-						width = 16f;
-						height = 3.5f;
-					}},
-					new Axle("-shaft") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
-
-						y = -4;
-
-						width = 16f;
-						height = 3.5f;
-					}}
-				) {{
-					rotationOverride = b -> ((HasSpin) b).spinGraph().rotation * ((HasSpin) b).spinSection().ratio;
-				}},
-				new DrawRegion("-bottom"),
-				new DrawRegion("-rotator") {{
-					spinSprite = true;
-					rotateSpeed = 3f;
-				}},
-				new DrawBitmask("-tiles", b -> 0) {{
-					tileWidth = tileHeight = 64;
-				}}
-			);
-
-			outputItems = with(SWItems.thermite, 1);
 		}};
 
 		cokeOven = new StackableGenericCrafter("coke-oven") {{
@@ -255,10 +134,6 @@ public class SWCrafting {
 					particleRad = 5f;
 					particleSize = 3f;
 				}
-					@Override
-					public TextureRegion[] icons(Block block) {
-						return new TextureRegion[]{};
-					}
 				},
 				new DrawParticles() {{
 					particles = 15;
@@ -272,10 +147,6 @@ public class SWCrafting {
 					particleRad = 8f;
 					particleSize = 3f;
 				}
-					@Override
-					public TextureRegion[] icons(Block block) {
-						return new TextureRegion[]{};
-					}
 				},
 				new DrawBitmask("-tiles", b -> {
 					Point2[] edges = Edges.getEdges(3);
@@ -320,10 +191,6 @@ public class SWCrafting {
 					glowScale = 5f;
 					glowIntensity = 0.1f;
 				}
-					@Override
-					public TextureRegion[] icons(Block block) {
-						return new TextureRegion[]{};
-					}
 				}
 			);
 		}};
@@ -436,7 +303,6 @@ public class SWCrafting {
 				};
 			}};
 		}};
-
 		mechanocatalysisChamber = new GenericCrafter("mechanocatalysis-chamber") {{
 			requirements(Category.crafting, BuildVisibility.hidden, with(
 			));
