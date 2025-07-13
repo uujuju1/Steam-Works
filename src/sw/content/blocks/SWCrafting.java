@@ -24,7 +24,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWCrafting {
 	public static Block
-		cokeOven, engineSmelter, mechanocatalysisChamber,
+		cokeOven, engineSmelter, waterBallMill,
 		
 		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
 		
@@ -303,23 +303,131 @@ public class SWCrafting {
 				};
 			}};
 		}};
-		mechanocatalysisChamber = new GenericCrafter("mechanocatalysis-chamber") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
+		waterBallMill = new SWGenericCrafter("water-ball-mill") {{
+			requirements(Category.crafting, with(
 			));
 			size = 3;
 			health = 240;
+			rotate = true;
 
 			craftTime = 180f;
 
-			regionRotated1 = 3;
+			regionRotated1 = 4;
 			liquidOutputDirections = new int[]{1, 3};
 
+			consume(new ConsumeRotation() {{
+				startSpeed = 15f / 10f;
+				endSpeed = 25f / 10f;
+				curve = Interp.one;
+			}});
 			consumeLiquid(Liquids.water, 3f/60f);
 			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 6f/60f);
 
 			drawer = new DrawMulti(
-				new DrawDefault()
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water, 2f),
+				new DrawParticles() {{
+					color = Color.valueOf("D1EFFF");
+					
+					particleRad = 1f;
+					particleInterp = a -> 6f + Mathf.sin(2f * Mathf.PI * a, 1, 2f);
+					
+					rotateScl = 1f;
+				}},
+				new DrawParticles() {{
+					color = Color.valueOf("FFCBDD");
+					
+					particleRad = 1f;
+					particleInterp = a -> 6f + Mathf.sin(2f * Mathf.PI * a, 1, 2f);
+					particleSize = 1.5f;
+					
+					rotateScl = -1f;
+				}},
+				new DrawAxles(
+					b -> ((HasSpin) b).getRotation(),
+					new Axle("-axle") {{
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = 10f;
+						y = 0f;
+						
+						width = 4f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = 0f;
+						y = 10f;
+						rotation = -90;
+						
+						width = 4f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = -10f;
+						y = 0f;
+						
+						width = 4f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = 0f;
+						y = -10f;
+						rotation = -90f;
+						
+						width = 4f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawRegion(),
+				new DrawLiquidOutputs(),
+				new DrawRegion("-mill", 10f),
+				new DrawRegion("-top")
 			);
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 20f / 600f;
+				
+				topSpeed = 20f / 10f;
+				
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9},
+					new int[]{0, 3, 6, 9},
+				};
+			}};
 		}};
 
 		blastFurnace = new GenericCrafter("blast-furnace") {{
