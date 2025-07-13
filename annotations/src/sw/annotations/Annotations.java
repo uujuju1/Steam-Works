@@ -75,6 +75,16 @@ public class Annotations{
 				 * Name used by the region if {@link #value()} returns error
 				 */
 				String fallBack() default "error";
+        /**
+         * When true, it will find the region named {@link #value()} or {@link #fallBack()}, and then split
+         * it by the integers in {@link #width()} and {@link #height()}.
+         */
+        boolean splits() default false;
+        /**
+         * Width and height variable names for true {@link #splits()} annotated regions.
+         */
+        String width() default "";
+        String height() default "";
 		}
     /**
      * Ensures that the ContentRegionRegistry is generated.

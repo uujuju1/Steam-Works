@@ -53,23 +53,32 @@ public class RegionsProcessor extends BaseProcessor {
 				for (Element field : annotated.get(base)) {
 					Load annotation = field.getAnnotation(Load.class);
 
-					StringBuilder depth = new StringBuilder();
-					for (int i = 0; i < annotation.lengths().length; i++) {
-						loadMethod.beginControlFlow(
-							"for (int INDEX$L = 0; INDEX$L < $L; INDEX$L++)",
-							i, i, annotation.lengths()[i], i
-						);
-
-						depth.append("[INDEX").append(i).append("]");
+					StringBuilder extra = new StringBuilder();
+					if (!annotation.splits()) {
+						for (int i = 0; i < annotation.lengths().length; i++) {
+							loadMethod.beginControlFlow(
+								"for (int INDEX$L = 0; INDEX$L < $L; INDEX$L++)",
+								i, i, annotation.lengths()[i], i
+							);
+							
+							extra.append("[INDEX").append(i).append("]");
+						}
+					} else {
+						extra.append(".split(mapped.");
+						extra.append(annotation.width());
+						extra.append(", mapped.");
+						extra.append(annotation.height());
+						extra.append(")");
 					}
 
 					loadMethod.addStatement(
-						"mapped.$L$L = $T.atlas.find($L, $L)",
+						"mapped.$L$L = $T.atlas.find($L, $L)$L",
 						field.getSimpleName(),
-						depth.toString(),
+						annotation.splits() ? "" : extra.toString(),
 						cName(Core.class),
 						parse(annotation.value()),
-						parse(annotation.fallBack())
+						parse(annotation.fallBack()),
+						annotation.splits() ? extra.toString() : ""
 					);
 
 					for (int i = 0; i < annotation.lengths().length; i++) {

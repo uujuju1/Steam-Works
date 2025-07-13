@@ -1,15 +1,14 @@
 package sw.world.draw;
 
-import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.draw.*;
+import sw.annotations.Annotations.*;
 
-public class DrawBitmask extends DrawBlock {
+public class DrawBitmask extends BlockDrawer {
 	public String suffix;
 
 	public float layer = -1f;
@@ -19,8 +18,8 @@ public class DrawBitmask extends DrawBlock {
 	public int tileWidth = 32;
 	public int tileHeight = 32;
 
-	public TextureRegion[][] regions;
-	public TextureRegion icon;
+	public @Load(value = "@loadBlock.name$@suffix$", splits = true, width = "tileWidth", height = "tileHeight") TextureRegion[][] regions;
+	public @Load("@loadBlock.name$@suffix$-icon") TextureRegion icon;
 
 	public DrawBitmask(String suffix, Intf<Building> index) {
 		this.suffix = suffix;
@@ -49,10 +48,5 @@ public class DrawBitmask extends DrawBlock {
 
 	@Override public TextureRegion[] icons(Block block) {
 		return new TextureRegion[]{icon};
-	}
-
-	@Override public void load(Block block) {
-		regions = Core.atlas.find(block.name + suffix).split(tileWidth, tileHeight);
-		icon = Core.atlas.find(block.name + suffix + "-icon");
 	}
 }
