@@ -440,8 +440,8 @@ public class SWPower {
 				new DrawRegion("-bottom"),
 				new DrawAxles(
 					new Axle("-axle") {{
-						pixelWidth = 48;
-						pixelHeight = 6;
+						pixelWidth = 1;
+						pixelHeight = 1;
 						
 						width = 2.5f;
 						height = 7f;

@@ -47,7 +47,7 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 				});
 
-				unit.weapons.each(weapon -> {
+				unit.weapons.each(weapon -> weapon.region.found(), weapon -> {
 					if (!weapon.outlineRegion.found()) {
 						weapon.outlineRegion = new GeneratedRegion(
 							weapon.name + "-outline",
