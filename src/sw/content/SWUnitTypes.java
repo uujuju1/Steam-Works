@@ -298,6 +298,8 @@ public class SWUnitTypes {
 			
 			fallSpeed = 1f;
 			buildSpeed = 1f;
+			mineTier = 1;
+			mineSpeed = 5;
 			
 			coreUnitDock = true;
 			flying = true;

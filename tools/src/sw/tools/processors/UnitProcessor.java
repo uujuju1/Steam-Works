@@ -138,9 +138,9 @@ public class UnitProcessor implements SpriteProcessor {
 						));
 					});
 
-					fullRegions.add(Tools.atlas.castRegion(unit.treadRegion));
+					if (unit.treadRegion.found()) fullRegions.add(Tools.atlas.castRegion(unit.treadRegion));
 
-					unit.weapons.each(w -> w.layerOffset < 0, w -> {
+					unit.weapons.each(w -> w.layerOffset < 0 && w.region.found(), w -> {
 						Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
 						if (!w.flipSprite) pix = pix.flipX();
 						pix = grow(
@@ -162,7 +162,7 @@ public class UnitProcessor implements SpriteProcessor {
 						fullRegions.add(tintCell(Tools.atlas.castRegion(unit.cellRegion)));
 					}
 
-					unit.weapons.each(w -> w.layerOffset >= 0, w -> {
+					unit.weapons.each(w -> w.layerOffset >= 0 && w.region.found(), w -> {
 						Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
 						if (!w.flipSprite) pix = pix.flipX();
 						pix = grow(
