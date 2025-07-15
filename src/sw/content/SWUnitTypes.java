@@ -8,6 +8,7 @@ import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import sw.gen.*;
 import sw.entities.bullet.*;
 import sw.type.*;
 
@@ -319,7 +320,7 @@ public class SWUnitTypes {
 				
 				reload = 15f;
 				
-				shootSound = Sounds.plantBreak;
+				shootSound = SWSounds.chain;
 				
 				bullet = new SegmentBulletType() {{
 					layer = Layer.bullet - 0.03f;
