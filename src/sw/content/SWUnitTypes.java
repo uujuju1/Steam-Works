@@ -1,6 +1,5 @@
 package sw.content;
 
-import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -322,27 +321,20 @@ public class SWUnitTypes {
 				
 				shootSound = Sounds.plantBreak;
 				
-				bullet = new FissureBulletType() {{
+				bullet = new SegmentBulletType() {{
 					layer = Layer.bullet - 0.03f;
 					
-					splashDamage = 5f;
-					splashDamageRadius = 16f;
+					sprite = "sw-rho-tentacle";
+					spriteLength = 8f;
+					spriteExtension = 6f;
 					
-					bezierOffsetMag = 128f;
-					divisionOffsetYMag = 4f;
+					lengthInterp = a -> (1f - 4 * Mathf.pow(Math.max(0.5f, a) - 0.5f, 2f)) * Math.min(1, 16 * a * a);
 					
-					fromColor = toColor = hitColor = Color.grays(0.2f);
-					strokeFrom = 3f;
-					strokeTo = 1f;
+					damage = 10f;
+					attackTime = 0.25f;
 					
-					hitFract = 0.5f;
-					hitEffect = SWFx.groundCrack;
-					hitSound = Sounds.dullExplosion;
-					
-					despawnEffect = Fx.none;
-					
-					startCurve = a -> Mathf.clamp(2f * a);
-					endCurve = a -> Mathf.clamp(2f * a - 1f);
+					minLength = 100f;
+					length = 200f;
 					
 					rangeOverride = r;
 				}};
