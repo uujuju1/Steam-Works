@@ -288,7 +288,7 @@ public class SWUnitTypes {
 		
 		rho = new SWUnitType("rho") {{
 			health = 250;
-			speed = 2;
+			speed = 4f;
 			accel = drag = 0.05f;
 			hitSize = 8f;
 			
@@ -323,6 +323,8 @@ public class SWUnitTypes {
 				reload = 15f;
 				
 				shootSound = SWSounds.chain;
+				soundPitchMin = 0.3f;
+				soundPitchMax = 0.4f;
 				
 				bullet = new SegmentBulletType() {{
 					layer = Layer.bullet - 0.03f;
@@ -334,6 +336,7 @@ public class SWUnitTypes {
 					lengthInterp = a -> (1f - 4 * Mathf.pow(Math.max(0.5f, a) - 0.5f, 2f)) * Math.min(1, 16 * a * a);
 					
 					damage = 10f;
+					buildingDamageMultiplier = 0f;
 					attackTime = 0.25f;
 					
 					minLength = 100f;

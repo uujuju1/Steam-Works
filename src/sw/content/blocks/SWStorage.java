@@ -1,11 +1,13 @@
 package sw.content.blocks;
 
+import arc.math.*;
 import mindustry.content.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.storage.*;
 import sw.content.*;
+import sw.world.blocks.storage.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -13,7 +15,7 @@ public class SWStorage {
 	public static Block
 		compactContainer,
 		liquidBasin,
-		coreScaffold;
+		coreScaffold, coreMole;
 
 	public static void load() {
 		compactContainer = new StorageBlock("compact-container") {{
@@ -41,7 +43,7 @@ public class SWStorage {
 
 		coreScaffold = new CoreBlock("core-scaffold") {{
 			requirements(Category.effect, with(
-				SWItems.verdigris, 5000,
+				SWItems.verdigris, 500,
 				Items.graphite, 400
 			));
 			size = 3;
@@ -50,6 +52,28 @@ public class SWStorage {
 			unitType = SWUnitTypes.lambda;
 			itemCapacity = 2000;
 			unitCapModifier = 12;
+		}};
+		coreMole = new CogCore("core-mole") {{
+			requirements(Category.effect, with(
+				SWItems.verdigris, 500,
+				Items.graphite, 400
+			));
+			size = 3;
+			health = 2500;
+			unitType = SWUnitTypes.rho;
+			itemCapacity = 4500;
+			unitCapModifier = 16;
+			
+			landDuration = 600f;
+			
+			cogShowInterp = a -> Interp.swing.apply(Mathf.clamp((1f - a) * 2f));
+			cogMaxOffset = 14f;
+			
+			cogRotateInterp = a -> Interp.swingOut.apply(Mathf.clamp(2f * (1f - a) - 1f));
+			minCogRotations = 1f;
+			maxCogRotations = 5f;
+			
+			fadeOutInterp = a -> Interp.swingOut.apply(Mathf.clamp(2f * (1f - a) - 1f));
 		}};
 	}
 }

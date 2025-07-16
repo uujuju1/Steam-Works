@@ -128,7 +128,7 @@ public class SegmentBulletType extends BulletType {
 						Tmp.r1.getCenter(Tmp.v6);
 						hitEffect.at(Tmp.v6.x, Tmp.v6.y, Tmp.v6.angleTo(build), hitColor);
 						hitSound.at(Tmp.v6.x, Tmp.v6.y, hitSoundPitch, hitSoundVolume);
-						build.damagePierce(damage * damageMultiplier(b));
+						build.damagePierce(damage * damageMultiplier(b) * buildingDamage(b));
 					});
 				}
 				
