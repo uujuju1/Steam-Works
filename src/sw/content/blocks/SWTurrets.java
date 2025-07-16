@@ -18,14 +18,13 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.bullet.*;
 import sw.world.blocks.defense.*;
-import sw.world.consumers.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWTurrets {
 	public static Block
 //		flow, vniz, rozpad,
-		imber, trail,
+		imber, trebuchet,
 		curve, sonar,
 		push, thermikos, swing;
 
@@ -311,67 +310,50 @@ public class SWTurrets {
 				}}
 			);
 		}};
-		trail = new SWContinuousTurret("trail") {{
+		trebuchet = new ItemTurret("trebuchet") {{
 			requirements(Category.turret, with(
-				SWItems.verdigris, 40,
-				SWItems.iron, 45,
-				Items.graphite, 20
+			
 			));
 			size = 2;
-			scaledHealth = 200;
-			reload = 5f;
+			scaledHealth = 220;
+			reload = 10f;
 			range = 160f;
-
-			minWarmup = 0.95f;
-
+			
 			outlineIcon = false;
-
-			targetAir = false;
-
-			consumeLiquid(Liquids.hydrogen, 3f/60f);
-			consume(new ConsumeRotation() {{
-				startSpeed = 0.1f;
-				endSpeed = 1f;
-				curve = t -> Mathf.clamp(2f * t);
-			}});
-
-			shootType = new ContinuousFlameBulletType(15) {{
-				shootEffect = SWFx.hydrogenBurn;
-
-				width = 4f;
-				length = 160f;
-
-				flareWidth = 6f;
-				flareLength = 4f;
-
-				flareColor = Color.valueOf("FFFFFF80");
-				colors = new Color[]{
-					Color.valueOf("8A97FF16"),
-					Color.valueOf("8A97FF32"),
-					Color.valueOf("C7CDFF48"),
-					Color.valueOf("C7CDFF64"),
-					Color.valueOf("FFFFFF80")
-				};
-
-				collidesAir = false;
-			}};
-
-			drawer = new DrawTurret() {{
+			
+			drawer = new DrawTurret() {
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			{
 				parts.add(new RegionPart("-side") {{
-					progress = PartProgress.warmup;
-
-					moveX = -1f;
-					moveRot = 45f;
-
 					mirror = true;
 					under = true;
-
-					moves.add(new PartMove(PartProgress.heat, 0, -2f, 0f));
+					
+					moveY = 1.5f;
+					moveX = -0.75f;
+					
+					clampProgress = false;
+					progress = DrawPart.PartProgress.reload.curve(Interp.swing);
 				}});
-			}
-				// ANUKE WHY DID YOU MAKE ME DO THIS
-				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
-			};
+			}};
+			
+			shootSound = Sounds.shootAlt;
+			shootY = 2f;
+			
+			ammo(
+				SWItems.iron, new BasicBulletType(6f, 10) {{
+					lifetime = 160f/6f;
+					
+					trailColor = hitColor = frontColor = Color.valueOf("A1A1B8");
+					backColor = Color.valueOf("8D8DA0");
+					
+					shootEffect = SWFx.hydrogenShoot;
+					smokeEffect = Fx.none;
+					
+					trailWidth = 1f;
+					trailLength = 10;
+				}}
+			);
+			consumeLiquid(Liquids.hydrogen, 3f/60f);
 		}};
 
 		curve = new ConsumeTurret("curve") {{

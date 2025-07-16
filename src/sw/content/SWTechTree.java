@@ -29,12 +29,13 @@ public class SWTechTree {
       // region crafting
       root("sw-crafting", engineSmelter, () -> {
         node(cokeOven);
+        node(waterBallMill);
       });
       // endregion
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
-        node(trail, with(new SectorComplete(theDelta)), () -> {});
+        node(trebuchet, with(new SectorComplete(theDelta)), () -> {});
       });
       // endregion
       // region distribution
@@ -80,6 +81,7 @@ public class SWTechTree {
           node(artesianWell, with(
             new Produce(solvent)
           ), () -> {});
+          node(pumpjack);
         });
       });
       // endregion
