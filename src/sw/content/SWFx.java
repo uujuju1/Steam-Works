@@ -10,7 +10,6 @@ import mindustry.entities.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.math.*;
-import sw.world.*;
 
 public class SWFx {
   public static final Rand rand = new Rand();
@@ -24,33 +23,6 @@ public class SWFx {
   };
 
   public static Effect
-    gasVent = new Effect(120f, e -> {
-      if (!(e.data instanceof MultiShape shape)) return;
-      rand.setSeed(e.id);
-      shape.tiles.each(tile -> {
-        if (rand.chance(0.5d)) {
-          Draw.color(Color.valueOf("E3D8B6"), e.fout() / 2f);
-          e.scaled(30, b -> {
-            Angles.randLenVectors(tile.pos() + e.id, 5, 4f * b.fin(), (x, y) -> {
-              Fill.circle(
-                tile.worldx() + x + Angles.trnsx(Mathf.angle(x, y), 4f),
-                tile.worldy() + y + Angles.trnsy(Mathf.angle(x, y), 4f),
-                3f * b.fout()
-              );
-            });
-          });
-          if (tile.block().isAir()) {
-            float angle = rand.random(360f);
-            Fill.circle(
-              tile.worldx() + Angles.trnsx(angle, 4f * e.fin()),
-              tile.worldy() + Angles.trnsy(angle, 4f * e.fin()),
-              5f * Interp.circle.apply(Mathf.slope(e.fin()))
-            );
-          }
-        }
-      });
-    }).layer(Layer.blockUnder),
-
     boreMine = new Effect(60f, 48f, e -> {
       Draw.color(e.color);
       Angles.randLenVectors(e.id, 5, 24f * e.finpow(), e.rotation + 180f, 30f, (x, y) -> {

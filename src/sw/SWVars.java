@@ -15,17 +15,11 @@ import sw.ui.*;
 import java.util.*;
 
 public class SWVars implements Loadable {
-	public static EnvProcess envProcess;
-
 	public static SWRenderer renderer;
 
 	public static boolean showSectorLaunchDialog = true;
-	public static boolean showTechTreeDialog = true;
-
+	
 	public static boolean isMod = true;
-
-	public static float maxRatio = 65536f;
-	public static float minRatio = 1f/65536f;
 
   public static void init() {
 		if (isMod) dev();
@@ -34,7 +28,6 @@ public class SWVars implements Loadable {
 			SWTex.load();
 			SWStyles.load();
 			ModSettings.load();
-			envProcess = new EnvProcess();
 			renderer = new SWRenderer();
 			renderer.init();
 			SWUI.load();

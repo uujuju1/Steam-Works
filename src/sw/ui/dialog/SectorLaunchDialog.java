@@ -23,6 +23,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.fragments.MenuFragment.*;
+import sw.*;
 import sw.content.*;
 import sw.gen.*;
 import sw.graphics.*;
@@ -81,7 +82,7 @@ public class SectorLaunchDialog extends BaseDialog {
 	public void addToMenu() {
 		Events.run(EventType.Trigger.update, () -> {
 			planet = SWPlanets.wendi;
-			if (Vars.ui.planet.state.planet == planet) {
+			if (Vars.ui.planet.state.planet == planet && SWVars.showSectorLaunchDialog) {
 				show();
 				Vars.ui.planet.hide();
 				Vars.ui.planet.state.planet = lastPlanet == null ? Planets.serpulo : lastPlanet;
