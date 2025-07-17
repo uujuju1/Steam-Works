@@ -1,5 +1,6 @@
 package sw.type;
 
+import arc.*;
 import arc.func.*;
 import arc.scene.style.*;
 import arc.util.*;
@@ -24,5 +25,11 @@ public class PositionSectorPreset extends SectorPreset {
 
 	public PositionSectorPreset(String name, Planet planet, int sector) {
 		super(name, planet, sector);
+	}
+	
+	@Override
+	public void loadIcon() {
+		uiIcon = fullIcon = Core.atlas.find(name);
+		if (!uiIcon.found()) super.loadIcon();
 	}
 }
