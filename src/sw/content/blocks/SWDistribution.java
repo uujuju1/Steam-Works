@@ -204,9 +204,15 @@ public class SWDistribution {
 		}};
 		payloadCatapult = new PayloadCatapult("payload-catapult") {{
 			requirements(Category.units, with(
-			
+				Items.silicon, 30,
+				SWItems.aluminium, 50,
+				SWItems.verdigris, 25
 			));
 			size = 3;
+			
+			consumeLiquid(Liquids.ozone, 1f/60f);
+			
+			shootEffect = SWFx.ozoneLaunch;
 		}};
 		//endregion
 

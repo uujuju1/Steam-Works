@@ -193,6 +193,14 @@ public class SWFx {
       rand.setSeed(e.id);
       Angles.randLenVectors(e.id, 20, 120f * e.fin(), e.rotation, 5f, (x, y) -> {
         
+        Draw.alpha(rand.random(0.5f, 1f) * e.fout());
+        Fill.circle(e.x + x, e.y + y, rand.random(1f, 2f));
+      });
+    }),
+    ozoneLaunch = new Effect(30f, e -> {
+      rand.setSeed(e.id);
+      Draw.color(Color.valueOf("F5D5E0"));
+      Angles.randLenVectors(e.id, 30, 40f * e.fin(), e.rotation, 315f, (x, y) -> {
         Draw.alpha(rand.random(0f, 0.5f) * e.fout());
         Fill.circle(e.x + x, e.y + y, rand.random(1f, 2f));
       });
@@ -268,21 +276,6 @@ public class SWFx {
       Draw.rect();
     }),
 
-    accelSparks = new Effect(20f, e -> {
-      Angles.randLenVectors(e.id, 2, 10 * e.finpow(), e.rotation, 15, (x, y) -> {
-        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 4 * e.foutpow());
-      });
-    }),
-    shootShockwaveColor = new Effect(60f, e -> {
-      for(int i = 0; i < 3; i++) {
-        e.scaled(30f + i * 10f, b -> {
-          Draw.mixcol(e.color, Color.black, b.fin());
-          Tmp.v1.trns(e.rotation, 30f * b.finpow() - 60f * b.fin());
-          Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16f + 16f * b.finpow(), 10f * b.fout(), 90f + e.rotation);
-        });
-      }
-    }).followParent(false).rotWithParent(false),
-
     changeEffect = new Effect(30f, e -> {
       if (!(e.data instanceof Block block)) return;
 
@@ -293,28 +286,6 @@ public class SWFx {
       Lines.stroke(4f * e.fout());
       Lines.square(e.x, e.y, block.size * 4f);
     }),
-
-    fragment = new Effect(60f, e -> {
-      if (!(e.data instanceof Block block)) return;
-      TextureRegion region = block.region;
-      rand.setSeed(e.id);
-      Vec2[] offsets = new Vec2[]{
-        new Vec2(-1f, 2f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
-        new Vec2(2f, 1f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
-        new Vec2(1f, -2f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow()),
-        new Vec2(-2f, -1f).scl(1f + 5f * e.finpow()).rotate(rand.range(45f) * e.finpow())
-      };
-
-      Draw.z(Layer.bullet - 1);
-      Draw.alpha(Interp.exp10Out.apply(e.fout()));
-
-      for(int i = 0; i < 4; i++) {
-        Draw.rect(
-          new TextureRegion(region, (int) rects[i].x, (int) rects[i].y, (int) rects[i].width, (int) rects[i].height),
-          e.x + offsets[i].x, e.y + offsets[i].y, rand.random(720f) * e.finpow()
-        );
-      }
-    }).layer(Layer.block),
 
     lightning = new Effect(60f, e -> {
       rand.setSeed(e.id);

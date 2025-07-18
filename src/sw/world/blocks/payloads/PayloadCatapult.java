@@ -1,5 +1,6 @@
 package sw.world.blocks.payloads;
 
+import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -7,6 +8,8 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
+import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.*;
@@ -23,8 +26,9 @@ public class PayloadCatapult extends PayloadBlock {
 	public float launchSpeed = 4f;
 	public float rotateSpeed = 1f;
 	
+	public Effect shootEffect = Fx.none;
+	
 	public @Load("@name$-catapult") TextureRegion catapultRegion;
-	public @Load("@name$-catapult-edge") TextureRegion catapultEdgeRegion;
 	
 	public PayloadCatapult(String name) {
 		super(name);
@@ -45,6 +49,15 @@ public class PayloadCatapult extends PayloadBlock {
 	}
 	
 	@Override
+	protected TextureRegion[] icons() {
+		return new TextureRegion[]{
+			region,
+			outRegion,
+			Core.atlas.find(name + "-catapult")
+		};
+	}
+	
+	@Override
 	public void init() {
 		super.init();
 		
@@ -58,7 +71,7 @@ public class PayloadCatapult extends PayloadBlock {
 		public CatapultState catapultState = CatapultState.idle;
 		
 		public float angle;
-		public float cooldown;
+		public float cooldown = 1f;
 		
 		public Queue<PayloadCatapultBuild> launchers = new Queue<>();
 		
@@ -95,15 +108,14 @@ public class PayloadCatapult extends PayloadBlock {
 			
 			Draw.rect(outRegion, x, y, rotdeg());
 			
+			Draw.rect(catapultRegion, x, y, angle);
+			
 			if(payload != null) {
 				Draw.z(Layer.blockOver);
 				
 				updatePayload();
 				payload.draw();
 			}
-			
-			Draw.z(Layer.blockOver + 0.1f);
-			Draw.rect(topRegion, x, y);
 		}
 		
 		@Override
@@ -183,6 +195,7 @@ public class PayloadCatapult extends PayloadBlock {
 							launchPayload(getLink());
 							catapultState = CatapultState.idle;
 							cooldown = launchCooldownTime;
+							shootEffect.at(x, y, angle);
 						}
 					} else catapultState = CatapultState.received;
 				}
