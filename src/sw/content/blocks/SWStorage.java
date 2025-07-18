@@ -56,8 +56,14 @@ public class SWStorage {
 		coreMole = new CogCore("core-mole") {{
 			requirements(Category.effect, with(
 				SWItems.verdigris, 500,
-				Items.graphite, 400
+				SWItems.aluminium, 300,
+				Items.graphite, 200
 			));
+			researchCost = with(
+				SWItems.verdigris, 2000,
+				SWItems.aluminium, 1000,
+				Items.graphite, 1500
+			);
 			size = 3;
 			health = 2500;
 			unitType = SWUnitTypes.rho;

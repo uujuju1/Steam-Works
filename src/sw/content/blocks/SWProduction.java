@@ -194,7 +194,8 @@ public class SWProduction {
 		
 		castingOutlet = new SingleItemMultiCrafter("casting-outlet") {{
 			requirements(Category.production, with(
-			
+				SWItems.iron, 20,
+				Items.graphite, 10
 			));
 			rotate = true;
 			drawArrow = true;
@@ -209,7 +210,8 @@ public class SWProduction {
 			
 			outputItems = with(
 				SWItems.verdigris, 1,
-				SWItems.iron, 2
+				SWItems.iron, 2,
+				SWItems.aluminium, 1
 			);
 			
 			drawer = new DrawMulti(

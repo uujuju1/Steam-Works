@@ -53,7 +53,7 @@ public class SWShaders {
 			setUniformf("u_size", texture.width, texture.height);
 			setUniformf("u_opacity", opacity);
 			
-			setUniformf("u_time", Time.time);
+			setUniformf("u_time", Time.globalTime);
 			
 			if (lights.size > 80) throw new RuntimeException("too many lights" + (lights.size) + " / " + 80);
 			if (boxes.size > 80) throw new RuntimeException("too many boxes" + (boxes.size) + " / " + 80);

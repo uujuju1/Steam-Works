@@ -61,7 +61,8 @@ public class SWDistribution {
 
 		belt = new BeltConveyor("belt") {{
 			requirements(Category.distribution, with(
-//				SWItems.iron, 1
+				SWItems.iron, 2,
+				Items.silicon, 2
 			));
 
 			drawer = new DrawMulti(
@@ -182,7 +183,7 @@ public class SWDistribution {
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
 			requirements(Category.units, with(
 				Items.silicon, 10,
-				Items.titanium, 10,
+				SWItems.aluminium, 10,
 				SWItems.verdigris, 10
 			));
 			canOverdrive = false;
@@ -193,7 +194,7 @@ public class SWDistribution {
 		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
 			requirements(Category.units, with(
 				Items.silicon, 10,
-				Items.titanium, 10,
+				SWItems.aluminium, 10,
 				SWItems.verdigris, 10
 			));
 			canOverdrive = false;

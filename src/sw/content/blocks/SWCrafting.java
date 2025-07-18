@@ -305,6 +305,9 @@ public class SWCrafting {
 		}};
 		waterBallMill = new SWGenericCrafter("water-ball-mill") {{
 			requirements(Category.crafting, with(
+				SWItems.iron, 30,
+				SWItems.aluminium, 20,
+				Items.silicon, 30
 			));
 			size = 3;
 			health = 240;

@@ -312,7 +312,9 @@ public class SWTurrets {
 		}};
 		trebuchet = new ItemTurret("trebuchet") {{
 			requirements(Category.turret, with(
-			
+				SWItems.iron, 45,
+				SWItems.aluminium, 20,
+				Items.graphite, 30
 			));
 			size = 2;
 			scaledHealth = 220;
@@ -342,6 +344,8 @@ public class SWTurrets {
 			ammo(
 				SWItems.iron, new BasicBulletType(6f, 10) {{
 					lifetime = 160f/6f;
+					
+					ammoMultiplier = 5;
 					
 					trailColor = hitColor = frontColor = Color.valueOf("A1A1B8");
 					backColor = Color.valueOf("8D8DA0");

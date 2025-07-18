@@ -29,11 +29,11 @@ public class SWTechTree {
       // region crafting
       root("sw-crafting", engineSmelter, () -> {
         node(cokeOven);
-        node(waterBallMill);
+        node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {});
       });
       // endregion
       // region defense
-      root("sw-defense", imber, with(new Produce(coke)), () -> {
+      root("sw-defense", imber, () -> {
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
         node(trebuchet, with(new SectorComplete(theDelta)), () -> {});
       });
@@ -47,27 +47,36 @@ public class SWTechTree {
           node(mechanicalGate);
           node(mechanicalSorter);
         });
-        node(suspensionConveyor);
-        node(belt, with(new NonUnlockable()), () -> {
-          node(mechanicalPayloadConveyor, () -> {
-            node(mechanicalPayloadRouter);
-          });
+        node(suspensionConveyor, () -> {
+          node(belt);
+        });
+        node(mechanicalPayloadConveyor, with(new Research(hydraulicFlywheel)), () -> {
+          node(mechanicalPayloadRouter);
+          node(payloadCatapult);
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
           node(mechanicalConduitJunction, () -> node(mechanicalConduitBridge));
           node(mechanicalConduitRouter);
+          node(liquidBasin);
         });
-        node(compactContainer);
+        node(compactContainer, () -> {
+          node(coreMole, with(new OnSector(abandonedMaze)), () -> {});
+        });
       });
       // endregion
       //region power
       root("sw-power", evaporator, () -> {
+        node(waterWheel, with(new OnSector(abandonedMaze)), () -> {});
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
             node(shaftGearbox);
             node(overheadBelt);
           });
           node(torqueGauge);
+          node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
+            node(winder);
+            node(latch);
+          });
           node(shaftTransmission, Seq.with(new OnSector(theDelta)), () -> {});
         });
       });
@@ -81,7 +90,9 @@ public class SWTechTree {
           node(artesianWell, with(
             new Produce(solvent)
           ), () -> {});
-          node(pumpjack);
+          node(pumpjack, with(new OnSector(abandonedMaze)), () -> {
+            node(castingOutlet, with(new Research(liquidBasin)), () -> {});
+          });
         });
       });
       // endregion
@@ -91,16 +102,22 @@ public class SWTechTree {
           nodeProduce(coke, () -> {});
         });
         nodeProduce(iron, () -> {
+          nodeProduce(SWItems.aluminium, () -> {});
           nodeProduce(Items.sand, () -> {});
         });
         nodeProduce(solvent, () -> {
           nodeProduce(Liquids.water, () -> {});
+          nodeProduce(Liquids.slag, () -> {});
         });
       });
       // endregion
       // region sectors
       root("sw-sectors", crevasse, () -> {
-        node(theDelta, with(new SectorComplete(crevasse)), () -> {});
+        node(theDelta, with(new SectorComplete(crevasse)), () -> {
+          node(abandonedMaze, with(new SectorComplete(theDelta)), () -> {
+          
+          });
+        });
         node(kettle, with(new Research(mechanicalAssembler)), () -> {});
       });
       // endregion

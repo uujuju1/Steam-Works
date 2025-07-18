@@ -6,11 +6,12 @@ import static arc.graphics.Color.*;
 
 public class SWItems {
   public static Item
-    iron, aluminium, coke,
+    verdigris, iron, aluminium,
+    coke,
 
   compound, denseAlloy, thermite, oxycarbide, steel,
 
-  verdigris, meteorite,
+  meteorite,
     chalk, soda,
    residue;
 
@@ -18,6 +19,16 @@ public class SWItems {
     verdigris = new Item("verdigris", valueOf("40916C")) {{
       hardness = 1;
     }};
+    iron = new Item("iron", valueOf("646485")) {{
+      hardness = 2;
+      cost = 2f;
+    }};
+    aluminium = new Item("aluminium", valueOf("1C1C1C"));
+    
+    coke = new Item("coke", valueOf("1C1C1C")) {{
+      buildable = false;
+    }};
+    
     meteorite = new Item("meteorite", valueOf("E4CAAC"));
     chalk = new Item("chalk", valueOf("E2E2E8")) {{
       cost = 2f;
@@ -26,10 +37,8 @@ public class SWItems {
     residue = new Item("residue", valueOf("1C1C1C"));
 
 
-    aluminium = new Item("aluminium", valueOf("1C1C1C"));
     steel = new Item("steel", valueOf("1C1C1C"));
     oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
-    coke = new Item("coke", valueOf("1C1C1C"));
     denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
       cost = 1f;
     }};
@@ -39,9 +48,6 @@ public class SWItems {
     }};
     compound = new Item("compound", valueOf("515151")) {{
       cost = 1f;
-    }};
-    iron = new Item("iron", valueOf("646485")) {{
-      hardness = 2;
     }};
   }
 }

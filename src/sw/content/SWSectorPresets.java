@@ -9,7 +9,7 @@ import sw.type.*;
 
 public class SWSectorPresets {
 	public static SectorPreset
-		crevasse, theDelta, kettle;
+		crevasse, theDelta, kettle, abandonedMaze;
 
 	public static void load() {
 		crevasse = new PositionSectorPreset("crevasse", SWPlanets.wendi, 0) {{
@@ -59,6 +59,18 @@ public class SWSectorPresets {
 			core = (CoreBlock) SWStorage.coreScaffold;
 			
 			launcher = (PositionSectorPreset) theDelta;
+		}};
+		abandonedMaze = new PositionSectorPreset("abandoned-maze", SWPlanets.wendi, 3) {{
+			x = -300;
+			y = 300;
+			width = height = 200;
+			icon = () -> Icon.terrain;
+			
+			rules = r -> {
+				r.waves = false;
+			};
+			
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 	}
 }
