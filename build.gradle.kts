@@ -12,6 +12,7 @@ buildscript{
     }
 
     repositories{
+        maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
         maven("https://maven.xpdustry.com/mindustry")
         maven("https://jitpack.io")
     }
@@ -59,6 +60,7 @@ allprojects{
 
     repositories{
         mavenCentral()
+        maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
         maven("https://maven.xpdustry.com/mindustry")
         maven("https://jitpack.io")
     }
