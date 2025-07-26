@@ -297,6 +297,7 @@ public class SWEnvironment {
 			wall = plateWall;
 			cacheLayer = CacheLayer.water;
 			
+			liquidDrop = Liquids.water;
 			attributes.set(Attribute.water, 1f);
 		}
 			@Override
