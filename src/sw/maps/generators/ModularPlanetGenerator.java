@@ -38,13 +38,4 @@ public class ModularPlanetGenerator extends PlanetGenerator {
 	public float getHeight(Vec3 position) {
 		return rawHeight(position);
 	}
-
-	@Override
-	public Color getColor(Vec3 position) {
-		Color color = baseColor;
-		for (ColorPass c : colors) {
-			if (c.color(position, rawHeight(position)) != null) color = c.color(position, rawHeight(position));
-		}
-		return color;
-	}
 }
