@@ -221,13 +221,17 @@ public class SWDistribution {
 			requirements(Category.liquid, with(
 				SWItems.iron, 2
 			));
-			padding = 1.25f;
+			padding = 0.75f;
+			
+			liquidCapacity = 20f;
 		}};
 		mechanicalConduitRouter = new LiquidRouter("mechanical-conduit-router") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 2,
 				Items.graphite, 2
 			));
+			
+			liquidCapacity = 120f;
 		}};
 		mechanicalConduitJunction = new LiquidJunction("mechanical-conduit-junction") {{
 			requirements(Category.liquid, with(
