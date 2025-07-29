@@ -184,7 +184,7 @@ public class BeltConveyor extends Block {
 
 		@Override
 		public float totalProgress() {
-			return spinGraph().rotation * spinSection().ratio;
+			return getRotation();
 		}
 
 		@Override

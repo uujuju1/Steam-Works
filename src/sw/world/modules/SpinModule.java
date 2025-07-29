@@ -12,7 +12,6 @@ public class SpinModule extends BlockModule {
 	public float inertia = 0;
 
 	public SpinGraph graph = new SpinGraph();
-	public SpinSection section = new SpinSection();
 	
 	@Override
 	public void read(Reads read) {

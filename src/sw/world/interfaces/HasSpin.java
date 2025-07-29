@@ -50,14 +50,6 @@ public interface HasSpin {
 	default HasSpin getSpinGraphDestination(HasSpin from) {
 		return this;
 	}
-	/**
-	 * Returns the destination to connect with the section.
-	 * @see SpinSection
-	 * @apiNote if called, should be done after getSpinGraphDestination
-	 */
-	default @Nullable HasSpin getSpinSectionDestination(HasSpin from) {
-		return this;
-	}
 
 	default SpinModule spin() {
 		try {
@@ -75,9 +67,6 @@ public interface HasSpin {
 	}
 	default SpinGraph spinGraph() {
 		return spin().graph;
-	}
-	default SpinSection spinSection() {
-		return spin().section;
 	}
 
 	/**
@@ -126,7 +115,6 @@ public interface HasSpin {
 	 * Called whenever connections changed.
 	 */
 	default void onGraphUpdate() {
-		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
 	}
 
 	default boolean outputsSpin() {

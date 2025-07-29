@@ -214,7 +214,7 @@ public class AxleBridge extends AxleBlock {
 
 			if (getLink() != null) {
 				Draw.z(Layer.power);
-				drawBridge(tile, getLink().tile, spinGraph().rotation * spinSection().ratio);
+				drawBridge(tile, getLink().tile, getRotation());
 			}
 		}
 

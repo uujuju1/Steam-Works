@@ -143,7 +143,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * warmup : 0;
 		}
 		@Override public float getTargetSpeed() {
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation / spinSection().ratio * warmup : 0f;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * warmup : 0f;
 		}
 
 		@Override
