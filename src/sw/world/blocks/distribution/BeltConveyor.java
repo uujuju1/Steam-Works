@@ -134,7 +134,7 @@ public class BeltConveyor extends Block {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().remove(this, true);
+			spinGraph().removeBuild(this);
 		}
 
 		public boolean pass(Item item){
@@ -180,13 +180,6 @@ public class BeltConveyor extends Block {
 
 		public float conveyorSpeed() {
 			return spinGraph().speed / (spinGraph().ratios.get(this, 1) * 360f) * movementScale;
-		}
-
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
 		}
 
 		@Override

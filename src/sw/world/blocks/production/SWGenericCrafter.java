@@ -146,13 +146,6 @@ public class SWGenericCrafter extends AttributeCrafter {
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation / spinSection().ratio * warmup : 0f;
 		}
 
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
-		}
-
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
@@ -169,7 +162,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().remove(this, true);
+			spinGraph().removeBuild(this);
 		}
 		
 		@Override

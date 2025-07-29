@@ -4,20 +4,14 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
-import sw.entities.units.*;
 import sw.world.interfaces.*;
 
 /**
  * Graph containing an isolated group of uildings sharing common stuff.
  */
-public class SpinGraph {
+public class SpinGraph extends Graph<HasSpin> {
 	public float rotation;
 	public float speed;
-
-	/**
-	 * Wether the graph has changed in any way like adding/removing builds.
-	 */
-	public boolean changed;
 
 	/**
 	 * Used when updating inertia.
@@ -25,14 +19,8 @@ public class SpinGraph {
 	public float lastSpeed;
 
 	/**
-	 * Entity of this graph.
-	 */
-	public final SpinGraphUpdater updater = new SpinGraphUpdater().setGraph(this);
-
-	/**
 	 * List of buildings of this graph.
 	 */
-	public final Seq<HasSpin> builds = new Seq<>();
 	public final Seq<HasSpin> producers = new Seq<>();
 	public final Seq<HasSpin> consumers = new Seq<>();
 
@@ -46,30 +34,31 @@ public class SpinGraph {
 	public final ObjectMap<HasSpin, ObjectFloatMap<HasSpin>> relativeRatios = new ObjectMap<>();
 	public boolean invalid;
 
-	/**
-	 * Adds a build to this graph, and removes the build from its older graph.
-	 */
+	@Override
 	public void addBuild(HasSpin build) {
-		builds.add(build);
+		super.addBuild(build);
 		if (build.outputsSpin()) producers.add(build);
 		if (build.consumesSpin()) consumers.add(build);
-		checkEntity();
-		build.spinGraph().remove(build, false);
 		build.spin().graph = this;
-		changed = true;
 	}
-
-	/**
-	 * Disables the updater if there are less than a single building.
-	 */
-	public void checkEntity() {
-		if (builds.size > 0) {
-			updater.add();
-		} else {
-			updater.remove();
-		}
+	
+	@Override
+	public void graphChanged() {
+		updateRatios(builds.first());
+		var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
+		consumers.each(consumer -> {
+			updateRatios(consumer);
+			relativeRatios.put(consumer, new ObjectFloatMap<>(ratios));
+		});
+		updateRatios(fastest);
+		builds.each(b -> {
+			b.spin().section = new SpinSection();
+			b.spinSection().addBuild(b);
+		});
+		builds.each(HasSpin::onGraphUpdate);
+		updateInertia();
 	}
-
+	
 	/**
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
@@ -77,46 +66,20 @@ public class SpinGraph {
 		return builds.sumf(HasSpin::getForce);
 	}
 
-	/**
-	 * Merges this graph with another one. if other graph is bigger, merge the other graph with this one.
-	 * @param priority If true, the graph will always merge with the other graph.
-	 */
-	public void merge(SpinGraph other, boolean priority) {
-		if (other.builds.size > builds.size && !priority) {
-			other.merge(this, false);
-		} else {
-			other.builds.each(this::addBuild);
-		}
-		builds.each(HasSpin::onGraphUpdate);
-	}
 	public void mergeFlood(HasSpin other) {
-		tmp.clear().add(other);
-		tmp2.clear();
-
-		while(!tmp.isEmpty()) {
-			HasSpin next = tmp.pop();
-			tmp2.addUnique(next);
-			next.nextBuilds().each(b -> {
-				if (!tmp2.contains(b)) tmp.add(b);
-			});
-		}
-
-		tmp2.each(this::addBuild);
+		floodFill(other, HasSpin::nextBuilds).each(build -> {
+			if (build.spinGraph() != this) {
+				build.spinGraph().removeBuild(build);
+				addBuild(build);
+			}
+		});
 	}
 
-	/**
-	 * Removes a building from this graph.
-	 * @param split if true, makes each connection a separate graph.
-	 */
-	public void remove(HasSpin build, boolean split) {
-		builds.remove(build);
+	@Override
+	public void removeBuild(HasSpin build) {
+		super.removeBuild(build);
 		producers.remove(build);
 		consumers.remove(build);
-		if (split) build.nextBuilds().each(p -> {
-			new SpinGraph().mergeFlood(p);
-		});
-		checkEntity();
-		changed = true;
 	}
 
 	/**
@@ -134,28 +97,10 @@ public class SpinGraph {
 		if (force() == resistance()) return speed;
 		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
 	}
-
-	/**
-	 * Called every frame by the updater.
-	 */
+	
 	public void update() {
-		if (changed) {
-			updateRatios(builds.first());
-			var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
-			consumers.each(consumer -> {
-				updateRatios(consumer);
-				relativeRatios.put(consumer, new ObjectFloatMap<>(ratios));
-			});
-			updateRatios(fastest);
-			builds.each(b -> {
-				b.spin().section = new SpinSection();
-				b.spinSection().addBuild(b);
-			});
-			builds.each(HasSpin::onGraphUpdate);
-			updateInertia();
-			changed = false;
-		}
-
+		super.update();
+		
 		float accel = Math.abs(force() - resistance());
 		speed = Mathf.approachDelta(speed, targetSpeed(), accel);
 
@@ -214,5 +159,10 @@ public class SpinGraph {
 
 		  last[0] = build;
 		}
+	}
+	
+	@Override
+	public boolean validGraph() {
+		return !builds.removeAll(b -> !b.asBuilding().isValid() && b.spinGraph() != this).isEmpty();
 	}
 }

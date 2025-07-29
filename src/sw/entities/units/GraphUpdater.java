@@ -6,17 +6,17 @@ import mindustry.gen.*;
 import sw.world.graph.*;
 
 @SuppressWarnings("unchecked")
-public class SpinGraphUpdater implements Entityc {
+public class GraphUpdater implements Entityc {
 	public boolean added;
 	public int id;
-	public SpinGraph graph;
+	public Graph graph;
 
 	@Override
 	public int classId() {
 		return 0;
 	}
 
-	public SpinGraphUpdater setGraph(SpinGraph newGraph) {
+	public GraphUpdater setGraph(Graph newGraph) {
 		graph = newGraph;
 		return self();
 	}

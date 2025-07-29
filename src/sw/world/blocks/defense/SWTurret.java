@@ -57,20 +57,13 @@ public class SWTurret extends Turret {
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().remove(this, true);
+			spinGraph().removeBuild(this);
 		}
 
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			spin.read(read);
-		}
-
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
 		}
 
 		@Override

@@ -417,7 +417,7 @@ public class MechanicalAssembler extends Block {
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 
-			spinGraph().remove(this, true);
+			spinGraph().removeBuild(this);
 		}
 
 		public void pick() {
@@ -471,13 +471,6 @@ public class MechanicalAssembler extends Block {
 				getPlan() != null && super.shouldConsume() &&
 				(!requiredSteps.isEmpty() || progressCounter == getPlan().steps.size - 1) &&
 				!invalid && team.data().countType(getPlan().unit) < Units.getCap(team);
-		}
-
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
 		}
 
 		@Override public float totalProgress() {

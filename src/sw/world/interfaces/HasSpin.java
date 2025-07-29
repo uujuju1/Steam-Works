@@ -59,8 +59,20 @@ public interface HasSpin {
 		return this;
 	}
 
-	SpinModule spin();
-	SpinConfig spinConfig();
+	default SpinModule spin() {
+		try {
+			return (SpinModule) asBuilding().getClass().getField("spin").get(this);
+		} catch (Exception ignored) {
+			return null;
+		}
+	}
+	default SpinConfig spinConfig() {
+		try {
+			return (SpinConfig) asBuilding().block.getClass().getField("spinConfig").get(asBuilding().block);
+		} catch (Exception ignored) {
+			return null;
+		}
+	}
 	default SpinGraph spinGraph() {
 		return spin().graph;
 	}
