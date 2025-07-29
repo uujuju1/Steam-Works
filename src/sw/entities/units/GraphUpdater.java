@@ -18,6 +18,7 @@ public class GraphUpdater implements Entityc {
 
 	public GraphUpdater setGraph(Graph newGraph) {
 		graph = newGraph;
+		add();
 		return self();
 	}
 

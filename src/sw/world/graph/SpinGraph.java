@@ -51,10 +51,6 @@ public class SpinGraph extends Graph<HasSpin> {
 			relativeRatios.put(consumer, new ObjectFloatMap<>(ratios));
 		});
 		updateRatios(fastest);
-		builds.each(b -> {
-			b.spin().section = new SpinSection();
-			b.spinSection().addBuild(b);
-		});
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
 	}
@@ -98,6 +94,7 @@ public class SpinGraph extends Graph<HasSpin> {
 		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
 	}
 	
+	@Override
 	public void update() {
 		super.update();
 		

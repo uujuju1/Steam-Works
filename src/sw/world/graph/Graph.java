@@ -16,7 +16,6 @@ public abstract class Graph<T> {
 	 */
 	public void addBuild(T build) {
 		builds.addUnique(build);
-		checkEntity();
 		changed = true;
 	}
 	
