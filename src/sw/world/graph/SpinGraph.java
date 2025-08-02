@@ -44,6 +44,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	
 	@Override
 	public void graphChanged() {
+		Log.info("graph @ changed!", updater);
 		updateRatios(builds.first());
 		var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
 		consumers.each(consumer -> {

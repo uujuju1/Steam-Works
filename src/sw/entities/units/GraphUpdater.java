@@ -66,7 +66,7 @@ public class GraphUpdater implements Entityc {
 	}
 
 	@Override public boolean isAdded() {
-		return false;
+		return added;
 	}
 	@Override public boolean isLocal() {
 		return false;
