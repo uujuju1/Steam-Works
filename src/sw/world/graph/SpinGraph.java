@@ -1,15 +1,45 @@
 package sw.world.graph;
 
+import arc.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.*;
+import mindustry.game.*;
+import mindustry.gen.*;
+import sw.entities.units.*;
 import sw.world.interfaces.*;
 
 /**
  * Graph containing an isolated group of uildings sharing common stuff.
  */
 public class SpinGraph extends Graph<HasSpin> {
+	static {
+		Events.on(EventType.BlockBuildEndEvent.class, e -> {
+			if (e.tile.build instanceof HasSpin spin && !e.breaking) {
+				if (spin.spinConfig() != null && spin.spinConfig().hasSpin) {
+					new SpinGraph().mergeFlood(spin);
+				}
+			}
+		});
+		Events.on(EventType.BlockBuildBeginEvent.class, e -> {
+			GraphUpdater updater = ((GraphUpdater) Groups.all.find(
+				entity -> entity instanceof GraphUpdater &&
+					          ((GraphUpdater) entity).graph instanceof SpinGraph spinGraph &&
+					          spinGraph.builds.contains(build -> build.asBuilding().tile == e.tile)
+			));
+			if (e.breaking && updater != null) {
+				SpinGraph graph = (SpinGraph) updater.graph;
+				HasSpin build = graph.builds.find(b -> b.asBuilding().tile == e.tile);
+				graph.removeBuild(build);
+				Log.info(build.nextBuilds());
+				build.nextBuilds().each(next -> {
+					new SpinGraph().mergeFlood(next);
+				});
+			}
+		});
+	}
+	
 	public float rotation;
 	public float speed;
 
@@ -44,7 +74,6 @@ public class SpinGraph extends Graph<HasSpin> {
 	
 	@Override
 	public void graphChanged() {
-		Log.info("graph @ changed!", updater);
 		updateRatios(builds.first());
 		var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
 		consumers.each(consumer -> {

@@ -183,21 +183,6 @@ public class AssemblerArm extends Block {
 			return empty;
 		}
 
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
-		}
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-
-			spinGraph().removeBuild(this);
-
-			if (link != null && currentStep != null) link.requiredSteps.add(currentStep);
-		}
-
 		public void pick() {
 			if (
 				link != null && link.getPlan() != null &&

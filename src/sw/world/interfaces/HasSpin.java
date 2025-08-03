@@ -1,5 +1,6 @@
 package sw.world.interfaces;
 
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -105,10 +106,14 @@ public interface HasSpin {
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
-		return asBuilding().proximity
-			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
-			     .map(a -> ((HasSpin) a)
-				   .getSpinGraphDestination(this));
+		Seq<HasSpin> out = new Seq<>();
+		for (Point2 offset : asBuilding().block.getEdges()) {
+			Building other = asBuilding().nearby(offset.x, offset.y);
+			if (other instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this))) {
+				out.add(a.getSpinGraphDestination(this));
+			}
+		}
+		return out;
 	}
 
 	/**

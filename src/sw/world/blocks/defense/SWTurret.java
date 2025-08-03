@@ -5,7 +5,6 @@ import arc.util.io.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.defense.turrets.*;
-import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -45,19 +44,6 @@ public class SWTurret extends Turret {
 
 		@Override public void drawSelect() {
 			spinConfig.drawPlace(block, tileX(), tileY(), ((Building) this).rotation, true);
-		}
-
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
-		}
-
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
 		}
 
 		@Override

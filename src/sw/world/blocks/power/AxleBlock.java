@@ -9,7 +9,6 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
-import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -82,19 +81,6 @@ public class AxleBlock extends Block {
 		}
 		@Override public void drawSelect() {
 			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
-		}
-
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
-		}
-
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
 		}
 
 		@Override
