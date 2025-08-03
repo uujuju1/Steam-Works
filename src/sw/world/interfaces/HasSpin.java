@@ -14,7 +14,7 @@ public interface HasSpin {
 		return (Building) this;
 	}
 	/**
-	 * Method indicating if a gas building can connect to another building. Mutually inclusive.
+	 * Method indicating if a building can connect to another building. Mutually inclusive.
 	 */
 	static boolean connects(@Nullable HasSpin from, @Nullable HasSpin to) {
 		if (from == null || to == null) return false;

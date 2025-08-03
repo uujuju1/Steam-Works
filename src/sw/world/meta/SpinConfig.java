@@ -5,14 +5,12 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import sw.math.*;
 import sw.world.interfaces.*;
 
 public class SpinConfig {
@@ -27,16 +25,6 @@ public class SpinConfig {
 	 * Visual max speed, always full if zero. In (rpm/10).
 	 */
 	public float topSpeed;
-
-	/**
-	 * List of possible positions whene a building can connect to from 0 to 3 based on rotation.
-	 */
-	@Deprecated public Seq<Point2>[] connections = new Seq[]{
-		BlockGeometry.full1,
-		BlockGeometry.full1,
-		BlockGeometry.full1,
-		BlockGeometry.full1
-	};
 
 	/**
 	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.
