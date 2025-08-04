@@ -13,7 +13,6 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.power.RotationBattery.*;
-import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -136,19 +135,6 @@ public class PayloadSpinLoader extends PayloadBlock {
 				);
 		}
 		
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-			
-			new SpinGraph().mergeFlood(this);
-		}
-		
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			spinGraph().remove(this, true);
-		}
-		
 		@Override public boolean outputsSpin() {
 			return reverse;
 		}
@@ -157,13 +143,6 @@ public class PayloadSpinLoader extends PayloadBlock {
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 			spin.read(read);
-		}
-		
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
 		}
 		
 		@Override public float totalProgress() {

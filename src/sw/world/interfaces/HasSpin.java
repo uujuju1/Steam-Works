@@ -1,5 +1,6 @@
 package sw.world.interfaces;
 
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -14,7 +15,7 @@ public interface HasSpin {
 		return (Building) this;
 	}
 	/**
-	 * Method indicating if a gas building can connect to another building. Mutually inclusive.
+	 * Method indicating if a building can connect to another building. Mutually inclusive.
 	 */
 	static boolean connects(@Nullable HasSpin from, @Nullable HasSpin to) {
 		if (from == null || to == null) return false;
@@ -50,22 +51,23 @@ public interface HasSpin {
 	default HasSpin getSpinGraphDestination(HasSpin from) {
 		return this;
 	}
-	/**
-	 * Returns the destination to connect with the section.
-	 * @see SpinSection
-	 * @apiNote if called, should be done after getSpinGraphDestination
-	 */
-	default @Nullable HasSpin getSpinSectionDestination(HasSpin from) {
-		return this;
-	}
 
-	SpinModule spin();
-	SpinConfig spinConfig();
+	default SpinModule spin() {
+		try {
+			return (SpinModule) asBuilding().getClass().getField("spin").get(this);
+		} catch (Exception ignored) {
+			return null;
+		}
+	}
+	default SpinConfig spinConfig() {
+		try {
+			return (SpinConfig) asBuilding().block.getClass().getField("spinConfig").get(asBuilding().block);
+		} catch (Exception ignored) {
+			return null;
+		}
+	}
 	default SpinGraph spinGraph() {
 		return spin().graph;
-	}
-	default SpinSection spinSection() {
-		return spin().section;
 	}
 
 	/**
@@ -104,17 +106,20 @@ public interface HasSpin {
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
-		return asBuilding().proximity
-			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
-			     .map(a -> ((HasSpin) a)
-				   .getSpinGraphDestination(this));
+		Seq<HasSpin> out = new Seq<>();
+		for (Point2 offset : asBuilding().block.getEdges()) {
+			Building other = asBuilding().nearby(offset.x, offset.y);
+			if (other instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this))) {
+				out.add(a.getSpinGraphDestination(this));
+			}
+		}
+		return out;
 	}
 
 	/**
 	 * Called whenever connections changed.
 	 */
 	default void onGraphUpdate() {
-		nextBuilds().map(b -> b.getSpinSectionDestination(this)).removeAll(b -> !connects(this, b)).each(b -> b.spinSection().merge(spinSection()));
 	}
 
 	default boolean outputsSpin() {

@@ -69,7 +69,7 @@ public class SWDistribution {
 				new DrawBitmask(
 					"-frames",
 					b -> {
-						int frames = 4 * Mathf.mod((int) (((BeltConveyorBuild) b).spinGraph().rotation * ((BeltConveyorBuild) b).spinSection().ratio / 360f * movementScale), 4);
+						int frames = 4 * Mathf.mod((int) (((BeltConveyorBuild) b).getRotation() / 360f * movementScale), 4);
 						int tile = 0;
 						if (b.front() instanceof BeltConveyorBuild && b.front().team == b.team && b.rotation == b.front().rotation) tile |= 1;
 						if (b.back() instanceof BeltConveyorBuild && b.back().team == b.team && b.rotation == b.back().rotation) tile |= 2;

@@ -249,20 +249,6 @@ public class RangedDrill extends Block {
 			}
 		}
 
-		@Override
-		public void onProximityUpdate() {
-			updateLasers();
-			updateFacing();
-
-			new SpinGraph().mergeFlood(this);
-		}
-
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			spinGraph().remove(this, true);
-		}
-
 		@Override public float progress() {
 			return time/drillTime;
 		}
@@ -277,13 +263,6 @@ public class RangedDrill extends Block {
 		@Override
 		public boolean shouldConsume(){
 			return items.total() < itemCapacity && lastItem != null && enabled;
-		}
-
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
 		}
 
 		@Override public float totalProgress() {

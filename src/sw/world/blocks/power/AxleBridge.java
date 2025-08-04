@@ -214,7 +214,7 @@ public class AxleBridge extends AxleBlock {
 
 			if (getLink() != null) {
 				Draw.z(Layer.power);
-				drawBridge(tile, getLink().tile, spinGraph().rotation * spinSection().ratio);
+				drawBridge(tile, getLink().tile, getRotation());
 			}
 		}
 
@@ -310,18 +310,18 @@ public class AxleBridge extends AxleBlock {
 						return false;
 					}
 					if (other != getLink()) {
-						if (getLink() != null) spinGraph().remove(getLink(), true);
+						if (getLink() != null) spinGraph().removeBuild(getLink());
 						configure(other.pos());
 						spinGraph().mergeFlood(this);
 					} else {
-						spinGraph().remove(getLink(), true);
+						spinGraph().removeBuild(getLink());
 						configure(-1);
 					}
 					return false;
 				}
 				return true;
 			} else {
-				if (getLink() != null) spinGraph().remove(getLink(), true);
+				if (getLink() != null) spinGraph().removeBuild(getLink());
 				configure(-1);
 			}
 			return false;

@@ -124,19 +124,6 @@ public class BeltConveyor extends Block {
 			items.add(ite, amount);
 		}
 
-		@Override
-		public void onProximityUpdate() {
-			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
-		}
-
-		@Override
-		public void onProximityRemoved() {
-			super.onProximityRemoved();
-			spinGraph().remove(this, true);
-		}
-
 		public boolean pass(Item item){
 			if(item != null && front() != null && front().team == team && front().acceptItem(this, item)){
 				front().handleItem(this, item);
@@ -182,16 +169,9 @@ public class BeltConveyor extends Block {
 			return spinGraph().speed / (spinGraph().ratios.get(this, 1) * 360f) * movementScale;
 		}
 
-		@Override public SpinModule spin() {
-			return spin;
-		}
-		@Override public SpinConfig spinConfig() {
-			return spinConfig;
-		}
-
 		@Override
 		public float totalProgress() {
-			return spinGraph().rotation * spinSection().ratio;
+			return getRotation();
 		}
 
 		@Override
