@@ -3,6 +3,7 @@ package sw.world.interfaces;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import sw.world.graph.*;
 import sw.world.meta.*;
@@ -12,18 +13,16 @@ public interface HasFluid {
 	default Building asBuilding() {
 		return (Building) this;
 	}
-	/**
-	 * Method indicating if a building can connect to another building. Mutually inclusive.
-	 */
+	
 	static boolean connectsFluids(@Nullable HasFluid from, @Nullable HasFluid to) {
 		if (from == null || to == null) return false;
 		return from.connectToFluid(to) && to.connectToFluid(from);
 	}
 	
-	/**
-	 * Method indicating if this building connects to another building.
-	 * @apiNote Liz, do not make this method call itself on another instance, and do not make this null, ever.
-	 */
+	default void addLiquid(Liquid liquid, float amount) {
+	
+	}
+	
 	default boolean connectToFluid(HasFluid other) {
 		boolean hasSpin = fluidConfig() != null;
 		boolean sameTeam = other.asBuilding().team == asBuilding().team;
@@ -39,9 +38,10 @@ public interface HasFluid {
 		return hasSpin && sameTeam && isEdge;
 	}
 	
-	/**
-	 * Returns the destination to connect with the graph.
-	 */
+	default float getFluid(Liquid liquid) {
+		return fluid().liquids[liquid.id];
+	}
+	
 	default HasFluid getFluidDestination(HasFluid from) {
 		return this;
 	}
@@ -64,12 +64,13 @@ public interface HasFluid {
 		return fluid().graph;
 	}
 	
-	/**
-	 * Returns a seq with the buildings that this build can connect to.
-	 */
 	default Seq<HasFluid> nextFluidBuilds() {
 		return asBuilding().proximity
 			       .select(b -> b instanceof HasFluid a && connectsFluids(this, a.getFluidDestination(this)))
 			       .map(a -> ((HasFluid) a).getFluidDestination(this));
+	}
+	
+	default void removeLiquid(Liquid liquid, float amount) {
+	
 	}
 }
