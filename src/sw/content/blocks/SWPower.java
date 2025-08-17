@@ -26,13 +26,124 @@ import static mindustry.type.ItemStack.*;
 public class SWPower {
 	public static Block
 		evaporator, waterWheel,
-		wireShaft, wireShaftRouter, shaftGearbox, overheadBelt, torqueGauge,
+	
+		wireShaft, torqueGauge,
+		wireShaftRouter, shaftGearbox,
+		overheadBelt,
+	
 		hydraulicFlywheel,
 		winder, latch,
 
-		shaftTransmission;
+		shaftTransmission, mechanicalGovernor;
 
 	public static void load() {
+		evaporator = new SWGenericCrafter("evaporator") {{
+			requirements(Category.power, with(
+				SWItems.iron, 20,
+				SWItems.verdigris, 40,
+				Items.graphite, 35
+			));
+			researchCost = with(
+				SWItems.iron, 40,
+				SWItems.verdigris, 80,
+				Items.graphite, 70
+			);
+			size = 2;
+			health = 160;
+			ambientSound = Sounds.wind;
+			ambientSoundVolume = 0.1f;
+			
+			spinConfig = new SpinConfig() {{
+				topSpeed = 1f;
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(SWLiquids.solvent) {{
+					alpha = 0.5f;
+				}},
+				new DrawDefault(),
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+				}},
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+					rotation = 30f;
+				}},
+				new DrawRegion("-blade") {{
+					rotateSpeed = 5f;
+					rotation = 60f;
+				}},
+				new DrawRegion("-top"),
+				new DrawIcon()
+			);
+			
+			updateEffectStatic = SWFx.evaporate;
+			updateEffectChance = 0.5f;
+			
+			consumeLiquid(SWLiquids.solvent, 1f/60f);
+			
+			outputRotation = 1f;
+			outputRotationForce = 1f/60f;
+		}};
+		waterWheel = new FrontAttributeCrafter("water-wheel") {{
+			requirements(Category.power, with(
+				Items.silicon, 10
+			));
+			rotate = true;
+			drawArrow = true;
+			hasAttribute = true;
+			
+			attribute = Attribute.water;
+			frontAttribute = SWAttribute.gravity;
+			baseEfficiency = 0f;
+			minEfficiency = 1f;
+			
+			spinConfig = new SpinConfig() {{
+				topSpeed = 2f;
+				
+				allowedEdges = new int[][]{
+					new int[]{1, 3},
+					new int[]{2, 0},
+					new int[]{3, 1},
+					new int[]{0, 2}
+				};
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawAxles(
+					building -> ((HasSpin) building).getRotation() * (building.rotation > 1 ? -1f : 1f),
+					Layer.block + 0.01f,
+					new Axle("-axle") {{
+						circular = true;
+						
+						pixelHeight = 1;
+						height = 3.5f;
+						
+						rotation = -90f;
+					}}
+				),
+				new DrawBitmask("-tiles", building -> 0, 32, Layer.block + 0.01f),
+				new DrawFlaps() {{
+					rotationFunc = building -> ((HasSpin) building).getRotation();
+					layer = Layer.block + 0.01f;
+					layerOffset = 0.01f;
+					
+					width = height = 8f;
+					rotation = 180f;
+					
+					radius = 3f;
+					zScale = 2f;
+					
+					blades = 6;
+				}},
+				new DrawIcon()
+			);
+			
+			outputRotation = 2f;
+			outputRotationForce = 0.25f/60f;
+		}};
+		
 		wireShaft = new AxleBlock("wire-shaft") {{
 			requirements(Category.power, with(
 				SWItems.verdigris, 1,
@@ -421,6 +532,9 @@ public class SWPower {
 				}}
 			);
 		}};
+		mechanicalGovernor = new AxleBrake("mechanical-governor") {{
+		
+		}};
 		
 		hydraulicFlywheel = new RotationBattery("hydraulic-flywheel") {{
 			requirements(Category.units, with(
@@ -469,7 +583,6 @@ public class SWPower {
 				new DrawDefault()
 			);
 		}};
-		
 		winder = new PayloadSpinLoader("winder") {{
 			requirements(Category.units, with(
 			
@@ -575,113 +688,6 @@ public class SWPower {
 					new int[]{0, 6}
 				};
 			}};
-		}};
-
-		evaporator = new SWGenericCrafter("evaporator") {{
-			requirements(Category.power, with(
-				SWItems.iron, 20,
-				SWItems.verdigris, 40,
-				Items.graphite, 35
-			));
-			researchCost = with(
-				SWItems.iron, 40,
-				SWItems.verdigris, 80,
-				Items.graphite, 70
-			);
-			size = 2;
-			health = 160;
-			ambientSound = Sounds.wind;
-			ambientSoundVolume = 0.1f;
-
-			spinConfig = new SpinConfig() {{
-				topSpeed = 1f;
-			}};
-
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-				new DrawLiquidTile(SWLiquids.solvent) {{
-					alpha = 0.5f;
-				}},
-				new DrawDefault(),
-				new DrawRegion("-blade") {{
-					rotateSpeed = 5f;
-				}},
-				new DrawRegion("-blade") {{
-					rotateSpeed = 5f;
-					rotation = 30f;
-				}},
-				new DrawRegion("-blade") {{
-					rotateSpeed = 5f;
-					rotation = 60f;
-				}},
-				new DrawRegion("-top"),
-				new DrawIcon()
-			);
-
-			updateEffectStatic = SWFx.evaporate;
-			updateEffectChance = 0.5f;
-
-			consumeLiquid(SWLiquids.solvent, 1f/60f);
-
-			outputRotation = 1f;
-			outputRotationForce = 1f/60f;
-		}};
-		waterWheel = new FrontAttributeCrafter("water-wheel") {{
-			requirements(Category.power, with(
-				Items.silicon, 10
-			));
-			rotate = true;
-			drawArrow = true;
-			hasAttribute = true;
-			
-			attribute = Attribute.water;
-			frontAttribute = SWAttribute.gravity;
-			baseEfficiency = 0f;
-			minEfficiency = 1f;
-			
-			spinConfig = new SpinConfig() {{
-				topSpeed = 2f;
-				
-				allowedEdges = new int[][]{
-					new int[]{1, 3},
-					new int[]{2, 0},
-					new int[]{3, 1},
-					new int[]{0, 2}
-				};
-			}};
-			
-			drawer = new DrawMulti(
-				new DrawAxles(
-					building -> ((HasSpin) building).getRotation() * (building.rotation > 1 ? -1f : 1f),
-					Layer.block + 0.01f,
-					new Axle("-axle") {{
-						circular = true;
-						
-						pixelHeight = 1;
-						height = 3.5f;
-						
-						rotation = -90f;
-					}}
-				),
-				new DrawBitmask("-tiles", building -> 0, 32, Layer.block + 0.01f),
-				new DrawFlaps() {{
-					rotationFunc = building -> ((HasSpin) building).getRotation();
-					layer = Layer.block + 0.01f;
-					layerOffset = 0.01f;
-					
-					width = height = 8f;
-					rotation = 180f;
-					
-					radius = 3f;
-					zScale = 2f;
-					
-					blades = 6;
-				}},
-				new DrawIcon()
-			);
-			
-			outputRotation = 2f;
-			outputRotationForce = 0.25f/60f;
 		}};
 	}
 }
