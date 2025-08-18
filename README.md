@@ -30,12 +30,12 @@ Building locally takes more time to set up, but shouldn't be a problem if you've
 
 ## Running the game with the mod
 
-To automatically process, copy file into mod folder and run mindustry, do the following:
-1. add a shortcut to your copy of mindustry into the mod folder, only .lnk files are supported and it has to be named "app"
-2. Run `gradlew toors:run install rungame`
-3. `tools:run` will process sprites
-4. `install` will move the built jar from build/libs to /appdata/mindustry/mods
-5. `rungame` will execute the app.lnk file in the root project folder, if no app.lnk file is there, it will cause an error
+As far as i'm aware, this task is 
+1. First run `gradlew runGame` or `gradlew cleanRunDir`, this will generate a run folder inside the project containing a `mindustry.json` file
+2. Define the parameters `gamePath` and `savePath` inside the `mindustry.json` file, 
+- `gamePath` must be set to the path to an executable of the game, make sure that the executable's name and file extension is included.
+- `savePath` is the path to the root folder of the local save that the mod is being tested on. Leave empty to default to `C:\Users\<you>\AppData\Roaming\Mindustry\mods`
+3. After the `mindustry.json` file is properly set up, run `gradlew runGame`.
 
 ## Adding Dependencies
 
