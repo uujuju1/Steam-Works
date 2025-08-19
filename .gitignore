@@ -36,7 +36,7 @@ ios/robovm.properties
 packr-out/
 config/
 *.gif
-/app.lnk
+run/
 
 version.properties
 

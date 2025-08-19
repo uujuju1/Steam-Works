@@ -159,16 +159,16 @@ project(":tools") {
     }
 }
 
-project(":"){
-    tasks.withType<JavaCompile>().configureEach{
+project(":") {
+    tasks.withType<JavaCompile>().configureEach {
         // Use Java 17+ syntax, but target Java 8 bytecode version.
         sourceCompatibility = "17"
-        options.apply{
+        options.apply {
             release = 8
         }
     }
 
-    dependencies{
+    dependencies {
         compileOnly(project(":annotations"))
         compileOnly(jabel())
         compileOnly(mindustry(":core"))
@@ -183,56 +183,61 @@ project(":"){
         val output = layout.projectDirectory.dir("assets").dir("meta").dir("sw").file("classes.json").asFile
         outputs.file(output)
 
-        doFirst{
+        doFirst {
             output.parentFile.mkdirs()
             val packages = Jval.newArray()
             val classes = Jval.newArray()
 
             val forbid = Pattern.compile("\\$\\d+|.+Impl")
-            fun proc(path: String, dir: File){
-                dir.listFiles()?.forEach{
-                    if(it.isDirectory && (path.startsWith("sw") || it.name == "sw")){
-                        val visited = if(path.isEmpty()) it.name else "$path.${it.name}"
-                        if(visited != modFetch && visited != modGenSrc){
+            fun proc(path: String, dir: File) {
+                dir.listFiles()?.forEach {
+                    if (it.isDirectory && (path.startsWith("sw") || it.name == "sw")) {
+                        val visited = if (path.isEmpty()) it.name else "$path.${it.name}"
+                        if (visited != modFetch && visited != modGenSrc) {
                             packages.add(visited)
                             proc(visited, it)
                         }
-                    }else{
+                    } else {
                         val dot = it.name.lastIndexOf('.')
-                        if(dot != -1){
+                        if (dot != -1) {
                             val name = it.name.substring(0, dot)
                             val ext = it.name.substring(dot + 1)
 
-                            if(ext == "class" && !forbid.matcher(name).matches()) classes.add("$path.$name")
+                            if (ext == "class" && !forbid.matcher(name).matches()) classes.add("$path.$name")
                         }
                     }
                 }
             }
 
-            sourceSets["main"].runtimeClasspath.forEach{
-                if(it.isDirectory){
+            sourceSets["main"].runtimeClasspath.forEach {
+                if (it.isDirectory) {
                     proc("", it)
-                }else if(it.exists()){
-                    zipTree(it).forEach{inner -> proc("", inner)}
+                } else if (it.exists()) {
+                    zipTree(it).forEach { inner -> proc("", inner) }
                 }
             }
 
             val compacted = Jval.newObject().put("packages", packages).put("classes", classes)
-            BufferedWriter(FileWriter(output, Charsets.UTF_8, false)).use{compacted.writeTo(it, Jval.Jformat.formatted)}
+            BufferedWriter(FileWriter(output, Charsets.UTF_8, false)).use {
+                compacted.writeTo(
+                    it,
+                    Jval.Jformat.formatted
+                )
+            }
         }
     }
 
-    tasks.named<Jar>("jar"){
+    tasks.named<Jar>("jar") {
         inputs.files(list)
         archiveFileName = "base.jar"
     }
 
-    val dep = tasks.register<Jar>("dep"){
+    val dep = tasks.register<Jar>("dep") {
         val proc = project(":tools").tasks.named<JavaExec>("run")
 
         mustRunAfter(proc)
 
-        if(!layout.projectDirectory.dir("assets").dir("sprites").asFile.exists()){
+        if (!layout.projectDirectory.dir("assets").dir("sprites").asFile.exists()) {
             logger.lifecycle("Sprites folder not found; automatically running `:tools:run`.")
             inputs.files(proc)
         }
@@ -243,7 +248,7 @@ project(":"){
         from(
             files(sourceSets["main"].output.classesDirs),
             files(sourceSets["main"].output.resourcesDir),
-            configurations.runtimeClasspath.map{conf -> conf.map{if(it.isDirectory) it else zipTree(it)}},
+            configurations.runtimeClasspath.map { conf -> conf.map { if (it.isDirectory) it else zipTree(it) } },
 
             layout.projectDirectory.file("icon.png"),
             meta
@@ -251,79 +256,107 @@ project(":"){
         from(files(layout.projectDirectory.dir("assets"))).exclude("sprites-raw")
 
         metaInf.from(layout.projectDirectory.file("LICENSE"))
-        doFirst{
+        doFirst {
             // Deliberately check if the mod meta is actually written in HJSON, since, well, some people actually use
             // it. But this is also not mentioned in the `README.md`, for the mischievous reason of driving beginners
             // into using JSON instead.
             val metaJson = layout.projectDirectory.file("mod.json")
             val metaHjson = layout.projectDirectory.file("mod.hjson")
 
-            if(metaJson.asFile.exists() && metaHjson.asFile.exists()){
+            if (metaJson.asFile.exists() && metaHjson.asFile.exists()) {
                 throw IllegalStateException("Ambiguous mod meta: both `mod.json` and `mod.hjson` exist.")
-            }else if(!metaJson.asFile.exists() && !metaHjson.asFile.exists()){
+            } else if (!metaJson.asFile.exists() && !metaHjson.asFile.exists()) {
                 throw IllegalStateException("Missing mod meta: neither `mod.json` nor `mod.hjson` exist.")
             }
 
             val isJson = metaJson.asFile.exists()
-            val map = (if(isJson) metaJson else metaHjson).asFile
+            val map = (if (isJson) metaJson else metaHjson).asFile
                 .reader(Charsets.UTF_8)
-                .use{Jval.read(it)}
+                .use { Jval.read(it) }
 
             map.put("name", modName)
-            meta.asFile.writer(Charsets.UTF_8).use{file -> BufferedWriter(file).use{map.writeTo(it, Jval.Jformat.formatted)}}
+            meta.asFile.writer(Charsets.UTF_8)
+                .use { file -> BufferedWriter(file).use { map.writeTo(it, Jval.Jformat.formatted) } }
         }
     }
 
-    val dex = tasks.register<Jar>("dex"){
+    val dex = tasks.register<Jar>("dex") {
         inputs.files(dep)
         archiveFileName = "$modArtifact.jar"
 
-        val desktopJar = dep.flatMap{it.archiveFile}
+        val desktopJar = dep.flatMap { it.archiveFile }
         val dexJar = File(temporaryDir, "Dex.jar")
 
         from(zipTree(desktopJar), zipTree(dexJar))
-        doFirst{
+        doFirst {
             logger.lifecycle("Running `d8`.")
-            providers.exec{
+            providers.exec {
                 // Find Android SDK root.
                 val sdkRoot = File(
-                    OS.env("ANDROID_SDK_ROOT") ?: OS.env("ANDROID_HOME") ?:
-                    throw IllegalStateException("Neither `ANDROID_SDK_ROOT` nor `ANDROID_HOME` is set.")
+                    OS.env("ANDROID_SDK_ROOT") ?: OS.env("ANDROID_HOME")
+                    ?: throw IllegalStateException("Neither `ANDROID_SDK_ROOT` nor `ANDROID_HOME` is set.")
                 )
-    
+
                 // Find `d8`.
-                val d8 = File(sdkRoot, "build-tools/$androidBuildVersion/${if(OS.isWindows) "d8.bat" else "d8"}")
-                if(!d8.exists()) throw IllegalStateException("Android SDK `build-tools;$androidBuildVersion` isn't installed or is corrupted")
-    
+                val d8 = File(sdkRoot, "build-tools/$androidBuildVersion/${if (OS.isWindows) "d8.bat" else "d8"}")
+                if (!d8.exists()) throw IllegalStateException("Android SDK `build-tools;$androidBuildVersion` isn't installed or is corrupted")
+
                 // Initialize a release build.
                 val input = desktopJar.get().asFile
-                val command = arrayListOf("$d8", "--release", "--min-api", androidMinVersion, "--output", "$dexJar", "$input")
-    
+                val command =
+                    arrayListOf("$d8", "--release", "--min-api", androidMinVersion, "--output", "$dexJar", "$input")
+
                 // Include all compile and runtime classpath.
-                (configurations.compileClasspath.get().toList() + configurations.runtimeClasspath.get().toList()).forEach{
-                    if(it.exists()) command.addAll(arrayOf("--classpath", it.path))
+                (configurations.compileClasspath.get().toList() + configurations.runtimeClasspath.get()
+                    .toList()).forEach {
+                    if (it.exists()) command.addAll(arrayOf("--classpath", it.path))
                 }
-    
+
                 // Include Android platform as library.
                 val androidJar = File(sdkRoot, "platforms/android-$androidSdkVersion/android.jar")
-                if(!androidJar.exists()) throw IllegalStateException("Android SDK `platforms;android-$androidSdkVersion` isn't installed or is corrupted")
-    
+                if (!androidJar.exists()) throw IllegalStateException("Android SDK `platforms;android-$androidSdkVersion` isn't installed or is corrupted")
+
                 command.addAll(arrayOf("--lib", "$androidJar"))
-                if(OS.isWindows) command.addAll(0, arrayOf("cmd", "/c").toList())
-    
+                if (OS.isWindows) command.addAll(0, arrayOf("cmd", "/c").toList())
+
                 // Run `d8`.
                 commandLine(command)
             }.result.get().rethrowFailure()
         }
     }
 
-    tasks.register<DefaultTask>("install"){
+    tasks.register<DefaultTask>("createRunDir") {
+        val runFolder = Fi.get(project.rootDir.absolutePath).child("run")
+        val runJsonFile = runFolder.child("mindustry.json")
+
+        runFolder.file().mkdirs()
+
+        if (!runJsonFile.exists()) runJsonFile.writeString(
+            "{\n" +
+                "    " + '\"' + "gamePath" + '\"' + ": " +  '\"' + '\"' + ",\n" +
+                "    " + '\"' + "savePath" + '\"' + ": " +  '\"' + '\"' + "\n" +
+            "}"
+        )
+    }
+
+    tasks.register<DefaultTask>("install") {
         inputs.files(dep)
 
-        val desktopJar = dep.flatMap{it.archiveFile}
-        val dexJar = dex.flatMap{it.archiveFileName}
-        doLast{
-            val folder = Fi.get(OS.getAppDataDirectoryString("Mindustry")).child("mods")
+        val desktopJar = dep.flatMap { it.archiveFile }
+        val dexJar = dex.flatMap { it.archiveFileName }
+        doLast {
+            var folderPath = Fi.get(OS.getAppDataDirectoryString("Mindustry")).child("mods").absolutePath()
+
+            val runJsonFile = Fi.get(project.rootDir.absolutePath).child("run/mindustry.json")
+            if (runJsonFile.exists()) {
+                val savePath = Fi.get(JsonReader().parse(runJsonFile.readString()).getString("savePath"))
+                if (savePath.exists()) {
+                    folderPath = savePath.child("mods").absolutePath()
+                }
+            }
+
+            val folder = Fi.get(folderPath)
+
             folder.mkdirs()
 
             val input = desktopJar.get().asFile
@@ -335,17 +368,35 @@ project(":"){
         }
     }
 
-    tasks.register<DefaultTask>("rungame"){
-        mustRunAfter(dep);
+    tasks.register<DefaultTask>("runGame") {
+        dependsOn(tasks.named<DefaultTask>("install"))
 
-        doLast{
+        val runJsonFile = Fi.get(project.rootDir.absolutePath).child("run/mindustry.json")
+
+        if (!runJsonFile.exists()) {
+            throw RuntimeException("run config file does not exist, run cleanRunDir first")
+        }
+
+        val root = JsonReader().parse(runJsonFile.readString())
+
+        val game = root.get("gamePath").asString()
+
+        if (!Fi.get(game).exists()) {
+            throw RuntimeException("Mindustry executable not found, ")
+        }
+
+        val save = Fi.get(root.get("savePath").asString())
+
+        doLast {
             exec {
+                if (save.exists()) {
+                    environment("MINDUSTRY_DATA_DIR", save.absolutePath())
+//                    environment("DEVELOPMENT", "true")
+                }
                 workingDir = project.rootDir
                 executable = "cmd"
-                args = listOf("/C", "app.lnk & exit")
+                args = listOf("/C", game)
             }
-
-            logger.lifecycle(project.rootDir.toString())
         }
     }
 }
