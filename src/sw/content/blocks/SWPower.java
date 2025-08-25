@@ -88,7 +88,8 @@ public class SWPower {
 		}};
 		waterWheel = new FrontAttributeCrafter("water-wheel") {{
 			requirements(Category.power, with(
-				Items.silicon, 10
+				Items.silicon, 10,
+				SWItems.aluminium, 15
 			));
 			rotate = true;
 			drawArrow = true;
