@@ -407,6 +407,19 @@ public class MechanicalAssembler extends Block {
 			commandPos = target;
 		}
 
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+
+			new SpinGraph().mergeFlood(this);
+		}
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+
+			spinGraph().removeBuild(this);
+		}
+
 		public void pick() {
 			if (getPlan() != null) {
 				currentStep = requiredSteps.pop();

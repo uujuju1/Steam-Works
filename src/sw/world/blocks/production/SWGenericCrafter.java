@@ -153,6 +153,19 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+
+			new SpinGraph().mergeFlood(this);
+		}
+
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			spinGraph().removeBuild(this);
+		}
+		
+		@Override
 		public boolean outputsSpin() {
 			return outputRotation > 0 && outputRotationForce > 0;
 		}

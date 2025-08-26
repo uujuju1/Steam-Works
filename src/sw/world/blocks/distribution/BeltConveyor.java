@@ -124,6 +124,19 @@ public class BeltConveyor extends Block {
 			items.add(ite, amount);
 		}
 
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+
+			new SpinGraph().mergeFlood(this);
+		}
+
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			spinGraph().removeBuild(this);
+		}
+
 		public boolean pass(Item item){
 			if(item != null && front() != null && front().team == team && front().acceptItem(this, item)){
 				front().handleItem(this, item);

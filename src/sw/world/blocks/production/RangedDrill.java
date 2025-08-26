@@ -249,6 +249,20 @@ public class RangedDrill extends Block {
 			}
 		}
 
+		@Override
+		public void onProximityUpdate() {
+			updateLasers();
+			updateFacing();
+
+			new SpinGraph().mergeFlood(this);
+		}
+
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			spinGraph().removeBuild(this);
+		}
+
 		@Override public float progress() {
 			return time/drillTime;
 		}

@@ -13,6 +13,7 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.power.RotationBattery.*;
+import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 import sw.world.modules.*;
@@ -133,6 +134,19 @@ public class PayloadSpinLoader extends PayloadBlock {
 					(battery.wind != ((RotationBattery) payload.block()).maxWindup && !reverse && !Mathf.zero(spinGraph().speed)) ||
 					(battery.wind != 0 && reverse)
 				);
+		}
+		
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+			
+			new SpinGraph().mergeFlood(this);
+		}
+		
+		@Override
+		public void onProximityRemoved() {
+			super.onProximityRemoved();
+			spinGraph().removeBuild(this);
 		}
 		
 		@Override public boolean outputsSpin() {
