@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
@@ -30,6 +31,13 @@ public class SpinConfig {
 	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.
 	 */
 	public int[][] allowedEdges;
+	
+	/**
+	 * List of blocks that this block will not connect to.
+	 * If {@link #connectorAllowList} is true, this block will only connect to the blocks inside the list.
+	 */
+	public Seq<Block> connectors = new Seq<>();
+	public boolean connectorAllowList = false;
 
 	public Color barColor = Pal.accent;
 

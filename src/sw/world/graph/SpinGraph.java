@@ -32,7 +32,6 @@ public class SpinGraph extends Graph<HasSpin> {
 				SpinGraph graph = (SpinGraph) updater.graph;
 				HasSpin build = graph.builds.find(b -> b.asBuilding().tile == e.tile);
 				graph.removeBuild(build);
-				Log.info(build.nextBuilds());
 				build.nextBuilds().each(next -> {
 					new SpinGraph().mergeFlood(next);
 				});

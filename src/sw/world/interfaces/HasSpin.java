@@ -29,6 +29,7 @@ public interface HasSpin {
 	default boolean connectTo(HasSpin other) {
 		boolean hasSpin = spinConfig().hasSpin;
 		boolean sameTeam = other.asBuilding().team == asBuilding().team;
+		boolean isAllowed = !spinConfig().connectors.contains(other.asBuilding().block) ^ spinConfig().connectorAllowList;
 		boolean isEdge = !asBuilding().proximity.contains((Building) other);
 		if (spinConfig().allowedEdges != null) {
 			for(int i : spinConfig().allowedEdges[asBuilding().rotation]) {
@@ -38,7 +39,7 @@ public interface HasSpin {
 				) == other;
 			}
 		} else isEdge = true;
-		return hasSpin && sameTeam && isEdge;
+		return hasSpin && sameTeam && isEdge && isAllowed;
 	}
 
 	default boolean consumesSpin() {

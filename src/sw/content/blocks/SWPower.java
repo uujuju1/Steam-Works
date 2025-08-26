@@ -38,6 +38,8 @@ public class SWPower {
 
 	public static void load() {
 		evaporator = new SWGenericCrafter("evaporator") {{
+			Block self = this;
+			
 			requirements(Category.power, with(
 				SWItems.iron, 20,
 				SWItems.verdigris, 40,
@@ -55,6 +57,8 @@ public class SWPower {
 			
 			spinConfig = new SpinConfig() {{
 				topSpeed = 1f;
+				
+				connectors.add(self);
 			}};
 			
 			drawer = new DrawMulti(
