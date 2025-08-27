@@ -388,15 +388,17 @@ project(":") {
         val save = Fi.get(root.get("savePath").asString())
 
         doLast {
-            exec {
-                if (save.exists()) {
-                    environment("MINDUSTRY_DATA_DIR", save.absolutePath())
-//                    environment("DEVELOPMENT", "true")
-                }
-                workingDir = project.rootDir
-                executable = "cmd"
-                args = listOf("/C", game)
+            val process = ProcessBuilder(game)
+                .directory(project.rootDir)
+                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                .redirectError(ProcessBuilder.Redirect.INHERIT)
+
+            val environment = process.environment()
+            if (save.exists()) {
+                environment["MINDUSTRY_DATA_DIR"] = save.absolutePath()
+                environment["DEVELOPMENT"] = "true"
             }
+            process.start()
         }
     }
 }
