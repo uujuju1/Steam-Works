@@ -89,9 +89,15 @@ public interface HasSpin {
 		return spinGraph().rotation / spinGraph().ratios.get(this, 1);
 	}
 	/**
+	 * @return the current inertia of this block.
+	 */
+	default float getInertia() {
+		return spinConfig().inertia / spinGraph().ratios.get(this, 1);
+	}
+	/**
 	 * Returns the speed that this block should try to reach.
 	 */
-	default float getTargetSpeed() {
+	@Deprecated default float getTargetSpeed() {
 		return 0;
 	}
 

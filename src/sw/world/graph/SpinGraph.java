@@ -42,6 +42,13 @@ public class SpinGraph extends Graph<HasSpin> {
 		build.spin().graph = this;
 	}
 	
+	/**
+	 * Returns the force that all builds are doing to push the whole system.
+	 */
+	public float force() {
+		return builds.sumf(HasSpin::getForce);
+	}
+	
 	@Override
 	public void graphChanged() {
 		updateRatios(builds.first());
@@ -55,11 +62,8 @@ public class SpinGraph extends Graph<HasSpin> {
 		updateInertia();
 	}
 	
-	/**
-	 * Returns the force that all builds are doing to push the whole system.
-	 */
-	public float force() {
-		return builds.sumf(HasSpin::getForce);
+	public float inertia() {
+		return builds.sumf(HasSpin::getInertia) + 1f;
 	}
 
 	public void mergeFlood(HasSpin other) {
@@ -88,7 +92,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	/**
 	 * Returns the speed that the system is trying to reach.
 	 */
-	public float targetSpeed() {
+	@Deprecated public float targetSpeed() {
 		if (force() < resistance()) return 0;
 		if (force() == resistance()) return speed;
 		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
@@ -98,8 +102,17 @@ public class SpinGraph extends Graph<HasSpin> {
 	public void update() {
 		super.update();
 		
-		float accel = Math.abs(force() - resistance());
-		speed = Mathf.approachDelta(speed, targetSpeed(), accel);
+		float netTorque = force();
+		float netFriction = resistance();
+		float netInertia = inertia();
+		
+		boolean stops = Math.abs(netTorque) < netFriction;
+		
+		float accel = (netTorque + netFriction * -Mathf.sign(speed))/netInertia;
+		
+		if (stops && Math.abs(speed) < netFriction) {
+			speed = 0;
+		} else speed += accel;
 
 		if (invalid) {
 			speed = 0;

@@ -3,7 +3,6 @@ package sw.world.meta;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -21,11 +20,16 @@ public class SpinConfig {
 	 * Resistance of rotation speed in rpm/10/sec.
 	 */
 	public float resistance = 0;
+	/**
+	 * Extra moment of inertia added to the system.
+	 */
+	public float inertia = 0;
 
 	/**
 	 * Visual max speed, always full if zero. In (rpm/10).
+	 * TODO new animation for the bar
 	 */
-	public float topSpeed;
+	@Deprecated public float topSpeed;
 
 	/**
 	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.
@@ -48,7 +52,7 @@ public class SpinConfig {
 			return new Bar(
 				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f) * 10f, 2)),
 				() -> barColor,
-				() -> topSpeed > 0 ? Mathf.clamp((b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f)) / topSpeed) : 1f
+				() -> 0f
 			);
 		});
 	}
