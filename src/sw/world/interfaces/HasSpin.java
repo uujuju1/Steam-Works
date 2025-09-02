@@ -1,5 +1,6 @@
 package sw.world.interfaces;
 
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -71,7 +72,7 @@ public interface HasSpin {
 	}
 
 	/**
-	 * Returs the force that this build applies on the system.
+	 * Returs The force that this build applies on the system.
 	 */
 	default float getForce() {
 		return 0;
@@ -80,32 +81,37 @@ public interface HasSpin {
 	 * Returns the resistance that this build applies on the system.
 	 */
 	default float getResistance() {
-		return spinConfig().resistance / spinGraph().ratios.get(this, 1);
+		return spinConfig().resistance * getRatio();
 	}
 	/**
-	 * @return the current rotation of this system scaled by this build's ratio
+	 * @return The current ratio of this block relative to the whole graph.
+	 */
+	default float getRatio() {
+		return spinGraph().ratios.get(this, 1);
+	}
+	/**
+	 * @return The current rotation of this system scaled by this build's ratio
 	 */
 	default float getRotation() {
-		return spinGraph().rotation / spinGraph().ratios.get(this, 1);
+		return spinGraph().rotation / getRatio();
 	}
 	/**
-	 * @return the current inertia of this block.
+	 * @return The current speed of this system scaled by the ratio.
+	 */
+	default float getSpeed() {
+		return spinGraph().speed / getRatio();
+	}
+	/**
+	 * @return The current inertia of this block.
 	 */
 	default float getInertia() {
-		return spinConfig().inertia / spinGraph().ratios.get(this, 1);
+		return spinConfig().inertia / getRatio();
 	}
 	/**
 	 * Returns the speed that this block should try to reach.
 	 */
 	@Deprecated default float getTargetSpeed() {
 		return 0;
-	}
-
-	/**
-	 * @return true whenever the connection is invalid, if true, the graph should not move and should break if it tries.
-	 */
-	default boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
-		return ratio != lastRatio;
 	}
 
 	/**
@@ -126,6 +132,29 @@ public interface HasSpin {
 
 	default boolean outputsSpin() {
 		return false;
+	}
+	
+	/**
+	 * Called whenever a "new" building is found whose radius was already set.
+	 * @return True if the ratio that this building would set to the other is different than what the other currently has.
+	 */
+	default boolean ratioInvalid(HasSpin with) {
+		return !Mathf.zero(ratioTo(with) * with.ratioScl(this) - with.spinGraph().ratios.get(with, 1), 0.00001f);
+	}
+	
+	/**
+	 * @return The ratio between this building and the other.
+	 */
+	default float ratioScl(HasSpin from) {
+		return 1f;
+	}
+	
+	/**
+	 * @return The ratio this building will appear to have to the other building.
+	 * Multiplied with the other's {@link #ratioScl} with this as a parameter will result in the other's ratio relative to the entire graph.
+	 */
+	default float ratioTo(HasSpin to) {
+		return spinGraph().ratios.get(this, 1);
 	}
 
 	/**

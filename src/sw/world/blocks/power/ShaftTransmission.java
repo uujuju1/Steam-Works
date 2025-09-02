@@ -1,11 +1,11 @@
 package sw.world.blocks.power;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.entities.units.*;
-import mindustry.gen.*;
 import mindustry.world.*;
 import sw.world.interfaces.*;
 
@@ -14,7 +14,7 @@ public class ShaftTransmission extends AxleBlock {
 
 	// TODO make a way to generate the lowEdges array
 	public int[] highEdges;
-	public int[] lowEdges;
+	@Deprecated public int[] lowEdges;
 
 	public ShaftTransmission(String name) {
 		super(name);
@@ -38,45 +38,33 @@ public class ShaftTransmission extends AxleBlock {
 	}
 
 	public class ShaftTransmissionBuild extends AxleBlockBuild {
-		@Override
-		public boolean invalidConnection(HasSpin other, float ratio, float lastRatio) {
-			boolean otherHigh = false;
+		public boolean isHigh(HasSpin other) {
 			for(int i : highEdges) {
 				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
 				if (nearby(edge.x, edge.y) == other) {
-					if (other.spinConfig().allowedEdges == null) {
-						otherHigh = true;
-						break;
-					}
+					if (other.spinConfig().allowedEdges == null) return true;
 					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
 							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) otherHigh = true;
+						) return true;
 					}
 				}
 			}
-			boolean otherLow = false;
+			return false;
+		}
+		public boolean isLow(HasSpin other) {
 			for(int i : lowEdges) {
 				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
 				if (nearby(edge.x, edge.y) == other) {
-					if (other.spinConfig().allowedEdges == null) {
-						otherLow = true;
-						break;
-					}
+					if (other.spinConfig().allowedEdges == null) return true;
 					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
 						if (
 							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) otherLow = true;
+						) return true;
 					}
 				}
 			}
-			relativeToEdge(tile);
-
-			return
-				other instanceof ShaftTransmissionBuild ?
-				(lastRatio * multiplier < ratio || ratio < lastRatio / multiplier || (otherHigh && otherLow && other.asBuilding().rotation != rotation)) :
-				(ratio != lastRatio || (otherHigh && otherLow));
-
+			return false;
 		}
 
 		@Override
@@ -94,7 +82,26 @@ public class ShaftTransmission extends AxleBlock {
 				}
 			}
 		}
-
+		
+		@Override
+		public float getRotation() {
+			return super.getRotation() * (1f + multiplier)/2f;
+		}
+		
+		// TODO this is a cheap way of making this work, do it better, liz (not depend on block type)
+		@Override public boolean ratioInvalid(HasSpin with) {
+			return
+				(isHigh(with) && isLow(with) && (with.asBuilding().block != block || with.asBuilding().rotation != rotation)) ||
+				!Mathf.zero(ratioTo(with) * with.ratioScl(this) - with.spinGraph().ratios.get(with, 1), 0.00001f);
+		}
+		@Override public float ratioTo(HasSpin from) {
+			float hScl = (1f + multiplier) / 2f;
+			return super.ratioTo(from) / hScl * (isHigh(from) ? multiplier : 1f);
+		}
+		@Override public float ratioScl(HasSpin to) {
+			return super.ratioScl(to) * (isHigh(to) ? 1f / multiplier : 1f) * (1f + multiplier) / 2f;
+		}
+		
 		@Override
 		public float ratioOf(HasSpin other, HasSpin last, float startRatio, float lastRatio) {
 			boolean otherHigh = false;
@@ -148,57 +155,6 @@ public class ShaftTransmission extends AxleBlock {
 			if (startRatio == 1 && lastRatio != 1) return 1;
 
 			return otherHigh ^ lastHigh && !(otherHigh && otherLow) ? h : startRatio;
-		}
-
-		@Override
-		public float totalProgress() {
-			HasSpin lowBuild = null;
-			for(int i : lowEdges) {
-				Building b = nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				);
-				if (b instanceof HasSpin build && HasSpin.connects(this, build)) {
-					Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
-					if (build.spinConfig().allowedEdges == null) {
-						lowBuild = build;
-						break;
-					}
-					for(int otherI : build.spinConfig().allowedEdges[build.asBuilding().rotation]) {
-						if (
-							build.asBuilding().tile.nearby(Edges.getInsideEdges(build.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) lowBuild = build;
-					}
-				}
-			}
-			HasSpin highBuild = null;
-			for(int i : highEdges) {
-				Building b = nearby(
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].x,
-					Edges.getEdges(size)[spinConfig.allowedEdges[rotation][i]].y
-				);
-				if (b instanceof HasSpin build && HasSpin.connects(this, build)) {
-					Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
-					if (build.spinConfig().allowedEdges == null) {
-						highBuild = build;
-						break;
-					}
-					for(int otherI : build.spinConfig().allowedEdges[build.asBuilding().rotation]) {
-						if (
-							build.asBuilding().tile.nearby(Edges.getInsideEdges(build.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) highBuild = build;
-					}
-				}
-			}
-			float ratio = spinGraph().ratios.get(
-				(highBuild == null && lowBuild == null ?
-					this :
-					(lowBuild == null ?
-						highBuild :
-						lowBuild
-					)
-				), 1f) * (lowBuild == null && highBuild != null ? 0.5f : 1f);
-			return spinGraph().rotation / ratio;
 		}
 	}
 }

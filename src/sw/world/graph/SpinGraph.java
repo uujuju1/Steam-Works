@@ -28,10 +28,8 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Temporary seqs for use in flood.
 	 */
 	public static final Seq<HasSpin> tmp = new Seq<>(), tmp2 = new Seq<>();
-	public static final ObjectMap<HasSpin, HasSpin> mainConnection = new ObjectMap<>();
 
 	public final ObjectFloatMap<HasSpin> ratios = new ObjectFloatMap<>();
-	public final ObjectMap<HasSpin, ObjectFloatMap<HasSpin>> relativeRatios = new ObjectMap<>();
 	public boolean invalid;
 
 	@Override
@@ -52,12 +50,6 @@ public class SpinGraph extends Graph<HasSpin> {
 	@Override
 	public void graphChanged() {
 		updateRatios(builds.first());
-		var fastest = ratios.keys().toArray().max(build -> ratios.get(build, 1) * (producers.contains(build) ? 1f : -1f));
-		consumers.each(consumer -> {
-			updateRatios(consumer);
-			relativeRatios.put(consumer, new ObjectFloatMap<>(ratios));
-		});
-		updateRatios(fastest);
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
 	}
@@ -139,35 +131,22 @@ public class SpinGraph extends Graph<HasSpin> {
 	public void updateRatios(HasSpin start) {
 		invalid = false;
 		tmp.clear().add(start);
+		tmp2.clear();
 		ratios.clear();
 		ratios.put(start, 1);
-		mainConnection.clear();
-		mainConnection.put(start, start);
-
-		final HasSpin[] last = new HasSpin[1];
 
 		while (!tmp.isEmpty()) {
-      HasSpin build = tmp.pop();
+      HasSpin current = tmp.pop();
+			tmp2.add(current);
 
-		  build.nextBuilds().each(other -> {
-		    if (!mainConnection.containsKey(other)) {
-		      tmp.add(other);
-		      mainConnection.put(other, build);
-		      last[0] = mainConnection.get(build);
-
-			    invalid |= other != last[0] && (build.invalidConnection(other, ratios.get(other, 1), ratios.get(other, 1)));
-
-			    ratios.put(other, build.ratioOf(other, last[0], ratios.get(build, 1), ratios.get(last[0], 1)));
-		    } else {
-		      last[0] = mainConnection.get(build);
-		      float h = build.ratioOf(other, last[0], ratios.get(build, 1), ratios.get(last[0], 1));
-
-		      invalid |= other != last[0] && (build.invalidConnection(other, h, ratios.get(other, 1)));
-
-		    }
+		  current.nextBuilds().each(next -> {
+			  if (!tmp2.contains(next)) {
+				  tmp.addUnique(next);
+				  ratios.put(next, current.ratioTo(next) * next.ratioScl(current));
+			  } else {
+				  if (current.ratioInvalid(next) || next.ratioInvalid(current)) invalid = true;
+			  }
 		  });
-
-		  last[0] = build;
 		}
 	}
 	
