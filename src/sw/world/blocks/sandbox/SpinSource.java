@@ -57,12 +57,9 @@ public class SpinSource extends AxleBlock {
 		}
 
 		@Override public float getForce() {
-			return force/600f;
+			return force/600f * getRatio();
 		}
-		@Override public float getTargetSpeed() {
-			return targetSpeed/10f * spinGraph().ratios.get(this, 1);
-		}
-
+		
 		@Override
 		public boolean outputsSpin() {
 			return true;

@@ -156,11 +156,4 @@ public interface HasSpin {
 	default float ratioTo(HasSpin to) {
 		return spinGraph().ratios.get(this, 1);
 	}
-
-	/**
-	 * @return the ratio of other relative to this build and the last build before this on the floodFill for the ratios.
-	 */
-	default float ratioOf(HasSpin other, HasSpin last, float startRatio, float lastRatio) {
-		return startRatio;
-	}
 }
