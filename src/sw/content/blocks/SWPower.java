@@ -1,6 +1,8 @@
 package sw.content.blocks;
 
+import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
@@ -30,6 +32,7 @@ public class SWPower {
 		wireShaft, torqueGauge,
 		wireShaftRouter, shaftGearbox,
 		overheadBelt,
+		flywheel,
 	
 		hydraulicFlywheel,
 		winder, latch,
@@ -364,6 +367,107 @@ public class SWPower {
 				}}),
 				new DrawBitmask("-tiles", b -> 0)
 			);
+		}};
+		flywheel = new AxleBlock("flywheel") {{
+			requirements(Category.power, with(
+				SWItems.steel, 200,
+				SWItems.aluminium, 50,
+				SWItems.verdigris, 100,
+				Items.silicon, 30,
+				Items.graphite, 40
+			));
+			
+			size = 2;
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 10f/600f;
+				inertia = 25f;
+				
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 2, 7},
+					new int[]{1, 2, 3, 4},
+					new int[]{3, 4, 5, 6},
+					new int[]{5, 6, 7, 0}
+				};
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 2;
+						pixelHeight = 1;
+						
+						width = 2f;
+						height = 3.5f;
+						
+						x = 4f;
+						y = 7f;
+						rotation = -90f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						pixelWidth = 2;
+						pixelHeight = 1;
+						
+						width = 2f;
+						height = 3.5f;
+						
+						x = 7f;
+						y = 4f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 2;
+						pixelHeight = 1;
+						
+						width = 2f;
+						height = 3.5f;
+						
+						x = 7f;
+						y = -4f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 2;
+						pixelHeight = 1;
+						
+						width = 2f;
+						height = 3.5f;
+						
+						x = 4f;
+						y = -7f;
+						rotation = -90f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawBitmask("-tiles", b -> 0, 64),
+				new DrawRegion("-wheel", 1) {{
+					layer = Layer.power;
+				}}
+			) {
+				@Override public TextureRegion[] icons(Block block) {
+					return new TextureRegion[]{Core.atlas.find(block.name + "-icon")};
+				}
+			};
 		}};
 		torqueGauge = new TorqueGauge("torque-gauge") {{
 			requirements(Category.power, with(

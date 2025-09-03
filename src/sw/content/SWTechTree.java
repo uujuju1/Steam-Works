@@ -74,6 +74,9 @@ public class SWTechTree {
           });
           node(torqueGauge);
           node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
+            node(flywheel, with(new NonUnlockable()), () -> {
+            
+            });
             node(winder);
             node(latch);
           });
