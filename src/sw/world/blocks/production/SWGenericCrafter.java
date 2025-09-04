@@ -77,7 +77,6 @@ public class SWGenericCrafter extends AttributeCrafter {
 			cons.get(stack.item);
 		}
 
-		//also requires inputs
 		if (researchConsumers) for(var c : consumeBuilder){
 			if(c.optional) continue;
 
@@ -86,14 +85,6 @@ public class SWGenericCrafter extends AttributeCrafter {
 					cons.get(stack.item);
 				}
 			}
-			//TODO: requiring liquid dependencies is usually a bad idea, because there is no reason to pump/produce something until you actually need it.
-            /*else if(c instanceof ConsumeLiquid i){
-                cons.get(i.liquid);
-            }else if(c instanceof ConsumeLiquids i){
-                for(var stack : i.liquids){
-                    cons.get(stack.liquid);
-                }
-            }*/
 		}
 	}
 
@@ -140,10 +131,8 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getForce() {
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * warmup : 0;
-		}
-		@Override public float getTargetSpeed() {
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * warmup : 0f;
+			float diff = Mathf.maxZero(outputRotation - getSpeed());
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? Math.min(diff, outputRotationForce * warmup) : 0;
 		}
 
 		@Override
