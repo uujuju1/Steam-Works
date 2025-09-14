@@ -12,6 +12,8 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import sw.ui.elements.*;
+import sw.ui.elements.RotationBar.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 
@@ -71,12 +73,16 @@ public class SpinFragment extends Group{
 		if (newer == null) {
 			infoTable.add("Please Select a graph");
 		} else {
-			infoTable.add("RPM").row();
-			infoTable.add(new Bar(
-				() -> Core.bundle.format("bar.sw-rotation", newer.speed * 10f),
-				() -> Color.black,
-				() -> 0f
-			)).size(250f, 20f).row();
+			infoTable.add(new RotationBar(
+				() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(newer.speed * 10f, 2)),
+				() -> newer.rotation
+			)).size(250f, 20f).pad(10f).get().setStyle(new RotationBarStyle() {{
+				outlineColor = Pal.darkestGray;
+				outlineRadius = 4f;
+			}});
+			
+			infoTable.row();
+			
 			infoTable.table(forces -> {
 				forces.add(new Bar(
 					() -> Core.bundle.format("bar.sw-force", newer.force() * 600f),
