@@ -6,7 +6,6 @@ import arc.graphics.*;
 import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.style.*;
 import arc.util.*;
 import arc.util.pooling.*;
@@ -15,19 +14,19 @@ import mindustry.ui.*;
 import sw.gen.*;
 import sw.graphics.*;
 
-public class RotationBar extends Element {
+public class RotationBar extends Bar {
 	private Floatp angleProv;
-	private CharSequence name;
+	private CharSequence label;
 	private RotationBarStyle style = new RotationBarStyle();
 	
-	public RotationBar(CharSequence name, Floatp rotationProv) {
-		this.name = name;
+	public RotationBar(CharSequence label, Floatp rotationProv) {
+		this.label = label;
 		this.angleProv = rotationProv;
 	}
 	
-	public RotationBar(Prov<CharSequence> name, Floatp rotationProv) {
-		this(name.get(), rotationProv);
-		update(() -> this.name = name.get());
+	public RotationBar(Prov<CharSequence> label, Floatp rotationProv) {
+		this(label.get(), rotationProv);
+		update(() -> this.label = label.get());
 	}
 	
 	@Override
@@ -77,6 +76,7 @@ public class RotationBar extends Element {
 				);
 			}
 		}
+		Draw.reset();
 		
 		Draw.color();
 		Draw.alpha(parentAlpha);
@@ -86,14 +86,18 @@ public class RotationBar extends Element {
 		
 		Font font = Fonts.outline;
 		GlyphLayout lay = Pools.obtain(GlyphLayout.class, GlyphLayout::new);
-		lay.setText(font, name);
+		lay.setText(font, label);
 		
 		font.setColor(style.fontColor);
 		font.getCache().clear();
-		font.getCache().addText(name, x + width / 2f - lay.width / 2f, y + height / 2f + lay.height / 2f);
+		font.getCache().addText(label, x + width / 2f - lay.width / 2f, y + height / 2f + lay.height / 2f);
 		font.getCache().draw(parentAlpha);
 		
 		Pools.free(lay);
+	}
+	
+	public void setAngle(Floatp angleProv) {
+		this.angleProv = angleProv;
 	}
 	
 	public void setStyle(RotationBarStyle style) {

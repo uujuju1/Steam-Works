@@ -132,7 +132,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 		@Override public float getForce() {
 			float diff = Mathf.maxZero(outputRotation - getSpeed());
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? Math.min(diff, outputRotationForce * warmup) : 0;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? Math.min(diff, outputRotationForce * warmup) * getRatio() : 0;
 		}
 
 		@Override

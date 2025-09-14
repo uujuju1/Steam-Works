@@ -1,16 +1,14 @@
 package sw.world.meta;
 
 import arc.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.graphics.*;
-import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import sw.ui.elements.*;
 import sw.world.interfaces.*;
 
 public class SpinConfig {
@@ -43,16 +41,13 @@ public class SpinConfig {
 	public Seq<Block> connectors = new Seq<>();
 	public boolean connectorAllowList = false;
 
-	public Color barColor = Pal.accent;
-
 	public void addBars(Block block) {
 		if (!hasSpin) return;
 		block.addBar("sw-spin", building -> {
 			HasSpin b = building.as();
-			return new Bar(
-				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.spinGraph().speed / b.spinGraph().ratios.get(b, 1f) * 10f, 2)),
-				() -> barColor,
-				() -> 0f
+			return new RotationBar(
+				() -> Core.bundle.format("bar.sw-rotation", Strings.autoFixed(b.getSpeed() * 10f, 2)),
+				b::getRotation
 			);
 		});
 	}
