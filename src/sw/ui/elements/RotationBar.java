@@ -1,7 +1,9 @@
 package sw.ui.elements;
 
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
+import arc.graphics.Texture.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.*;
@@ -62,7 +64,8 @@ public class RotationBar extends Element {
 			if (cos1 - cos2 >= 0) {
 				Tmp.v1.trns(rotation, 0f, height * (cos1 + cos2)/4f);
 				
-				if (((TextureRegionDrawable) style.axle[i]).getRegion().texture.getMagFilter() != Texture.TextureFilter.nearest) ((TextureRegionDrawable) style.axle[i]).getRegion().texture.setFilter(Texture.TextureFilter.nearest);
+				TextureFilter req = Core.settings.getBool("sw-ui-filter", true) ? TextureFilter.linear : TextureFilter.nearest;
+				if (((TextureRegionDrawable) style.axle[i]).getRegion().texture.getMagFilter() != req) ((TextureRegionDrawable) style.axle[i]).getRegion().texture.setFilter(req);
 				
 				Draw.rect(
 					((TextureRegionDrawable) style.axle[i]).getRegion(),

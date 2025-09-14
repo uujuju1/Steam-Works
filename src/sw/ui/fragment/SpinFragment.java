@@ -25,9 +25,7 @@ public class SpinFragment extends Group{
 	private Table infoTable;
 	
 	public SpinFragment() {
-		Events.on(EventType.ResizeEvent.class, e -> {
-			setSize(Core.graphics.getWidth(), Core.graphics.getHeight());
-		});
+		Events.on(EventType.ResizeEvent.class, e -> setSize(Core.graphics.getWidth(), Core.graphics.getHeight()));
 	}
 	
 	public SpinFragment build(Group parent) {

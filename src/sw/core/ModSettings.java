@@ -1,6 +1,8 @@
 package sw.core;
 
 import arc.*;
+import arc.graphics.*;
+import arc.scene.style.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -84,6 +86,19 @@ public class ModSettings {
           .left().pad(1f)
           .update(check -> check.setChecked(Core.settings.getBool("sw-hide-maps", true)))
           .tooltip("@settings.sw-hide-maps-description");
+        settings.row();
+        
+        settings.check(
+          "@settings.sw-ui-filter",
+          Core.settings.getBool("sw-ui-filter", true),
+          check -> {
+            Core.settings.put("sw-ui-filter", check);
+            ((TextureRegionDrawable) Tex.whiteui).getRegion().texture.setFilter(check ? Texture.TextureFilter.linear : Texture.TextureFilter.nearest);
+          }
+        )
+          .left().pad(1f)
+          .update(check -> check.setChecked(Core.settings.getBool("sw-ui-filter", true)))
+          .tooltip("@settings.sw-ui-filter-description");
       }).width(400f);
 
       buttons.button("@settings.reset", () -> {
@@ -108,10 +123,6 @@ public class ModSettings {
           () -> graphics.show()
         ).growX().minWidth(400f).marginLeft(8f).height(50f).row();
       });
-//      table.pref(new CheckSetting("sw-menu-enabled", true, bool -> Core.settings.put("sw-menu-enabled", bool)) {{
-//        title = Core.bundle.get("sw-menu-enabled");
-//        description = Core.bundle.get("sw-menu-enabled-description");
-//      }});
     });
   }
 }
