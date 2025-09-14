@@ -12,6 +12,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import sw.core.*;
 import sw.ui.elements.*;
 import sw.ui.elements.RotationBar.*;
 import sw.world.graph.*;
@@ -36,7 +37,7 @@ public class SpinFragment extends Group{
 		buildInfo();
 		
 		update(() -> {
-			if (Vars.state.isMenu() && shown) toggle();
+			if (Vars.state.isMenu() && shown || Core.input.keyTap(SWBinding.spinInfo)) toggle();
 			if (!shown || infoTable.hasActions()) return;
 			
 			if (shown) {
