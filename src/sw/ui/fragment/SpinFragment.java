@@ -17,6 +17,7 @@ import sw.ui.elements.*;
 import sw.ui.elements.RotationBar.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
+import sw.world.meta.*;
 
 public class SpinFragment extends Group{
 	public boolean shown = false;
@@ -82,20 +83,19 @@ public class SpinFragment extends Group{
 			
 			infoTable.row();
 			
-			infoTable.table(forces -> {
-				forces.add(new Bar(
-					() -> Core.bundle.format("bar.sw-force", newer.force() * 600f),
-					() -> Pal.heal,
-					() -> (Math.abs(newer.force()) + newer.resistance()) != 0 ? newer.force() / (Math.abs(newer.force()) + newer.resistance()) : 0f
-				)).size(250f, 20f);
-				forces.add(new Bar(
-					() -> Core.bundle.format("bar.sw-force", newer.resistance() * 600f),
-					() -> Color.scarlet,
-					() -> (Math.abs(newer.force()) + newer.resistance()) != 0 ? newer.resistance() / (Math.abs(newer.force()) + newer.resistance()) : 0f
-				)).size(250f, 20f).row();
-				forces.add(Core.bundle.get("stat.sw-spin-output-force"));
-				forces.add(Core.bundle.get("stat.sw-spin-resistance"));
-			});
+			infoTable.add(new SplitBar().setBar(
+				() -> ((newer.speed > 0 ? newer.resistance() : newer.force()) * 600f) / (Math.max(1f, (newer.resistance() + Math.abs(newer.force())) * 600f)),
+				() -> newer.speed > 0 ? Color.scarlet : (newer.speed == 0 ? Pal.gray : Pal.heal),
+				() -> Strings.fixed((newer.speed > 0 ? newer.resistance() : newer.force()) * 600f, 2) + " " + SWStat.force.localized(),
+				true
+			).setBar(
+				() -> ((newer.speed > 0 ? newer.force() : newer.resistance()) * 600f) / (Math.max(1f,(newer.resistance() + Math.abs(newer.force())) * 600f)),
+				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
+				() -> Strings.fixed((newer.speed > 0 ? newer.force() : newer.resistance()) * 600f, 2) + " " + SWStat.force.localized(),
+				false
+			)).size(250f, 20f).pad(10f);
+			
+			infoTable.row();
 		}
 	}
 	
