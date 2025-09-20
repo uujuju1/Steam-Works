@@ -53,7 +53,8 @@ public class SpinConfig {
 	}
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
-		if (resistance > 0) stats.add(SWStat.spinResistance, StatValues.number(resistance * 600f, SWStat.spinMinuteSecond));
+		if (resistance > 0) stats.add(SWStat.spinResistance, StatValues.number(resistance * 600f, SWStat.force));
+		if (inertia > 0) stats.add(SWStat.weight, StatValues.number(inertia, SWStat.mass));
 	}
 
 	public void drawPlace(Block block, int x, int y, int rotation, boolean valid) {

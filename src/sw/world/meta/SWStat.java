@@ -12,12 +12,14 @@ public class SWStat {
     spinRequirement = new Stat("sw-spin-requirement", spin),
     spinOutput = new Stat("sw-spin-output", spin),
     spinOutputForce = new Stat("sw-spin-output-force", spin),
-    spinResistance = new Stat("sw-spin-resistance", spin);
+    spinResistance = new Stat("sw-spin-resistance", spin),
+		weight = new Stat("sw-weight", spin);
   //endregion
 
   // region Units
   public static final StatUnit spinMinuteSecond = new StatUnit("sw-spin-minute-second");
 	public static final StatUnit spinMinute = new StatUnit("sw-spin-minute");
 	public static final StatUnit force = new StatUnit("sw-force");
+	public static final StatUnit mass = new StatUnit("sw-mass");
   // endregion
 }

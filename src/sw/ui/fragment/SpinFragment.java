@@ -2,6 +2,7 @@ package sw.ui.fragment;
 
 import arc.*;
 import arc.graphics.*;
+import arc.math.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
@@ -84,15 +85,57 @@ public class SpinFragment extends Group{
 			infoTable.row();
 			
 			infoTable.add(new SplitBar().setBar(
-				() -> ((newer.speed > 0 ? newer.resistance() : newer.force()) * 600f) / (Math.max(1f, (newer.resistance() + Math.abs(newer.force())) * 600f)),
+				() -> {
+					float force = newer.force();
+					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+					float net = 0;
+					if (force < 0) net += force;
+					if (resistance < 0) net += resistance;
+					return net/(Math.abs(force) + Math.abs(resistance));
+				},
 				() -> newer.speed > 0 ? Color.scarlet : (newer.speed == 0 ? Pal.gray : Pal.heal),
-				() -> Strings.fixed((newer.speed > 0 ? newer.resistance() : newer.force()) * 600f, 2) + " " + SWStat.force.localized(),
+				() -> {
+					float force = newer.force();
+					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+					float net = 0;
+					if (force < 0) net += force;
+					if (resistance < 0) net += resistance;
+					if (newer.speed == 0) {
+						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
+					}
+					return Strings.fixed(net * 600f, 2) + " " + SWStat.force.localized();
+				},
 				true
 			).setBar(
-				() -> ((newer.speed > 0 ? newer.force() : newer.resistance()) * 600f) / (Math.max(1f,(newer.resistance() + Math.abs(newer.force())) * 600f)),
+				() -> {
+					float force = newer.force();
+					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+					float net = 0;
+					if (force > 0) net += force;
+					if (resistance > 0) net += resistance;
+					return net/(Math.abs(force) + Math.abs(resistance));
+				},
 				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
-				() -> Strings.fixed((newer.speed > 0 ? newer.force() : newer.resistance()) * 600f, 2) + " " + SWStat.force.localized(),
+				() -> {
+					float force = newer.force();
+					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+					float net = 0;
+					if (force > 0) net += force;
+					if (resistance > 0) net += resistance;
+					if (newer.speed == 0) {
+						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
+					}
+					return Strings.fixed(net * 600f, 2) + " " + SWStat.force.localized();
+				},
 				false
+			)).size(250f, 20f).pad(10f);
+			
+			infoTable.row();
+			
+			infoTable.add(new Bar(
+				() -> Strings.fixed(newer.inertia(), 2) + " " + SWStat.mass.localized(),
+				() -> Color.black,
+				() -> 0f
 			)).size(250f, 20f).pad(10f);
 			
 			infoTable.row();
