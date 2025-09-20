@@ -29,7 +29,7 @@ public class ModLoader extends Mod {
       EventHints.initHints();
     });
 		Events.on(EventType.FileTreeInitEvent.class, e -> {
-      if (SWVars.isMod) Core.app.post(SWShaders::load);
+      if (SWVars.isMod && !Vars.headless) Core.app.post(SWShaders::load);
     });
     Events.on(EventType.MusicRegisterEvent.class, e -> SWMusics.load());
     Events.on(EventType.ContentInitEvent.class, e -> {
