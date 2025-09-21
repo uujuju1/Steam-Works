@@ -1,0 +1,91 @@
+name: Bug report
+description: Submit an issue that you have found while playing the mod.
+labels: [ "bug" ]
+
+body:
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platforms
+      description: On what platforms do you know the bug happens?
+      multiple: true
+      options:
+        - Android
+        - Mac
+        - Windows
+        - Linux
+    validations:
+      required: true
+
+  - type: input
+    id: game
+    attributes:
+      label: Mindustry Build
+      description: The build number of the game.
+      placeholder: Don't use latest.
+    validations:
+      required: true
+
+  - type: input
+    id: mod
+    attributes:
+      label: the build/version of the mod.
+      description: The version of the mod or the action run id(the number after runs/ in the url).
+      placeholder: Don't use latest.
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue
+      description: Explain your issue in detail.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How you happened across the issue, and what exactly you did to make the bug happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Mods used
+      description: Mods used along with this mod.
+    validations:
+      required: false
+
+  - type: textarea
+    id: save-file
+    attributes:
+      label: Save file
+      description: The (zipped) map that the bug happens, specify the sector's name if it's in campaign.
+      placeholder: Required if the issue is happening on a specific save file.
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: (Crash) logs
+      description: The file of the crash or the lastlog.txt file. It can be found in your save folder.
+      placeholder: Required if you are reporting a crash.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: agreement
+    attributes:
+      label: Submission
+      description: Check the boxes to confirm that you have read the lines below.
+      options:
+        - label: I have updated to the latest [release](https://github.com/xtabux/Omaloon/releases) or [action](https://github.com/xtabux/Omaloon/actions) to make sure my issue has not been fixed.
+          required: true
+        - label: I have searched the closed and open issues to make sure that this problem has not already been reported.
+          required: true
+        - label: I am not using Foo's Client, and have made sure the bug is not caused by mods I have installed.
+          required: true
