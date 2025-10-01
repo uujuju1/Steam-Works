@@ -29,10 +29,9 @@ public class SWPower {
 	public static Block
 		evaporator, waterWheel,
 	
-		wireShaft, torqueGauge,
-		wireShaftRouter, shaftGearbox,
+		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt,
-		flywheel,
+		flywheel, clutch,
 	
 		hydraulicFlywheel,
 		winder, latch,
@@ -469,17 +468,17 @@ public class SWPower {
 				}
 			};
 		}};
-		torqueGauge = new TorqueGauge("torque-gauge") {{
+		clutch = new AxleClutch("clutch") {{
 			requirements(Category.power, with(
-				SWItems.verdigris, 4,
-				Items.graphite, 2,
-				Items.silicon, 4
+				SWItems.aluminium, 25,
+				SWItems.verdigris, 20,
+				Items.silicon, 10,
+				Items.graphite, 50
 			));
 			
+			clutchStrength = 20f/600f;
+			
 			spinConfig = new SpinConfig() {{
-				resistance = 1f/600f;
-				
-				topSpeed = 128;
 				allowedEdges = new int[][]{
 					new int[]{0, 2},
 					new int[]{1, 3},
@@ -491,15 +490,39 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles(
-				new Axle("-axle") {{
-					pixelHeight = 1;
-					height = 3.5f;
-					
-					paletteLight = SWPal.axleLight;
-					paletteMedium = SWPal.axleMedium;
-					paletteDark = SWPal.axleDark;
-				}}
-			),
+					b -> b.back() instanceof HasSpin spin ? spin.getRotation() : 0f,
+					new Axle("-axle") {{
+						pixelWidth = 3;
+						pixelHeight = 1;
+						
+						x = -2.5f;
+						y = 0f;
+						
+						width = 3f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawAxles(
+					b -> b.front() instanceof HasSpin spin ? spin.getRotation() : 0f,
+					new Axle("-axle") {{
+						pixelWidth = 3;
+						pixelHeight = 1;
+						
+						x = 2.5f;
+						y = 0f;
+						
+						width = 3f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
 				new DrawBitmask("-tiles", build -> 0)
 			);
 		}};

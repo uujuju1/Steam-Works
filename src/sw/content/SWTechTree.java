@@ -72,7 +72,7 @@ public class SWTechTree {
             node(shaftGearbox);
             node(overheadBelt);
           });
-          node(torqueGauge);
+          node(clutch, with(new NonUnlockable()), () -> {});
           node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
             node(flywheel, with(new NonUnlockable()), () -> {
             

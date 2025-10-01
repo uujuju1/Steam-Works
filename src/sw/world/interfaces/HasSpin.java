@@ -72,9 +72,15 @@ public interface HasSpin {
 	}
 
 	/**
-	 * Returs The force that this build applies on the system.
+	 * @return The force that this build applies on the system.
 	 */
 	default float getForce() {
+		return 0;
+	}
+	/**
+	 * @return The force that this build applies to the specific graph.
+	 */
+	default float getForceDisconnected(SpinGraph to) {
 		return 0;
 	}
 	/**

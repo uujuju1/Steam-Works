@@ -23,6 +23,11 @@ public class SpinGraph extends Graph<HasSpin> {
 	 */
 	public final Seq<HasSpin> producers = new Seq<>();
 	public final Seq<HasSpin> consumers = new Seq<>();
+	
+	/**
+	 * Buildings that aren't connected but still influence this graph with force.
+	 */
+	public final Seq<HasSpin> disconnected = new Seq<>();
 
 	/**
 	 * Temporary seqs for use in flood.
@@ -44,11 +49,12 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-		return builds.sumf(HasSpin::getForce);
+		return builds.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getForceDisconnected(this));
 	}
 	
 	@Override
 	public void graphChanged() {
+		disconnected.clear();
 		updateRatios(builds.first());
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
@@ -112,7 +118,7 @@ public class SpinGraph extends Graph<HasSpin> {
 				var b = builds.random();
 
 				b.asBuilding().damage(Mathf.maxZero(force() - resistance()));
-				Fx.smoke.at(b.asBuilding());
+				if (Mathf.chance(0.5)) Fx.smoke.at(b.asBuilding());
 			}
 		}
 
