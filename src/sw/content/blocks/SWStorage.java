@@ -1,7 +1,12 @@
 package sw.content.blocks;
 
+import arc.*;
 import arc.math.*;
+import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.liquid.*;
@@ -81,5 +86,19 @@ public class SWStorage {
 			
 			fadeOutInterp = a -> Interp.swingOut.apply(Mathf.clamp(2f * (1f - a) - 1f));
 		}};
+		
+		Events.on(EventType.ClientLoadEvent.class, e -> {
+			putSchem(coreScaffold, Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU="));
+			putSchem(coreMole, Schematics.readBase64("bXNjaAF4nBXLSwqAIBhF4euDiGorrqKxK4gGZv9A8IUKDaK9p5wz/SAgJGQ0gTDvqZBOnrDYFBvFpk0Gfz+sN1VbXG4uRQCTNxf5Cn6cDFt9lO1QhSEBNu79NxEWeA=="));
+		});
+	}
+	
+	public static void putSchem(Block core, Schematic schem) {
+		try {
+			((ObjectMap<CoreBlock, Schematic>) Reflect.get(Schematics.class, Vars.schematics, "defaultLoadouts")).put((CoreBlock) core, schem);
+			((ObjectMap<CoreBlock, Seq<Schematic>>) Reflect.get(Schematics.class, Vars.schematics, "loadouts")).get((CoreBlock) core, Seq::new).add(schem);
+		} catch(Exception e) {
+			throw new RuntimeException("you messed up", e);
+		}
 	}
 }
