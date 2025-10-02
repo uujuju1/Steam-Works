@@ -47,7 +47,7 @@ public class SWUnitType extends UnitType {
   }
 
   public void drawRotors(CopterUnit unit) {
-    for (RotorMount mount : unit.rotors) {
+    if (unit.rotors != null) for (RotorMount mount : unit.rotors) {
       mount.rotor.draw(unit, mount);
     }
   }
