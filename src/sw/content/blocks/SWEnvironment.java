@@ -130,7 +130,7 @@ public class SWEnvironment {
 			variants = 0;
 			effect = Fx.none;
 			
-			blendGroup = concreteStripes;
+			blendGroup = parent = concreteStripes;
 
 			attributes.set(Attribute.heat, 1f);
 		}};
