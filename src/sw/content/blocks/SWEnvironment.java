@@ -133,6 +133,10 @@ public class SWEnvironment {
 			blendGroup = parent = concreteStripes;
 
 			attributes.set(Attribute.heat, 1f);
+			
+			emitLight = true;
+			lightColor = Pal.darkFlame.cpy().a(0.2f);
+			lightRadius = 40f;
 		}};
 
 		pitfall = new Pitfall("pitfall") {{
@@ -163,6 +167,10 @@ public class SWEnvironment {
 			blendGroup = concrete;
 
 			mapColor = Color.valueOf("71727d").lerp(Pal.turretHeat, 0.25f).lerp(Color.black, 0.5f);
+			
+			emitLight = true;
+			lightColor = Pal.darkFlame.cpy().a(0.1f);
+			lightRadius = 24f;
 		}};
 		//endregion
 
