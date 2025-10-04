@@ -51,6 +51,7 @@ public class CogCore extends CoreBlock {
 		@Override
 		public void drawLaunch() {
 			rand.setSeed(id);
+			Draw.reset();
 			for(int i = 0; i < cogs; i++) {
 				TextureRegion cogSprite = rand.nextBoolean() ? cogRegion : smallCogRegion;
 				Tmp.v1.trns(rand.range(360f), cogMaxOffset * cogShowInterp.apply(Vars.renderer.getLandTimeIn()));

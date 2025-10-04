@@ -98,7 +98,8 @@ public class SWProduction {
 			ambientSoundVolume = 0.14f;
 
 			useAllowList = true;
-			drillMultipliers.put(Items.sand, 1);
+			drillMultipliers.put(Items.sand, 1f);
+			drillMultipliers.put(Items.silicon, 0.5f);
 
 			drillEffect = SWFx.blockCrack;
 
