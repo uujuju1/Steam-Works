@@ -27,7 +27,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		evaporator, waterWheel,
+		handWheel, evaporator, waterWheel,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt,
@@ -39,6 +39,30 @@ public class SWPower {
 		shaftTransmission, mechanicalGovernor;
 
 	public static void load() {
+		handWheel = new HandCrank("hand-wheel") {{
+			requirements(Category.power, with(
+				Items.graphite, 15,
+				SWItems.verdigris, 10
+			));
+			
+			torque = 10/600f;
+			speed = 10/10f;
+			spinTime = 600f;
+			
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][]{
+					new int[]{0},
+					new int[]{1},
+					new int[]{2},
+					new int[]{3}
+				};
+			}};
+			
+			drawer = new DrawMulti(
+				new DrawBitmask("-tiles", b -> 0),
+				new DrawRegion("-wheel", 1f, true)
+			);
+		}};
 		evaporator = new SWGenericCrafter("evaporator") {{
 			Block self = this;
 			
