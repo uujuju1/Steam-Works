@@ -158,7 +158,7 @@ public class RangedDrill extends Block {
 	}
 
 	public float getDrillTime(Item item){
-		return drillTime * drillMultipliers.get(item, 1f);
+		return drillTime / drillMultipliers.get(item, 1f);
 	}
 
 	@Override protected TextureRegion[] icons() {
