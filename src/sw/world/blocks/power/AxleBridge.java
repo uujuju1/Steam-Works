@@ -35,6 +35,8 @@ public class AxleBridge extends AxleBlock {
 	public Color inColor = Pal.darkestMetal.cpy().mul(0.5f);
 	public Color boltColor = Pal.darkestMetal.cpy().mul(1.5f);
 	public float spacing = 2f;
+	
+	public float ratioScl = 1f;
 
 	public TextureRegion rotatorRegion;
 
@@ -359,7 +361,22 @@ public class AxleBridge extends AxleBlock {
 			}
 			return false;
 		}
-
+		
+		@Override
+		public boolean ratioInvalid(HasSpin with) {
+			return super.ratioInvalid(with);
+		}
+		
+		@Override
+		public float ratioScl(HasSpin from) {
+			return (findBridges(tile, team, b -> (b.link == pos() || link == b.pos()) && b == from, b -> {}) != 0 ? (ratioScl / ((AxleBridge) from.asBuilding().block).ratioScl) : 1);
+		}
+		
+		@Override
+		public float ratioTo(HasSpin to) {
+			return super.ratioTo(to);
+		}
+		
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);

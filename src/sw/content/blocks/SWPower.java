@@ -400,9 +400,11 @@ public class SWPower {
 			size = 2;
 			
 			radius = 6f;
+			range = 80f;
+			ratioScl = 2f;
 
 			spinConfig = new SpinConfig() {{
-				resistance = 3f/600f;
+				resistance = 6f/600f;
 				allowedEdges = new int[][]{
 					new int[]{0, 1},
 					new int[]{2, 3},
@@ -416,21 +418,39 @@ public class SWPower {
 			spacing = 3;
 
 			drawer = new DrawMulti(
-//				new DrawRegion("-bottom"),
-//				new DrawAxles(new Axle("-axle") {{
-//					x = 2;
-//					y = 0;
-//
-//					width = 4f;
-//					height = 3.5f;
-//
-//					pixelWidth = 16;
-//					pixelHeight = 1;
-//
-//					paletteLight = SWPal.axleLight;
-//					paletteMedium = SWPal.axleMedium;
-//					paletteDark = SWPal.axleDark;
-//				}}),
+				new DrawRegion("-bottom"),
+				new DrawAxles(
+					new Axle("-axle") {{
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = 0f;
+						y = -4f;
+						
+						width = 16f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}},
+					new Axle("-axle") {{
+						hasIcon = false;
+						
+						pixelWidth = 16;
+						pixelHeight = 1;
+						
+						x = 0f;
+						y = 4f;
+						
+						width = 16f;
+						height = 3.5f;
+						
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
 				new DrawBitmask("-tiles", b -> 0, 64)
 			);
 		}};
