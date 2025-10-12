@@ -30,7 +30,7 @@ public class SWPower {
 		handWheel, evaporator, waterWheel,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
-		overheadBelt,
+		overheadBelt, largeOverheadBelt,
 		flywheel, clutch,
 	
 		hydraulicFlywheel,
@@ -389,6 +389,49 @@ public class SWPower {
 					paletteDark = SWPal.axleDark;
 				}}),
 				new DrawBitmask("-tiles", b -> 0)
+			);
+		}};
+		largeOverheadBelt = new AxleBridge("large-overhead-belt") {{
+			requirements(Category.power, with(
+				SWItems.verdigris, 5,
+				Items.graphite, 5,
+				Items.silicon, 10
+			));
+			size = 2;
+			
+			radius = 6f;
+
+			spinConfig = new SpinConfig() {{
+				resistance = 3f/600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 1},
+					new int[]{2, 3},
+					new int[]{4, 5},
+					new int[]{6, 7}
+				};
+			}};
+
+			spinScl = 1/8f;
+			stroke = 0.75f;
+			spacing = 3;
+
+			drawer = new DrawMulti(
+//				new DrawRegion("-bottom"),
+//				new DrawAxles(new Axle("-axle") {{
+//					x = 2;
+//					y = 0;
+//
+//					width = 4f;
+//					height = 3.5f;
+//
+//					pixelWidth = 16;
+//					pixelHeight = 1;
+//
+//					paletteLight = SWPal.axleLight;
+//					paletteMedium = SWPal.axleMedium;
+//					paletteDark = SWPal.axleDark;
+//				}}),
+				new DrawBitmask("-tiles", b -> 0, 64)
 			);
 		}};
 		flywheel = new AxleBlock("flywheel") {{

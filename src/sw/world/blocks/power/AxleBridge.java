@@ -18,6 +18,7 @@ import mindustry.input.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import sw.world.graph.*;
 import sw.world.interfaces.*;
 
 public class AxleBridge extends AxleBlock {
@@ -51,87 +52,82 @@ public class AxleBridge extends AxleBlock {
 	public void changePlacementPath(Seq<Point2> points, int rotation) {
 		Placement.calculateNodes(points, this, rotation, (point, other) -> Mathf.dst(point.x, point.y, other.x, other.y) * 8f <= range);
 	}
-
-	public void drawBridge(Tile from, Tile to, float spin) {
-		float angle = from.angleTo(to);
-		float dst = Mathf.dst(from.worldx(), from.worldy(), to.worldx(), to.worldy());
+	
+	public void drawBelt(float x, float y, float x2, float y2, float radius, float radius2, float spin) {
+		float angle = Angles.angle(x, y, x2, y2);
+		float dst = Tmp.v1.trns(angle + 90f, radius).add(x, y).dst(Tmp.v2.trns(angle + 90f, radius2).add(x2, y2));
 		float rad = Mathf.PI * radius;
-
+		float rad2 = Mathf.PI * radius2;
+		
 		var mxcol = Draw.getMixColor();
-
-		Lines.stroke(stroke * 3, Tmp.c1.set(outlineColor).lerp(Color.white, mxcol.a));
-		Lines.arc(from.worldx(), from.worldy(), radius, 0.52f, angle + 90);
-		Lines.arc(to.worldx(), to.worldy(), radius, 0.52f, angle - 90);
+		
+		Lines.stroke(stroke * 3, Tmp.c1.set(outlineColor).lerp(mxcol, mxcol.a));
+		Lines.arc(x, y, radius, 0.52f, angle + 90);
+		Lines.arc(x2, y2, radius2, 0.52f, angle - 90);
 		for(int i : Mathf.signs) {
 			Lines.line(
-				from.worldx() + Angles.trnsx(angle + 3 + 90 * i, radius),
-				from.worldy() + Angles.trnsy(angle + 3 + 90 * i, radius),
-				to.worldx() + Angles.trnsx(angle + 3 + 90 * i, radius),
-				to.worldy() + Angles.trnsy(angle + 3 + 90 * i, radius),
+				x + Angles.trnsx(angle + 3 + 90 * i, radius),
+				y + Angles.trnsy(angle + 3 + 90 * i, radius),
+				x2 + Angles.trnsx(angle + 3 + 90 * i, radius2),
+				y2 + Angles.trnsy(angle + 3 + 90 * i, radius2),
 				false
 			);
 		}
-
-		Lines.stroke(stroke, Tmp.c1.set(inColor).lerp(Color.white, mxcol.a));
-		Lines.arc(from.worldx(), from.worldy(), radius, 0.52f, angle + 90);
-		Lines.arc(to.worldx(), to.worldy(), radius, 0.52f, angle - 90);
+		
+		Lines.stroke(stroke, Tmp.c1.set(inColor).lerp(mxcol, mxcol.a));
+		Lines.arc(x, y, radius, 0.52f, angle + 90);
+		Lines.arc(x2, y2, radius2, 0.52f, angle - 90);
 		for(int i : Mathf.signs) {
 			Lines.line(
-				from.worldx() + Angles.trnsx(angle + 1 + 90 * i, radius),
-				from.worldy() + Angles.trnsy(angle + 1 + 90 * i, radius),
-				to.worldx() + Angles.trnsx(angle + 1 + 90 * i, radius),
-				to.worldy() + Angles.trnsy(angle + 1 + 90 * i, radius),
+				x + Angles.trnsx(angle + 1 + 90 * i, radius),
+				y + Angles.trnsy(angle + 1 + 90 * i, radius),
+				x2 + Angles.trnsx(angle + 1 + 90 * i, radius2),
+				y2 + Angles.trnsy(angle + 1 + 90 * i, radius2),
 				false
 			);
 		}
-
-		float maxLen = (dst + rad) * 2f;
+		
+		float maxLen = 2 * dst + rad + rad2;
 		int divisions = Mathf.floor(maxLen/spacing);
-
-
+		
 		Draw.color(Tmp.c1.set(boltColor).lerp(Color.white, mxcol.a));
 		for(int i = 0; i < divisions; i++) {
-			float num = Mathf.mod(spin * spinScl + maxLen/divisions * i, rad * 2 + dst * 2);
-
+			float num = Mathf.mod(spin * spinScl + maxLen/divisions * i, maxLen);
+			
 			Vec2 res = Tmp.v1.setZero();
-
+			
 			if (num <= rad) {
-				res = Tmp.v1.trns(angle + 90f + num/rad * 180f, radius).add(from.worldx(), from.worldy());
+				res = Tmp.v1.trns(angle + 90f + num/rad * 180f, radius).add(x, y);
 			}
 			if (num > rad && num <= rad + dst) {
 				res = Tmp.v1.set(
-					from.worldx() + Angles.trnsx(angle + 1f - 90f, radius),
-					from.worldy() + Angles.trnsy(angle + 1f - 90f, radius)
+					x + Angles.trnsx(angle + 1f - 90f, radius),
+					y + Angles.trnsy(angle + 1f - 90f, radius)
 				).lerp(
-					to.worldx() + Angles.trnsx(angle + 1f - 90f, radius),
-					to.worldy() + Angles.trnsy(angle + 1f - 90f, radius),
+					x2 + Angles.trnsx(angle + 1f - 90f, radius2),
+					y2 + Angles.trnsy(angle + 1f - 90f, radius2),
 					(num - rad)/dst
 				);
 			}
-
-			if (num > rad + dst && num <= rad * 2f + dst) {
-				res = Tmp.v1.trns(angle - 90f + (num - rad - dst)/rad * 180, radius).add(to.worldx(), to.worldy());
+			
+			if (num > rad + dst && num <= rad + rad2 + dst) {
+				res = Tmp.v1.trns(angle - 90f + (num - (rad + dst))/rad2 * 180, radius2).add(x2, y2);
 			}
-			if (num > rad * 2 + dst && num <= (rad + dst) * 2) {
+			if (num > rad + rad2 + dst && num <= maxLen) {
 				res = Tmp.v1.set(
-					to.worldx() + Angles.trnsx(angle + 1f + 90f, radius),
-					to.worldy() + Angles.trnsy(angle + 1f + 90f, radius)
+					x2 + Angles.trnsx(angle + 1f + 90f, radius2),
+					y2 + Angles.trnsy(angle + 1f + 90f, radius2)
 				).lerp(
-					from.worldx() + Angles.trnsx(angle + 1f + 90f, radius),
-					from.worldy() + Angles.trnsy(angle + 1f + 90f, radius),
-					(num - rad * 2 - dst)/dst
+					x + Angles.trnsx(angle + 1f + 90f, radius),
+					y + Angles.trnsy(angle + 1f + 90f, radius),
+					(num - (rad + rad2 + dst))/dst
 				);
 			}
 			Fill.circle(res.x, res.y, stroke);
 		}
-
+		
 		Draw.reset();
 		Draw.mixcol(mxcol, mxcol.a);
-
-		float map = Mathf.map(Mathf.mod(spin * spinScl, rad * 2), 0f, rad * 2f, 0, 360f);
-
-		Drawf.spinSprite(rotatorRegion, from.worldx(), from.worldy(), map);
-		Drawf.spinSprite(rotatorRegion, to.worldx(), to.worldy(), map);
 	}
 
 	@Override
@@ -143,7 +139,21 @@ public class AxleBridge extends AxleBlock {
 
 	@Override
 	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
-		if (plan.config instanceof Point2 p && plan.tile().nearby(p.x, p.y) != null) drawBridge(plan.tile(), plan.tile().nearby(p.x, p.y), 0);
+		if (plan.config instanceof Point2 p) {
+			Point2 otherPos = new Point2(plan.x, plan.y).add(p);
+			
+			BuildPlan[] other = new BuildPlan[1];
+			list.each(o -> {
+				if (o.x == otherPos.x && o.y == otherPos.y) other[0] = o;
+			});
+			
+			if (other[0] != null && other[0].block instanceof AxleBridge bridge) {
+				drawBelt(plan.drawx(), plan.drawy(), other[0].drawx(), other[0].drawy(), radius, bridge.radius, 0f);
+				
+				Draw.rect(rotatorRegion, plan.drawx(), plan.drawy());
+				Draw.rect(bridge.rotatorRegion, other[0].drawx(), other[0].drawy());
+			}
+		}
 	}
 
 	public int findBridges(Tile from, Team team, Boolf<AxleBridgeBuild> filter, Cons<AxleBridgeBuild> cons) {
@@ -214,7 +224,22 @@ public class AxleBridge extends AxleBlock {
 
 			if (getLink() != null) {
 				Draw.z(Layer.power);
-				drawBridge(tile, getLink().tile, getRotation());
+				drawBelt(x, y, getLink().x, getLink().y, radius, ((AxleBridge) getLink().block).radius, getRotation());
+				
+				
+				float map = Mathf.map(
+					Mathf.mod(getRotation() * spinScl, Mathf.PI * radius * 2),
+					0f, Mathf.PI * radius * 2f,
+					0, 360f
+				);
+				float map2 = Mathf.map(
+					Mathf.mod(getRotation() * spinScl, Mathf.PI * ((AxleBridge) getLink().block).radius * 2),
+					0f, Mathf.PI * ((AxleBridge) getLink().block).radius * 2f,
+					0, 360f
+				);
+				
+				Drawf.spinSprite(rotatorRegion, x, y, map);
+				Drawf.spinSprite(((AxleBridge) getLink().block).rotatorRegion, getLink().x, getLink().y, map2);
 			}
 		}
 
@@ -235,7 +260,7 @@ public class AxleBridge extends AxleBlock {
 		public void drawSelect() {
 			findBridges(tile, team, b -> b.link == pos(), b -> {
 				Lines.stroke(3f, Pal.gray);
-				Lines.circle(b.x, b.y, b.block.size * 2f);
+				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
 				Lines.line(
 					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
 					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
@@ -243,7 +268,7 @@ public class AxleBridge extends AxleBlock {
 					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
 				);
 				Lines.stroke(1f, Pal.accent);
-				Lines.circle(b.x, b.y, b.block.size * 2f);
+				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
 				Lines.line(
 					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
 					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
@@ -255,7 +280,7 @@ public class AxleBridge extends AxleBlock {
 			if (getLink() != null) {
 				var b = getLink();
 				Lines.stroke(3f, Pal.gray);
-				Lines.circle(b.x, b.y, b.block.size * 2f);
+				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
 				Lines.line(
 					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
 					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
@@ -263,7 +288,7 @@ public class AxleBridge extends AxleBlock {
 					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
 				);
 				Lines.stroke(1f, Pal.place);
-				Lines.circle(b.x, b.y, b.block.size * 2f);
+				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
 				Lines.line(
 					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
 					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
@@ -297,6 +322,7 @@ public class AxleBridge extends AxleBlock {
 
 		@Override
 		public boolean onConfigureBuildTapped(Building other) {
+			AxleBridgeBuild link = getLink();
 			if (this != other) {
 				if (
 					other != null &&
@@ -310,19 +336,26 @@ public class AxleBridge extends AxleBlock {
 						return false;
 					}
 					if (other != getLink()) {
-						if (getLink() != null) spinGraph().removeBuild(getLink());
 						configure(other.pos());
-						spinGraph().mergeFlood(this);
+						if (link != null) {
+							spinGraph().removeBuild(link);
+							new SpinGraph().mergeFlood(link);
+						}
 					} else {
-						spinGraph().removeBuild(getLink());
 						configure(-1);
+						spinGraph().removeBuild(link);
+						new SpinGraph().mergeFlood(link);
 					}
+					spinGraph().mergeFlood(this);
 					return false;
 				}
 				return true;
 			} else {
-				if (getLink() != null) spinGraph().removeBuild(getLink());
 				configure(-1);
+				if (link != null) {
+					spinGraph().removeBuild(link);
+					new SpinGraph().mergeFlood(link);
+				}
 			}
 			return false;
 		}
