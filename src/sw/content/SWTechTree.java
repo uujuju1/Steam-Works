@@ -34,6 +34,7 @@ public class SWTechTree {
       // endregion
       // region defense
       root("sw-defense", imber, () -> {
+        node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
         node(trebuchet, with(new SectorComplete(theDelta)), () -> {});
       });
@@ -70,13 +71,11 @@ public class SWTechTree {
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
             node(shaftGearbox);
-            node(overheadBelt);
+            node(overheadBelt, () -> node(largeOverheadBelt));
           });
           node(clutch, with(new NonUnlockable()), () -> {});
+          node(flywheel, with(new NonUnlockable()), () -> {});
           node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
-            node(flywheel, with(new NonUnlockable()), () -> {
-            
-            });
             node(winder);
             node(latch);
           });

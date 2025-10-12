@@ -393,9 +393,10 @@ public class SWPower {
 		}};
 		largeOverheadBelt = new AxleBridge("large-overhead-belt") {{
 			requirements(Category.power, with(
-				SWItems.verdigris, 5,
-				Items.graphite, 5,
-				Items.silicon, 10
+				SWItems.verdigris, 15,
+				Items.graphite, 25,
+				Items.silicon, 20,
+				SWItems.aluminium, 30
 			));
 			size = 2;
 			
@@ -413,7 +414,7 @@ public class SWPower {
 				};
 			}};
 
-			spinScl = 1/8f;
+			spinScl = 1/4f;
 			stroke = 0.75f;
 			spacing = 3;
 

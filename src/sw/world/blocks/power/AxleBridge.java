@@ -196,11 +196,12 @@ public class AxleBridge extends AxleBlock {
 
 		addBar("connections", entity -> {
 			AxleBridgeBuild build = entity.as();
-			int links = findBridges(build.tile, build.team, b -> b.link == build.pos() || build.link == b.pos(), b -> {});
+//			int links = findBridges(build.tile, build.team, b -> b.link == build.pos() || build.link == b.pos(), b -> {});
+			Floatp links = () -> build.spinGraph().builds.count(b -> b instanceof AxleBridgeBuild bridge && (bridge.link == build.pos() || build.link == bridge.pos()));
 			return new Bar(
-				() -> Core.bundle.format("bar.powerlines", links, maxConnections + 1),
+				() -> Core.bundle.format("bar.powerlines", links.get(), maxConnections + 1),
 				() -> Pal.accent,
-				() -> links / (maxConnections + 1f)
+				() -> links.get() / (maxConnections + 1f)
 			);
 		});
 	}
@@ -330,7 +331,11 @@ public class AxleBridge extends AxleBlock {
 					other != null &&
 					other.team == team &&
 					dst(other) <= range &&
-					other instanceof AxleBridgeBuild bridge
+					other instanceof AxleBridgeBuild bridge &&
+					(
+						spinGraph().builds.count(b -> b instanceof AxleBridgeBuild linked && (linked.link == pos() || (link != null && link.pos() == linked.pos()))) <= maxConnections ||
+						bridge.getLink() == this
+					)
 				) {
 					if (bridge.link == pos()) {
 						configure(bridge.pos());
@@ -363,18 +368,8 @@ public class AxleBridge extends AxleBlock {
 		}
 		
 		@Override
-		public boolean ratioInvalid(HasSpin with) {
-			return super.ratioInvalid(with);
-		}
-		
-		@Override
 		public float ratioScl(HasSpin from) {
-			return (findBridges(tile, team, b -> (b.link == pos() || link == b.pos()) && b == from, b -> {}) != 0 ? (ratioScl / ((AxleBridge) from.asBuilding().block).ratioScl) : 1);
-		}
-		
-		@Override
-		public float ratioTo(HasSpin to) {
-			return super.ratioTo(to);
+			return (from == getLink() || (from instanceof AxleBridgeBuild bridge && bridge.getLink() == this) ? (ratioScl / ((AxleBridge) from.asBuilding().block).ratioScl) : 1);
 		}
 		
 		@Override
