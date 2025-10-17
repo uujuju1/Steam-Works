@@ -7,6 +7,7 @@ import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -29,18 +30,18 @@ public class BeltConveyor extends Block {
 		hasItems = true;
 		update = true;
 	}
-
-	@Override
-	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		super.drawPlace(x, y, rotation, valid);
-		spinConfig.drawPlace(this, x, y, rotation, valid);
-	}
-
+	
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
-
+	
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
+	}
+	
 	@Override
 	public void getRegionsToOutline(Seq<TextureRegion> out){
 		drawer.getRegionsToOutline(this, out);
@@ -56,21 +57,21 @@ public class BeltConveyor extends Block {
 		super.load();
 		drawer.load(this);
 	}
-
+	
 	@Override
 	public void setBars() {
 		super.setBars();
-		spinConfig.addBars(this);
+		if (spinConfig != null) spinConfig.addBars(this);
 	}
-
+	
 	@Override
 	public void setStats() {
 		super.setStats();
-		spinConfig.addStats(stats);
+		if (spinConfig != null) spinConfig.addStats(stats);
 	}
 
 	public class BeltConveyorBuild extends Building implements HasSpin {
-		public SpinModule spin = new SpinModule();
+		public SpinModule spin;
 
 		public Seq<ConveyorItem> beltItems = new Seq<>();
 
@@ -83,6 +84,7 @@ public class BeltConveyor extends Block {
 
 		@Override
 		public boolean connectTo(HasSpin other) {
+			if (spinConfig == null) return false;
 			boolean hasSpin = spinConfig.hasSpin;
 			boolean sameTeam = other.asBuilding().team == team;
 			boolean isEdge = !proximity.contains((Building) other);
@@ -93,12 +95,21 @@ public class BeltConveyor extends Block {
 			} else isEdge = true;
 			return hasSpin && sameTeam && (isEdge || (other instanceof BeltConveyorBuild && other.asBuilding().rotation == rotation));
 		}
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
+		}
 
 		@Override public void draw() {
 			drawer.draw(this);
 		}
 		@Override public void drawLight() {
 			drawer.drawLight(this);
+		}
+		@Override public void drawSelect() {
+			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override
@@ -123,18 +134,19 @@ public class BeltConveyor extends Block {
 			}
 			items.add(ite, amount);
 		}
-
+		
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
+			
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
-
+		
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
+			
+			if (spin != null) spinGraph().removeBuild(this);
 		}
 
 		public boolean pass(Item item){
@@ -144,11 +156,14 @@ public class BeltConveyor extends Block {
 			}
 			return false;
 		}
-
+		
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			spin.read(read);
+			
+			if (revision == 0 && spin == null) new SpinModule().read(read);
+			
+			if (spin != null) spin.read(read);
 
 			byte size = read.b();
 			for(int i = 0; i < size; i++) {
@@ -206,11 +221,16 @@ public class BeltConveyor extends Block {
 				}
 			});
 		}
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
 
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			spin.write(write);
+			if (spin != null) spin.write(write);
 
 			write.b(beltItems.size);
 			beltItems.each(beltItem -> {

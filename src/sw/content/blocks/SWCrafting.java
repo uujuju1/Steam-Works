@@ -34,62 +34,62 @@ public class SWCrafting {
 	public static Block densePress;
 	
 	public static void load() {
-		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-				SWItems.iron, 80,
-				SWItems.verdigris, 200,
-				Items.silicon, 150,
-				Items.graphite, 160
-			));
-			size = 3;
-			health = 200;
-
-			ambientSound = Sounds.torch;
-			craftTime = 30f;
-			craftEffect = SWFx.compoundCraft;
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame(Color.valueOf("BEB5B2")) {{
-					flameRadiusInMag = flameRadiusMag = 5f;
-					flameRadius = 5;
-					flameRadiusIn = 2.5f;
-				}}
-			);
-
-			consumeItems(with(
-				Items.silicon, 1,
-				SWItems.verdigris, 2
-			));
-			consumeLiquid(SWLiquids.solvent, 0.1f);
-
-			outputItem = new ItemStack(SWItems.compound, 1);
-		}};
-
-		densePress = new SWGenericCrafter("dense-press") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-				SWItems.iron, 160,
-				SWItems.verdigris, 200,
-				Items.silicon, 80,
-				Items.graphite, 160
-			));
-			size = 3;
-			health = 200;
-
-			ambientSound = Sounds.grinding;
-			craftTime = 60f;
-			craftEffect = SWFx.denseAlloyCraft;
-			craftSound = Sounds.dullExplosion;
-			craftSoundVolume = 0.1f;
-
-			consumeItems(with(
-				Items.silicon, 2,
-				SWItems.iron, 2
-			));
-			consumeLiquid(SWLiquids.solvent, 0.1f);
-
-			outputItem = new ItemStack(SWItems.denseAlloy, 2);
-		}};
+//		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//				SWItems.iron, 80,
+//				SWItems.verdigris, 200,
+//				Items.silicon, 150,
+//				Items.graphite, 160
+//			));
+//			size = 3;
+//			health = 200;
+//
+//			ambientSound = Sounds.torch;
+//			craftTime = 30f;
+//			craftEffect = SWFx.compoundCraft;
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault(),
+//				new DrawFlame(Color.valueOf("BEB5B2")) {{
+//					flameRadiusInMag = flameRadiusMag = 5f;
+//					flameRadius = 5;
+//					flameRadiusIn = 2.5f;
+//				}}
+//			);
+//
+//			consumeItems(with(
+//				Items.silicon, 1,
+//				SWItems.verdigris, 2
+//			));
+//			consumeLiquid(SWLiquids.solvent, 0.1f);
+//
+//			outputItem = new ItemStack(SWItems.compound, 1);
+//		}};
+//
+//		densePress = new SWGenericCrafter("dense-press") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//				SWItems.iron, 160,
+//				SWItems.verdigris, 200,
+//				Items.silicon, 80,
+//				Items.graphite, 160
+//			));
+//			size = 3;
+//			health = 200;
+//
+//			ambientSound = Sounds.grinding;
+//			craftTime = 60f;
+//			craftEffect = SWFx.denseAlloyCraft;
+//			craftSound = Sounds.dullExplosion;
+//			craftSoundVolume = 0.1f;
+//
+//			consumeItems(with(
+//				Items.silicon, 2,
+//				SWItems.iron, 2
+//			));
+//			consumeLiquid(SWLiquids.solvent, 0.1f);
+//
+//			outputItem = new ItemStack(SWItems.denseAlloy, 2);
+//		}};
 
 		cokeOven = new StackableGenericCrafter("coke-oven") {{
 			requirements(Category.crafting, with(
@@ -433,137 +433,137 @@ public class SWCrafting {
 			}};
 		}};
 
-		blastFurnace = new GenericCrafter("blast-furnace") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 120f;
-
-			consumeItems(with(SWItems.iron, 2, SWItems.coke, 1));
-			outputItems = with(SWItems.steel, 1);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
-		pressureKiln = new GenericCrafter("pressure-kiln") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItems(with(SWItems.steel, 1, Items.sand, 2));
-			consumeLiquids(LiquidStack.with(Liquids.hydrogen, 3f/60f));
-			outputItems = with(SWItems.denseAlloy, 2);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
-		wedger = new GenericCrafter("wedger") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItems(with(SWItems.oxycarbide, 2, SWItems.iron, 2));
-			outputItems = with(SWItems.compound, 2);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
-		pyrolysisSynthetizer = new GenericCrafter("pyrolysis-synthetizer") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
-			consumeLiquid(Liquids.ozone, 1f/60f);
-			outputItems = with(SWItems.oxycarbide, 1);
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame() {{
-					flameRadius = 5f;
-				}}
-			);
-		}};
-		oxidationPlant = new GenericCrafter("oxidation-plant") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItems(with(SWItems.iron, 2, SWItems.aluminium, 1));
-			consumeLiquid(Liquids.ozone, 2f/60f);
-			outputItems = with(SWItems.thermite, 3);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
-
-		rte = new GenericCrafter("rte") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeItem(Items.thorium, 2);
-			consumeLiquid(Liquids.water, 0.2f);
-			outputItems = with(Items.silicon, 3);
-			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.2f);
-
-			drawer = new DrawMulti(
-				new DrawDefault(),
-				new DrawFlame() {{
-					flameRadius = 5f;
-				}}
-			);
-		}};
-		crystalFurnace = new GenericCrafter("crystal-furnace") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 60f;
-
-			consumeItems(with(Items.lead, 1, Items.sand, 2));
-			outputItems = with(Items.metaglass, 2);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
-		kitchenGarden = new GenericCrafter("kitchen-garden") {{
-			requirements(Category.crafting, BuildVisibility.hidden, with(
-			));
-			size = 3;
-			health = 240;
-
-			craftTime = 180f;
-
-			consumeLiquids(LiquidStack.with(Liquids.water, 0.1f, SWLiquids.primordialSoup, 0.1f));
-			outputLiquids = LiquidStack.with(SWLiquids.primordialSoup, 0.2f);
-
-			drawer = new DrawMulti(
-				new DrawDefault()
-			);
-		}};
+//		blastFurnace = new GenericCrafter("blast-furnace") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 120f;
+//
+//			consumeItems(with(SWItems.iron, 2, SWItems.coke, 1));
+//			outputItems = with(SWItems.steel, 1);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
+//		pressureKiln = new GenericCrafter("pressure-kiln") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeItems(with(SWItems.steel, 1, Items.sand, 2));
+//			consumeLiquids(LiquidStack.with(Liquids.hydrogen, 3f/60f));
+//			outputItems = with(SWItems.denseAlloy, 2);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
+//		wedger = new GenericCrafter("wedger") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeItems(with(SWItems.oxycarbide, 2, SWItems.iron, 2));
+//			outputItems = with(SWItems.compound, 2);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
+//		pyrolysisSynthetizer = new GenericCrafter("pyrolysis-synthetizer") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
+//			consumeLiquid(Liquids.ozone, 1f/60f);
+//			outputItems = with(SWItems.oxycarbide, 1);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault(),
+//				new DrawFlame() {{
+//					flameRadius = 5f;
+//				}}
+//			);
+//		}};
+//		oxidationPlant = new GenericCrafter("oxidation-plant") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeItems(with(SWItems.iron, 2, SWItems.aluminium, 1));
+//			consumeLiquid(Liquids.ozone, 2f/60f);
+//			outputItems = with(SWItems.thermite, 3);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
+//
+//		rte = new GenericCrafter("rte") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeItem(Items.thorium, 2);
+//			consumeLiquid(Liquids.water, 0.2f);
+//			outputItems = with(Items.silicon, 3);
+//			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.2f);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault(),
+//				new DrawFlame() {{
+//					flameRadius = 5f;
+//				}}
+//			);
+//		}};
+//		crystalFurnace = new GenericCrafter("crystal-furnace") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 60f;
+//
+//			consumeItems(with(Items.lead, 1, Items.sand, 2));
+//			outputItems = with(Items.metaglass, 2);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
+//		kitchenGarden = new GenericCrafter("kitchen-garden") {{
+//			requirements(Category.crafting, BuildVisibility.hidden, with(
+//			));
+//			size = 3;
+//			health = 240;
+//
+//			craftTime = 180f;
+//
+//			consumeLiquids(LiquidStack.with(Liquids.water, 0.1f, SWLiquids.primordialSoup, 0.1f));
+//			outputLiquids = LiquidStack.with(SWLiquids.primordialSoup, 0.2f);
+//
+//			drawer = new DrawMulti(
+//				new DrawDefault()
+//			);
+//		}};
 	}
 }

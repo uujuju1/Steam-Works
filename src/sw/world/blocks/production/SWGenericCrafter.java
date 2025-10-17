@@ -23,7 +23,7 @@ import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class SWGenericCrafter extends AttributeCrafter {
-	public SpinConfig spinConfig = new SpinConfig();
+	public SpinConfig spinConfig;
 
 	public boolean researchConsumers = true;
 
@@ -61,7 +61,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
 
@@ -91,7 +91,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 	@Override
 	public void setBars() {
 		super.setBars();
-		spinConfig.addBars(this);
+		if (spinConfig != null) spinConfig.addBars(this);
 
 		if (displayEfficiency && !hasAttribute) removeBar("efficiency");
 	}
@@ -99,7 +99,8 @@ public class SWGenericCrafter extends AttributeCrafter {
 	@Override
 	public void setStats() {
 		super.setStats();
-		spinConfig.addStats(stats);
+		if (spinConfig != null) spinConfig.addStats(stats);
+		
 		if (outputRotation > 0 && outputRotationForce > 0) {
 			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
 			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.spinMinuteSecond));
@@ -109,16 +110,22 @@ public class SWGenericCrafter extends AttributeCrafter {
 	}
 
 	public class SWGenericCrafterBuild extends AttributeCrafterBuild implements HasSpin {
-		public SpinModule spin = new SpinModule();
+		public SpinModule spin;
 
 		@Override
 		public void craft() {
 			super.craft();
 			craftSound.at(x, y, 1f, craftSoundVolume);
 		}
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
+		}
 
 		@Override public void drawSelect() {
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override
@@ -138,20 +145,24 @@ public class SWGenericCrafter extends AttributeCrafter {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			spin.read(read);
+			
+			if (revision == 0 && spin == null) new SpinModule().read(read);
+			
+			if (spin != null) spin.read(read);
 		}
-
+		
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-
-			new SpinGraph().mergeFlood(this);
+			
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
-
+		
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
+			
+			if (spin != null) spinGraph().removeBuild(this);
 		}
 		
 		@Override
@@ -168,11 +179,17 @@ public class SWGenericCrafter extends AttributeCrafter {
 				}
 			}
 		}
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
 
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			spin.write(write);
+			
+			if (spin != null) spin.write(write);
 		}
 	}
 }

@@ -31,7 +31,7 @@ import static mindustry.type.ItemStack.*;
 public class AssemblerArm extends Block {
 	private static final Rect tmp = new Rect();
 
-	public SpinConfig spinConfig = new SpinConfig();
+	public SpinConfig spinConfig;
 
 	public int areaSize = 4;
 
@@ -85,7 +85,7 @@ public class AssemblerArm extends Block {
 
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
 
@@ -128,17 +128,17 @@ public class AssemblerArm extends Block {
 	@Override
 	public void setBars() {
 		super.setBars();
-		spinConfig.addBars(this);
+		if (spinConfig != null) spinConfig.addBars(this);
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
-		spinConfig.addStats(stats);
+		if (spinConfig != null) spinConfig.addStats(stats);
 	}
 
 	public class AssemblerArmBuild extends Building implements HasSpin, HasArm {
-		public SpinModule spin = new SpinModule();
+		public SpinModule spin;
 
 		public Arm arm = new Arm().reset(rotdeg(), armStartingOffset);
 
@@ -159,6 +159,12 @@ public class AssemblerArm extends Block {
 		@Override public Arm arm() {
 			return arm;
 		}
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
+		}
 
 		@Override public void draw() {
 			drawer.draw(this);
@@ -167,7 +173,7 @@ public class AssemblerArm extends Block {
 			drawer.drawLight(this);
 		}
 		@Override public void drawSelect() {
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override
@@ -187,13 +193,13 @@ public class AssemblerArm extends Block {
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 
-			new SpinGraph().mergeFlood(this);
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
 
-			spinGraph().removeBuild(this);
+			if (spin != null) spinGraph().removeBuild(this);
 
 			if (link != null && currentStep != null) link.requiredSteps.add(currentStep);
 		}
@@ -212,7 +218,10 @@ public class AssemblerArm extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			spin.read(read);
+			
+			if (revision == 0 && spin == null) new SpinModule().read(read);
+			
+			if (spin != null) spin.read(read);
 
 			warmup = read.f();
 			progress = read.f();
@@ -294,11 +303,16 @@ public class AssemblerArm extends Block {
 				consume();
 			}
 		}
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
 
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			spin.write(write);
+			if (spin != null) spin.write(write);
 
 			write.f(warmup);
 			write.f(progress);

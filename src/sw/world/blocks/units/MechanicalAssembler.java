@@ -43,7 +43,7 @@ import static mindustry.type.ItemStack.*;
 public class MechanicalAssembler extends Block {
 	private static final Rect tmp = new Rect();
 
-	public SpinConfig spinConfig = new SpinConfig();
+	public SpinConfig spinConfig;
 
 	public Seq<MechanicalAssemblerPlan> plans = new Seq<>();
 
@@ -154,7 +154,7 @@ public class MechanicalAssembler extends Block {
 
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
 
@@ -194,7 +194,7 @@ public class MechanicalAssembler extends Block {
 	@Override
 	public void setBars() {
 		super.setBars();
-		spinConfig.addBars(this);
+		if (spinConfig != null) spinConfig.addBars(this);
 
 		addBar("progress", (MechanicalAssemblerBuild e) ->
 			new Bar(
@@ -224,7 +224,7 @@ public class MechanicalAssembler extends Block {
 	@Override
 	public void setStats() {
 		super.setStats();
-		spinConfig.addStats(stats);
+		if (spinConfig != null) spinConfig.addStats(stats);
 
 		stats.add(Stat.output, table -> {
 			table.row();
@@ -301,7 +301,7 @@ public class MechanicalAssembler extends Block {
 	}
 
 	public class MechanicalAssemblerBuild extends Building implements HasSpin, HasArm {
-		public SpinModule spin = new SpinModule();
+		public SpinModule spin;
 
 		public Arm arm = new Arm().reset(rotdeg(), armStartingOffset);
 
@@ -343,6 +343,12 @@ public class MechanicalAssembler extends Block {
 
 		@Override public Integer config() {
 			return currentPlan;
+		}
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
 		}
 
 		@Override
@@ -388,7 +394,7 @@ public class MechanicalAssembler extends Block {
 			drawer.drawLight(this);
 		}
 		@Override public void drawSelect() {
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override public float getArmTime() {
@@ -411,13 +417,13 @@ public class MechanicalAssembler extends Block {
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 
-			new SpinGraph().mergeFlood(this);
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-
-			spinGraph().removeBuild(this);
+			
+			if (spin != null) spinGraph().removeBuild(this);
 		}
 
 		public void pick() {
@@ -431,7 +437,10 @@ public class MechanicalAssembler extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			spin.read(read);
+			
+			if (revision == 0 && spin == null) new SpinModule().read(read);
+			
+			if (spin != null) spin.read(read);
 
 			currentPlan = read.i();
 
@@ -560,11 +569,16 @@ public class MechanicalAssembler extends Block {
 				invalid = false;
 			}
 		}
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
 
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			spin.write(write);
+			if (spin != null) spin.write(write);
 
 			write.i(currentPlan);
 

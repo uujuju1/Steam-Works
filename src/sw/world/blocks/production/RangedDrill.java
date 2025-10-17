@@ -30,28 +30,28 @@ import sw.world.modules.*;
 import static mindustry.Vars.*;
 
 public class RangedDrill extends Block {
-	public SpinConfig spinConfig = new SpinConfig();
-
+	public SpinConfig spinConfig;
+	
 	public int
 		range = 5,
 		tier = 1;
 	public float
 		optionalBoostIntensity = 1f,
 		drillTime = 200f;
-
+	
 	public Sound drillSound = Sounds.drillImpact;
 	public float drillSoundVolume = 1;
 	public Effect drillEffect = SWFx.boreMine;
-
+	
 	public boolean useAllowList = false;
-
+	
 	public ObjectFloatMap<Item> drillMultipliers = new ObjectFloatMap<>();
-
+	
 	public DrawBlock drawer = new DrawDefault();
-
+	
 	public RangedDrill(String name) {
 		super(name);
-
+		
 		hasItems = true;
 		rotate = true;
 		update = true;
@@ -59,20 +59,20 @@ public class RangedDrill extends Block {
 		regionRotated1 = 1;
 		ambientSoundVolume = 0.05f;
 		ambientSound = Sounds.minebeam;
-
+		
 		envEnabled |= Env.space;
 		flags = EnumSet.of(BlockFlag.drill);
 	}
-
+	
 	public boolean canMine(Item item) {
 		if (
 			getDrillTime(item) <= 0 ||
-			useAllowList && !drillMultipliers.containsKey(item) ||
-			item.hardness > tier
+				useAllowList && !drillMultipliers.containsKey(item) ||
+				item.hardness > tier
 		) return false;
 		return true;
 	}
-
+	
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation){
 		for(int i = 0; i < size; i++){
@@ -88,20 +88,19 @@ public class RangedDrill extends Block {
 				}
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
-		spinConfig.drawPlace(this, x, y, rotation, valid);
 		Item item = null, invalidItem = null;
 		boolean multiple = false;
 		int count = 0;
-
+		
 		for(int i = 0; i < size; i++){
 			nearbySide(x, y, rotation, i, Tmp.p1);
-
+			
 			int j = 0;
 			Item found = null;
 			for(; j < range; j++){
@@ -120,7 +119,7 @@ public class RangedDrill extends Block {
 					break;
 				}
 			}
-
+			
 			if(found != null){
 				//check if multiple items will be drilled
 				if(item != found && item != null){
@@ -128,7 +127,7 @@ public class RangedDrill extends Block {
 				}
 				item = found;
 			}
-
+			
 			int len = Math.min(j, range - 1);
 			Drawf.dashLine(found == null ? Pal.remove : Pal.placing,
 				Tmp.p1.x * tilesize,
@@ -137,7 +136,7 @@ public class RangedDrill extends Block {
 				(Tmp.p1.y + Geometry.d4y(rotation)*len) * tilesize
 			);
 		}
-
+		
 		if(item != null){
 			float width = drawPlaceText(Core.bundle.formatFloat("bar.drillspeed", 60f / getDrillTime(item) * count, 2), x, y, valid);
 			if(!multiple){
@@ -151,61 +150,67 @@ public class RangedDrill extends Block {
 			drawPlaceText(Core.bundle.get("bar.drilltierreq"), x, y, false);
 		}
 	}
-
+	
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
-
+	
+	@Override
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
+		drawer.drawPlan(this, plan, list);
+	}
+	
 	public float getDrillTime(Item item){
 		return drillTime / drillMultipliers.get(item, 1f);
 	}
-
+	
 	@Override protected TextureRegion[] icons() {
 		return drawer.finalIcons(this);
 	}
-
+	
 	@Override
 	public void init(){
 		updateClipRadius((range + 2) * tilesize);
 		super.init();
 	}
-
+	
 	@Override
 	public void load() {
 		super.load();
 		drawer.load(this);
 	}
-
+	
 	@Override
 	public boolean outputsItems(){
 		return true;
 	}
-
+	
 	@Override
 	public void setBars() {
 		super.setBars();
-
-		spinConfig.addBars(this);
-
-		addBar("drillspeed", (RangedDrillBuild e) ->
-			new Bar(
-				() -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastDrillSpeed * 60, 2)),
-				() -> Pal.ammo,
-				() -> e.warmup)
+		
+		if (spinConfig != null) spinConfig.addBars(this);
+		
+		addBar("drillspeed", (sw.world.blocks.production.RangedDrill.RangedDrillBuild e) ->
+			                     new Bar(
+				                     () -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastDrillSpeed * 60, 2)),
+				                     () -> Pal.ammo,
+				                     () -> e.warmup)
 		);
 	}
-
+	
 	@Override
 	public void setStats() {
 		super.setStats();
-
-		spinConfig.addStats(stats);
-
+		
+		if (spinConfig != null) spinConfig.addStats(stats);
+		
 		stats.add(Stat.drillTier, StatValues.drillables(drillTime, 0f, size, drillMultipliers, b -> (b instanceof Floor f && f.wallOre && f.itemDrop != null && canMine(f.itemDrop)) || (b instanceof StaticWall w && w.itemDrop != null && canMine(w.itemDrop))));
-
+		
 		stats.add(Stat.drillSpeed, 60f / drillTime * size, StatUnit.itemsSecond);
-
+		
 		if(optionalBoostIntensity != 1 && findConsumer(f -> f instanceof ConsumeLiquidBase && f.booster) instanceof ConsumeLiquidBase consBase){
 			stats.remove(Stat.booster);
 			stats.add(Stat.booster,
@@ -215,31 +220,37 @@ public class RangedDrill extends Block {
 			);
 		}
 	}
-
+	
 	@Override
 	public boolean rotatedOutput(int x, int y){
 		return false;
 	}
-
+	
 	public class RangedDrillBuild extends Building implements HasSpin {
-		public SpinModule spin = new SpinModule();
-
+		public SpinModule spin;
+		
 		public Tile[] facing = new Tile[size];
 		public Point2[] lasers = new Point2[size];
 		public @Nullable Item lastItem;
-
+		
 		public float time, totalTime;
 		public float warmup, boostWarmup;
 		public float lastDrillSpeed;
 		public int facingAmount;
-
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
+		}
+		
 		@Override public void draw() {
 			drawer.draw(this);
 		}
-
+		
 		@Override
 		public void drawSelect(){
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 			if(lastItem != null){
 				float dx = x - size * tilesize/2f, dy = y + size * tilesize/2f, s = iconSmall / 4f;
 				Draw.mixcol(Color.darkGray, 1f);
@@ -248,47 +259,51 @@ public class RangedDrill extends Block {
 				Draw.rect(lastItem.fullIcon, dx, dy, s, s);
 			}
 		}
-
+		
 		@Override
 		public void onProximityUpdate() {
 			updateLasers();
 			updateFacing();
-
-			new SpinGraph().mergeFlood(this);
+			
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
-
+		
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
+			
+			if (spin != null) spinGraph().removeBuild(this);
 		}
-
+		
 		@Override public float progress() {
 			return time/drillTime;
 		}
-
+		
 		@Override
 		public void read(Reads read, byte revision){
 			super.read(read, revision);
+			
+			if (revision > 0 && spin != null) spin.read(read);
+			
 			time = read.f();
 			warmup = read.f();
 		}
-
+		
 		@Override
 		public boolean shouldConsume(){
 			return items.total() < itemCapacity && lastItem != null && enabled;
 		}
-
+		
 		@Override public float totalProgress() {
 			return totalTime;
 		}
-
+		
 		protected void updateFacing(){
 			lastItem = null;
 			boolean multiple = false;
 			int dx = Geometry.d4x(rotation), dy = Geometry.d4y(rotation);
 			facingAmount = 0;
-
+			
 			//update facing tiles
 			for(int p = 0; p < size; p++){
 				Point2 l = lasers[p];
@@ -311,41 +326,41 @@ public class RangedDrill extends Block {
 						}
 					}
 				}
-
+				
 				facing[p] = dest;
 			}
-
+			
 			//when multiple items are present, count that as no item
 			if(multiple){
 				lastItem = null;
 			}
 		}
-
+		
 		protected void updateLasers(){
 			for(int i = 0; i < size; i++){
 				if(lasers[i] == null) lasers[i] = new Point2();
 				nearbySide(tileX(), tileY(), rotation, i, lasers[i]);
 			}
 		}
-
+		
 		@Override
 		public void updateTile(){
 			super.updateTile();
-
+			
 			if(lasers[0] == null) updateLasers();
-
+			
 			warmup = Mathf.approachDelta(warmup, Mathf.num(efficiency > 0), 1f / 60f);
 			totalTime += Time.delta * warmup;
-
+			
 			updateFacing();
-
+			
 			float multiplier = Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
 			float drillTime = getDrillTime(lastItem);
 			boostWarmup = Mathf.lerpDelta(boostWarmup, optionalEfficiency, 0.1f);
 			lastDrillSpeed = (facingAmount * multiplier * timeScale) / drillTime;
-
+			
 			time += edelta() * multiplier;
-
+			
 			if(time >= drillTime){
 				for(Tile tile : facing){
 					Item drop = tile == null ? null : tile.wallDrop();
@@ -358,19 +373,27 @@ public class RangedDrill extends Block {
 				time %= drillTime;
 				drillSound.at(x, y, 1f, drillSoundVolume);
 			}
-
+			
 			if(timer(timerDump, dumpTime)){
 				dump();
 			}
 		}
-
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
+		
 		@Override public float warmup() {
 			return warmup;
 		}
-
+		
 		@Override
 		public void write(Writes write){
 			super.write(write);
+			
+			if (spin != null) spin.write(write);
+			
 			write.f(time);
 			write.f(warmup);
 		}

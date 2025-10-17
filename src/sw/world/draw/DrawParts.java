@@ -36,8 +36,8 @@ public class DrawParts extends BlockDrawer {
 				build.progress(),
 				build.totalProgress(),
 				build.efficiency * build.efficiencyScale(),
-				build instanceof HasSpin spin ? (spin.spinGraph().rotation * spin.spinGraph().ratios.get(spin, 1f)) : 0f,
-				build instanceof HasSpin spin && spin.spinGraph().builds.max(HasSpin::getTargetSpeed) != null ? (spin.spinGraph().speed / spin.spinGraph().builds.max(HasSpin::getTargetSpeed).getTargetSpeed()) : 0f,
+				build instanceof HasSpin spin && spin.spin() != null ? (spin.spinGraph().rotation * spin.spinGraph().ratios.get(spin, 1f)) : 0f,
+				build instanceof HasSpin spin && spin.spin() != null && spin.spinGraph().builds.max(HasSpin::getTargetSpeed) != null ? (spin.spinGraph().speed / spin.spinGraph().builds.max(HasSpin::getTargetSpeed).getTargetSpeed()) : 0f,
 				build.x,
 				build.y,
 				build.rotation * 90f + 90f

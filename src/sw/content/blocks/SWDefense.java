@@ -9,9 +9,12 @@ import static mindustry.type.ItemStack.*;
 
 public class SWDefense {
 	public static Block
+		grindLamp, lavaLamp,
 		ironWall, ironWallLarge;
 
 	public static void load() {
+		// region lamps
+		// endregion
 		// region walls
 		ironWall = new Wall("iron-wall") {{
 			requirements(Category.defense, with(SWItems.iron, 6));

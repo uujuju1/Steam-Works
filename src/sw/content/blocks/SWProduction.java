@@ -53,8 +53,6 @@ public class SWProduction {
 			optionalBoostIntensity = 2;
 
 			drawer = new DrawMulti(new DrawRegion(), new DrawRangedDrill());
-
-			spinConfig.hasSpin = false;
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(
@@ -221,8 +219,6 @@ public class SWProduction {
 				new DrawDefault(),
 				new DrawRegion("-top")
 			);
-			
-			spinConfig.hasSpin = false;
 		}};
 
 		liquidCollector = new Pump("liquid-collector") {{
@@ -392,10 +388,6 @@ public class SWProduction {
 					);
 				}}
 			);
-			
-			spinConfig = new SpinConfig() {{
-				hasSpin = false;
-			}};
 		}};
 	}
 }

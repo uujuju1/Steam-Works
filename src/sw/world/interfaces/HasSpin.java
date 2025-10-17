@@ -27,6 +27,7 @@ public interface HasSpin {
 	 * @apiNote Liz, do not make this method call itself on another instance, and do not make this null, ever.
 	 */
 	default boolean connectTo(HasSpin other) {
+		if (spinConfig() == null) return false;
 		boolean hasSpin = spinConfig().hasSpin;
 		boolean sameTeam = other.asBuilding().team == asBuilding().team;
 		boolean isAllowed = !spinConfig().connectors.contains(other.asBuilding().block) ^ spinConfig().connectorAllowList;

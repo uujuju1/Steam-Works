@@ -5,6 +5,7 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.entities.units.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
@@ -15,7 +16,7 @@ import sw.world.meta.*;
 import sw.world.modules.*;
 
 public class AxleBlock extends Block {
-	public SpinConfig spinConfig = new SpinConfig();
+	public SpinConfig spinConfig;
 
 	public DrawBlock drawer = new DrawDefault();
 
@@ -34,7 +35,7 @@ public class AxleBlock extends Block {
 
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
-		spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);
 	}
 
@@ -62,18 +63,24 @@ public class AxleBlock extends Block {
 	@Override
 	public void setBars() {
 		super.setBars();
-		spinConfig.addBars(this);
+		if (spinConfig != null) spinConfig.addBars(this);
 	}
 
 	@Override
 	public void setStats() {
 		super.setStats();
-		spinConfig.addStats(stats);
+		if (spinConfig != null) spinConfig.addStats(stats);
 	}
 
 	public class AxleBlockBuild extends Building implements HasSpin {
-		public SpinModule spin = new SpinModule();
-
+		public SpinModule spin;
+		
+		@Override
+		public Building create(Block block, Team team) {
+			if (spinConfig != null) spin = new SpinModule();
+			return super.create(block, team);
+		}
+		
 		@Override public void draw() {
 			drawer.draw(this);
 		}
@@ -81,36 +88,46 @@ public class AxleBlock extends Block {
 			drawer.drawLight(this);
 		}
 		@Override public void drawSelect() {
-			spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+			if (spinConfig != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 
-			new SpinGraph().mergeFlood(this);
+			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
 
 		@Override
 		public void onProximityRemoved() {
 			super.onProximityRemoved();
-			spinGraph().removeBuild(this);
+			
+			if (spin != null) spinGraph().removeBuild(this);
 		}
 
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			spin.read(read);
+			
+			if (revision == 0 && spin == null) new SpinModule().read(read);
+			
+			if (spin != null) spin.read(read);
 		}
 
 		@Override public float totalProgress() {
 			return getRotation();
 		}
-
+		
+		@Override
+		public byte version() {
+			return 1;
+		}
+		
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			spin.write(write);
+			
+			if (spin != null) spin.write(write);
 		}
 	}
 }
