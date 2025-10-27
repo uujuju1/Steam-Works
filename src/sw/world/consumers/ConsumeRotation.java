@@ -9,6 +9,10 @@ import mindustry.world.meta.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
 
+/**
+ * @deprecated use {@link ConsumeSpin} instead
+ */
+@Deprecated()
 public class ConsumeRotation extends Consume {
 	public float startSpeed, endSpeed;
 	public Interp curve = Interp.one;
