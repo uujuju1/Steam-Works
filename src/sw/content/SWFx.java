@@ -7,6 +7,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.*;
+import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import sw.math.*;
@@ -75,6 +76,25 @@ public class SWFx {
 				Fill.circle(e.x + x, e.y + y, rand.random(1, 3) * e.foutpowdown());
 			});
 		}).layer(Layer.effect + 1),
+  
+    parallaxFire = new Effect(90, e -> {
+      rand.setSeed(e.id);
+      
+      Draw.color(Color.darkGray, Color.gray, e.finpow());
+      Angles.randLenVectors(e.id, 2, e.rotation / 2f, e.rotation * e.finpow(), (x, y) -> {
+        Parallax.getParallaxFrom(temp.set(x, y).scl(e.foutpowdown()).add(e.x, e.y), Core.camera.position, e.fin() * rand.random(2f, 5f));
+        Fill.circle(temp.x, temp.y, rand.random(1f, 3f) * Mathf.clamp(e.fslope() * 4f));
+      });
+      
+      Draw.blend(Blending.additive);
+      Angles.randLenVectors(e.id + 1, 2, e.rotation / 2f, e.rotation * e.finpow(), (x, y) -> {
+        float a = rand.random(0f, 0.75f);
+        Draw.color(Pal.accent, Pal.turretHeat, e.finpow() * (1f - a) + a);
+        Parallax.getParallaxFrom(temp.set(e.x + x * e.fout(), e.y + y * e.fout()), Core.camera.position, e.fin() * rand.random(0f, 3f));
+        Fill.circle(temp.x, temp.y, rand.random(1f, 3f) * Mathf.clamp(e.fslope() * 4f));
+      });
+      Draw.blend();
+    }).layer(Layer.effect + 1),
 
     compoundCraft = new Effect(30f, e -> {
       rand.setSeed(e.id);
@@ -150,24 +170,7 @@ public class SWFx {
         }
       }
     }),
-    cokeIlluminate = new Effect(90, e -> {
-      rand.setSeed(e.id);
-      
-      Draw.color(Color.darkGray, Color.gray, e.finpow());
-      Angles.randLenVectors(e.id, 2, 4f, 8f * e.finpow(), (x, y) -> {
-        Parallax.getParallaxFrom(temp.set(x, y).scl(e.foutpowdown()).add(e.x, e.y), Core.camera.position, e.fin() * rand.random(2f, 5f));
-        Fill.circle(temp.x, temp.y, rand.random(1f, 3f) * Mathf.clamp(e.fslope() * 4f));
-      });
-      
-      Draw.blend(Blending.additive);
-      Angles.randLenVectors(e.id + 1, 2, 4f, 8f * e.finpow(), (x, y) -> {
-        float a = rand.random(0f, 0.75f);
-        Draw.color(Pal.accent, Pal.turretHeat, e.finpow() * (1f - a) + a);
-        Parallax.getParallaxFrom(temp.set(e.x + x * e.fout(), e.y + y * e.fout()), Core.camera.position, e.fin() * rand.random(0f, 3f));
-        Fill.circle(temp.x, temp.y, rand.random(1f, 3f) * Mathf.clamp(e.fslope() * 4f));
-      });
-      Draw.blend();
-    }).layer(Layer.effect + 1),
+    cokeIlluminate = new WrapEffect(parallaxFire, Color.white, 8f),
 
     combust = new Effect(60f, e -> {
       rand.setSeed(e.id);
@@ -293,6 +296,7 @@ public class SWFx {
 
       Draw.rect();
     }),
+    wispFire = new WrapEffect(parallaxFire, Color.white, 4f),
 
     changeEffect = new Effect(30f, e -> {
       if (!(e.data instanceof Block block)) return;
