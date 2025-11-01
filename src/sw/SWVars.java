@@ -106,6 +106,7 @@ public class SWVars implements Loadable {
 	public static void loadContent() {
 		SWSounds.load();
 		SWItems.load();
+		SWStatusEffects.load();
 		SWLiquids.load();
 		SWWeathers.load();
 		SWUnitTypes.load();

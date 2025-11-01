@@ -86,6 +86,9 @@ public class SWUnitTypes {
 		  rotateSpeed = 6f;
 			outlineLayerOffset = -0.002f;
 			omniMovement = false;
+			range = maxRange = 15f * 8f;
+			
+			wrecks = 3;
 			
 			lightRadius = 40f;
 			lightOpacity = 0.1f;

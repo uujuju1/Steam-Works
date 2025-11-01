@@ -125,7 +125,7 @@ public class SWTechTree {
       // endregion
       //region units
       root("sw-units", mechanicalAssembler, with(new Research(shaftTransmission)), () -> {
-				node(soar);
+				node(soar, () -> node(wisp, with(new NonUnlockable()), () -> {}));
         node(assemblerArm, with(new OnSector(kettle)), () -> {});
       });
       //endregion
