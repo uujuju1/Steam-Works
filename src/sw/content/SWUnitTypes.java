@@ -2,6 +2,7 @@ package sw.content;
 
 import arc.graphics.*;
 import arc.math.*;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
@@ -86,7 +87,10 @@ public class SWUnitTypes {
 		  rotateSpeed = 6f;
 			outlineLayerOffset = -0.002f;
 			omniMovement = false;
+			circleTarget = true;
 			range = maxRange = 15f * 8f;
+			
+			aiController = FlyingAI::new;
 			
 			wrecks = 3;
 			
