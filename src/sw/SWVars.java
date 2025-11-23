@@ -78,6 +78,14 @@ public class SWVars implements Loadable {
 
 				}"""
 		);
+		Vars.mods.getScripts().runConsole(
+			"""
+				function timeScl(speed){
+
+				Time.setDeltaProvider(() => Math.min(Core.graphics.getDeltaTime() * 60 * speed, 3 * speed));\s
+
+				}"""
+		);
 		Vars.mods.getScripts().runConsole("importModClass(\"sw\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.content\")");
 		Vars.mods.getScripts().runConsole("importModClass(\"sw.content.blocks\")");
