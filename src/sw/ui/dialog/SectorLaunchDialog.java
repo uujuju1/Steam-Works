@@ -8,7 +8,6 @@ import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.Button.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -207,6 +206,10 @@ public class SectorLaunchDialog extends BaseDialog {
 				Vars.ui.showInfo("Enter a Sector from which to launch to");
 				return;
 			}
+			if (Vars.state.getSector() == null || Vars.state.getSector().preset != launcher) {
+				Vars.ui.showInfo("Enter the sector" + launcher.localizedName + "to launch");
+				return;
+			}
 			
 			PositionSectorPreset finalLauncher = launcher;
 			ui.planet.loadouts.show(sector.core, launcher.sector, sector.sector, () -> {
@@ -354,23 +357,51 @@ public class SectorLaunchDialog extends BaseDialog {
 			shader = SWShaders.sectorLaunchShader;
 		}
 		
+		public void addSector(PositionSectorPreset preset) {
+			Button button = new Button(SWStyles.sector);
+			button.setSize(preset.width, preset.height);
+			button.setPosition(preset.x + offsetX, preset.y + offsetY);
+			sectors.put(button, preset);
+			
+			button.clicked(() -> clickSector.get(preset));
+			button.update(() -> {
+				button.setChecked(sectorChecked.get(preset));
+				button.updateVisibility();
+			});
+			button.visible(() -> preset.visible.get(preset.sector));
+			button.touchable(() -> preset.visible.get(preset.sector) ? Touchable.enabled : Touchable.disabled);
+			
+			button.table(Styles.black6, icon -> {
+				icon.image(preset.icon.get()).grow().scaling(Scaling.fit);
+			}).size(preset.width / 3f, preset.height / 3f);
+			
+			addChild(button);
+			
+			minX = Math.min(minX, preset.x);
+			minY = Math.min(minY, preset.y);
+			maxX = Math.max(maxX, preset.x + preset.width);
+			maxY = Math.max(maxY, preset.y + preset.height);
+		}
+		
 		@Override
 		public void draw() {
+			super.draw();
+
 			shader.pos.set(offsetX, offsetY);
 			shader.opacity = parentAlpha * color.a;
 			shader.lights.clear();
 			children.each(child -> {
-				if (sectors.get(child).clearFog.get(sectors.get(child).sector)) {
+				if (sectors.get(child) != null && sectors.get(child).clearFog.get(sectors.get(child).sector)) {
 					shader.lights.add(child.x + x + child.getWidth() / 2f);
 					shader.lights.add(child.y + y + child.getHeight() / 2f);
 					shader.lights.add(child.getWidth());
 					shader.lights.add(child.getHeight());
 				}
 			});
-			
+
 			shader.boxes.clear();
 			children.each(child -> {
-				if (sectors.get(child).hasOverlay.get(sectors.get(child).sector)) {
+				if (sectors.get(child) != null && sectors.get(child).hasOverlay.get(sectors.get(child).sector)) {
 					shader.boxes.add(child.x + x + child.getWidth() / 2f);
 					shader.boxes.add(child.y + y + child.getHeight() / 2f);
 					shader.boxes.add(child.getWidth());
@@ -378,8 +409,6 @@ public class SectorLaunchDialog extends BaseDialog {
 				}
 			});
 			Draw.blit(shader);
-			
-			super.draw();
 		}
 		
 		public void rebuild(Planet planet) {
@@ -389,31 +418,18 @@ public class SectorLaunchDialog extends BaseDialog {
 			sectors.clear();
 			planet.sectors.each(sector -> {
 				if (sector.preset instanceof PositionSectorPreset preset) {
-					ButtonStyle style = new ButtonStyle();
-					style.down = style.checked = ((ScaledNinePatchDrawable) Tex.whitePane).tint(Pal.accent);
+					Image image = new Image(preset.viewRegion).setScaling(Scaling.fit);
+					image.setSize(preset.viewRegion.width, preset.viewRegion.height);
+					image.setPosition(
+						preset.x + offsetX - preset.viewRegion.width / 2f + preset.width / 2f,
+						preset.y + offsetY - preset.viewRegion.height / 2f + preset.height / 2f
+					);
 					
-					Button button = new Button(style);
-					button.setPosition(preset.x + offsetX, preset.y + offsetY);
-					button.setSize(preset.width, preset.height);
-					addChild(button);
-					sectors.put(button, preset);
-					
-					button.clicked(() -> clickSector.get(preset));
-					button.update(() -> button.setChecked(sectorChecked.get(preset)));
-					
-					button.touchable = Touchable.disabled;
-					if (preset.visible.get(preset.sector)) {
-						button.table(Styles.black6, icon -> {
-							icon.image(preset.icon.get()).grow().scaling(Scaling.fit);
-						}).size(preset.width / 3f, preset.height / 3f);
-						button.touchable = Touchable.enabled;
-					}
-					
-					minX = Math.min(minX, preset.x);
-					minY = Math.min(minY, preset.y);
-					maxX = Math.max(maxX, preset.x + preset.width);
-					maxY = Math.max(maxY, preset.y + preset.height);
-				}
+					addChild(image);
+				};
+			});
+			planet.sectors.each(sector -> {
+				if (sector.preset instanceof PositionSectorPreset preset) addSector(preset);
 			});
 			children.each(e -> e.moveBy(-minX, -minY));
 		}

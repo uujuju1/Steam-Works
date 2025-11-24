@@ -33,7 +33,7 @@ public class SWShaders {
 		public FloatSeq lights = new FloatSeq(), boxes = new FloatSeq();
 		
 		public Texture texture;
-		public String texturePath = "textures/the-land-map.png";
+		public String texturePath = "sprites/noise.png";
 		
 		public SectorLaunchShader(String frag) {
 			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
@@ -43,6 +43,8 @@ public class SWShaders {
 		public void apply() {
 			if(texture == null) {
 				texture = new Texture(Vars.tree.get(texturePath));
+				texture.setWrap(Texture.TextureWrap.repeat);
+				texture.setFilter(Texture.TextureFilter.linear);
 			}
 			
 			texture.bind(0);
