@@ -105,7 +105,9 @@ public class SWTechTree {
         });
         nodeProduce(iron, () -> {
           nodeProduce(SWItems.aluminium, () -> {});
-          nodeProduce(Items.sand, () -> {});
+          nodeProduce(Items.sand, () -> {
+            nodeProduce(Items.silicon, () -> {});
+          });
         });
         nodeProduce(solvent, () -> {
           nodeProduce(Liquids.water, () -> {});
