@@ -73,10 +73,10 @@ public class SWUnits {
 				}}
 			);
 
-			consume(new ConsumeRotation() {{
-				startSpeed = 0.1f;
-				endSpeed = 0.6f;
-				curve = Interp.one;
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.1f;
+				maxSpeed = 0.6f;
+				efficiencyScale = Interp.one;
 			}});
 
 			plans.add(
@@ -164,10 +164,10 @@ public class SWUnits {
 				}}
 			);
 
-			consume(new ConsumeRotation() {{
-				startSpeed = 0.1f;
-				endSpeed = 0.6f;
-				curve = Interp.one;
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.1f;
+				maxSpeed = 0.6f;
+				efficiencyScale = Interp.one;
 			}});
 
 			spinConfig = new SpinConfig() {{
