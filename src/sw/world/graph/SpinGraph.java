@@ -59,7 +59,7 @@ public class SpinGraph extends Graph<HasSpin> {
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
 	}
-	
+
 	public float inertia() {
 		return builds.sumf(HasSpin::getInertia) + 1f;
 	}
@@ -79,45 +79,46 @@ public class SpinGraph extends Graph<HasSpin> {
 		producers.remove(build);
 		consumers.remove(build);
 	}
-
-	/**
-	 * Returns the resistance of the whole system from moving.
-	 */
+	
 	public float resistance() {
 		return builds.sumf(HasSpin::getResistance);
-	}
-
-	/**
-	 * Returns the speed that the system is trying to reach.
-	 */
-	@Deprecated public float targetSpeed() {
-		if (force() < resistance()) return 0;
-		if (force() == resistance()) return speed;
-		return builds.max(HasSpin::getTargetSpeed).getTargetSpeed();
 	}
 	
 	@Override
 	public void update() {
 		super.update();
 		
-		float netTorque = force();
-		float netFriction = resistance();
-		float netInertia = inertia();
+		float netTorque;
+		float netFriction = 0f;
+		float netInertia = 1f;
 		
-		boolean stops = Math.abs(netTorque) < netFriction;
+		for(HasSpin build : builds) {
+			netFriction += build.getResistance();
+			netInertia += build.getInertia();
+		}
 		
-		float accel = (netTorque + netFriction * -Mathf.sign(speed))/netInertia;
+		float targetSpeed = 0;
+
+		for(HasSpin build : builds) {
+			if (build.getTargetSpeed() > targetSpeed) {
+				if (builds.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) >= netFriction) {
+					targetSpeed = build.getTargetSpeed();
+				}
+			}
+		}
 		
-		if (stops && Math.abs(speed) < netFriction) {
-			speed = 0;
-		} else speed += accel;
+		netTorque = builds.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f);
+		
+		float accel = Math.abs(netTorque + netFriction * -Mathf.sign(speed))/netInertia;
+		
+		speed = Mathf.approachDelta(speed, targetSpeed, accel);
 
 		if (invalid) {
 			speed = 0;
-			if (Mathf.maxZero(force() - resistance()) > 0) {
+			if (Math.abs(accel) > 0) {
 				var b = builds.random();
 
-				b.asBuilding().damage(Mathf.maxZero(force() - resistance()));
+				b.asBuilding().damage(Math.abs(accel));
 				if (Mathf.chance(0.5)) Fx.smoke.at(b.asBuilding());
 			}
 		}

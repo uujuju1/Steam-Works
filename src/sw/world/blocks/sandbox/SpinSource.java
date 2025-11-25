@@ -1,6 +1,5 @@
 package sw.world.blocks.sandbox;
 
-import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
@@ -57,9 +56,15 @@ public class SpinSource extends AxleBlock {
 			}).margin(10f);
 		}
 
+//		@Override public float getForce() {
+//			float diff = Mathf.maxZero(targetSpeed/10f - getSpeed());
+//			return Math.min(diff, force/600f * getRatio());
+//		}
 		@Override public float getForce() {
-			float diff = Mathf.maxZero(targetSpeed/10f - getSpeed());
-			return Math.min(diff, force/600f * getRatio());
+			return force/600f * getRatio();
+		}
+		@Override public float getTargetSpeed() {
+			return targetSpeed/10f * getRatio();
 		}
 		
 		@Override

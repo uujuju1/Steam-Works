@@ -2,7 +2,6 @@ package sw.world.blocks.power;
 
 import arc.*;
 import arc.audio.*;
-import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.gen.*;
@@ -37,9 +36,11 @@ public class HandCrank extends AxleBlock {
 	public class HandCrankBuild extends AxleBlockBuild {
 		public float time = 0;
 		
-		@Override
-		public float getForce() {
-			return time <= 0f ? 0f : Mathf.clamp(speed - getSpeed(), 0f, torque * getRatio());
+		@Override public float getForce() {
+			return time <= 0f ? 0f : torque * getRatio();
+		}
+		@Override public float getTargetSpeed() {
+			return time <= 0f ? 0f : speed * getRatio();
 		}
 		
 		@Override public Graphics.Cursor getCursor() {

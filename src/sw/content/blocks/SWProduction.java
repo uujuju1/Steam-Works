@@ -101,10 +101,10 @@ public class SWProduction {
 
 			drillEffect = SWFx.blockCrack;
 
-			consume(new ConsumeRotation() {{
-				startSpeed = 0.5f;
-				endSpeed = 1f;
-				curve = Interp.one;
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.75f;
+				maxSpeed = 1.25f;
+				efficiencyScale = Interp.one;
 			}});
 
 			drawer = new DrawMulti(
@@ -180,7 +180,6 @@ public class SWProduction {
 			);
 
 			spinConfig = new SpinConfig() {{
-				topSpeed = 1f;
 				resistance = 0.5f/60f;
 				allowedEdges = new int[][]{
 					new int[]{4, 5},
@@ -241,10 +240,10 @@ public class SWProduction {
 			size = 3;
 			rotate = true;
 
-			consumeSpin(new ConsumeRotation() {{
-				startSpeed = 0.5f;
-				endSpeed = 35f;
-				curve = t -> Mathf.pow(t, 20f) + 1f;
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.5f;
+				maxSpeed = 35f;
+				efficiencyScale = t -> Mathf.pow(Mathf.map(t, 0.5f, 35.5f, 0f, 1f), 20f) + 1f;
 			}});
 
 			hasAttribute = true;
@@ -328,8 +327,7 @@ public class SWProduction {
 			);
 
 			spinConfig = new SpinConfig() {{
-				topSpeed = 1f;
-				resistance = 0.25f/60f;
+				resistance = 2.5f/600f;
 				allowedEdges = new int[][]{
 					new int[]{0, 6},
 					new int[]{3, 9},

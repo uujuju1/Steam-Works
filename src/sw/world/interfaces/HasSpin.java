@@ -44,7 +44,7 @@ public interface HasSpin {
 	}
 
 	default boolean consumesSpin() {
-		return asBuilding().block.findConsumer(c -> c instanceof ConsumeRotation) != null;
+		return asBuilding().block.findConsumer(c -> c instanceof ConsumeSpin) != null;
 	}
 
 	/**
@@ -117,7 +117,7 @@ public interface HasSpin {
 	/**
 	 * Returns the speed that this block should try to reach.
 	 */
-	@Deprecated default float getTargetSpeed() {
+	default float getTargetSpeed() {
 		return 0;
 	}
 

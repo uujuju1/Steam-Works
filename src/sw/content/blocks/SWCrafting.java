@@ -8,9 +8,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
@@ -218,10 +216,10 @@ public class SWCrafting {
 			researchConsumers = false;
 			consumeItems(with(Items.sand, 1));
 			consumeLiquid(SWLiquids.solvent, 0.1f);
-			consume(new ConsumeRotation() {{
-				startSpeed = 0.5f;
-				endSpeed = 1f;
-				curve = Interp.one;
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.5f;
+				maxSpeed = 1f;
+				efficiencyScale = Interp.one;
 			}});
 			outputItems = with(Items.silicon, 1);
 
@@ -292,8 +290,7 @@ public class SWCrafting {
 			);
 
 			spinConfig = new SpinConfig() {{
-				topSpeed = 1f;
-				resistance = 1f/60f;
+				resistance = 10f/600f;
 
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9},
@@ -318,10 +315,10 @@ public class SWCrafting {
 			regionRotated1 = 4;
 			liquidOutputDirections = new int[]{1, 3};
 
-			consume(new ConsumeRotation() {{
-				startSpeed = 15f / 10f;
-				endSpeed = 25f / 10f;
-				curve = Interp.one;
+			consume(new ConsumeSpin() {{
+				minSpeed = 15f / 10f;
+				maxSpeed = 25f / 10f;
+				efficiencyScale = Interp.one;
 			}});
 			consumeLiquid(Liquids.water, 3f/60f);
 			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 6f/60f);
@@ -421,8 +418,6 @@ public class SWCrafting {
 			
 			spinConfig = new SpinConfig() {{
 				resistance = 20f / 600f;
-				
-				topSpeed = 20f / 10f;
 				
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9},

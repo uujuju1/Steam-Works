@@ -82,8 +82,6 @@ public class SWPower {
 			ambientSoundVolume = 0.1f;
 			
 			spinConfig = new SpinConfig() {{
-				topSpeed = 1f;
-				
 				connectors.add(self);
 			}};
 			
@@ -131,8 +129,6 @@ public class SWPower {
 			minEfficiency = 1f;
 			
 			spinConfig = new SpinConfig() {{
-				topSpeed = 2f;
-				
 				allowedEdges = new int[][]{
 					new int[]{1, 3},
 					new int[]{2, 0},

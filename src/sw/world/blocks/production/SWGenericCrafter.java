@@ -16,7 +16,6 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.consumers.*;
 import mindustry.world.meta.*;
-import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -46,17 +45,6 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 	@Override public boolean canPlaceOn(Tile tile, Team team, int rotation) {
 		return super.canPlaceOn(tile, team, rotation) || !hasAttribute;
-	}
-
-	public void consumeSpin(float start, float end, Interp interp) {
-		consumeSpin(new ConsumeRotation() {{
-			startSpeed = start;
-			endSpeed = end;
-			curve = interp;
-		}});
-	}
-	public void consumeSpin(ConsumeRotation consumer) {
-		consume(consumer);
 	}
 
 	@Override
@@ -103,7 +91,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		
 		if (outputRotation > 0 && outputRotationForce > 0) {
 			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
-			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.spinMinuteSecond));
+			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.force));
 		}
 
 		if (!hasAttribute) stats.remove(baseEfficiency <= 0.0001f ? Stat.tiles : Stat.affinities);
@@ -138,10 +126,12 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getForce() {
-			float diff = Mathf.maxZero(outputRotation - getSpeed());
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? Math.min(diff, outputRotationForce * warmup) * getRatio() : 0;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * warmup * getRatio() : 0;
 		}
-
+		@Override public float getTargetSpeed() {
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * warmup * getRatio() : 0;
+		}
+		
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
