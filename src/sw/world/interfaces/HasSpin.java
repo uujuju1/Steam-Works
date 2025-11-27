@@ -79,9 +79,24 @@ public interface HasSpin {
 		return 0;
 	}
 	/**
-	 * @return The force that this build applies to the specific graph.
+	 * @return The current inertia of this block.
 	 */
-	default float getForceDisconnected(SpinGraph to) {
+	default float getInertia() {
+		return spinConfig().inertia / getRatio();
+	}
+	/**
+	 * @return The current ratio of this block relative to the whole graph.
+	 */
+	default float getRatio() {
+		return spinGraph().ratios.get(this, 1);
+	}
+	/**
+	 * @return The same as the non relative counterparts, but according to a reference graph. For disconnected builds.
+	 */
+	default float getRelativeForce(SpinGraph to) {
+		return 0;
+	}
+	default float getRelativeTargetSpeed(SpinGraph to) {
 		return 0;
 	}
 	/**
@@ -89,12 +104,6 @@ public interface HasSpin {
 	 */
 	default float getResistance() {
 		return spinConfig().resistance * getRatio();
-	}
-	/**
-	 * @return The current ratio of this block relative to the whole graph.
-	 */
-	default float getRatio() {
-		return spinGraph().ratios.get(this, 1);
 	}
 	/**
 	 * @return The current rotation of this system scaled by this build's ratio
@@ -107,12 +116,6 @@ public interface HasSpin {
 	 */
 	default float getSpeed() {
 		return spinGraph().speed / getRatio();
-	}
-	/**
-	 * @return The current inertia of this block.
-	 */
-	default float getInertia() {
-		return spinConfig().inertia / getRatio();
 	}
 	/**
 	 * Returns the speed that this block should try to reach.

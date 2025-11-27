@@ -17,12 +17,19 @@ public class AxleClutch extends AxleBlock {
 		}
 		
 		@Override
-		public float getForceDisconnected(SpinGraph to) {
+		public float getRelativeForce(SpinGraph to) {
 			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == to;
 			float scalar = isBack ? -((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 0);
-			float backSpeed = back() instanceof HasSpin build ? build.spinGraph().speed : 0f;
-			float frontSpeed = front() instanceof HasSpin build ? build.spinGraph().speed : 0f;
+			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
+			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
 			return Mathf.clamp(backSpeed - frontSpeed, -clutchStrength, clutchStrength) * scalar;
+		}
+		@Override
+		public float getRelativeTargetSpeed(SpinGraph to) {
+			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == to;
+			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
+			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
+			return isBack ? frontSpeed : backSpeed;
 		}
 		
 		@Override

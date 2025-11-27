@@ -49,7 +49,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-		return builds.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getForceDisconnected(this));
+		return builds.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getRelativeForce(this));
 	}
 	
 	@Override
@@ -99,15 +99,29 @@ public class SpinGraph extends Graph<HasSpin> {
 		
 		float targetSpeed = 0;
 
-		for(HasSpin build : builds) {
-			if (build.getTargetSpeed() > targetSpeed) {
-				if (builds.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) >= netFriction) {
-					targetSpeed = build.getTargetSpeed();
+		tmp.set(producers);
+		tmp.add(disconnected);
+		// TODO make disconnected builds use regular get methods and not their relative counterparts
+		for(HasSpin build : tmp) {
+			if (build.spinGraph() == this) {
+				if (build.getTargetSpeed() > targetSpeed) {
+					if (
+						producers.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) +
+						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getTargetSpeed() ? b.getRelativeForce(this) : 0f) >= netFriction
+					) targetSpeed = build.getTargetSpeed();
+				}
+			} else {
+				if (build.getRelativeTargetSpeed(this) > targetSpeed) {
+					if (
+						producers.sumf(b -> b.getTargetSpeed() >= build.getRelativeTargetSpeed(this) ? b.getForce() : 0f) +
+						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getRelativeTargetSpeed(this) ? b.getRelativeForce(this) : 0f) >= netFriction
+					) targetSpeed = build.getRelativeTargetSpeed(this);
 				}
 			}
 		}
 		
-		netTorque = builds.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f);
+		netTorque = producers.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f) +
+		disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= speed ? b.getRelativeForce(this) : 0f);
 		
 		float accel = Math.abs(netTorque + netFriction * -Mathf.sign(speed))/netInertia;
 		

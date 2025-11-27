@@ -24,12 +24,6 @@ public class SpinConfig {
 	public float inertia = 0;
 
 	/**
-	 * Visual max speed, always full if zero. In (rpm/10).
-	 * TODO new animation for the bar
-	 */
-	@Deprecated public float topSpeed;
-
-	/**
 	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.
 	 */
 	public int[][] allowedEdges;
