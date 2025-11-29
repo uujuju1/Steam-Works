@@ -36,7 +36,10 @@ public class SWTechTree {
       root("sw-defense", imber, () -> {
         node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
-        node(grindLamp, with(new NonUnlockable()), () -> {});
+        node(lamparine, with(new NonUnlockable()), () -> {
+          node(grindLamp);
+          node(lavaLamp);
+        });
       });
       // endregion
       // region distribution

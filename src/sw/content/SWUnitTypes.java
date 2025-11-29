@@ -89,6 +89,7 @@ public class SWUnitTypes {
 			omniMovement = false;
 			circleTarget = true;
 			range = maxRange = 15f * 8f;
+			hitSize = 10f;
 			
 			aiController = FlyingAI::new;
 			

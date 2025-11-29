@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -17,7 +18,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWDefense {
 	public static Block
-		grindLamp, lavaLamp,
+		grindLamp, lavaLamp, lamparine,
 		ironWall, ironWallLarge;
 
 	public static void load() {
@@ -92,6 +93,50 @@ public class SWDefense {
 				}},
 				new DrawDefault(),
 				new DrawRegion("-top")
+			);
+		}};
+		lamparine = new SWLightBlock("lamparine") {{
+			requirements(Category.effect, with(
+				SWItems.aluminium, 30,
+				SWItems.iron, 25,
+				SWItems.verdigris, 20
+			));
+			size = 2;
+			
+			lightRadius = 200f;
+			lightOpacity = 0.5f;
+			
+			consumeTime = 10f;
+			consumeEffect = updateEffect = SWFx.cokeIlluminate;
+			
+			ambientSound = Sounds.fire;
+			ambientSoundVolume = 0.1f;
+			
+			consumeLiquids(LiquidStack.with(
+				Liquids.ozone, 0.1f / 60f,
+				Liquids.hydrogen, 0.3f / 60f
+			));
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawArcSmelt() {{
+					midColor = Pal.accent;
+					flameColor = Pal.missileYellowBack;
+					
+					alpha = 0.9f;
+					
+					flameRadiusScl = 24f;
+					flameRadiusMag = 2.5f;
+					
+					particleRad = 6f;
+					particleStroke = 2f;
+				}},
+				new DrawParticles() {{
+					blending = Blending.additive;
+					color = Pal.missileYellowBack;
+					reverse = true;
+				}},
+				new DrawDefault()
 			);
 		}};
 		// endregion

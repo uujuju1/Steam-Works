@@ -321,7 +321,7 @@ public class SWCrafting {
 				efficiencyScale = Interp.one;
 			}});
 			consumeLiquid(Liquids.water, 3f/60f);
-			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 6f/60f);
+			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 3f/60f);
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
