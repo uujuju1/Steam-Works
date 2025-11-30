@@ -36,9 +36,9 @@ public class SWTechTree {
       root("sw-defense", imber, () -> {
         node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
-        node(lamparine, with(new NonUnlockable()), () -> {
-          node(grindLamp);
-          node(lavaLamp);
+        node(lamparine, with(new OnSector(cavern)), () -> {
+          node(grindLamp, with(new SectorComplete(cavern)), () -> {});
+          node(lavaLamp, with(new SectorComplete(cavern)), () -> {});
         });
       });
       // endregion
@@ -70,6 +70,7 @@ public class SWTechTree {
       // endregion
       //region power
       root("sw-power", evaporator, () -> {
+        node(handWheel);
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {});
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
@@ -122,7 +123,12 @@ public class SWTechTree {
       root("sw-sectors", crevasse, () -> {
         node(theDelta, with(new SectorComplete(crevasse)), () -> {
           node(abandonedMaze, with(new SectorComplete(theDelta)), () -> {
-          
+            node(cavern, with(
+              new SectorComplete(abandonedMaze),
+              new Research(coreMole)
+            ), () -> {
+            
+            });
           });
         });
         node(kettle, with(new Research(mechanicalAssembler)), () -> {});
@@ -134,6 +140,7 @@ public class SWTechTree {
         node(assemblerArm, with(new OnSector(kettle)), () -> {});
       });
       //endregion
+		  node(coreMole, with(new SectorComplete(abandonedMaze)), () -> {});
     });
   }
 

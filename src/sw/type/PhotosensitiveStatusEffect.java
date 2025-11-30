@@ -16,7 +16,7 @@ public class PhotosensitiveStatusEffect extends StatusEffect {
 	
 	@Override
 	public void update(Unit unit, StatusEntry entry) {
-		boolean hasLight = Groups.build.contains(b -> b.block.emitLight && unit.dst(b) / b.block.lightRadius * b.efficiency < minLight);
+		boolean hasLight = Groups.build.contains(b -> b.block.emitLight && (b.efficiency > 0 ? unit.dst(b) / b.block.lightRadius * b.efficiency : 2f) < minLight);
 		hasLight |= Vars.state.rules.ambientLight.a <= minLight && Vars.state.rules.lighting;
 		
 		if (hasLight) super.update(unit, entry);

@@ -45,6 +45,11 @@ public class SWLightBlock extends Block {
 	}
 	
 	@Override
+	public void drawOverlay(float x, float y, int rotation) {
+		Drawf.dashCircle(x, y, lightRadius, Pal.accent);
+	}
+	
+	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
 		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
 		drawer.drawPlan(this, plan, list);

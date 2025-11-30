@@ -14,8 +14,8 @@ public class PositionSectorPreset extends SectorPreset {
 	public Prov<Drawable> icon = () -> Icon.waves;
 	
 	public Boolf<Sector>
-		clearFog = Sector::hasSave,
-		hasOverlay = sector -> unlocked() && !sector.hasSave(),
+		clearFog = Sector::hasBase,
+		hasOverlay = sector -> unlocked() && !sector.hasBase(),
 		visible = sector -> unlocked();
 	
 	public @Nullable PositionSectorPreset launcher;
