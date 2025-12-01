@@ -269,13 +269,12 @@ public class SWProduction {
 							outline = false;
 
 							x = 0f;
-							y = 2f * i;
+							y = 7f * i;
+							yScl = i;
 
 							moveRot = 360f * i;
 
 							progress = p -> p.recoil / 360f % 1f;
-
-							moves.add(new PartMove(PartProgress.charge.clamp().curve(Interp.circleOut), 0f, 3f * i, 0f));
 						}}
 					);
 				}},
@@ -323,7 +322,7 @@ public class SWProduction {
 						paletteDark = SWPal.axleDark;
 					}}
 				),
-				new DrawBitmask("-tiles", b -> 0, 96)
+				new DrawFacingLightRegion()
 			);
 
 			spinConfig = new SpinConfig() {{
