@@ -272,14 +272,14 @@ public class SWProduction {
 							y = 7f * i;
 							yScl = i;
 
-							moveRot = 360f * i;
+							moveRot = -360f * i;
 
 							progress = p -> p.recoil / 360f % 1f;
 						}}
 					);
 				}},
 				new DrawAxles(
-					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
+					b -> ((HasSpin) b).getRotation(),
 					new Axle("-axle-in") {{
 						iconOverride = "sw-artesian-well-axle-icon";
 						circular = true;
