@@ -59,7 +59,7 @@ public class SWTechTree {
           node(payloadCatapult);
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
-          node(mechanicalConduitJunction, () -> node(mechanicalConduitBridge));
+          node(mechanicalConduitJunction, () -> node(mechanicalConduitTunnel));
           node(mechanicalConduitRouter);
           node(liquidBasin);
         });

@@ -66,7 +66,7 @@ public class SpinGraph extends Graph<HasSpin> {
 
 	public void mergeFlood(HasSpin other) {
 		floodFill(other, HasSpin::nextBuilds).each(build -> {
-			if (build.spinGraph() != this) {
+			if (build.spin() != null && build.spinGraph() != null && build.spinGraph() != this) {
 				build.spinGraph().removeBuild(build);
 				addBuild(build);
 			}

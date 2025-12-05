@@ -34,7 +34,7 @@ public class SWDistribution {
 		payloadCatapult,
 
 
-		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge;
+		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge, mechanicalConduitTunnel;
 
 	public static void load() {
 		// region items
@@ -247,7 +247,15 @@ public class SWDistribution {
 				Items.graphite, 10
 			));
 
-			range = 3;
+			range = 10;
+		}};
+		mechanicalConduitTunnel = new LiquidPipeTunnel("mechanical-conduit-tunnel") {{
+			requirements(Category.liquid, with(
+				SWItems.iron, 10,
+				Items.graphite, 10
+			));
+
+			range = 10;
 		}};
 		//endregion
 	}

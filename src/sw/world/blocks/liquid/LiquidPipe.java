@@ -15,7 +15,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.meta.*;
-import sw.world.blocks.liquid.LiquidPipeBridge.*;
 
 public class LiquidPipe extends Block {
 	public final int timerFlow = timers++;
@@ -98,11 +97,7 @@ public class LiquidPipe extends Block {
 					nearby(i) != null &&
 					(nearby(i) != front() ? nearby(i).block.outputsLiquid : nearby(i).block.hasLiquids) &&
 					nearby(i).team == team &&
-					(!(nearby(i) instanceof LiquidPipeBuild) || (nearby(i).front() == this ^ front() == nearby(i))) &&
-					(!(nearby(i) instanceof LiquidPipeBridgeBuild b) || (
-						(b.next != null && b.back() == this) ||
-						(b.next == null && b.front() == this)
-					) && (b.prev == null || b.next == null))
+					(!(nearby(i) instanceof LiquidPipeBuild) || (nearby(i).front() == this ^ front() == nearby(i)))
 				) tiling |= 1 << i;
 			}
 
