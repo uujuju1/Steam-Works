@@ -76,11 +76,10 @@ public class SWSectorPresets {
 		cavern = new PositionSectorPreset("cavern", SWPlanets.wendi, 4) {{
 			x = -600;
 			y = 200;
-			width = height = 200;
+			width = height = 300;
 			icon = () -> Icon.modeAttack;
 			
 			rules = r -> {
-				r.waves = false;
 				r.cleanupDeadTeams = false;
 			};
 			

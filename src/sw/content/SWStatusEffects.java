@@ -15,7 +15,7 @@ public class SWStatusEffects {
 			
 			color = Color.valueOf("DFF381");
 			
-			damage = 0.167f;
+			damage = 50f / 60f;
 			effect = Fx.burning;
 			transitionDamage = 8f;
 			

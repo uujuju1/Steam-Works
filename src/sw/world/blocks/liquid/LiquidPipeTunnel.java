@@ -24,10 +24,11 @@ public class LiquidPipeTunnel extends LiquidBridge {
 		BuildPlan[] link = new BuildPlan[1];
 		
 		list.each(plan -> {
-			if (plan != req && plan.block instanceof LiquidBridge && plan.config instanceof Point2 p && Tmp.p1.set(p).add(plan.x, plan.y).equals(req.x, req.y)) {
+			if (plan == req || req.tile() == null || plan.tile() == null || !(plan.block instanceof LiquidBridge)) return;
+			if (plan.config instanceof Point2 p && Tmp.p1.set(p).add(plan.x, plan.y).equals(req.x, req.y)) {
 				tiling[0] |= (1 << req.tile().absoluteRelativeTo(plan.x, plan.y));
 			}
-			if (plan != req && plan.block instanceof LiquidBridge && req.config instanceof Point2 p && Tmp.p1.set(p).add(req.x, req.y).equals(plan.x, plan.y)) {
+			if (req.config instanceof Point2 p && Tmp.p1.set(p).add(req.x, req.y).equals(plan.x, plan.y)) {
 				tiling[0] |= (1 << req.tile().absoluteRelativeTo(plan.x, plan.y));
 				link[0] = plan;
 			}

@@ -9,6 +9,7 @@ import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
@@ -242,7 +243,7 @@ public class SWDistribution {
 			((LiquidPipe) mechanicalConduit).junctionReplacement = this;
 		}};
 		mechanicalConduitBridge = new LiquidPipeBridge("mechanical-conduit-bridge") {{
-			requirements(Category.liquid, with(
+			requirements(Category.liquid, BuildVisibility.hidden, with(
 				SWItems.iron, 10,
 				Items.graphite, 10
 			));
