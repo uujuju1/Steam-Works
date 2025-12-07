@@ -67,7 +67,11 @@ public class SectorLaunchDialog extends BaseDialog {
 		shown(() -> {
 			view.offsetX = view.offsetY = 0;
 			view.rebuild(SWPlanets.wendi);
-			view.move((minX - maxX) / 2f, (minY - maxY) / 2f);
+			if (currentSector == null) {
+				view.move((minX - maxX) / 2f, (minY - maxY) / 2f);
+			} else {
+				view.moveTo(currentSector);
+			}
 		});
 		
 		addCaptureListener(new ElementGestureListener(){
@@ -177,12 +181,12 @@ public class SectorLaunchDialog extends BaseDialog {
 		}
 		
 		if(!planet.allowWaveSimulation && !debugSelect) {
-			//if there are two or more attacked sectors... something went wrong, don't show the dialog to prevent softlock
 			Sector attacked = planet.sectors.find(s -> s.isAttacked() && s != sector.sector);
 			if(attacked != null && planet.sectors.count(Sector::isAttacked) < 2 && attacked.preset instanceof PositionSectorPreset preset) {
-				Vars.ui.showInfoOnHidden(Core.bundle.format("sector.noswitch", attacked.name(), attacked.planet.localizedName), () -> {
-					view.move(-view.offsetX + minX - preset.x - preset.width / 2f, -view.offsetY + minY - preset.y - preset.height / 2f);
-				});
+				Vars.ui.showInfoOnHidden(
+					Core.bundle.format("sector.noswitch", attacked.name(), attacked.planet.localizedName),
+					() -> view.moveTo(preset)
+				);
 				return;
 			}
 		}
@@ -203,15 +207,18 @@ public class SectorLaunchDialog extends BaseDialog {
 			PositionSectorPreset launcher = sector.launcher;
 			if (launcher == null && Vars.state.getSector() != null && Vars.state.getSector().preset instanceof PositionSectorPreset p ) launcher = p;
 			if (launcher == null) {
-				Vars.ui.showInfo("Enter a Sector from which to launch to");
+				Vars.ui.showInfo(Core.bundle.get("ui.sw-missing-launcher"));
 				return;
 			}
+			PositionSectorPreset finalLauncher = launcher;
 			if (Vars.state.getSector() == null || Vars.state.getSector().preset != launcher) {
-				Vars.ui.showInfo("Enter the sector" + launcher.localizedName + "to launch");
+				Vars.ui.showInfoOnHidden(
+					Core.bundle.format("ui.sw-launch-from", finalLauncher.localizedName),
+					() -> view.moveTo(finalLauncher)
+				);
 				return;
 			}
 			
-			PositionSectorPreset finalLauncher = launcher;
 			ui.planet.loadouts.show(sector.core, launcher.sector, sector.sector, () -> {
 				if (settings.getBool("skipcoreanimation")) {
 					Vars.control.playSector(finalLauncher.sector, sector.sector);
@@ -438,6 +445,13 @@ public class SectorLaunchDialog extends BaseDialog {
 			offsetX += deltaX;
 			offsetY += deltaY;
 			children.each(e -> e.moveBy(deltaX, deltaY));
+		}
+		
+		public void moveTo(PositionSectorPreset sector) {
+			move(
+				-offsetX + minX - sector.x - sector.width/2f,
+				-offsetY + minY - sector.y - sector.height/2f
+			);
 		}
 	}
 }
