@@ -33,8 +33,6 @@ public class SWGenericCrafter extends AttributeCrafter {
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
 
-//	public Effect updateEffectStatic = Fx.none;
-
 	public SWGenericCrafter(String name) {
 		super(name);
 		displayEfficiency = false;
@@ -86,9 +84,10 @@ public class SWGenericCrafter extends AttributeCrafter {
 		super.setStats();
 		if (spinConfig != null) spinConfig.addStats(stats);
 		
-		if (outputRotation > 0 && outputRotationForce > 0) {
+		if (spinConfig != null && outputRotation > 0 && (outputRotationForce - spinConfig.resistance) > 0) {
+			stats.remove(SWStat.spinResistance);
 			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
-			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.force));
+			stats.add(SWStat.spinOutputForce, StatValues.number((outputRotationForce - spinConfig.resistance) * 600f, SWStat.force));
 		}
 
 		if (!hasAttribute) stats.remove(baseEfficiency <= 0.0001f ? Stat.tiles : Stat.affinities);

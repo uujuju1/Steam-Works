@@ -45,11 +45,12 @@ public class SWPower {
 				SWItems.verdigris, 10
 			));
 			
-			torque = 10/600f;
-			speed = 10/10f;
+			torque = 11f / 600f;
+			speed = 10f / 10f;
 			spinTime = 600f;
 			
 			spinConfig = new SpinConfig() {{
+				resistance = 1f/600f;
 				allowedEdges = new int[][]{
 					new int[]{0},
 					new int[]{1},
@@ -83,6 +84,8 @@ public class SWPower {
 			
 			spinConfig = new SpinConfig() {{
 				connectors.add(self);
+				
+				resistance = 4f / 600f;
 			}};
 			
 			drawer = new DrawMulti(
@@ -113,7 +116,7 @@ public class SWPower {
 			consumeLiquid(SWLiquids.solvent, 1f/60f);
 			
 			outputRotation = 1f;
-			outputRotationForce = 1f/60f;
+			outputRotationForce = 14f/600f;
 		}};
 		waterWheel = new FrontAttributeCrafter("water-wheel") {{
 			requirements(Category.power, with(
@@ -130,6 +133,7 @@ public class SWPower {
 			minEfficiency = 1f;
 			
 			spinConfig = new SpinConfig() {{
+				resistance = 1;
 				allowedEdges = new int[][]{
 					new int[]{1, 3},
 					new int[]{2, 0},
@@ -169,7 +173,7 @@ public class SWPower {
 			);
 			
 			outputRotation = 2f;
-			outputRotationForce = 0.25f/60f;
+			outputRotationForce = 3.5f/600f;
 		}};
 		
 		wireShaft = new AxleBlock("wire-shaft") {{

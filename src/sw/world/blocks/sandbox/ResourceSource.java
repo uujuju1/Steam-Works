@@ -16,7 +16,6 @@ public class ResourceSource extends PowerGenerator {
 		super(name);
 		hasItems = hasLiquids = hasPower = true;
 		outputsPower = outputsLiquid = true;
-		clearOnDoubleTap = true;
 		update = configurable = true;
 		saveConfig = true;
 		displayFlow = false;

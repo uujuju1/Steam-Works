@@ -15,7 +15,6 @@ public class SpinSource extends AxleBlock {
 		super(name);
 		rotate = false;
 		saveConfig = true;
-		clearOnDoubleTap = true;
 		configurable = true;
 		envEnabled = Env.any;
 		buildVisibility = BuildVisibility.sandboxOnly;
