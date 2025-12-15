@@ -209,7 +209,8 @@ public class SWCrafting {
 			ambientSound = Sounds.smelter;
 			ambientSoundVolume = 0.1f;
 
-			craftEffect = updateEffectStatic = SWFx.combust;
+			craftEffect = updateEffect = SWFx.combust;
+			updateEffectSpread = 0f;
 			updateEffectChance = 0.15f;
 			craftTime = 30f;
 

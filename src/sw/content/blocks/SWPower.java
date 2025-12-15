@@ -106,7 +106,8 @@ public class SWPower {
 				new DrawIcon()
 			);
 			
-			updateEffectStatic = SWFx.evaporate;
+			updateEffect = SWFx.evaporate;
+			updateEffectSpread = 0f;
 			updateEffectChance = 0.5f;
 			
 			consumeLiquid(SWLiquids.solvent, 1f/60f);

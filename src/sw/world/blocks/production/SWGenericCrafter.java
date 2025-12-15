@@ -2,12 +2,9 @@ package sw.world.blocks.production;
 
 import arc.audio.*;
 import arc.func.*;
-import arc.math.*;
 import arc.util.*;
 import arc.util.io.*;
-import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -36,7 +33,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
 
-	public Effect updateEffectStatic = Fx.none;
+//	public Effect updateEffectStatic = Fx.none;
 
 	public SWGenericCrafter(String name) {
 		super(name);
@@ -163,11 +160,11 @@ public class SWGenericCrafter extends AttributeCrafter {
 		@Override
 		public void updateTile() {
 			super.updateTile();
-			if (efficiency > 0) {
-				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
-					updateEffectStatic.at(x, y);
-				}
-			}
+//			if (efficiency > 0) {
+//				if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
+//					updateEffectStatic.at(x, y);
+//				}
+//			}
 		}
 		
 		@Override
