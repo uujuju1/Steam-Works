@@ -22,6 +22,8 @@ public class Pitfall extends Floor {
 		canShadow = false;
 		variants = 0;
 		mapColor = null;
+		
+		drawEdgeIn = drawEdgeOut = false;
 	}
 
 	@Override
