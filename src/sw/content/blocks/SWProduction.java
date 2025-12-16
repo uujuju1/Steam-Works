@@ -270,11 +270,21 @@ public class SWProduction {
 
 							x = 0f;
 							y = 7f * i;
-							yScl = i;
+							yScl = -i;
 
 							moveRot = -360f * i;
+							
+							clampProgress = false;
 
-							progress = p -> p.recoil / 360f % 1f;
+							progress = DrawParts.spin.loop(360f).mul(p -> {
+								float r = (p.rotation / 90) - 1f;
+								return (r == 1 || r == 2) ? -1f : 1f;
+							});
+							
+							moves.add(new PartMove(p -> {
+								float r = (p.rotation / 90) - 1f;
+								return (r == 1 || r == 2) ? 1f : 0f;
+							}, 0, 0, 0, i * 2f, 0));
 						}}
 					);
 				}},
