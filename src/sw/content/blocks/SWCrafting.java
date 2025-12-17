@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -110,8 +111,9 @@ public class SWCrafting {
 			connectEdge = new boolean[]{true, false, true, false};
 
 			ambientSound = Sounds.smelter;
-			updateEffectStatic = SWFx.cokeBurn;
+			updateEffect = SWFx.cokeBurn;
 			updateEffectChance = 0.1f;
+			updateEffectSpread = 0f;
 			craftEffect = SWFx.cokeCraft;
 
 			consumeItems(with(Items.graphite, 2));

@@ -1,6 +1,7 @@
 package sw.content.blocks;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -27,7 +28,7 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		handWheel, evaporator, waterWheel,
+		handWheel, evaporator, waterWheel, combustionEngine,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt, largeOverheadBelt,
@@ -45,8 +46,8 @@ public class SWPower {
 				SWItems.verdigris, 10
 			));
 			
-			torque = 11f / 600f;
-			speed = 10f / 10f;
+			torque = 11 / 600f;
+			speed = 10 / 10f;
 			spinTime = 600f;
 			
 			spinConfig = new SpinConfig() {{
@@ -174,6 +175,142 @@ public class SWPower {
 			
 			outputRotation = 2f;
 			outputRotationForce = 3.5f/600f;
+		}};
+		combustionEngine = new StackableGenericCrafter("combustion-engine") {{
+			requirements(Category.power, with());
+			size = 3;
+			
+			connectEdge = new boolean[]{false, true, false, true};
+			
+			Boolf<Building> hasTop = b -> {
+				for(int i = 2; i < 5; i++) {
+					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
+					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
+				}
+				return false;
+			};
+			Boolf<Building> hasBottom = b -> {
+				for(int i = 8; i < 11; i++) {
+					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
+					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
+				}
+				return false;
+			};
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					iconName = "sw-combustion-engine-axle-icon";
+					
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					
+					axles.add(
+						new Axle("-axle") {{
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							x = 0f;
+							y = 10f;
+							width = 4f;
+							height = 3.5f;
+							rotation = -90f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}},
+						new Axle("-axle") {{
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							x = 0f;
+							y = -10f;
+							width = 4f;
+							height = 3.5f;
+							rotation = -90f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}}
+					);
+				}},
+				new DrawBitmask("-base", b -> {
+					int tiling = 0;
+					
+					if (hasTop.get(b)) tiling |= 1;
+					if (hasBottom.get(b)) tiling |= 2;
+					
+					return tiling;
+				}, 96),
+				new DrawParts() {{
+					name = "-pistons";
+					
+					float[] order = new float[]{7, 2, 1, 6, 5, 4, 3, 0};
+					
+					for (int i = 0; i < 8; i++) {
+						int sign = Mathf.signs[i % 2];
+						float offset = Mathf.floor(i / 2f);
+						
+						float index = order[i];
+						
+						parts.add(new RegionPart("-piston-" + (sign == -1 ? "l" : "r")) {{
+							outline = false;
+							
+							x = 7.75f * sign;
+							y = 4f * offset - 6f;
+							
+							moveX = 1.75f * -sign;
+							
+							progress = DrawParts.spin.mul(2).add(360f / 8f * index).loop(360f).slope().curve(Interp.smooth);
+						}});
+					}
+				}},
+				new DrawCondition(new DrawParts() {{
+					name = "-pistons";
+					
+					for (int i : Mathf.signs) {
+						parts.add(new RegionPart("-piston-" + (i == -1 ? "l" : "r")) {{
+							outline = false;
+							
+							x = 7.75f * i;
+							y = 10f;
+							
+							moveX = 1.75f * -i;
+							
+							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 5 : 4)).loop(360f).slope().curve(Interp.smooth);
+						}});
+					}
+				}}, hasTop),
+				new DrawCondition(new DrawParts() {{
+					for (int i : Mathf.signs) {
+						parts.add(new RegionPart("-piston-" + (i == -1 ? "l" : "r")) {{
+							outline = false;
+							
+							x = 7.75f * i;
+							y = -10f;
+							
+							moveX = 1.75f * -i;
+							
+							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 1 : 6)).loop(360f).slope().curve(Interp.smooth);
+						}});
+					}
+				}}, hasBottom),
+				new DrawBitmask("-top", b -> {
+					int tiling = 0;
+					
+					if (hasTop.get(b)) tiling |= 1;
+					if (hasBottom.get(b)) tiling |= 2;
+					
+					return tiling;
+				}, 96)
+			);
+			
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][]{
+					new int[]{3, 9}
+				};
+			}};
 		}};
 		
 		wireShaft = new AxleBlock("wire-shaft") {{

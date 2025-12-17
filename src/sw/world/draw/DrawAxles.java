@@ -14,6 +14,8 @@ import sw.entities.*;
 import sw.graphics.*;
 
 public class DrawAxles extends DrawBlock {
+	public @Nullable String iconName;
+	
 	public Seq<Axle> axles = new Seq<>();
 
 	public @Nullable Floatf<Building> rotationOverride;
@@ -65,6 +67,10 @@ public class DrawAxles extends DrawBlock {
 
 	@Override
 	public TextureRegion[] icons(Block block) {
+		if (iconName != null) {
+			return new TextureRegion[]{Core.atlas.find(iconName)};
+		}
+		
 		Seq<Axle> tmp = axles.select(b -> b.hasIcon);
 		TextureRegion[] out = new TextureRegion[tmp.size];
 		for(int i = 0; i < out.length; i++) out[i] = tmp.get(i).iconRegion;

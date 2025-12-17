@@ -3,15 +3,12 @@ package sw.world.blocks.production;
 import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
-import mindustry.content.*;
-import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.meta.*;
 
-public class StackableGenericCrafter extends GenericCrafter {
-	public Effect updateEffectStatic = Fx.none;
+public class StackableGenericCrafter extends SWGenericCrafter {
+//	public Effect updateEffectStatic = Fx.none;
 
 	public boolean[] connectEdge = new boolean[]{true, true, true, true};
 
@@ -28,15 +25,15 @@ public class StackableGenericCrafter extends GenericCrafter {
 		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boostperbuild.format"), boost * 100f);
 	}
 
-	public class StackableGenericCrafterBuild extends GenericCrafterBuild {
-		@Override
-		public float edelta() {
-			return super.edelta() * getEfficiency();
-		}
+	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {
+//		@Override
+//		public float edelta() {
+//			return super.edelta() * getEfficiency();
+//		}
 
 		@Override
 		public float efficiencyScale() {
-			return getEfficiency();
+			return getEfficiency() * super.efficiencyScale();
 		}
 
 		public float getEfficiency() {
@@ -67,34 +64,34 @@ public class StackableGenericCrafter extends GenericCrafter {
 			return eff;
 		}
 
-		@Override
-		public void updateTile() {
-			if (efficiency > 0) {
-
-				progress += getProgressIncrease(craftTime);
-				warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
-
-				//continuously output based on efficiency
-				if (outputLiquids != null) {
-					float inc = getProgressIncrease(1f);
-					for (var output : outputLiquids) {
-						handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
-					}
-				}
-
-				if (wasVisible && Mathf.chanceDelta(updateEffectChance)) {
-					updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4));
-					updateEffectStatic.at(x, y);
-				}
-			} else {
-				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
-			}
-
-			totalProgress += warmup * edelta();
-
-			if (progress >= 1f) craft();
-
-			dumpOutputs();
-		}
+//		@Override
+//		public void updateTile() {
+//			if (efficiency > 0) {
+//
+//				progress += getProgressIncrease(craftTime);
+//				warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
+//
+//				//continuously output based on efficiency
+//				if (outputLiquids != null) {
+//					float inc = getProgressIncrease(1f);
+//					for (var output : outputLiquids) {
+//						handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
+//					}
+//				}
+//
+//				if (wasVisible && Mathf.chanceDelta(updateEffectChance)) {
+//					updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4));
+//					updateEffectStatic.at(x, y);
+//				}
+//			} else {
+//				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+//			}
+//
+//			totalProgress += warmup * edelta();
+//
+//			if (progress >= 1f) craft();
+//
+//			dumpOutputs();
+//		}
 	}
 }
