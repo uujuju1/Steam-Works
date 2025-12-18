@@ -194,6 +194,38 @@ public class SWFx {
       });
     }),
 
+    engineBurn = new Effect(120f, e -> {
+      Draw.blend(Blending.additive);
+      for(int s = 0; s < 2; s++) {
+        rand.setSeed(e.id);
+        for(int i = 0; i < 8; i++) {
+          int sign = Mathf.signs[i % 2];
+          float x = e.x + sign * 7f;
+          float y = e.y + 4f * Mathf.floor(i / 2f) - 6f;
+          
+          if (s == 1) {
+            Tmp.c1.set(Pal.gray).mul(0.5f).lerp(Color.darkGray, rand.random(1f));
+          } else {
+            Tmp.c1.set(Pal.accent).lerp(Pal.turretHeat, rand.random(0.5f, 1f));
+          }
+          
+          Draw.color(Tmp.c1);
+          
+          if (s == 1) {
+            Draw.alpha(Interp.smooth.apply(Mathf.clamp(e.fin() * 5f - 0.5f) * Math.min(10f * e.fin(), 1.1f - e.fin() * 1.1f)));
+          } else {
+            Draw.alpha(Interp.smooth.apply(Mathf.clamp(2f - e.fin() * 5f) * Math.min(10f * e.fin(), 1.1f - e.fin() * 1.1f)));
+          }
+          if (rand.chance(0.75f)) {
+            Angles.randLenVectors(e.id + 1 + i, rand.random(1, 2), 16f * e.finpow(), 90f - sign * 90f, 30f, (ox, oy) -> {
+              Parallax.getParallaxFrom(temp.set(x + ox, y + oy), Core.camera.position, rand.random(10f, 15f) * e.finpowdown());
+              Fill.circle(temp.x, temp.y, rand.random(1f, 2f) * Math.min(10f * e.fin(), 1f));
+            });
+          }
+        }
+        Draw.blend();
+      }
+    }).layer(Layer.effect + 1),
     evaporate = new Effect(60f, e -> {
       rand.setSeed(e.id);
 

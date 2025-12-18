@@ -20,6 +20,7 @@ import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
+import sw.world.consumers.*;
 import sw.world.draw.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -197,6 +198,24 @@ public class SWPower {
 				return false;
 			};
 			
+			consumeLiquids(LiquidStack.with(
+				Liquids.oil, 1f / 60f
+				// customLiquidFuel, 10f / 60f
+			));
+			consume(new ConsumeSpin() {{
+				minSpeed = 1f;
+				
+				efficiencyScale = Interp.one;
+			}});
+			craftEffect = updateEffect = SWFx.engineBurn;
+			craftTime = 50f;
+			updateEffectChance = 0.01f;
+			updateEffectSpread = 0f;
+			
+			outputRotation = 50f / 10f;
+			outputRotationForce = 100f / 600f;
+			forceScales = true;
+			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
@@ -283,6 +302,8 @@ public class SWPower {
 					}
 				}}, hasTop),
 				new DrawCondition(new DrawParts() {{
+					name = "-pistons";
+					
 					for (int i : Mathf.signs) {
 						parts.add(new RegionPart("-piston-" + (i == -1 ? "l" : "r")) {{
 							outline = false;

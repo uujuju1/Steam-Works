@@ -29,6 +29,8 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 	public float outputRotation = -1;
 	public float outputRotationForce = 0;
+	public boolean speedScales = false;
+	public boolean forceScales = false;
 
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
@@ -122,10 +124,10 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getForce() {
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * warmup * getRatio() : 0;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * (forceScales ? efficiency : 1) * warmup * getRatio() : 0;
 		}
 		@Override public float getTargetSpeed() {
-			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * warmup * getRatio() : 0;
+			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * (speedScales ? efficiency : 1) * warmup * getRatio() : 0;
 		}
 		
 		@Override
