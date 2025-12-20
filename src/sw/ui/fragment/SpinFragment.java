@@ -2,6 +2,7 @@ package sw.ui.fragment;
 
 import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.scene.*;
 import arc.scene.actions.*;
@@ -29,6 +30,7 @@ public class SpinFragment extends Group{
 	
 	public SpinFragment() {
 		Events.on(EventType.ResizeEvent.class, e -> setSize(Core.graphics.getWidth(), Core.graphics.getHeight()));
+		Events.run(EventType.Trigger.draw, this::drawWorld);
 	}
 	
 	public SpinFragment build(Group parent) {
@@ -40,17 +42,15 @@ public class SpinFragment extends Group{
 		
 		update(() -> {
 			if (Vars.state.isMenu() && shown || Core.input.keyTap(SWBinding.spinInfo)) toggle();
-			if (!shown || infoTable.hasActions()) return;
+			if (!shown) return;
 			
-			if (shown) {
-				Vars.ui.hudfrag.shown = false;
-				Building buildAt = Vars.world.buildWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
-				
-				if (buildAt instanceof HasSpin spin) {
-					if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
-				} else {
-					if (currentGraph != null) changeGraph(null);
-				}
+			Vars.ui.hudfrag.shown = false;
+			Building buildAt = Vars.world.buildWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
+			
+			if (buildAt instanceof HasSpin spin) {
+				if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
+			} else {
+				if (currentGraph != null) changeGraph(null);
 			}
 		});
 		
@@ -142,6 +142,16 @@ public class SpinFragment extends Group{
 		}
 	}
 	
+	public void drawWorld() {
+		if (currentGraph != null && shown) {
+			Draw.z(Layer.shields + 1);
+			Draw.color(Pal.accent, 0.5f);
+			currentGraph.builds.each(b -> {
+				Fill.square(b.asBuilding().x, b.asBuilding().y, b.asBuilding().block.size * 4);
+			});
+		}
+	}
+	
 	public void toggle() {
 		if (infoTable.hasActions() || Vars.state.isMenu()) return;
 		
@@ -151,12 +161,12 @@ public class SpinFragment extends Group{
 		if (shown) {
 			infoTable.actions(
 				Actions.fadeOut(0f),
-				Actions.fadeIn(1f)
+				Actions.fadeIn(0f)
 			);
 		} else {
 			infoTable.actions(
 				Actions.fadeIn(0f),
-				Actions.fadeOut(1f)
+				Actions.fadeOut(0f)
 			);
 		}
 	}
