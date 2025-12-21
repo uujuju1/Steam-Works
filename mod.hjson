@@ -4,5 +4,5 @@ author: "Liz Aurora"
 main: "sw.ModLoader"
 description: "A tech demo mod with a bunch of stuff, whose content is all in lore made by the pure will of a person."
 version: 1
-minGameVersion: 150
+minGameVersion: 154.2
 java: true

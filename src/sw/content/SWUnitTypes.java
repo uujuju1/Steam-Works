@@ -60,7 +60,7 @@ public class SWUnitTypes {
           recoil = 4f;
           recoilTime = 60f;
 
-          shootSound = Sounds.cannon;
+          shootSound = Sounds.shootArtillery;
 					bullet = new BasicBulletType(4, 10) {{
             recoil = 1f;
 
@@ -99,7 +99,7 @@ public class SWUnitTypes {
 			lightOpacity = 0.1f;
 			lightColor = Color.scarlet;
 			
-			loopSound = Sounds.fire;
+			loopSound = Sounds.loopFire;
 			loopSoundVolume = 1f;
 			
 			parts.addAll(
@@ -148,7 +148,7 @@ public class SWUnitTypes {
 				
 				shootY = 0f;
 				
-				shootSound = Sounds.artillery;
+				shootSound = Sounds.shootArtillery;
 				
 				parts.addAll(
 					new EffectSpawnerPart() {{
@@ -347,7 +347,7 @@ public class SWUnitTypes {
 					y = 2.5f;
 					reload = 60;
 					layerOffset = -0.001f;
-					shootSound = Sounds.shootAlt;
+					shootSound = Sounds.shootBreach;
 					shoot = new ShootPattern() {{
 						shots = 3;
 						shotDelay = 5;

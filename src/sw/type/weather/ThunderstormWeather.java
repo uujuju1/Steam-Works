@@ -22,7 +22,7 @@ public class ThunderstormWeather extends RainWeather {
 		speedMin = 1f, speedMax = 3f;
 
 	// bullet related fields
-	public Sound bulletSound = Sounds.railgun;
+	public Sound bulletSound = Sounds.none;
 	public float bulletSoundPitch = 1f;
 	public float bulletSoundVolume = 1f;
 	public @Nullable BulletType lightningBullet;

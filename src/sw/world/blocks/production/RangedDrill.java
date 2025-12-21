@@ -58,7 +58,7 @@ public class RangedDrill extends Block {
 		solid = true;
 		regionRotated1 = 1;
 		ambientSoundVolume = 0.05f;
-		ambientSound = Sounds.minebeam;
+		ambientSound = Sounds.loopMineBeam;
 		
 		envEnabled |= Env.space;
 		flags = EnumSet.of(BlockFlag.drill);

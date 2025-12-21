@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -110,7 +109,7 @@ public class SWCrafting {
 
 			connectEdge = new boolean[]{true, false, true, false};
 
-			ambientSound = Sounds.smelter;
+			ambientSound = Sounds.loopSmelter;
 			updateEffect = SWFx.cokeBurn;
 			updateEffectChance = 0.1f;
 			updateEffectSpread = 0f;
@@ -208,7 +207,7 @@ public class SWCrafting {
 			size = 3;
 			health = 240;
 
-			ambientSound = Sounds.smelter;
+			ambientSound = Sounds.loopSmelter;
 			ambientSoundVolume = 0.1f;
 
 			craftEffect = updateEffect = SWFx.combust;

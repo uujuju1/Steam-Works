@@ -258,7 +258,7 @@ public class SWTurrets {
 				firstShotDelay = 60f;
 			}};
 
-			shootSound = Sounds.bigshot;
+			shootSound = Sounds.shootBreachCarbide;
 			ammo(
 				SWItems.coke, new BasicBulletType(4, 50) {{
 					width = 8f;
@@ -277,7 +277,7 @@ public class SWTurrets {
 					trailInterval = 1f;
 					trailRotation = true;
 
-					hitSound = Sounds.flame2;
+					hitSound = Sounds.shootFlame;
 					hitEffect = Fx.hitBulletBig;
 					despawnHit = true;
 
@@ -303,7 +303,7 @@ public class SWTurrets {
 						status = StatusEffects.burning;
 						statusDuration = 30f;
 
-						hitSound = Sounds.flame2;
+						hitSound = Sounds.shootFlame;
 						hitEffect = Fx.hitBulletBig;
 						despawnHit = true;
 					}};
@@ -338,7 +338,7 @@ public class SWTurrets {
 				}});
 			}};
 			
-			shootSound = Sounds.shootAlt;
+			shootSound = Sounds.shootBreach;
 			shootY = 2f;
 			
 			ammo(

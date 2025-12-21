@@ -43,7 +43,7 @@ public class SWProduction {
 			drillTime = 480f;
 			tier = 1;
 			range = 5;
-			ambientSound = Sounds.combustion;
+			ambientSound = Sounds.loopCombustion;
 			ambientSoundVolume = 0.01f;
 
 			useAllowList = true;
@@ -92,7 +92,7 @@ public class SWProduction {
 			drillTime = 60f;
 			tier = 1;
 			range = 5;
-			ambientSound = Sounds.drill;
+			ambientSound = Sounds.loopDrill;
 			ambientSoundVolume = 0.14f;
 
 			useAllowList = true;

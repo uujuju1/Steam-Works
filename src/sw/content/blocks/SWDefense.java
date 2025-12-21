@@ -41,7 +41,7 @@ public class SWDefense {
 			consumeEffect = updateEffect = SWFx.cokeIlluminate;
 			updateEffectChance = 0.1f;
 			
-			ambientSound = Sounds.combustion;
+			ambientSound = Sounds.loopCombustion;
 			
 			consume(new ConsumeSpin() {{
 				minSpeed = 2.5f/10f;
@@ -109,7 +109,7 @@ public class SWDefense {
 			consumeTime = 10f;
 			consumeEffect = updateEffect = SWFx.cokeIlluminate;
 			
-			ambientSound = Sounds.fire;
+			ambientSound = Sounds.loopFire;
 			ambientSoundVolume = 0.1f;
 			
 			consumeLiquids(LiquidStack.with(

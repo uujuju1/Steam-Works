@@ -180,7 +180,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			return;
 		}
 		
-		if(!planet.allowWaveSimulation && !debugSelect) {
+		if(!debugSelect) {
 			Sector attacked = planet.sectors.find(s -> s.isAttacked() && s != sector.sector);
 			if(attacked != null && planet.sectors.count(Sector::isAttacked) < 2 && attacked.preset instanceof PositionSectorPreset preset) {
 				Vars.ui.showInfoOnHidden(
@@ -266,9 +266,9 @@ public class SectorLaunchDialog extends BaseDialog {
 			
 			c.add(Core.bundle.get("sectors.time") + " [accent]" + sector.save.getPlayTime()).left().row();
 			
-			if(sector.info.waves && sector.hasBase()){
-				c.add(Core.bundle.get("sectors.wave") + " [accent]" + (sector.info.wave + sector.info.wavesPassed)).left().row();
-			}
+//			if(sector.info.waves && sector.hasBase()){
+//				c.add(Core.bundle.get("sectors.wave") + " [accent]" + (sector.info.wave + sector.info.wavesPassed)).left().row();
+//			}
 			
 			if(sector.isAttacked() || !sector.hasBase()){
 				c.add(Core.bundle.get("sectors.threat") + " [accent]" + sector.displayThreat()).left().row();
@@ -285,15 +285,15 @@ public class SectorLaunchDialog extends BaseDialog {
 			}
 			
 			//production
-			displayItems(c, sector.getProductionScale(), sector.info.production, "@sectors.production");
+//			displayItems(c, sector.getProductionScale(), sector.info.production, "@sectors.production");
 			
 			//export
-			displayItems(c, sector.getProductionScale(), sector.info.export, "@sectors.export", t -> {
-				if(sector.info.destination != null && sector.info.destination.hasBase()){
-					String ic = sector.info.destination.iconChar();
-					t.add(Iconc.rightOpen + " " + (ic == null || ic.isEmpty() ? "" : ic + " ") + sector.info.destination.name()).padLeft(10f).row();
-				}
-			});
+//			displayItems(c, sector.getProductionScale(), sector.info.export, "@sectors.export", t -> {
+//				if(sector.info.destination != null && sector.info.destination.hasBase()){
+//					String ic = sector.info.destination.iconChar();
+//					t.add(Iconc.rightOpen + " " + (ic == null || ic.isEmpty() ? "" : ic + " ") + sector.info.destination.name()).padLeft(10f).row();
+//				}
+//			});
 			
 			//import
 			if(sector.hasBase()){
