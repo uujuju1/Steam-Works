@@ -340,6 +340,7 @@ public class SWUnitTypes {
 	    legExtension = -2f;
 	    legLength = 14f;
 			legContinuousMove = true;
+			stepSound = Sounds.none;
 
 			weapons.add(
 				new Weapon("sw-lambda-weapon") {{
