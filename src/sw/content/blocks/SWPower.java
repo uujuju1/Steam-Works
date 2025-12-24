@@ -211,12 +211,12 @@ public class SWPower {
 				efficiencyScale = Interp.one;
 			}});
 			craftEffect = updateEffect = SWFx.engineBurn;
-			craftTime = 50f;
+			craftTime = 60f;
 			updateEffectChance = 0.01f;
 			updateEffectSpread = 0f;
 			
 			outputRotation = 50f / 10f;
-			outputRotationForce = 125f / 600f;
+			outputRotationForce = 160f / 600f;
 			forceScales = true;
 			
 			drawer = new DrawMulti(
@@ -331,7 +331,7 @@ public class SWPower {
 			);
 			
 			spinConfig = new SpinConfig() {{
-				resistance = 25f / 600f;
+				resistance = 10f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{3, 9}
 				};
