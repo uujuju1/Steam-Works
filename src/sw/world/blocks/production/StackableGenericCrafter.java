@@ -51,13 +51,11 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 							edges[Mathf.mod(pos - offset + i * size, edges.length)].y
 						);
 
-						if (pos == 0) {
+						if (other != null && nearby != other) break;
+						if (nearby != null && nearby.block == block) {
 							other = nearby;
-
-							if (other == null) break;
-						} else if (nearby == other) {
 							if (pos == size - 1) eff += boost;
-						} else break;
+						}
 					}
 				}
 			}

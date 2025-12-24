@@ -198,10 +198,13 @@ public class SWPower {
 				return false;
 			};
 			
+			ambientSound = Sounds.loopCombustion;
+			ambientSoundVolume = 0.25f;
+			
 			consumeLiquids(LiquidStack.with(
-				Liquids.oil, 1f / 60f
-				// customLiquidFuel, 10f / 60f
+				SWLiquids.solvent, 20f / 60f
 			));
+			consumeItems(with(SWItems.thermite, 1));
 			consume(new ConsumeSpin() {{
 				minSpeed = 1f;
 				
@@ -213,7 +216,7 @@ public class SWPower {
 			updateEffectSpread = 0f;
 			
 			outputRotation = 50f / 10f;
-			outputRotationForce = 100f / 600f;
+			outputRotationForce = 125f / 600f;
 			forceScales = true;
 			
 			drawer = new DrawMulti(
@@ -328,6 +331,7 @@ public class SWPower {
 			);
 			
 			spinConfig = new SpinConfig() {{
+				resistance = 25f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{3, 9}
 				};

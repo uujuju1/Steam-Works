@@ -6,7 +6,9 @@ import arc.math.*;
 import arc.util.*;
 
 public class Draws {
-	public static Color paletteLight, paletteMedium, paletteDark;
+	public static Color paletteLight = Color.clear;
+	public static Color paletteMedium = Color.clear;
+	public static Color paletteDark = Color.clear;
 
 	public static void palette() {
 		paletteLight = paletteMedium = paletteDark = Color.clear;
@@ -27,6 +29,7 @@ public class Draws {
 			float cos2 = Mathf.cos(Mathf.degreesToRadians * mod2, 1f, 1);
 			float cos3 = Mathf.cos(Mathf.degreesToRadians * (angle + 360f/regions.length * (i + 0.5f)), 1, 1);
 
+			
 			if (cos3 > 0f) {
 				Tmp.c1.set(paletteMedium).lerp(paletteLight, Mathf.clamp(cos3));
 			} else {

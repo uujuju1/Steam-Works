@@ -258,6 +258,19 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, rand.random(1f, 2f));
       });
     }),
+  
+    thermiteCrush = new Effect(120f, e -> {
+      rand.setSeed(e.id);
+      
+      Angles.randLenVectors(e.id + 1, rand.random(1, 3), 16f * e.finpowdown(), (x, y) -> {
+        Draw.color(Color.valueOf("6C5656"), Color.valueOf("B2A9AD"), rand.random(1f));
+        
+        Draw.alpha(0.5f * Interp.pow2.apply(e.fslope()));
+        Parallax.getParallaxFrom(temp.set(e.x + x, e.y + y), Core.camera.position, e.fin() * rand.random(7f, 10f));
+        
+        Fill.circle(temp.x, temp.y, rand.random(2f, 3f) + rand.random(3f, 5f) * e.fin());
+      });
+    }).layer(Layer.effect + 1),
 
     thermiteShoot = new Effect(20f, e -> {
       rand.setSeed(e.id);

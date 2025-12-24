@@ -23,10 +23,16 @@ public class SWItems {
       hardness = 2;
       cost = 2f;
     }};
-    aluminium = new Item("aluminium", valueOf("1C1C1C"));
+    aluminium = new Item("aluminium", valueOf("1C1C1C")) {{
+      cost = 3f;
+    }};
     
-    coke = new Item("coke", valueOf("1C1C1C")) {{
+    coke = new Item("coke", valueOf("B8B8B8")) {{
       buildable = false;
+      flammability = explosiveness = 0.5f;
+    }};
+    thermite = new Item("thermite", valueOf("6B7580")) {{
+      flammability = explosiveness = 0.8f;
     }};
     
     meteorite = new Item("meteorite", valueOf("E4CAAC"));
@@ -41,10 +47,6 @@ public class SWItems {
     oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
     denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
       cost = 1f;
-    }};
-    thermite = new Item("thermite", valueOf("6B7580")) {{
-      cost = 2f;
-      flammability = explosiveness = 0.8f;
     }};
     compound = new Item("compound", valueOf("515151")) {{
       cost = 1f;

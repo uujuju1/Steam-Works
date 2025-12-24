@@ -4,6 +4,7 @@ import arc.audio.*;
 import arc.func.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.*;
 import mindustry.ctype.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -34,6 +35,8 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
+	
+	public float ambientSoundPitch = 1f;
 
 	public SWGenericCrafter(String name) {
 		super(name);
@@ -157,7 +160,23 @@ public class SWGenericCrafter extends AttributeCrafter {
 		public boolean outputsSpin() {
 			return outputRotation > 0 && outputRotationForce > 0;
 		}
-
+		
+		@Override
+		public void update() {
+			if ((this.timeScaleDuration -= Time.delta) <= 0.0F || !this.block.canOverdrive) {
+				this.timeScale = 1.0F;
+			}
+			
+			if (!Vars.headless && this.block.ambientSound != Sounds.none && this.shouldAmbientSound()) {
+				Vars.control.sound.loop(this.block.ambientSound, this,this.block.ambientSoundVolume * this.ambientVolume(), ambientSoundPitch);
+			}
+			
+			this.updateConsumption();
+			if (this.enabled || !this.block.noUpdateDisabled) {
+				this.updateTile();
+			}
+		}
+		
 		@Override
 		public void updateTile() {
 			super.updateTile();

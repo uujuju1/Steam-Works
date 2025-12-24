@@ -2,7 +2,6 @@ package sw.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
-import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -11,6 +10,7 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.entities.part.*;
 import sw.graphics.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -24,6 +24,7 @@ public class SWCrafting {
 	public static Block
 		cokeOven, engineSmelter, waterBallMill,
 		
+		crusher,
 		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
 		
 		crystalFurnace, rte, kitchenGarden;
@@ -148,40 +149,11 @@ public class SWCrafting {
 				}
 				},
 				new DrawBitmask("-tiles", b -> {
-					Point2[] edges = Edges.getEdges(3);
-					int offset = Mathf.floor((size - 1f)/2f);
-					Building other = null;
-
 					int out = 0;
-					for (int pos = 0; pos < size; pos++) {
-						Building nearby = b.nearby(
-							edges[Mathf.mod(pos - offset, edges.length)].x,
-							edges[Mathf.mod(pos - offset, edges.length)].y
-						);
-
-						if (pos == 0) {
-							other = nearby;
-
-							if (other == null) break;
-						} else if (nearby == other) {
-							if (pos == size - 1) out |= 1;
-						} else break;
-					}
-					other = null;
-					for (int pos = 0; pos < size; pos++) {
-						Building nearby = b.nearby(
-							edges[Mathf.mod(pos - offset + size * 2, edges.length)].x,
-							edges[Mathf.mod(pos - offset + size * 2, edges.length)].y
-						);
-
-						if (pos == 0) {
-							other = nearby;
-
-							if (other == null) break;
-						} else if (nearby == other) {
-							if (pos == size - 1) out |= 2;
-						} else break;
-					}
+					Building next = b.nearby(getEdges()[0].x, getEdges()[0].y);
+					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 1;
+					next = b.nearby(getEdges()[6].x, getEdges()[6].y);
+					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 2;
 					return out;
 				}, 96),
 				new DrawGlowRegion() {{
@@ -426,6 +398,99 @@ public class SWCrafting {
 					new int[]{0, 3, 6, 9},
 					new int[]{0, 3, 6, 9},
 					new int[]{0, 3, 6, 9},
+				};
+			}};
+		}};
+		
+		crusher = new SWGenericCrafter("crusher") {{
+			requirements(Category.crafting, with());
+			size = 3;
+			health = 240;
+			rotate = true;
+			
+			ambientSound = Sounds.loopCutter;
+			ambientSoundVolume = 0.25f;
+			ambientSoundPitch = 0.25f;
+			
+			craftTime = 90f;
+			updateEffect = craftEffect = SWFx.thermiteCrush;
+			updateEffectChance = 0.15f;
+			
+			consumeItems(with(
+				SWItems.iron, 2,
+				SWItems.aluminium, 1
+			));
+			consumeLiquid(Liquids.ozone, 1f/60f);
+			consume(new ConsumeSpin() {{
+				minSpeed = 30f / 10f;
+				maxSpeed = 70f / 10f;
+				
+				efficiencyScale = speed -> Mathf.map(speed, 3, 7, 0.5f, 1.5f);
+			}});
+			
+			outputItems = with(SWItems.thermite, 3);
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					iconName = "sw-crusher-axles";
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (int i : Mathf.signs) {
+						for (int j : Mathf.signs) {
+							axles.add(new Axle("-axle") {{
+								pixelWidth = 4;
+								pixelHeight = 1;
+								
+								x = i * 10f;
+								y = j * 8f;
+								
+								width = 4f;
+								height = 3.5f;
+								
+								paletteLight = SWPal.axleLight;
+								paletteMedium = SWPal.axleMedium;
+								paletteDark = SWPal.axleDark;
+							}});
+						}
+					}
+				}},
+				new DrawParts() {{
+					parts.add(new SegmentedAxlePart() {{
+						suffix = "-wheel1";
+						
+						y = -4.5f;
+						minWidth = 7f;
+						maxWidth = 11f;
+						height = 16f;
+						
+						segmentSides = new int[]{0, 3, 6};
+						
+						progress = DrawParts.spin.mul(0.25f);
+					}});
+					parts.add(new SegmentedAxlePart() {{
+						suffix = "-wheel2";
+						
+						y = 4.5f;
+						minWidth = 7f;
+						maxWidth = 11f;
+						height = 16f;
+						
+						segmentSides = new int[]{0, 3, 6};
+						
+						progress = DrawParts.spin.mul(-0.25f).add(60f);
+					}});
+				}},
+				new DrawFacingLightRegion()
+			);
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 30f/600f;
+				
+				allowedEdges = new int[][]{
+					new int[]{11, 1, 5, 7},
+					new int[]{2, 4, 8, 10},
+					new int[]{5, 7, 11, 1},
+					new int[]{8, 10, 2, 4}
 				};
 			}};
 		}};
