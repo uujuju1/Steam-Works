@@ -27,7 +27,11 @@ public class ConsumeSpin extends Consume {
 	}
 	
 	@Override public void display(Stats stats) {
-		stats.add(SWStat.spinRequirement, Core.bundle.format("stat.sw-spin-requirement.format", Strings.autoFixed(minSpeed * 10f, 2), Strings.autoFixed(maxSpeed * 10f, 2)));
+		stats.add(SWStat.spinRequirement, Core.bundle.format(
+			"stat.sw-spin-requirement.format",
+			minSpeed == Float.POSITIVE_INFINITY ? "∞" : (minSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(minSpeed * 10f, 2)),
+			maxSpeed == Float.POSITIVE_INFINITY ? "∞" : (maxSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(maxSpeed * 10f, 2))
+		));
 	}
 	
 	@Override

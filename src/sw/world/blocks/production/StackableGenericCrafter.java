@@ -22,7 +22,7 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	public void setStats() {
 		super.setStats();
 
-		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boostperbuild.format"), boost * 100f);
+		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boost-per-build.format"), boost * 100f);
 	}
 
 	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {

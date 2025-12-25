@@ -433,7 +433,7 @@ public class SWCrafting {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					iconName = "sw-crusher-axles";
+					iconName = "sw-crusher-axle-icon";
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (int i : Mathf.signs) {
 						for (int j : Mathf.signs) {

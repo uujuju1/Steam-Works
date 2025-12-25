@@ -41,24 +41,20 @@ public class SpinSource extends AxleBlock {
 		@Override
 		public void buildConfiguration(Table table) {
 			table.table(Styles.black6, cont -> {
-				cont.add(SWStat.spinOutput.localized()).padRight(5f);
+				cont.add(SWStat.spinOutput.localized() + ":").growX().right().padRight(5f);
 				cont.field(Float.toString(targetSpeed), TextField.TextFieldFilter.floatsOnly, s -> {
 					configure(new SpinSourceEntry(Strings.parseFloat(s, 0), force));
 				});
-				cont.add(SWStat.spinMinute.localized()).padLeft(5f);
+				cont.add(SWStat.spinMinute.localized()).growX().left().padLeft(5f);
 				cont.row();
-				cont.add(SWStat.spinOutputForce.localized()).padRight(5f);
+				cont.add(SWStat.spinOutputForce.localized() + ":").growX().right().padRight(5f);
 				cont.field(Float.toString(force), TextField.TextFieldFilter.floatsOnly, s -> {
 					configure(new SpinSourceEntry(targetSpeed, Strings.parseFloat(s, 0)));
 				});
-				cont.add(SWStat.spinMinuteSecond.localized()).padLeft(5f);
+				cont.add(SWStat.force.localized()).growX().left().padLeft(5f);
 			}).margin(10f);
 		}
 
-//		@Override public float getForce() {
-//			float diff = Mathf.maxZero(targetSpeed/10f - getSpeed());
-//			return Math.min(diff, force/600f * getRatio());
-//		}
 		@Override public float getForce() {
 			return force/600f * getRatio();
 		}
