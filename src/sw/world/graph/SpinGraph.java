@@ -17,6 +17,11 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Used when updating inertia.
 	 */
 	public float lastSpeed;
+	
+	/**
+	 * constant values based on the builds.
+	 */
+	public float friction, inertia;
 
 	/**
 	 * List of buildings of this graph.
@@ -49,7 +54,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-		return builds.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getRelativeForce(this));
+		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getRelativeForce(this));
 	}
 	
 	@Override
@@ -58,6 +63,9 @@ public class SpinGraph extends Graph<HasSpin> {
 		updateRatios(builds.first());
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
+		
+		friction = builds.sumf(HasSpin::getResistance);
+		inertia = Math.max(1f, builds.sumf(HasSpin::getInertia));
 	}
 
 	public float inertia() {
@@ -89,13 +97,6 @@ public class SpinGraph extends Graph<HasSpin> {
 		super.update();
 		
 		float netTorque;
-		float netFriction = 0f;
-		float netInertia = 1f;
-		
-		for(HasSpin build : builds) {
-			netFriction += build.getResistance();
-			netInertia += build.getInertia();
-		}
 		
 		float targetSpeed = 0;
 
@@ -107,14 +108,14 @@ public class SpinGraph extends Graph<HasSpin> {
 				if (build.getTargetSpeed() > targetSpeed) {
 					if (
 						producers.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) +
-						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getTargetSpeed() ? b.getRelativeForce(this) : 0f) >= netFriction
+						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getTargetSpeed() ? b.getRelativeForce(this) : 0f) >= friction
 					) targetSpeed = build.getTargetSpeed();
 				}
 			} else {
 				if (build.getRelativeTargetSpeed(this) > targetSpeed) {
 					if (
 						producers.sumf(b -> b.getTargetSpeed() >= build.getRelativeTargetSpeed(this) ? b.getForce() : 0f) +
-						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getRelativeTargetSpeed(this) ? b.getRelativeForce(this) : 0f) >= netFriction
+						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getRelativeTargetSpeed(this) ? b.getRelativeForce(this) : 0f) >= friction
 					) targetSpeed = build.getRelativeTargetSpeed(this);
 				}
 			}
@@ -123,7 +124,7 @@ public class SpinGraph extends Graph<HasSpin> {
 		netTorque = producers.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f) +
 		disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= speed ? b.getRelativeForce(this) : 0f);
 		
-		float accel = Math.abs(netTorque + netFriction * -Mathf.sign(speed))/netInertia;
+		float accel = Math.abs(netTorque + friction * -Mathf.sign(speed))/inertia;
 		
 		speed = Mathf.approachDelta(speed, targetSpeed, accel);
 

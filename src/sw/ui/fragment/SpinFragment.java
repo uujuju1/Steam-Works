@@ -4,7 +4,6 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
-import arc.math.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
@@ -88,46 +87,50 @@ public class SpinFragment extends Group{
 			
 			infoTable.add(new SplitBar().setBar(
 				() -> {
-					float force = newer.force();
-					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-					float net = 0;
-					if (force < 0) net += force;
-					if (resistance < 0) net += resistance;
-					return net/(Math.abs(force) + Math.abs(resistance));
+//					float force = newer.force();
+//					float resistance = newer.friction;
+//					float net = 0;
+//					if (force < 0) net += force;
+//					if (resistance < 0) net += resistance;
+//					return net/(Math.abs(force) + Math.abs(resistance));
+					
+					return newer.friction / Math.max(1f, newer.friction + newer.force());
 				},
 				() -> newer.speed > 0 ? Color.scarlet : (newer.speed == 0 ? Pal.gray : Pal.heal),
 				() -> {
-					float force = newer.force();
-					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-					float net = 0;
-					if (force < 0) net += force;
-					if (resistance < 0) net += resistance;
-					if (newer.speed == 0) {
-						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
-					}
-					return Strings.fixed(net * 600f, 2) + " " + SWStat.force.localized();
+//					float force = newer.force();
+//					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+//					float net = 0;
+//					if (force < 0) net += force;
+//					if (resistance < 0) net += resistance;
+//					if (newer.speed == 0) {
+//						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
+//					}
+					return "-" + Strings.fixed(newer.friction * 600f, 2) + SWStat.force.localized();
 				},
 				true
 			).setBar(
 				() -> {
-					float force = newer.force();
-					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-					float net = 0;
-					if (force > 0) net += force;
-					if (resistance > 0) net += resistance;
-					return net/(Math.abs(force) + Math.abs(resistance));
+					float torque = newer.force();
+//					float resistance = Mathf.sign(-newer.speed) * newer.friction;
+//					float net = 0;
+//					if (force > 0) net += force;
+//					if (resistance > 0) net += resistance;
+//					return net/(Math.abs(force) + Math.abs(resistance));
+					
+					return torque / Math.max(1f, newer.friction + torque);
 				},
 				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
 				() -> {
-					float force = newer.force();
-					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-					float net = 0;
-					if (force > 0) net += force;
-					if (resistance > 0) net += resistance;
-					if (newer.speed == 0) {
-						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
-					}
-					return Strings.fixed(net * 600f, 2) + " " + SWStat.force.localized();
+//					float force = newer.force();
+//					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
+//					float net = 0;
+//					if (force > 0) net += force;
+//					if (resistance > 0) net += resistance;
+//					if (newer.speed == 0) {
+//						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
+//					}
+					return Strings.fixed(newer.force() * 600f, 2) + SWStat.force.localized();
 				},
 				false
 			)).size(250f, 20f).pad(10f);
