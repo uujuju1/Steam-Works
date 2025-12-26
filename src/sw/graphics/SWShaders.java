@@ -141,12 +141,12 @@ public class SWShaders {
 				Tmp.v1.y / Core.graphics.getHeight()
 			);
 
-			setUniformf("u_masksize", SWVars.renderer.pitfall.width, SWVars.renderer.pitfall.height);
+			setUniformf("u_masksize", SWVars.renderer.getPitfallTexture().width, SWVars.renderer.getPitfallTexture().height);
 
 			setUniformf("u_scale", 64 / Mathf.log(2, 2 * Vars.renderer.getDisplayScale()));
 
 			Vars.renderer.effectBuffer.getTexture().bind(0);
-			SWVars.renderer.pitfall.bind(1);
+			SWVars.renderer.getPitfallTexture().bind(1);
 			setUniformi("u_mask", 1);
 
 			applyWall();

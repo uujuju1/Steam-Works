@@ -3,6 +3,7 @@ package sw.ui.fragment;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.scene.*;
 import arc.scene.actions.*;
@@ -14,6 +15,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
+import sw.*;
 import sw.core.*;
 import sw.ui.elements.*;
 import sw.ui.elements.RotationBar.*;
@@ -144,10 +146,30 @@ public class SpinFragment extends Group{
 	
 	public void drawWorld() {
 		if (currentGraph != null && shown) {
-			Draw.z(Layer.shields + 1);
-			Draw.color(Pal.accent, 0.5f);
-			currentGraph.builds.each(b -> {
-				Fill.square(b.asBuilding().x, b.asBuilding().y, b.asBuilding().block.size * 4);
+			Draw.draw(Layer.flyingUnitLow - 1f, () -> {
+				FrameBuffer buffer = SWVars.renderer.getBuffer("spinFragment");
+				
+				buffer.begin(Color.clear);
+				currentGraph.builds.each(b -> {
+					Building build = b.asBuilding();
+					Fill.square(build.x, build.y, build.block.size * 4 + 1f);
+				});
+				
+				Draw.flush();
+				Draw.blend(new Blending(Gl.zero, Gl.zero));
+				
+				currentGraph.builds.each(b -> {
+					Building build = b.asBuilding();
+					Fill.square(build.x, build.y, build.block.size * 4);
+				});
+				
+				Draw.flush();
+				Draw.blend();
+				
+				buffer.end();
+				
+				Draw.color(Pal.accent);
+				Draw.rect(Draw.wrap(buffer.getTexture()), Core.camera.position.x, Core.camera.position.y, Core.camera.width, -Core.camera.height);
 			});
 		}
 	}
