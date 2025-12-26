@@ -7,7 +7,7 @@ import mindustry.content.*;
 import sw.world.interfaces.*;
 
 /**
- * Graph containing an isolated group of uildings sharing common stuff.
+ * Graph containing an isolated group of buildings sharing common stuff.
  */
 public class SpinGraph extends Graph<HasSpin> {
 	public float rotation;
@@ -28,19 +28,21 @@ public class SpinGraph extends Graph<HasSpin> {
 	 */
 	public final Seq<HasSpin> producers = new Seq<>();
 	public final Seq<HasSpin> consumers = new Seq<>();
-	
 	/**
 	 * Buildings that aren't connected but still influence this graph with force.
 	 */
 	public final Seq<HasSpin> disconnected = new Seq<>();
+	
+	/**
+	 * Ratios used to scale quantities.
+	 */
+	public final ObjectFloatMap<HasSpin> ratios = new ObjectFloatMap<>();
+	public boolean invalid;
 
 	/**
 	 * Temporary seqs for use in flood.
 	 */
 	public static final Seq<HasSpin> tmp = new Seq<>(), tmp2 = new Seq<>();
-
-	public final ObjectFloatMap<HasSpin> ratios = new ObjectFloatMap<>();
-	public boolean invalid;
 
 	@Override
 	public void addBuild(HasSpin build) {
