@@ -26,6 +26,7 @@ public class SpinFragment extends Group{
 	public boolean shown = false;
 	
 	public @Nullable SpinGraph currentGraph;
+	public @Nullable Building currentHovered;
 	
 	private Table infoTable;
 	
@@ -41,19 +42,7 @@ public class SpinFragment extends Group{
 		
 		buildInfo();
 		
-		update(() -> {
-			if (Vars.state.isMenu() && shown || Core.input.keyTap(SWBinding.spinInfo)) toggle();
-			if (!shown) return;
-			
-			Vars.ui.hudfrag.shown = false;
-			Building buildAt = Vars.world.buildWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
-			
-			if (buildAt instanceof HasSpin spin) {
-				if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
-			} else {
-				if (currentGraph != null) changeGraph(null);
-			}
-		});
+		update(this::update);
 		
 		return this;
 	}
@@ -76,8 +65,8 @@ public class SpinFragment extends Group{
 			infoTable.add("Please Select a graph");
 		} else {
 			infoTable.add(new RotationBar(
-				() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(newer.speed * 10f, 2)),
-				() -> newer.rotation
+				() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(newer.speed * 10f / getCurrentRatio(), 2)),
+				() -> newer.rotation / getCurrentRatio()
 			)).size(250f, 20f).pad(10f).get().setStyle(new RotationBarStyle() {{
 				outlineColor = Pal.darkestGray;
 				outlineRadius = 4f;
@@ -86,59 +75,24 @@ public class SpinFragment extends Group{
 			infoTable.row();
 			
 			infoTable.add(new SplitBar().setBar(
-				() -> {
-//					float force = newer.force();
-//					float resistance = newer.friction;
-//					float net = 0;
-//					if (force < 0) net += force;
-//					if (resistance < 0) net += resistance;
-//					return net/(Math.abs(force) + Math.abs(resistance));
-					
-					return newer.friction / Math.max(1f, newer.friction + newer.force());
-				},
+				() -> newer.friction / Math.max(1f, newer.friction + newer.force()),
 				() -> newer.speed > 0 ? Color.scarlet : (newer.speed == 0 ? Pal.gray : Pal.heal),
-				() -> {
-//					float force = newer.force();
-//					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-//					float net = 0;
-//					if (force < 0) net += force;
-//					if (resistance < 0) net += resistance;
-//					if (newer.speed == 0) {
-//						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
-//					}
-					return "-" + Strings.fixed(newer.friction * 600f, 2) + SWStat.force.localized();
-				},
+				() -> "-" + Strings.fixed(newer.friction * 600f * getCurrentRatio(), 2) + SWStat.force.localized(),
 				true
 			).setBar(
 				() -> {
 					float torque = newer.force();
-//					float resistance = Mathf.sign(-newer.speed) * newer.friction;
-//					float net = 0;
-//					if (force > 0) net += force;
-//					if (resistance > 0) net += resistance;
-//					return net/(Math.abs(force) + Math.abs(resistance));
-					
 					return torque / Math.max(1f, newer.friction + torque);
 				},
 				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
-				() -> {
-//					float force = newer.force();
-//					float resistance = Mathf.sign(-newer.speed) * newer.resistance();
-//					float net = 0;
-//					if (force > 0) net += force;
-//					if (resistance > 0) net += resistance;
-//					if (newer.speed == 0) {
-//						net = newer.resistance() * (newer.force() < 0 ? -1f : 1f) + newer.force();
-//					}
-					return Strings.fixed(newer.force() * 600f, 2) + SWStat.force.localized();
-				},
+				() -> Strings.fixed(newer.force() * 600f * getCurrentRatio(), 2) + SWStat.force.localized(),
 				false
 			)).size(250f, 20f).pad(10f);
 			
 			infoTable.row();
 			
 			infoTable.add(new Bar(
-				() -> Strings.fixed(newer.inertia(), 2) + " " + SWStat.mass.localized(),
+				() -> Strings.fixed(newer.inertia, 2) + " " + SWStat.mass.localized(),
 				() -> Color.black,
 				() -> 0f
 			)).size(250f, 20f).pad(10f);
@@ -177,6 +131,10 @@ public class SpinFragment extends Group{
 		}
 	}
 	
+	public float getCurrentRatio() {
+		return currentHovered instanceof HasSpin spin && spin.spinConfig() != null ? spin.getRatio() : 1f;
+	}
+	
 	public void toggle() {
 		if (infoTable.hasActions() || Vars.state.isMenu()) return;
 		
@@ -193,6 +151,22 @@ public class SpinFragment extends Group{
 				Actions.fadeIn(0f),
 				Actions.fadeOut(0f)
 			);
+		}
+	}
+	
+	public void update() {
+		currentHovered = Vars.world.buildWorld(Core.input.mouseWorld());
+		
+		if (Vars.state.isMenu() && shown || Core.input.keyTap(SWBinding.spinInfo)) toggle();
+		if (!shown) return;
+		
+		Vars.ui.hudfrag.shown = false;
+		Building buildAt = Vars.world.buildWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
+		
+		if (buildAt instanceof HasSpin spin) {
+			if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
+		} else {
+			if (currentGraph != null) changeGraph(null);
 		}
 	}
 }

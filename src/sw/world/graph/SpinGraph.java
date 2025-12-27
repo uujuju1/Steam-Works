@@ -3,7 +3,6 @@ package sw.world.graph;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.content.*;
 import sw.world.interfaces.*;
 
 /**
@@ -132,12 +131,13 @@ public class SpinGraph extends Graph<HasSpin> {
 
 		if (invalid) {
 			speed = 0;
-			if (Math.abs(accel) > 0) {
-				var b = builds.random();
-
-				b.asBuilding().damage(Math.abs(accel));
-				if (Mathf.chance(0.5)) Fx.smoke.at(b.asBuilding());
-			}
+			// TODO make it better
+//			if (Math.abs(accel) > 0) {
+//				var b = builds.random();
+//
+//				b.asBuilding().damage(Math.abs(accel));
+//				if (Mathf.chance(0.5)) Fx.smoke.at(b.asBuilding());
+//			}
 		}
 
 		if (lastSpeed != speed) {

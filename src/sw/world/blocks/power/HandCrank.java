@@ -40,7 +40,7 @@ public class HandCrank extends AxleBlock {
 		public float time = 0;
 		
 		@Override public float getForce() {
-			return time <= 0f ? 0f : torque * getRatio();
+			return time <= 0f ? 0f : torque / getRatio();
 		}
 		@Override public float getTargetSpeed() {
 			return time <= 0f ? 0f : speed * getRatio();

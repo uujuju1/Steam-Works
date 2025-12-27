@@ -103,7 +103,7 @@ public interface HasSpin {
 	 * Returns the resistance that this build applies on the system.
 	 */
 	default float getResistance() {
-		return spinConfig().resistance * getRatio();
+		return spinConfig().resistance / getRatio();
 	}
 	/**
 	 * @return The current rotation of this system scaled by this build's ratio
