@@ -49,7 +49,7 @@ public class SpinFragment extends Group{
 	
 	private void buildInfo() {
 		fill(t -> {
-			t.bottom().right();
+			t.bottom();
 			infoTable = t.table(Styles.black6, info -> {}).margin(10f).get();
 			changeGraph(null);
 		});
@@ -67,7 +67,7 @@ public class SpinFragment extends Group{
 			infoTable.add(new RotationBar(
 				() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(newer.speed * 10f / getCurrentRatio(), 2)),
 				() -> newer.rotation / getCurrentRatio()
-			)).size(250f, 20f).pad(10f).get().setStyle(new RotationBarStyle() {{
+			)).size(500f, 20f).pad(10f).get().setStyle(new RotationBarStyle() {{
 				outlineColor = Pal.darkestGray;
 				outlineRadius = 4f;
 			}});
@@ -87,7 +87,7 @@ public class SpinFragment extends Group{
 				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
 				() -> Strings.fixed(newer.force() * 600f * getCurrentRatio(), 2) + SWStat.force.localized(),
 				false
-			)).size(250f, 20f).pad(10f);
+			)).size(500f, 20f).pad(10f);
 			
 			infoTable.row();
 			
@@ -95,7 +95,7 @@ public class SpinFragment extends Group{
 				() -> Strings.fixed(newer.inertia, 2) + " " + SWStat.mass.localized(),
 				() -> Color.black,
 				() -> 0f
-			)).size(250f, 20f).pad(10f);
+			)).size(500f, 20f).pad(10f);
 			
 			infoTable.row();
 		}
@@ -161,9 +161,8 @@ public class SpinFragment extends Group{
 		if (!shown) return;
 		
 		Vars.ui.hudfrag.shown = false;
-		Building buildAt = Vars.world.buildWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
 		
-		if (buildAt instanceof HasSpin spin) {
+		if (currentHovered instanceof HasSpin spin && spin.spinConfig() != null) {
 			if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
 		} else {
 			if (currentGraph != null) changeGraph(null);
