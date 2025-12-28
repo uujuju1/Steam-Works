@@ -412,7 +412,7 @@ public class SWCrafting {
 			ambientSoundVolume = 0.25f;
 			ambientSoundPitch = 0.25f;
 			
-			craftTime = 90f;
+			craftTime = 72f;
 			updateEffect = craftEffect = SWFx.thermiteCrush;
 			updateEffectChance = 0.15f;
 			

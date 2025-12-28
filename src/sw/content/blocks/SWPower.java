@@ -211,7 +211,7 @@ public class SWPower {
 				efficiencyScale = Interp.one;
 			}});
 			craftEffect = updateEffect = SWFx.engineBurn;
-			craftTime = 60f;
+			craftTime = 50f;
 			updateEffectChance = 0.01f;
 			updateEffectSpread = 0f;
 			
