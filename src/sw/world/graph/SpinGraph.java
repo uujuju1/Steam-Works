@@ -30,6 +30,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	/**
 	 * Buildings that aren't connected but still influence this graph with force.
 	 */
+	// TODO generalize to include disconnected builds in floodFill
 	public final Seq<HasSpin> disconnected = new Seq<>();
 	
 	/**
@@ -39,9 +40,10 @@ public class SpinGraph extends Graph<HasSpin> {
 	public boolean invalid;
 
 	/**
-	 * Temporary seqs for use in flood.
+	 * Temporary fields for use in calculations.
 	 */
 	public static final Seq<HasSpin> tmp = new Seq<>(), tmp2 = new Seq<>();
+	public static @Nullable SpinGraph graphContext;
 
 	@Override
 	public void addBuild(HasSpin build) {
@@ -55,7 +57,8 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(build -> build.getRelativeForce(this));
+		graphContext = this;
+		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(HasSpin::getForce);
 	}
 	
 	@Override
@@ -67,10 +70,6 @@ public class SpinGraph extends Graph<HasSpin> {
 		
 		friction = builds.sumf(HasSpin::getResistance);
 		inertia = Math.max(1f, builds.sumf(HasSpin::getInertia));
-	}
-
-	public float inertia() {
-		return builds.sumf(HasSpin::getInertia) + 1f;
 	}
 
 	public void mergeFlood(HasSpin other) {
@@ -89,10 +88,6 @@ public class SpinGraph extends Graph<HasSpin> {
 		consumers.remove(build);
 	}
 	
-	public float resistance() {
-		return builds.sumf(HasSpin::getResistance);
-	}
-	
 	@Override
 	public void update() {
 		super.update();
@@ -103,27 +98,13 @@ public class SpinGraph extends Graph<HasSpin> {
 
 		tmp.set(producers);
 		tmp.add(disconnected);
-		// TODO make disconnected builds use regular get methods and not their relative counterparts
+		
+		graphContext = this;
 		for(HasSpin build : tmp) {
-			if (build.spinGraph() == this) {
-				if (build.getTargetSpeed() > targetSpeed) {
-					if (
-						producers.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) +
-						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getTargetSpeed() ? b.getRelativeForce(this) : 0f) >= friction
-					) targetSpeed = build.getTargetSpeed();
-				}
-			} else {
-				if (build.getRelativeTargetSpeed(this) > targetSpeed) {
-					if (
-						producers.sumf(b -> b.getTargetSpeed() >= build.getRelativeTargetSpeed(this) ? b.getForce() : 0f) +
-						disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= build.getRelativeTargetSpeed(this) ? b.getRelativeForce(this) : 0f) >= friction
-					) targetSpeed = build.getRelativeTargetSpeed(this);
-				}
-			}
+			if (build.getTargetSpeed() > targetSpeed && tmp.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) >= friction) targetSpeed = build.getTargetSpeed();
 		}
 		
-		netTorque = producers.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f) +
-		disconnected.sumf(b -> b.getRelativeTargetSpeed(this) >= speed ? b.getRelativeForce(this) : 0f);
+		netTorque = tmp.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f);
 		
 		float accel = Math.abs(netTorque + friction * -Mathf.sign(speed))/inertia;
 		
