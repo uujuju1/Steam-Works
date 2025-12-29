@@ -8,8 +8,9 @@ public class SWItems {
   public static Item
     verdigris, iron, aluminium,
     coke,
+    thermite, bloom,
 
-  compound, denseAlloy, thermite, oxycarbide, steel,
+  compound, denseAlloy, oxycarbide,
 
   meteorite,
     chalk, soda,
@@ -23,7 +24,7 @@ public class SWItems {
       hardness = 2;
       cost = 2f;
     }};
-    aluminium = new Item("aluminium", valueOf("1C1C1C")) {{
+    aluminium = new Item("aluminium", valueOf("8F858C")) {{
       cost = 3f;
     }};
     
@@ -32,7 +33,11 @@ public class SWItems {
       flammability = explosiveness = 0.5f;
     }};
     thermite = new Item("thermite", valueOf("6B7580")) {{
+      buildable = false;
       flammability = explosiveness = 0.8f;
+    }};
+    bloom = new Item("bloom", valueOf("5F595D")) {{
+      cost = 4f;
     }};
     
     meteorite = new Item("meteorite", valueOf("E4CAAC"));
@@ -43,7 +48,6 @@ public class SWItems {
     residue = new Item("residue", valueOf("1C1C1C"));
 
 
-    steel = new Item("steel", valueOf("1C1C1C"));
     oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
     denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
       cost = 1f;

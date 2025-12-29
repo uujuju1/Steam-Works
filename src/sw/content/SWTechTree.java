@@ -29,7 +29,9 @@ public class SWTechTree {
       // region crafting
       root("sw-crafting", engineSmelter, () -> {
         node(cokeOven);
-        node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {});
+        node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
+          node(crusher, with(new NonUnlockable()), () -> {});
+        });
       });
       // endregion
       // region defense
@@ -71,6 +73,7 @@ public class SWTechTree {
       //region power
       root("sw-power", evaporator, () -> {
         node(handWheel);
+        node(combustionEngine, with(new NonUnlockable()), () -> {});
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {});
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {

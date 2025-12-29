@@ -403,7 +403,12 @@ public class SWCrafting {
 		}};
 		
 		crusher = new SWGenericCrafter("crusher") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.verdigris, 70,
+				SWItems.iron, 60,
+				Items.silicon, 80,
+				Items.graphite, 50
+			));
 			size = 3;
 			health = 240;
 			rotate = true;

@@ -178,7 +178,13 @@ public class SWPower {
 			outputRotationForce = 3.5f/600f;
 		}};
 		combustionEngine = new StackableGenericCrafter("combustion-engine") {{
-			requirements(Category.power, with());
+			requirements(Category.power, with(
+				SWItems.verdigris, 120,
+				SWItems.aluminium, 100,
+				SWItems.iron, 110,
+				Items.graphite, 80,
+				Items.silicon, 50
+			));
 			size = 3;
 			
 			connectEdge = new boolean[]{false, true, false, true};
@@ -620,7 +626,7 @@ public class SWPower {
 		}};
 		flywheel = new AxleBlock("flywheel") {{
 			requirements(Category.power, with(
-				SWItems.steel, 200,
+				SWItems.bloom, 200,
 				SWItems.aluminium, 50,
 				SWItems.verdigris, 100,
 				Items.silicon, 30,
