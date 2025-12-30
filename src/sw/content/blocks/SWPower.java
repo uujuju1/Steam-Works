@@ -706,7 +706,7 @@ public class SWPower {
 				}},
 				new DrawDefault()
 			) {{
-				iconOverride = new String[]{"sw-flywheel-icon"};
+				iconOverride = new String[]{"-icon"};
 			}};
 		}};
 		clutch = new AxleClutch("clutch") {{
@@ -781,128 +781,157 @@ public class SWPower {
 			spinConfig = new SpinConfig() {{
 				resistance = 3f/600f;
 				allowedEdges = new int[][]{
+					new int[]{6, 7, 2, 3},
 					new int[]{0, 1, 4, 5},
 					new int[]{2, 3, 6, 7},
 					new int[]{4, 5, 0, 1},
-					new int[]{6, 7, 2, 3}
 				};
 			}};
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle-end") {{
-						iconOverride = "sw-shaft-transmission-axle-icon";
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						spinScl = 0.5f;
-
-						x = 6f;
-						y = 4f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-end") {{
-						hasIcon = false;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						x = 6f;
-						y = -4f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-end") {{
-						hasIcon = false;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						spinScl = 0.5f;
-
-						x = -6f;
-						y = 4f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-end") {{
-						hasIcon = false;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						x = -6f;
-						y = -4f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-small") {{
-						hasIcon = false;
-						circular = true;
-
-						pixelWidth = 32;
-						pixelHeight = 1;
-
-						y = -4;
-
-						width = 8f;
-						height = 2f;
-					}},
-					new Axle("-axle-middle") {{
-						hasIcon = false;
-						circular = true;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						spinScl = -(35f/60f);
-
-						y = -0.75f;
-
-						width = 4f;
-						height = 4.5f;
-					}},
-					new Axle("-axle-large") {{
-						hasIcon = false;
-						circular = true;
-
-						pixelWidth = 32;
-						pixelHeight = 1;
-
-						spinScl = 0.5f;
-
-						y = 4f;
-
-						width = 8f;
-						height = 5f;
-					}}
-				),
-				new DrawBitmask("-tiles", build -> 0) {{
-					tileWidth = tileHeight = 64;
-				}}
+				new DrawAxles() {{
+					for(Point2 offset : Geometry.d8edge) {
+						axles.add(new Axle("-axle-end") {{
+							hasIcon = false;
+							
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							spinScl = offset.x > 0 ? 0.5f : 1f;
+							
+							x = 4f * offset.x;
+							y = 6f * offset.y;
+							
+							width = 4f;
+							height = 3.5f;
+							
+							rotation = -90f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+//					new Axle("-axle-end") {{
+//						iconOverride = "sw-shaft-transmission-axle-icon";
+//
+//						pixelWidth = 16;
+//						pixelHeight = 1;
+//
+//						spinScl = 0.5f;
+//
+//						x = 6f;
+//						y = 4f;
+//
+//						width = 4f;
+//						height = 3.5f;
+//
+//						paletteLight = SWPal.axleLight;
+//						paletteMedium = SWPal.axleMedium;
+//						paletteDark = SWPal.axleDark;
+//					}},
+//						new Axle("-axle-end") {{
+//							hasIcon = false;
+//
+//							pixelWidth = 16;
+//							pixelHeight = 1;
+//
+//							x = 6f;
+//							y = -4f;
+//
+//							width = 4f;
+//							height = 3.5f;
+//
+//							paletteLight = SWPal.axleLight;
+//							paletteMedium = SWPal.axleMedium;
+//							paletteDark = SWPal.axleDark;
+//						}},
+//						new Axle("-axle-end") {{
+//							hasIcon = false;
+//
+//							pixelWidth = 16;
+//							pixelHeight = 1;
+//
+//							spinScl = 0.5f;
+//
+//							x = -6f;
+//							y = 4f;
+//
+//							width = 4f;
+//							height = 3.5f;
+//
+//							paletteLight = SWPal.axleLight;
+//							paletteMedium = SWPal.axleMedium;
+//							paletteDark = SWPal.axleDark;
+//						}},
+//						new Axle("-axle-end") {{
+//							hasIcon = false;
+//
+//							pixelWidth = 16;
+//							pixelHeight = 1;
+//
+//							x = -6f;
+//							y = -4f;
+//
+//							width = 4f;
+//							height = 3.5f;
+//
+//							paletteLight = SWPal.axleLight;
+//							paletteMedium = SWPal.axleMedium;
+//							paletteDark = SWPal.axleDark;
+//						}},
+					axles.add(
+						new Axle("-axle-middle") {{
+							iconOverride = "sw-shaft-transmission-axle-icon";
+							
+							circular = true;
+							
+							pixelWidth = 8;
+							pixelHeight = 1;
+							
+							x = -4;
+							
+							width = 8f;
+							height = 2f;
+							
+							rotation = -90f;
+						}},
+						new Axle("-axle-center") {{
+							hasIcon = false;
+							circular = true;
+							
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							spinScl = -(35f/60f);
+							
+							x = -0.75f;
+							
+							width = 4f;
+							height = 4.5f;
+							
+							rotation = -90f;
+						}},
+						new Axle("-axle-middle") {{
+							hasIcon = false;
+							circular = true;
+							
+							pixelWidth = 8;
+							pixelHeight = 1;
+							
+							spinScl = 0.5f;
+							
+							x = 4f;
+							
+							width = 8f;
+							height = 5f;
+							
+							rotation = -90f;
+						}}
+					);
+				}},
+				new DrawBitmask("-tiles", b -> 0, 64)
 			);
 		}};
 		mechanicalGovernor = new AxleBrake("mechanical-governor") {{

@@ -55,7 +55,7 @@ public class DrawAxles extends DrawBlock {
 			}
 			Draws.palette();
 
-			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, rot);
+			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, axle.width, axle.height, rot);
 		});
 		Draw.reset();
 		Draw.z(z);
