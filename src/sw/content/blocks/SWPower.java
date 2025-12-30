@@ -1,9 +1,7 @@
 package sw.content.blocks;
 
-import arc.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
@@ -632,98 +630,84 @@ public class SWPower {
 				Items.silicon, 30,
 				Items.graphite, 40
 			));
-			
-			size = 2;
+			size = 3;
+			rotate = false;
 			
 			spinConfig = new SpinConfig() {{
 				resistance = 10f/600f;
-				inertia = 25f;
+				inertia = 10f;
 				
 				allowedEdges = new int[][]{
-					new int[]{0, 1, 2, 7},
-					new int[]{1, 2, 3, 4},
-					new int[]{3, 4, 5, 6},
-					new int[]{5, 6, 7, 0}
+					new int[]{0, 3, 6, 9}
 				};
 			}};
 			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle") {{
-						hasIcon = false;
+				new DrawRegion("-gear", 1f, true) {{
+					x = 4f;
+					y = 4f;
+				}},
+				new DrawRegion("-gear", -1f, true) {{
+					x = -4f;
+					y = 4f;
+				}},
+				new DrawRegion("-gear", 1f, true) {{
+					x = -4f;
+					y = -4f;
+				}},
+				new DrawRegion("-gear", -1f, true) {{
+					x = 4f;
+					y = -4f;
+				}},
+				new DrawAxles() {{
+					for(Point2 offset : Geometry.d4) {
+						axles.add(new Axle("-axle") {{
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							x = 10f * offset.x;
+							y = 10f * offset.y;
+							
+							width = 4f;
+							height = 3.5f;
+							
+							rotation = offset.y != 0 ? -90f : 0f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawParts() {{
+					parts.add(new RegionPart("-wheel") {{
+						outline = false;
+						clampProgress = false;
+						layer = Layer.blockOver + 1f;
 						
-						pixelWidth = 2;
-						pixelHeight = 1;
+						rotation = 180f;
+						moveRot = 180f;
 						
-						width = 2f;
-						height = 3.5f;
+						progress = DrawParts.spin.loop(180f);
+					}});
+					parts.add(new RegionPart("-wheel") {{
+						outline = false;
+						clampProgress = false;
+						layer = Layer.blockOver + 1f;
 						
-						x = 4f;
-						y = 7f;
-						rotation = -90f;
+						color = Color.white;
+						colorTo = SWPal.whiteClear;
 						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						pixelWidth = 2;
-						pixelHeight = 1;
+						progress = DrawParts.spin.loop(180f).mul(2f).clamp().curve(Interp.pow5);
 						
-						width = 2f;
-						height = 3.5f;
-						
-						x = 7f;
-						y = 4f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 2;
-						pixelHeight = 1;
-						
-						width = 2f;
-						height = 3.5f;
-						
-						x = 7f;
-						y = -4f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 2;
-						pixelHeight = 1;
-						
-						width = 2f;
-						height = 3.5f;
-						
-						x = 4f;
-						y = -7f;
-						rotation = -90f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
-				new DrawBitmask("-tiles", b -> 0, 64),
-				new DrawRegion("-wheel", 1) {{
-					layer = Layer.power;
-				}}
-			) {
-				@Override public TextureRegion[] icons(Block block) {
-					return new TextureRegion[]{Core.atlas.find(block.name + "-icon")};
-				}
-			};
+						moves.add(new PartMove(DrawParts.spin.loop(180f), 0f, 0f, 180f));
+					}});
+				}},
+				new DrawDefault()
+			) {{
+				iconOverride = new String[]{"sw-flywheel-icon"};
+			}};
 		}};
 		clutch = new AxleClutch("clutch") {{
 			requirements(Category.power, with(
