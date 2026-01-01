@@ -133,7 +133,7 @@ public class SWPower {
 			minEfficiency = 1f;
 			
 			spinConfig = new SpinConfig() {{
-				resistance = 1;
+				resistance = 1f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{1, 3},
 					new int[]{2, 0},
