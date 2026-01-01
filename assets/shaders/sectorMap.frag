@@ -23,26 +23,26 @@ uniform float u_time;
 varying vec2 v_texCoords;
 
 float noise(vec2 pos) {
-    float p = 0;
-    for (float i = 1; i < 11; i++) {
-        p += 0.05 + 0.05 * sin(50 * (pos.x + 10) / i + pos.y * i);
+    float p = 0.0;
+    for (float i = 1.0; i < 11.0; i++) {
+        p += 0.05 + 0.05 * sin(50.0 * (pos.x + 10.0) / i + pos.y * i);
     }
     return p;
 }
 
 void main() {
-    vec2 uv = vec2(v_texCoords.x, 1 - v_texCoords.y);
+    vec2 uv = vec2(v_texCoords.x, 1.0 - v_texCoords.y);
     vec2 scale = u_size/u_resolution;
 
     float overY = u_size.y - u_resolution.y;
 
-    vec2 coords = vec2(0, overY);
+    vec2 coords = vec2(0.0, overY);
     coords += u_position * vec2(-1.0, 1.0);
     coords /= u_resolution;
     coords += uv - vec2(0.5, -0.5);
     coords /= scale;
 
-    float alpha = 0;
+    float alpha = 0.0;
 
     float p = 10000.0;
     for (int i = 0; i < u_points_length; i+= 4) {
@@ -73,15 +73,15 @@ void main() {
     for (int i = 0; i < u_boxes_length; i+= 4) {
         vec2 boxPos = vec2(u_boxes[i], u_resolution.y - u_boxes[i + 1] + overY);
         vec2 boxSize = vec2(u_boxes[i + 2], u_boxes[i + 3]);
-        boxPos += u_position * vec2(-1, 1);
+        boxPos += u_position * vec2(-1.0, 1.0);
         boxPos -= u_resolution * vec2(0.5, -0.5);
         boxPos /= scale;
 
         vec2 box = (boxPos - coords * u_resolution) * scale;
 
         if (
-            abs(box.x) < boxSize.x / 2 &&
-            abs(box.y) < boxSize.y / 2
+            abs(box.x) < boxSize.x / 2.0 &&
+            abs(box.y) < boxSize.y / 2.0
         ) {
 
             vec2 time = box + boxSize / 2 + u_time / 8;
@@ -89,25 +89,25 @@ void main() {
             float bars = mod(time.x + time.y, 60);
             if (
                 !(
-                    abs(box.x) < boxSize.x / 2 - 5 &&
-                    abs(box.y) < boxSize.y / 2 - 5
+                    abs(box.x) < boxSize.x / 2.0 - 5.0 &&
+                    abs(box.y) < boxSize.y / 2.0 - 5.0
                 ) && bars >= 30
             ) {
-                col = vec4(vec3(0.3), 1);
+                col = vec4(vec3(0.3), 1.0);
                 isBox = true;
             }
 
             if (
                 (
-                    abs(box.x) < boxSize.x / 2 - 5 &&
-                    abs(box.y) < boxSize.y / 2 - 5
+                    abs(box.x) < boxSize.x / 2.0 - 5.0 &&
+                    abs(box.y) < boxSize.y / 2.0 - 5.0
                 )
             ) {
                 if (bars < 30) {
-                    col = vec4(vec3(0.2), 1);
+                    col = vec4(vec3(0.2), 1.0);
                     isBox = true;
                 } else {
-                    col = vec4(vec3(0.1), 1);
+                    col = vec4(vec3(0.1), 1.0);
                     isBox = true;
                 }
             }
@@ -117,6 +117,6 @@ void main() {
     if (isBox) {
         gl_FragColor = vec4(col * u_opacity);
     } else {
-        gl_FragColor = vec4(0, 0, 0, alpha * u_opacity);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, alpha * u_opacity);
     }
 }
