@@ -9,19 +9,6 @@ import arc.util.*;
 public interface SpriteProcessor {
 	Seq<Cons<Pixmap>> adds = new Seq<>();
 
-	Point2[] edges = new Point2[]{
-		new Point2(1, 0),
-		new Point2(0, 1),
-		new Point2(-1, 0),
-		new Point2(0, -1),
-	};
-	Point2[] corners = new Point2[]{
-		new Point2(1, 1),
-		new Point2(-1, 1),
-		new Point2(-1, -1),
-		new Point2(1, -1),
-	};
-
 	void process();
 
 	/**
@@ -48,7 +35,7 @@ public interface SpriteProcessor {
 			boolean isEven = i % 2 == 0;
 			adds.clear();
 			copy.each((x, y) ->  {
-				for(Point2 offset : edges) {
+				for(Point2 offset : Geometry.d4) {
 					if (
 						copy.get(x + offset.x, y + offset.y) != 0 &&
 							copy.getA(x + offset.x, y + offset.y) != 0 &&
@@ -57,7 +44,7 @@ public interface SpriteProcessor {
 						adds.add(pixmap -> pixmap.set(x, y, outlineColor));
 					}
 				}
-				if (isEven) for(Point2 offset : corners) {
+				if (isEven) for(Point2 offset : Geometry.d8edge) {
 					if (
 						copy.get(x + offset.x, y + offset.y) != 0 &&
 							copy.getA(x + offset.x, y + offset.y) != 0 &&
@@ -72,6 +59,8 @@ public interface SpriteProcessor {
 				c.get(copy);
 			});
 		}
+		if (addRegion) out.dispose();
+		else copy.dispose();
 		return addRegion ? copy : out;
 	}
 	default Pixmap outline(Pixmap region, int outlineRadius, Color outlineColor) {
@@ -87,6 +76,7 @@ public interface SpriteProcessor {
 			Tmp.v1.set(x, y).sub(base.width/2f, base.height/2f).rotate(degrees).add(base.width/2f, base.height/2f);
 			region.set(x, y, base.get((int) Tmp.v1.x, (int) Tmp.v1.y));
 		});
+		base.dispose();
 		return region;
 	}
 }

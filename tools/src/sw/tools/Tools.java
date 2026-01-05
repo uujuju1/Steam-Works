@@ -102,7 +102,12 @@ public class Tools {
 		Log.info("Atlas initialization finished in @ms.", Time.timeSinceMillis(counter));
 		counter = Time.millis();
 
-		for (SpriteProcessor process : processes) process.process();
+		for (SpriteProcessor process : processes) {
+			long processTime = Time.millis();
+			Log.info("Begin @", process.getClass().getSimpleName());
+			process.process();
+			Log.info("@ ended in @ms", process.getClass().getSimpleName(), Time.timeSinceMillis(processTime));
+		}
 
 		Log.info("Sprite processing finished in @ms.", Time.timeSinceMillis(counter));
 		atlas.dispose();
