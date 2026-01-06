@@ -18,7 +18,7 @@ import sw.type.*;
 
 public class SWUnitTypes {
   public static UnitType
-		soar,
+		soar, volare,
 		wisp,
 	  lambda, rho;
 
@@ -47,6 +47,8 @@ public class SWUnitTypes {
 
 				speed = 10f;
 				shineSpeed = -2f;
+				
+				blurAlpha = 0.4f;
 			}});
 
 			weapons.addAll(
@@ -75,6 +77,43 @@ public class SWUnitTypes {
             trailRotation = true;
             trailColor = Pal.accent;
 					}};
+				}}
+			);
+		}};
+		
+		volare = new SWUnitType("volare") {{
+			health = 800;
+			speed = 2f;
+			accel = drag = 0.05f;
+			rotateSpeed = 3f;
+			fallSpeed = 0.005f;
+			
+			hitSize = 38f;
+			engineSize = 0f;
+			
+			flying = lowAltitude = true;
+			
+			rotors.add(
+				new UnitRotor("-rotor-small", true) {{
+					x = 0;
+					y = -9.75f;
+					rotation = 90f;
+					blades = 2;
+					
+					speed = 8f;
+					shineSpeed = -2f;
+				}},
+				new UnitRotor("-rotor", true) {{
+					x = 12f;
+					y = 3;
+					blades = 3;
+					
+					mirrored = true;
+					
+					speed = 12f;
+					shineSpeed = -3f;
+					
+					blurAlpha = 0.5f;
 				}}
 			);
 		}};

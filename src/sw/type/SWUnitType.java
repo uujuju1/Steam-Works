@@ -55,11 +55,27 @@ public class SWUnitType extends UnitType {
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
     if (outlines) super.getRegionsToOutline(out);
   }
-
+  
+  @Override
+  public void init() {
+    super.init();
+    Seq<UnitRotor> rotorSeq = new Seq<>();
+    
+//    Log.info("duplicating rotors");
+    for(UnitRotor rotor : rotors) {
+//      Log.info("add rotor");
+      var r = rotor.copy();
+      r.flip();
+//      Log.info("add rotor copy");
+      rotorSeq.add(r);
+      rotorSeq.add(rotor);
+    }
+    rotors = rotorSeq;
+  }
+  
   @Override
   public void load() {
     super.load();
-    Seq<UnitRotor> rotorSeq = new Seq<>();
 
     if (wrecks > 0) {
       wreckRegions = new TextureRegion[wrecks];
@@ -67,14 +83,7 @@ public class SWUnitType extends UnitType {
         wreckRegions[i] = Core.atlas.find(name + "-wreck-" + (i + 1));
       }
     }
-
-    rotors.each(rotor -> {
-      rotorSeq.add(rotor);
-      var r = rotor.copy();
-      r.flip();
-      rotorSeq.add(r);
-    });
-    rotors = rotorSeq;
+    
     rotors.each(rotor -> rotor.load(this));
   }
 
@@ -115,6 +124,10 @@ public class SWUnitType extends UnitType {
      * If true, this rotor rotates along with the unit.
      */
     public boolean followParent = true;
+    /**
+     * Rotation applied to the rotor sprite when drawing the full region
+     */
+    public float rotation;
 
     public Sound rotorSound = SWSounds.helicopter;
     public float rotorSoundVolume = 1f;

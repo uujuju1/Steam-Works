@@ -95,17 +95,15 @@ public class UnitProcessor implements SpriteProcessor {
 					for (int i = 0; i < rotor.blades; i++) {
 							float deg = 360f / rotor.blades * i;
 							Pixmap copy = Tools.atlas.castRegion(rotor.region).pixmap().copy();
-							full.draw(rotate(copy, deg), 0, 0, true);
+							full.draw(rotate(copy, deg + rotor.rotation), 0, 0, true);
 						}
 					Tools.atlas.castRegion(rotor.region).pixmap().draw(outline(full, unit.outlineRadius, unit.outlineColor, true));
 					Tools.atlas.castRegion(rotor.region).save(true);
 
 					if (rotor.topRegion.found()) {
-						rotor.topRegion = new GeneratedRegion(
-							Tools.atlas.castRegion(rotor.topRegion).name,
-							outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true),
-							Tools.atlas.castRegion(rotor.topRegion).file
-						).save(true);
+						Pixmap outlined = outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true);
+						Tools.atlas.castRegion(rotor.topRegion).pixmap().draw(outlined);
+						Tools.atlas.castRegion(rotor.topRegion).save(false);
 					}
 				});
 

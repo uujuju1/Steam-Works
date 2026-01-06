@@ -10,6 +10,7 @@ public class EntityMaps {
 	public static void load() {
 		registerEntity(CopterUnit.class, CopterUnit::new);
 		registerUnit("sw-soar", CopterUnit::new);
+		registerUnit("sw-volare", CopterUnit::new);
 		registerUnit("sw-wisp", UnitEntity::create);
 		registerEntity(CollisionlessLegsUnit.class, CollisionlessLegsUnit::new);
 		registerUnit("sw-lambda", CollisionlessLegsUnit::new);
