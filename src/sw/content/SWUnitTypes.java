@@ -82,7 +82,7 @@ public class SWUnitTypes {
 		}};
 		
 		volare = new SWUnitType("volare") {{
-			health = 800;
+			health = 1200;
 			speed = 2f;
 			accel = drag = 0.05f;
 			rotateSpeed = 3f;
@@ -114,6 +114,79 @@ public class SWUnitTypes {
 					shineSpeed = -3f;
 					
 					blurAlpha = 0.5f;
+				}}
+			);
+			
+			weapons.add(
+				new Weapon("sw-volare-slag-gun") {{
+					mirror = true;
+					layerOffset = -0.01f;
+					
+					x = 4.5f;
+					y = 13.75f;
+					shootY = 6;
+					
+					reload = 1f;
+					
+					recoil = 0.5f;
+					recoilTime = 60f;
+					
+					shootCone = 361;
+					
+					activeSound = Sounds.loopSpray;
+					shootSound = Sounds.none;
+					bullet = new LiquidBulletType(Liquids.slag) {{
+						puddleSize = 12f;
+						
+						
+						shootEffect = Fx.hitLiquid;
+						orbSize = 2f;
+						despawnHit = true;
+					}};
+				}},
+				new Weapon("sw-volare-coil") {{
+					mirror = true;
+					
+					x = 6.5f;
+					y = 4f;
+					shootY = 6f;
+					
+					reload = 90f;
+					
+					recoil = 2f;
+					recoilTime = 45f;
+					
+					rotate = true;
+					rotationLimit = 30f;
+					
+					shootSound = Sounds.shootEnergyField;
+					
+					bullet = new BasicBulletType(3f, 40f, "circle-bullet") {{
+						lifetime = 70f;
+						
+						width = height = 6f;
+						shrinkY = shrinkX = 0;
+						
+						frontColor = backColor = Pal.missileYellow;
+						
+						intervalBullets = 3;
+						bulletInterval = 1;
+						
+						lightningColor = Pal.missileYellow;
+						lightning = 10;
+						lightningLength = 5;
+						lightningLengthRand = 3;
+						lightningDamage = 30;
+						
+						intervalBullet = new LightningBulletType() {{
+							damage = 10f;
+							
+							lightningColor = Pal.missileYellow;
+							lightningDamage = 10;
+							lightningLength = 3;
+							lightningLengthRand = 2;
+						}};
+					}};
 				}}
 			);
 		}};
