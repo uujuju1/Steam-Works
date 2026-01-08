@@ -21,6 +21,8 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * constant values based on the builds.
 	 */
 	public float friction, inertia;
+	
+	public float torque, targetSpeed;
 
 	/**
 	 * List of buildings of this graph.
@@ -57,8 +59,9 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-		graphContext = this;
-		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(HasSpin::getForce);
+//		graphContext = this;
+//		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(HasSpin::getForce);
+		return torque;
 	}
 	
 	@Override
@@ -92,21 +95,19 @@ public class SpinGraph extends Graph<HasSpin> {
 	public void update() {
 		super.update();
 		
-		float netTorque;
-		
-		float targetSpeed = 0;
+		targetSpeed = 0;
 
 		tmp.set(producers);
 		tmp.add(disconnected);
 		
 		graphContext = this;
 		for(HasSpin build : tmp) {
-			if (build.getTargetSpeed() > targetSpeed && tmp.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() ? b.getForce() : 0f) >= friction) targetSpeed = build.getTargetSpeed();
+			if ((build.getTargetSpeed() > targetSpeed) && tmp.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() || !b.spinConfig().checkSpeed ? b.getForce() : 0f) >= friction) targetSpeed = build.getTargetSpeed();
 		}
 		
-		netTorque = tmp.sumf(b -> b.getTargetSpeed() >= speed ? b.getForce() : 0f);
+		torque = tmp.sumf(b -> b.getTargetSpeed() >= speed || !b.spinConfig().checkSpeed ? b.getForce() : 0f);
 		
-		float accel = Math.abs(netTorque + friction * -Mathf.sign(speed))/inertia;
+		float accel = Math.abs(torque + friction * -Mathf.sign(speed))/inertia;
 		
 		speed = Mathf.approachDelta(speed, targetSpeed, accel);
 

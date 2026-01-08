@@ -13,6 +13,11 @@ import sw.world.interfaces.*;
 
 public class SpinConfig {
 	public boolean hasSpin = true;
+	
+	/**
+	 * When true, torque will be ignored if the graph's speed exceeds this block's target speed.
+	 */
+	public boolean checkSpeed = true;
 
 	/**
 	 * Resistance of rotation speed in rpm/10/sec.

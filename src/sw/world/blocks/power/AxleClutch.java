@@ -11,6 +11,13 @@ public class AxleClutch extends AxleBlock {
 		super(name);
 	}
 	
+	@Override
+	public void init() {
+		super.init();
+		
+		if (spinConfig != null) spinConfig.checkSpeed = false;
+	}
+	
 	public class AxleClutchBuild extends AxleBlockBuild {
 		@Override public boolean connectTo(HasSpin other) {
 			return false;
@@ -22,14 +29,15 @@ public class AxleClutch extends AxleBlock {
 			float scalar = isBack ? -((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 0);
 			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
 			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
-			return Mathf.clamp((backSpeed - frontSpeed)/60f, -clutchStrength, clutchStrength) * scalar;
+			return Mathf.clamp((backSpeed - frontSpeed)/60f, -clutchStrength, clutchStrength) / scalar;
 		}
 		@Override
 		public float getTargetSpeed() {
 			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == SpinGraph.graphContext;
+			float scalar = isBack ? ((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 1);
 			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
 			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
-			return isBack ? frontSpeed : backSpeed;
+			return (isBack ? frontSpeed : backSpeed) / scalar;
 		}
 		
 		@Override
