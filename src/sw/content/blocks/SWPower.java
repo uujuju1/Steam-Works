@@ -717,7 +717,7 @@ public class SWPower {
 				Items.graphite, 50
 			));
 			
-			clutchStrength = 20f/600f;
+			clutchStrength = 50f/600f;
 			
 			spinConfig = new SpinConfig() {{
 				allowedEdges = new int[][]{
@@ -764,7 +764,8 @@ public class SWPower {
 						paletteDark = SWPal.axleDark;
 					}}
 				),
-				new DrawBitmask("-tiles", build -> 0)
+				new DrawFacingLightRegion(),
+				new DrawRegion("-top")
 			);
 		}};
 
