@@ -52,7 +52,7 @@ void main() {
         point -= u_resolution * vec2(0.5, -0.5);
         point /= scale;
 
-        vec2 len = (point - coords * u_resolution) * scale / (pointSize / 2);
+        vec2 len = (point - coords * u_resolution) * scale / (pointSize / 2.0);
 
         float val = 0.0;
         val += texture2D(u_texture, coords / 4.0 + vec2(u_time / 2.0, -u_time / 3.0) * TIMESCL).r / 3.0;
@@ -66,7 +66,7 @@ void main() {
 //    if (p > 1) col *= vec4(0.5, 0.5, 0.5, 1);
 //    if (p > 1.25) col *= vec4(0, 0, 0, 1);
     if (p > 0.75f) alpha = 0.5;
-    if (p > 1) alpha = 1.0;
+    if (p > 1.0) alpha = 1.0;
 
     bool isBox = false;
     vec4 col = vec4(0.0);
@@ -84,9 +84,9 @@ void main() {
             abs(box.y) < boxSize.y / 2.0
         ) {
 
-            vec2 time = box + boxSize / 2 + u_time / 8;
+            vec2 time = box + boxSize / 2.0 + u_time / 8.0;
 
-            float bars = mod(time.x + time.y, 60);
+            float bars = mod(time.x + time.y, 60.0);
             if (
                 !(
                     abs(box.x) < boxSize.x / 2.0 - 5.0 &&
