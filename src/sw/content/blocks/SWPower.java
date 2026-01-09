@@ -210,7 +210,7 @@ public class SWPower {
 			));
 			consumeItems(with(SWItems.thermite, 1));
 			consume(new ConsumeSpin() {{
-				minSpeed = 1f;
+				minSpeed = 0.1f;
 				
 				efficiencyScale = Interp.one;
 			}});

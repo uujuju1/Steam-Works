@@ -31,7 +31,7 @@ public class SWStorage {
 			));
 			size = 2;
 			health = 500;
-			itemCapacity = 500;
+			itemCapacity = 50;
 			coreMerge = false;
 		}};
 		

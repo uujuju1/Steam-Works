@@ -427,10 +427,13 @@ public class SWCrafting {
 			));
 			consumeLiquid(Liquids.ozone, 1f/60f);
 			consume(new ConsumeSpin() {{
-				minSpeed = 30f / 10f;
+				minSpeed = 10f / 10f;
 				maxSpeed = 70f / 10f;
 				
-				efficiencyScale = speed -> Mathf.map(speed, 3, 7, 0.5f, 1.5f);
+				efficiencyScale = speed -> {
+					if (speed < 3) return Mathf.pow(Mathf.map(speed, 1, 3, 0f, 1f), 2f) / 2f;
+					return Mathf.map(speed, 3, 7, 0.5f, 1.5f);
+				};
 			}});
 			
 			outputItems = with(SWItems.thermite, 3);
