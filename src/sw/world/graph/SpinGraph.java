@@ -20,7 +20,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	/**
 	 * constant values based on the builds.
 	 */
-	public float friction, inertia;
+	public float friction, inertia = 1;
 	
 	public float torque, targetSpeed;
 
@@ -32,7 +32,6 @@ public class SpinGraph extends Graph<HasSpin> {
 	/**
 	 * Buildings that aren't connected but still influence this graph with force.
 	 */
-	// TODO generalize to include disconnected builds in floodFill
 	public final Seq<HasSpin> disconnected = new Seq<>();
 	
 	/**
@@ -59,14 +58,11 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * Returns the force that all builds are doing to push the whole system.
 	 */
 	public float force() {
-//		graphContext = this;
-//		return producers.sumf(HasSpin::getForce) + disconnected.removeAll(build -> !build.asBuilding().isValid()).sumf(HasSpin::getForce);
 		return torque;
 	}
 	
 	@Override
 	public void graphChanged() {
-		disconnected.clear();
 		updateRatios(builds.first());
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
@@ -78,8 +74,12 @@ public class SpinGraph extends Graph<HasSpin> {
 	public void mergeFlood(HasSpin other) {
 		floodFill(other, HasSpin::nextBuilds).each(build -> {
 			if (build.spin() != null && build.spinGraph() != null && build.spinGraph() != this) {
-				build.spinGraph().removeBuild(build);
-				addBuild(build);
+				if (build.spinConfig().disconnected) {
+					disconnected.add(build);
+				} else {
+					build.spinGraph().removeBuild(build);
+					addBuild(build);
+				}
 			}
 		});
 	}

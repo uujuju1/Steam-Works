@@ -18,15 +18,19 @@ public class SpinConfig {
 	 * When true, torque will be ignored if the graph's speed exceeds this block's target speed.
 	 */
 	public boolean checkSpeed = true;
+	/**
+	 * When true, graphs around it don't connect, but still are aware of it's existence.
+	 */
+	public boolean disconnected;
 
 	/**
 	 * Resistance of rotation speed in rpm/10/sec.
 	 */
-	public float resistance = 0;
+	public float resistance;
 	/**
 	 * Extra moment of inertia added to the system.
 	 */
-	public float inertia = 0;
+	public float inertia;
 
 	/**
 	 * List of edges that will connect. One list per rotation. If null, every edge is allowed.

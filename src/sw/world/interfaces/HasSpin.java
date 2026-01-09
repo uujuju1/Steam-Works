@@ -119,6 +119,7 @@ public interface HasSpin {
 	 * Returns a seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
+		if (spinConfig().disconnected) return Seq.with();
 		return asBuilding().proximity
 			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
 			     .map(a -> ((HasSpin) a)
