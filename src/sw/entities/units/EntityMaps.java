@@ -12,6 +12,7 @@ public class EntityMaps {
 		registerUnit("sw-soar", CopterUnit::new);
 		registerUnit("sw-volare", CopterUnit::new);
 		registerUnit("sw-wisp", UnitEntity::create);
+		registerUnit("sw-ballistra", TankUnit::create);
 		registerEntity(CollisionlessLegsUnit.class, CollisionlessLegsUnit::new);
 		registerUnit("sw-lambda", CollisionlessLegsUnit::new);
 		registerUnit("sw-rho", UnitEntity::create);

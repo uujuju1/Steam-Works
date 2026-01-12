@@ -1,7 +1,10 @@
 package sw.content;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
@@ -19,11 +22,11 @@ import sw.type.*;
 public class SWUnitTypes {
   public static UnitType
 		soar, volare,
+		ballistra,
 		wisp,
 	  lambda, rho;
 
   public static void load() {
-	  //region copter
 		soar = new SWUnitType("soar") {{
 			health = 250;
 			speed = 2f;
@@ -138,7 +141,6 @@ public class SWUnitTypes {
 					bullet = new LiquidBulletType(Liquids.slag) {{
 						puddleSize = 12f;
 						
-						
 						shootEffect = Fx.hitLiquid;
 						orbSize = 2f;
 						despawnHit = true;
@@ -190,7 +192,68 @@ public class SWUnitTypes {
 				}}
 			);
 		}};
-		//endregion
+		
+		ballistra = new SWUnitType("ballistra") {{
+			health = 850;
+			speed = 0.7f;
+			
+			rotateSpeed = 2f;
+			
+			hitSize = 20f;
+			
+			omniMovement = false;
+			
+			outlineColor = Color.valueOf("2D2F39");
+			
+			range = maxRange = 160f;
+			
+			weapons.add(new Weapon("sw-ballistra-cannon") {{
+				mirror = false;
+				
+				x = 0f;
+				y = -1f;
+				shootY = 12f;
+				
+				reload = 30f;
+				recoil = 2f;
+				recoilTime = 60f;
+				
+				rotate = true;
+				rotateSpeed = 3f;
+				
+				shootSound = Sounds.blockExplode2Alt;
+				bullet = new RailBulletType() {{
+					length = 180f;
+					damage = 60f;
+					
+					pierceCap = 4;
+					pierceDamageFactor = 0.05f;
+					
+					hitColor = Pal.missileYellowBack;
+					
+					pierceEffect = new Effect(20f, e -> {
+						Lines.stroke(e.foutpowdown());
+						Draw.color(Color.white, Pal.missileYellowBack, e.finpow());
+						for(int i : Mathf.signs) {
+							Lines.lineAngle(
+								e.x + Angles.trnsx(e.rotation + 180f + 30f * i, 4f * e.finpow()),
+								e.y + Angles.trnsy(e.rotation + 180f + 30f * i, 4f * e.finpow()),
+								e.rotation + 180f + 30f * i,
+								2f * e.foutpow()
+							);
+						}
+					});
+					lineEffect = new Effect(10f, e -> {
+						if (!(e.data instanceof Vec2 data)) return;
+						Tmp.v1.set(e.x, e.y).lerp(data, e.finpowdown());
+						Lines.stroke(2f * e.foutpowdown());
+						Draw.color(Color.white, Pal.missileYellowBack, e.finpow());
+						Lines.line(Tmp.v1.x, Tmp.v1.y, data.x, data.y);
+					});
+					endEffect = Fx.hitBulletColor;
+				}};
+			}});
+		}};
 	  
 	  wisp = new SWUnitType("wisp") {{
 			health = 350;
