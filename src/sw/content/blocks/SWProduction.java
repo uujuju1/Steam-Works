@@ -25,9 +25,9 @@ import static mindustry.type.ItemStack.*;
 public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
+		auger,
 	
 		castingOutlet,
-
 		liquidCollector, artesianWell, pumpjack;
 
 	public static void load() {
@@ -189,6 +189,61 @@ public class SWProduction {
 				};
 			}};
 		}};
+		auger = new SWDrill("auger") {{
+			requirements(Category.production, with(
+			
+			));
+			size = 3;
+			rotate = true;
+			tier = 4;
+			drillTime = hardnessDrillMultiplier = 67.5f;
+			liquidBoostIntensity = 1f;
+			
+			consume(new ConsumeSpin() {{
+				minSpeed = 20f / 10f;
+				maxSpeed = 100f / 10f;
+				
+				efficiencyScale = speed -> Mathf.map(speed, 2f, 10f, 0.5f, 2f);
+			}});
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-rotator", 3, true),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					
+					for(int i : Mathf.signs) {
+						axles.add(new Axle("-axle") {{
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							x = 10f * i;
+							y = 0;
+							
+							width = 4f;
+							height = 3.5f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawFacingLightRegion(),
+				new DrawRegion("-top")
+			);
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 20/600f;
+				
+				allowedEdges = new int[][]{
+					new int[]{0, 6},
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3}
+				};
+			}};
+		}};
 		
 		castingOutlet = new SingleItemMultiCrafter("casting-outlet") {{
 			requirements(Category.production, with(
@@ -219,7 +274,6 @@ public class SWProduction {
 				new DrawRegion("-top")
 			);
 		}};
-
 		liquidCollector = new Pump("liquid-collector") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 20
