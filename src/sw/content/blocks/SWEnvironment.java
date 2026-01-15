@@ -14,11 +14,13 @@ import sw.world.meta.*;
 
 public class SWEnvironment {
 	public static Block
-	oreVerdigris, oreIron, fissure, oreGraphite, collapsedSilicon,
+	oreVerdigris, oreIron, fissure, oreGraphite, collapsedSilicon, oreAluminium,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
-	agedSouesite, agedSouesiteWall,
+	
+	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
+	magmaticFlowrock, hotFlowrock,
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
 	slagPlug,
@@ -48,6 +50,9 @@ public class SWEnvironment {
 		}};
 		oreGraphite = new OreBlock(Items.graphite) {{
 			wallOre = true;
+			variants = 4;
+		}};
+		oreAluminium = new OreBlock(SWItems.aluminium) {{
 			variants = 4;
 		}};
 
@@ -88,11 +93,6 @@ public class SWEnvironment {
 			attributes.set(Attribute.water, 1.5f);
 		}};
 
-		agedSouesiteWall = new StaticWall("aged-souesite-wall");
-		agedSouesite = new Floor("aged-souesite") {{
-			wall = agedSouesiteWall;
-		}};
-
 		souesiteShallowerSolvent = new Floor("souesite-shallower-solvent", 2) {{
 			wall = souesiteWall;
 			cacheLayer = CacheLayer.water;
@@ -104,6 +104,42 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+		}};
+		//endregion
+		
+		//region flowstone
+		flowstoneWall = new StaticWall("flowstone-wall");
+		flowstone = new Floor("flowstone", 4) {{
+			wall = flowstoneWall;
+		}};
+		flowrock = new Floor("flowrock", 4) {{
+			wall = flowstoneWall;
+			
+			attributes.set(Attribute.heat, 0.25f);
+		}};
+		flowrockCrater = new Floor("flowrock-crater", 2) {{
+			wall = flowstoneWall;
+			
+			attributes.set(Attribute.water, 3f);
+			attributes.set(Attribute.heat, 0.5f);
+		}};
+		largeFlowrockCrater = new SteamVent("large-flowrock-crater") {{
+			variants = 0;
+			parent = blendGroup = flowrock;
+			wall = flowstoneWall;
+			
+			attributes.set(Attribute.water, 4f);
+			attributes.set(Attribute.heat, 0.5f);
+		}};
+		hotFlowrock = new Floor("hot-flowrock", 4) {{
+			wall = flowstoneWall;
+			
+			attributes.set(Attribute.heat, 0.75f);
+		}};
+		magmaticFlowrock = new Floor("magmatic-flowrock", 4) {{
+			wall = flowstoneWall;
+			
+			attributes.set(Attribute.heat, 1f);
 		}};
 		//endregion
 
@@ -171,37 +207,37 @@ public class SWEnvironment {
 		//endregion
 
 		//region tuff
-		tuffWall = new StaticWall("tuff-wall");
-		tuffPile = new Prop("tuff-pile") {{
-			variants = 2;
-		}};
-		columnarTuff = new TallBlock("columnar-tuff") {{
-			variants = 2;
-		}};
-		tuffConcretion = new OverlayFloor("tuff-concretion") {{
-			variants = 4;
-		}};
-		tuff = new Floor("tuff", 4) {{
-			wall = tuffWall;
-			decoration = tuffPile;
-		}};
-		shapedTuff = new Floor("shaped-tuff", 4) {{
-			wall = tuffWall;
-			decoration = tuffPile;
-		}};
-
-		tuffShallowerSolvent = new Floor("tuff-shallower-solvent", 2) {{
-			wall = tuffWall;
-			cacheLayer = CacheLayer.water;
-			isLiquid = true;
-			liquidDrop = SWLiquids.solvent;
-		}};
-		tuffShallowSolvent = new Floor("tuff-shallow-solvent", 2) {{
-			wall = tuffWall;
-			cacheLayer = CacheLayer.water;
-			isLiquid = true;
-			liquidDrop = SWLiquids.solvent;
-		}};
+//		tuffWall = new StaticWall("tuff-wall");
+//		tuffPile = new Prop("tuff-pile") {{
+//			variants = 2;
+//		}};
+//		columnarTuff = new TallBlock("columnar-tuff") {{
+//			variants = 2;
+//		}};
+//		tuffConcretion = new OverlayFloor("tuff-concretion") {{
+//			variants = 4;
+//		}};
+//		tuff = new Floor("tuff", 4) {{
+//			wall = tuffWall;
+//			decoration = tuffPile;
+//		}};
+//		shapedTuff = new Floor("shaped-tuff", 4) {{
+//			wall = tuffWall;
+//			decoration = tuffPile;
+//		}};
+//
+//		tuffShallowerSolvent = new Floor("tuff-shallower-solvent", 2) {{
+//			wall = tuffWall;
+//			cacheLayer = CacheLayer.water;
+//			isLiquid = true;
+//			liquidDrop = SWLiquids.solvent;
+//		}};
+//		tuffShallowSolvent = new Floor("tuff-shallow-solvent", 2) {{
+//			wall = tuffWall;
+//			cacheLayer = CacheLayer.water;
+//			isLiquid = true;
+//			liquidDrop = SWLiquids.solvent;
+//		}};
 		//endregion
 
 		//region solvent
