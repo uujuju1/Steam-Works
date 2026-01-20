@@ -3,6 +3,7 @@ package sw.content.blocks;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -24,8 +25,8 @@ public class SWCrafting {
 	public static Block
 		cokeOven, engineSmelter, waterBallMill,
 		
-		crusher,
-		blastFurnace, wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
+		crusher, blastFurnace,
+		wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
 		
 		crystalFurnace, rte, kitchenGarden;
 	
@@ -267,9 +268,6 @@ public class SWCrafting {
 				resistance = 10f/600f;
 
 				allowedEdges = new int[][]{
-					new int[]{0, 3, 6, 9},
-					new int[]{0, 3, 6, 9},
-					new int[]{0, 3, 6, 9},
 					new int[]{0, 3, 6, 9}
 				};
 			}};
@@ -427,7 +425,7 @@ public class SWCrafting {
 			));
 			consumeLiquid(Liquids.ozone, 1f/60f);
 			consume(new ConsumeSpin() {{
-				minSpeed = 10f / 10f;
+				minSpeed = 1f;
 				maxSpeed = 70f / 10f;
 				
 				efficiencyScale = speed -> {
@@ -499,6 +497,113 @@ public class SWCrafting {
 					new int[]{2, 4, 8, 10},
 					new int[]{5, 7, 11, 1},
 					new int[]{8, 10, 2, 4}
+				};
+			}};
+		}};
+		blastFurnace = new SWGenericCrafter("blast-furnace") {{
+			requirements(Category.crafting, with());
+			size = 4;
+			itemCapacity = 24;
+			
+			craftTime = 180f;
+			consumeLiquid(Liquids.ozone, 2f / 60f);
+			consumeItems(with(
+				SWItems.iron, 12,
+				SWItems.coke, 4
+			));
+			consume(new ConsumeSpin() {{
+				minSpeed = 40 / 10f;
+				maxSpeed = 60f / 10f;
+				
+				efficiencyScale = speed -> Mathf.map(speed, 4, 6, 0.5f, 1.5f);
+			}});
+			craftEffect = updateEffect = new MultiEffect(
+				new WrapEffect(SWFx.parallaxFire, Color.white, 8),
+				new WrapEffect(SWFx.parallaxFire, Color.white, 6),
+				new WrapEffect(SWFx.parallaxFire, Color.white, 4)
+			);
+			updateEffectSpread = 0f;
+			updateEffectChance = 0.07f;
+			craftSound = Sounds.blockExplodeFlammable;
+			craftSoundVolume = 0.025f;
+			ambientSound = Sounds.shootSublimate;
+			ambientSoundVolume = 0.25f;
+			ambientSoundPitch = 0.5f;
+			
+			outputItems = with(SWItems.bloom, 9);
+			outputLiquids = LiquidStack.with(Liquids.slag, 7.5f / 60f);
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					
+					for (int i : Mathf.signs) {
+						for (int j : Mathf.signs) {
+							axles.add(new Axle("-axle") {{
+								pixelWidth = 4;
+								pixelHeight = 1;
+								
+								x = 14f * i;
+								y = 4f * j;
+								
+								width = 4f;
+								height = 3.5f;
+								
+								paletteLight = SWPal.axleLight;
+								paletteMedium = SWPal.axleMedium;
+								paletteDark = SWPal.axleDark;
+							}});
+						}
+					}
+				}},
+				new DrawParticles() {{
+					color = Pal.lightOrange;
+					blending = Blending.additive;
+					
+					particles = 30;
+					particleRad = 11f;
+					particleSize = 5f;
+					particleLife = 120f;
+				}},
+				new DrawParallaxParticles() {{
+					layer = Layer.bullet;
+					
+					color = Color.white.cpy().a(0.5f);
+					
+					x = y = -10f;
+					
+					reverse = true;
+					setMin = false;
+					particles = 14;
+					particleRad = 2f;
+					particleHeightMin = 0f;
+					particleHeightMax = 2f;
+					particleLife = 120f;
+				}},
+				new DrawParallaxParticles() {{
+					layer = Layer.bullet;
+					
+					color = Color.white.cpy().a(0.5f);
+					
+					x = y = 10f;
+					
+					reverse = true;
+					setMin = false;
+					particles = 16;
+					particleRad = 2f;
+					particleHeightMin = 0f;
+					particleHeightMax = 2f;
+					particleLife = 120f;
+				}},
+				new DrawDefault()
+			);
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 50f / 600f;
+				
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 8, 9}
 				};
 			}};
 		}};

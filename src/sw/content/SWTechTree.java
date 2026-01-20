@@ -31,6 +31,7 @@ public class SWTechTree {
         node(cokeOven);
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
           node(crusher, with(new NonUnlockable()), () -> {});
+          node(blastFurnace, with(new NonUnlockable()), () -> {});
         });
       });
       // endregion
@@ -94,6 +95,7 @@ public class SWTechTree {
       root("sw-production", mechanicalBore, () -> {
         node(hydraulicDrill, () -> {
           node(mechanicalFracker, () -> {});
+          node(auger, with(new NonUnlockable()), () -> {});
         });
         node(liquidCollector, () -> {
           node(artesianWell, with(
@@ -115,6 +117,7 @@ public class SWTechTree {
           nodeProduce(Items.sand, () -> {
             nodeProduce(Items.silicon, () -> {});
           });
+          nodeProduce(bloom, () -> {});
         });
         nodeProduce(solvent, () -> {
           nodeProduce(Liquids.water, () -> {});
