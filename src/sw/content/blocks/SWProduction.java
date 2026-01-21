@@ -191,7 +191,10 @@ public class SWProduction {
 		}};
 		auger = new SWDrill("auger") {{
 			requirements(Category.production, with(
-			
+				SWItems.verdigris, 100,
+				SWItems.bloom, 120,
+				Items.graphite, 80,
+				Items.silicon, 100
 			));
 			size = 3;
 			rotate = true;

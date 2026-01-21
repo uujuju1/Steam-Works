@@ -501,7 +501,13 @@ public class SWCrafting {
 			}};
 		}};
 		blastFurnace = new SWGenericCrafter("blast-furnace") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.verdigris, 200,
+				SWItems.iron, 240,
+				SWItems.aluminium, 250,
+				Items.graphite, 300,
+				Items.silicon, 280
+			));
 			size = 4;
 			itemCapacity = 24;
 			
