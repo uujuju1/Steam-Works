@@ -376,6 +376,7 @@ project(":") {
 
     tasks.register<DefaultTask>("runGame") {
 //        dependsOn(tasks.named<DefaultTask>("install"))
+        mustRunAfter("install")
 
         val runJsonFile = Fi.get(project.rootDir.absolutePath).child("run/mindustry.json")
 
