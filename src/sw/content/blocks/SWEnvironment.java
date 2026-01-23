@@ -134,7 +134,7 @@ public class SWEnvironment {
 			attributes.set(Attribute.heat, 0.75f);
 			
 			emitLight = true;
-			lightColor = Pal.darkFlame.cpy();
+			lightColor = Pal.darkFlame.cpy().a(0.3f);
 			lightRadius = 30f;
 		}};
 		magmaticFlowrock = new Floor("magmatic-flowrock", 4) {{
@@ -143,7 +143,7 @@ public class SWEnvironment {
 			attributes.set(Attribute.heat, 1f);
 			
 			emitLight = true;
-			lightColor = Pal.darkFlame.cpy();
+			lightColor = Pal.darkFlame.cpy().a(0.3f);
 			lightRadius = 60f;
 		}};
 		//endregion
