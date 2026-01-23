@@ -1,6 +1,7 @@
 import arc.files.*
 import arc.util.*
 import arc.util.serialization.*
+import arc.struct.*
 import java.io.*
 import java.util.regex.*
 
@@ -160,12 +161,17 @@ project(":tools") {
 }
 
 project(":") {
+    sourceSets["main"].java.srcDir("$buildDir/generated/sources/fetched/java/main")
+
     tasks.withType<JavaCompile>().configureEach {
         // Use Java 17+ syntax, but target Java 8 bytecode version.
         sourceCompatibility = "17"
         options.apply {
             release = 8
         }
+
+        dependsOn("fetchComponents")
+        exclude(modFetch.replace(".", "/"))
     }
 
     dependencies {
@@ -369,7 +375,7 @@ project(":") {
     }
 
     tasks.register<DefaultTask>("runGame") {
-        dependsOn(tasks.named<DefaultTask>("install"))
+//        dependsOn(tasks.named<DefaultTask>("install"))
 
         val runJsonFile = Fi.get(project.rootDir.absolutePath).child("run/mindustry.json")
 
@@ -399,6 +405,70 @@ project(":") {
                 environment["DEVELOPMENT"] = "true"
             }
             process.start()
+        }
+    }
+
+    // taken from omaloon and kotlinfied it
+    class Fetcher(val run: UnsafeRunnable) {
+        private var error: Throwable? = null
+
+        fun execute(){
+            try{
+                run.run()
+                error = null
+            }catch(e: Throwable){
+                Log.err(e)
+                error = e
+            }
+        }
+    }
+
+    tasks.register<DefaultTask>("fetchComponents") {
+        val outputDir: File = file("$buildDir/generated/sources/fetched/java/main/${modFetch.replace(".", "/")}")
+        outputs.dir(outputDir)
+
+        doLast {
+            delete(outputDir)
+            outputDir.mkdirs()
+
+            val fetched: Seq<Fetcher> = Seq()
+
+            Fetcher {
+                Http.get("https://api.github.com/repos/Anuken/Mindustry/contents/core/src/mindustry/entities/comp?ref=$mindustryVersion")
+                    .error {e: Throwable -> throw RuntimeException(e) }
+                    .block {content: Http.HttpResponse ->
+                        val comps: Jval.JsonArray = Jval.read(content.resultAsString).asArray()
+
+                        comps.each {comp: Jval ->
+                            val name = comp.get("name").asString()
+                            val link = comp.get("download_url").asString()
+
+                            fetched.add((Fetcher {
+                                Http.get(link)
+                                    .error {e: Throwable -> throw RuntimeException("Failed to fetch at $name", e)}
+                                    .block {component: Http.HttpResponse ->
+                                        val file = Fi(outputDir).child(name)
+
+                                        var fileString = component.resultAsString
+                                            .replaceFirst("mindustry.entities.comp", modFetch)
+                                            .replaceFirst("mindustry.annotations.Annotations.*", "sw.annotations.Annotations.*")
+                                            .replace("@Component\n", "@Component()\n")
+                                            .replace("@Component(", "@Component(vanilla = true, ")
+                                            .replace(", )", ")")
+                                            .replace("@EntityDef(", "@Entity(vanilla = true, ")
+                                            .replace("@InternalImpl", "@Internal")
+                                            .replace("@Final", "")
+                                            .replace("@Readonly", "")
+
+                                        file.writeString(fileString)
+                                        println("Fetched $name")
+                                    }
+                            }))
+                        }
+                    }
+            }.execute()
+
+            fetched.each {f: Fetcher -> f.execute()}
         }
     }
 }
