@@ -308,7 +308,7 @@ public class SWProduction {
 			attribute = Attribute.water;
 			baseEfficiency = 0f;
 			boostScale = 1f / 9f;
-			maxBoost = 2f;
+			maxBoost = 4f;
 			minEfficiency = 1f;
 
 			outputLiquids = LiquidStack.with(

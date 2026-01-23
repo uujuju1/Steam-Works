@@ -26,9 +26,6 @@ public class SWEnvironment {
 	slagPlug,
 	pitfall, gratingPitfall, waterfall, chasm,
 
-	tuff, shapedTuff, tuffWall, columnarTuff, tuffConcretion, tuffPile,
-	tuffShallowerSolvent, tuffShallowSolvent,
-
 	solvent,
 	solventCrystal,
 
@@ -135,11 +132,19 @@ public class SWEnvironment {
 			wall = flowstoneWall;
 			
 			attributes.set(Attribute.heat, 0.75f);
+			
+			emitLight = true;
+			lightColor = Pal.darkFlame.cpy();
+			lightRadius = 30f;
 		}};
 		magmaticFlowrock = new Floor("magmatic-flowrock", 4) {{
 			wall = flowstoneWall;
 			
 			attributes.set(Attribute.heat, 1f);
+			
+			emitLight = true;
+			lightColor = Pal.darkFlame.cpy();
+			lightRadius = 60f;
 		}};
 		//endregion
 
