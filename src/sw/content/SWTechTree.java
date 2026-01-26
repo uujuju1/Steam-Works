@@ -81,7 +81,9 @@ public class SWTechTree {
             node(shaftGearbox);
             node(overheadBelt, () -> node(largeOverheadBelt));
           });
-          node(clutch, with(new NonUnlockable()), () -> {});
+          node(clutch, with(new Research(combustionEngine)), () -> {
+            node(mechanicalGovernor, with(new NonUnlockable()), () -> {});
+          });
           node(flywheel, with(new NonUnlockable()), () -> {});
           node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
             node(winder);

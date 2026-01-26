@@ -936,7 +936,12 @@ public class SWPower {
 			);
 		}};
 		mechanicalGovernor = new AxleBrake("mechanical-governor") {{
-			requirements(Category.power, with());
+			requirements(Category.power, with(
+				SWItems.aluminium, 30,
+				SWItems.verdigris, 50,
+				SWItems.bloom, 30,
+				Items.silicon, 40
+			));
 			size = 2;
 			brakeStrength = 50f / 600f;
 			
