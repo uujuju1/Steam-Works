@@ -936,7 +936,73 @@ public class SWPower {
 			);
 		}};
 		mechanicalGovernor = new AxleBrake("mechanical-governor") {{
-		
+			requirements(Category.power, with());
+			size = 2;
+			brakeStrength = 50f / 600f;
+			
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					for(Point2 offset : Geometry.d8edge) {
+						axles.add(new Axle("-axle") {{
+							pixelWidth = 4;
+							pixelHeight = 1;
+							
+							spinScl = offset.x > 0 ? 0.5f : 1f;
+							
+							x = 6f * offset.x;
+							y = 4f * offset.y;
+							
+							width = 4f;
+							height = 3.5f;
+							
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawFacingLightRegion(),
+				new DrawRegion("-rotator", 1, false),
+				new DrawParts() {{
+					for(int i : Mathf.signs) {
+						parts.add(new RegionPart("-sphere") {{
+							outline = false;
+							clampProgress = false;
+							
+							moveRot = -1f;
+							progress = params -> params.rotation - 90f;
+							
+							layer = Layer.blockOver;
+							
+							moves.add(
+								new PartMove(
+									params -> Mathf.sinDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.speed.mul(1f / 10f).clamp().mul(2f / 6f).add(1f).get(params),
+									6f * i, 0f, 0f
+								),
+								new PartMove(
+									params -> Mathf.cosDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.speed.mul(1f / 10f).clamp().mul(2f / 6f).add(1f).get(params),
+									0f, -6f * i, 0f
+								)
+							);
+						}});
+					}
+				}}
+			) {{
+				iconOverride = new String[]{"-icon"};
+			}};
+			
+			spinConfig = new SpinConfig() {{
+				resistance = 8f / 600f;
+				inertia = 5f;
+				
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 4, 5},
+					new int[]{2, 3, 6, 7},
+					new int[]{4, 5, 0, 1},
+					new int[]{6, 7, 2, 3}
+				};
+			}};
 		}};
 		
 		hydraulicFlywheel = new RotationBattery("hydraulic-flywheel") {{
