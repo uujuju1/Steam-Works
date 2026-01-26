@@ -12,7 +12,7 @@ public class SWStat {
     spinRequirement = new Stat("sw-spin-requirement", spin),
     spinOutput = new Stat("sw-spin-output", spin),
     spinOutputForce = new Stat("sw-spin-output-force", spin),
-    spinResistance = new Stat("sw-spin-resistance", spin),
+    friction = new Stat("sw-friction", spin),
 		maxFriction = new Stat("sw-max-friction", spin),
 		weight = new Stat("sw-weight", spin);
   //endregion

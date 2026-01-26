@@ -30,9 +30,8 @@ public class HandCrank extends AxleBlock {
 		super.setStats();
 		
 		if (spinConfig != null) {
-			stats.remove(SWStat.spinResistance);
 			stats.add(SWStat.spinOutput, StatValues.number(speed * 10f, SWStat.spinMinute));
-			stats.add(SWStat.spinOutputForce, StatValues.number((torque - spinConfig.resistance) * 600f, SWStat.force));
+			stats.add(SWStat.spinOutputForce, StatValues.number(torque * 600f, SWStat.force));
 		}
 	}
 	

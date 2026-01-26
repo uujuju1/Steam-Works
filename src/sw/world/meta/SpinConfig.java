@@ -56,7 +56,7 @@ public class SpinConfig {
 	}
 	public void addStats(Stats stats) {
 		if (!hasSpin) return;
-		if (resistance > 0) stats.add(SWStat.spinResistance, StatValues.number(resistance * 600f, SWStat.force));
+		if (resistance > 0) stats.add(SWStat.friction, StatValues.number(resistance * 600f, SWStat.force));
 		if (inertia > 0) stats.add(SWStat.weight, StatValues.number(inertia, SWStat.mass));
 	}
 

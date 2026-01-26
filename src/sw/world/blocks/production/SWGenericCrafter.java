@@ -89,10 +89,9 @@ public class SWGenericCrafter extends AttributeCrafter {
 		super.setStats();
 		if (spinConfig != null) spinConfig.addStats(stats);
 		
-		if (spinConfig != null && outputRotation > 0 && (outputRotationForce - spinConfig.resistance) > 0) {
-			stats.remove(SWStat.spinResistance);
+		if (spinConfig != null && outputRotation > 0 && outputRotationForce > 0) {
 			stats.add(SWStat.spinOutput, StatValues.number(outputRotation * 10f, SWStat.spinMinute));
-			stats.add(SWStat.spinOutputForce, StatValues.number((outputRotationForce - spinConfig.resistance) * 600f, SWStat.force));
+			stats.add(SWStat.spinOutputForce, StatValues.number(outputRotationForce * 600f, SWStat.force));
 		}
 
 		if (!hasAttribute) stats.remove(baseEfficiency <= 0.0001f ? Stat.tiles : Stat.affinities);
