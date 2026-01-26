@@ -75,7 +75,7 @@ public class SpinGraph extends Graph<HasSpin> {
 		floodFill(other, HasSpin::nextBuilds).each(build -> {
 			if (build.spin() != null && build.spinGraph() != null && build.spinGraph() != this) {
 				if (build.spinConfig().disconnected) {
-					disconnected.add(build);
+					disconnected.addUnique(build);
 				} else {
 					build.spinGraph().removeBuild(build);
 					addBuild(build);

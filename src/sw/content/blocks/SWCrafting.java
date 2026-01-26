@@ -281,6 +281,7 @@ public class SWCrafting {
 			size = 3;
 			health = 240;
 			rotate = true;
+			invertFlip = true;
 
 			craftTime = 180f;
 
