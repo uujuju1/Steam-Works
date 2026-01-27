@@ -47,194 +47,209 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 				});
 
-				unit.weapons.each(weapon -> weapon.region.found(), weapon -> {
-					if (!weapon.outlineRegion.found()) {
-						weapon.outlineRegion = new GeneratedRegion(
-							weapon.name + "-outline",
-							outline(Tools.atlas.castRegion(weapon.region).pixmap(), unit.outlineRadius, unit.outlineColor),
-							Tools.atlas.castRegion(weapon.region).file.sibling(weapon.name.substring("sw-".length()) + "-outline.png")
-						).save(true);
-					}
+				processWeapons(unit);
+				processRotors(unit);
+				processWreck(unit);
+				
+				processFull(unit);
 
-					if (!Tools.atlas.find(weapon.name + "-preview").found()) {
-						Seq<GeneratedRegion> previewRegions = Seq.with(
-							Tools.atlas.castRegion(weapon.outlineRegion),
-							Tools.atlas.castRegion(weapon.region)
-						);
-
-						if (weapon.cellRegion.found() && unit.drawCell) {
-							previewRegions.add(tintCell(Tools.atlas.castRegion(weapon.cellRegion)));
-						}
-
-						stack(weapon.name + "-preview", previewRegions).save(true);
-					}
-				});
-
-				unit.rotors.each(rotor -> !rotor.flipped, rotor -> {
-					if (!rotor.blurRegion.found()) {
-							rotor.blurRegion = new GeneratedRegion(
-								(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-blur",
-								radialSprite(outline(Tools.atlas.castRegion(rotor.region).pixmap(), unit.outlineRadius, unit.outlineColor, true), rotor.blades),
-								Tools.atlas.castRegion(rotor.region).file.sibling(
-									((rotor.isSuffix ? unit.name + rotor.name : rotor.name)).substring("sw-".length()) + "-blur.png"
-								)
-							).save(true);
-						}
-
-					if (!rotor.shineRegion.found()) {
-							rotor.shineRegion = new GeneratedRegion(
-								(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-shine",
-								shine(Tools.atlas.castRegion(rotor.blurRegion), rotor.blades),
-								Tools.atlas.castRegion(rotor.region).file.sibling(
-									((rotor.isSuffix ? unit.name + rotor.name : rotor.name)).substring("sw-".length()) + "-shine.png"
-								)
-							).save(true);
-						}
-
-					Pixmap full = new Pixmap(rotor.region.width, rotor.region.height);
-					for (int i = 0; i < rotor.blades; i++) {
-							float deg = 360f / rotor.blades * i;
-							Pixmap copy = Tools.atlas.castRegion(rotor.region).pixmap().copy();
-							full.draw(rotate(copy, deg + rotor.rotation), 0, 0, true);
-						}
-					Tools.atlas.castRegion(rotor.region).pixmap().draw(outline(full, unit.outlineRadius, unit.outlineColor, true));
-					Tools.atlas.castRegion(rotor.region).save(true);
-
-					if (rotor.topRegion.found()) {
-						Pixmap outlined = outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true);
-						Tools.atlas.castRegion(rotor.topRegion).pixmap().draw(outlined);
-						Tools.atlas.castRegion(rotor.topRegion).save(false);
-					}
-				});
-
-
-				if (unit.fullIcon == unit.region) {
-					Seq<GeneratedRegion> fullRegions = new Seq<>();
-
-					unit.rotors.each(rotor -> rotor.layerOffset < 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
-						fullRegions.add(new GeneratedRegion(
-							"uwu",
-							grow(
-								Tools.atlas.castRegion(rotor.region).pixmap(),
-								(int) Mathf.maxZero((rotor.x * 4 * 2)),
-								(int) Mathf.maxZero((rotor.x * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * 2))
-							),
-							null
-						));
-						if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
-							"uwu",
-							grow(
-								Tools.atlas.castRegion(rotor.topRegion).pixmap(),
-								(int) Mathf.maxZero((rotor.x * 4 * 2)),
-								(int) Mathf.maxZero((rotor.x * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * 2))
-							),
-							null
-						));
-					});
-
-					if (unit.treadRegion.found()) fullRegions.add(Tools.atlas.castRegion(unit.treadRegion));
-
-					unit.weapons.each(w -> w.layerOffset < 0 && w.region.found(), w -> {
-						Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
-						if (!w.flipSprite) pix = pix.flipX();
-						pix = grow(
-							pix,
-							(int) Mathf.maxZero(w.x * 4 * 2),
-							(int) Mathf.maxZero(w.x * 4 * -2),
-							(int) Mathf.maxZero(w.y * 4 * -2),
-							(int) Mathf.maxZero(w.y * 4 * 2)
-						);
-						fullRegions.add(new GeneratedRegion("uwu", pix, null));
-					});
-
-					fullRegions.add(
-						Tools.atlas.castRegion(unit.outlineRegion),
-						Tools.atlas.castRegion(unit.region)
-					);
-
-					if (unit.cellRegion.found() && unit.drawCell) {
-						fullRegions.add(tintCell(Tools.atlas.castRegion(unit.cellRegion)));
-					}
-
-					unit.weapons.each(w -> w.layerOffset >= 0 && w.region.found(), w -> {
-						Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
-						if (!w.flipSprite) pix = pix.flipX();
-						pix = grow(
-							pix,
-							(int) Mathf.maxZero(w.x * 4 * 2),
-							(int) Mathf.maxZero(w.x * 4 * -2),
-							(int) Mathf.maxZero(w.y * 4 * -2),
-							(int) Mathf.maxZero(w.y * 4 * 2)
-						);
-						fullRegions.add(new GeneratedRegion("uwu", pix, null));
-					});
-
-					unit.rotors.each(rotor -> rotor.layerOffset >= 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
-						fullRegions.add(new GeneratedRegion(
-							"uwu",
-							grow(
-								Tools.atlas.castRegion(rotor.region).pixmap(),
-								(int) Mathf.maxZero((rotor.x * 4 * 2)),
-								(int) Mathf.maxZero((rotor.x * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * 2))
-							),
-							null
-						));
-						if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
-							"uwu",
-							grow(
-								Tools.atlas.castRegion(rotor.topRegion).pixmap(),
-								(int) Mathf.maxZero((rotor.x * 4 * 2)),
-								(int) Mathf.maxZero((rotor.x * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * -2)),
-								(int) Mathf.maxZero((rotor.y * 4 * 2))
-							),
-							null
-						));
-					});
-
-
-					unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
-				}
-
-				if (unit.wrecks > 0) {
-					VoronoiNoise noise = new VoronoiNoise(unit.id, true);
-					for(int i = 0; i < unit.wrecks; i++) {
-						Pixmap wreck = Tools.atlas.castRegion(unit.fullIcon).pixmap().copy();
-						int finalI = i;
-						wreck.each((x, y) -> {
-							float angle = Mathf.mod(
-								(float) (
-									Angles.angle(x, y, wreck.width/2f, wreck.height/2f) +
-									noise.noise(x, y, unit.wrecks/90f) * 360f/unit.wrecks +
-									noise.noise(x, y, unit.wrecks/45f) * 180f/unit.wrecks
-								),
-								360f
-							);
-							if (
-								angle < 360f/unit.wrecks * finalI ||
-								angle > 360f/unit.wrecks * (finalI + 1)
-							) wreck.set(x, y, Color.clear);
-						});
-						unit.wreckRegions[i] = new GeneratedRegion(
-							unit.name + "-wreck-" + (i + 1),
-							wreck,
-							Tools.atlas.castRegion(unit.fullIcon).file.sibling(unit.name.substring("sw-".length()) + "-wreck-" + (i + 1) + ".png")
-						).save(true);
-					}
-				}
 			} catch (Exception e) {
 				Log.err(e);
 				Log.warn("Error processing sprites for unit @. Skipping", unit);
 			}
 		});
 	}
+	
+	public void processFull(SWUnitType unit) {
+		if (unit.fullIcon == unit.region) {
+			Seq<GeneratedRegion> fullRegions = new Seq<>();
+			
+			unit.rotors.each(rotor -> rotor.layerOffset < 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+				fullRegions.add(new GeneratedRegion(
+					"uwu",
+					grow(
+						Tools.atlas.castRegion(rotor.region).pixmap(),
+						(int) Mathf.maxZero((rotor.x * 4 * 2)),
+						(int) Mathf.maxZero((rotor.x * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * 2))
+					),
+					null
+				));
+				if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
+					"uwu",
+					grow(
+						Tools.atlas.castRegion(rotor.topRegion).pixmap(),
+						(int) Mathf.maxZero((rotor.x * 4 * 2)),
+						(int) Mathf.maxZero((rotor.x * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * 2))
+					),
+					null
+				));
+			});
+			
+			if (unit.treadRegion.found()) fullRegions.add(Tools.atlas.castRegion(unit.treadRegion));
+			
+			unit.weapons.each(w -> w.layerOffset < 0 && w.region.found(), w -> {
+				Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
+				if (!w.flipSprite) pix = pix.flipX();
+				pix = grow(
+					pix,
+					(int) Mathf.maxZero(w.x * 4 * 2),
+					(int) Mathf.maxZero(w.x * 4 * -2),
+					(int) Mathf.maxZero(w.y * 4 * -2),
+					(int) Mathf.maxZero(w.y * 4 * 2)
+				);
+				fullRegions.add(new GeneratedRegion("uwu", pix, null));
+			});
+			
+			fullRegions.add(
+				Tools.atlas.castRegion(unit.outlineRegion),
+				Tools.atlas.castRegion(unit.region)
+			);
+			
+			if (unit.cellRegion.found() && unit.drawCell) {
+				fullRegions.add(tintCell(Tools.atlas.castRegion(unit.cellRegion)));
+			}
+			
+			unit.weapons.each(w -> w.layerOffset >= 0 && w.region.found(), w -> {
+				Pixmap pix = Tools.atlas.find(w.name + "-preview").pixmap();
+				if (!w.flipSprite) pix = pix.flipX();
+				pix = grow(
+					pix,
+					(int) Mathf.maxZero(w.x * 4 * 2),
+					(int) Mathf.maxZero(w.x * 4 * -2),
+					(int) Mathf.maxZero(w.y * 4 * -2),
+					(int) Mathf.maxZero(w.y * 4 * 2)
+				);
+				fullRegions.add(new GeneratedRegion("uwu", pix, null));
+			});
+			
+			unit.rotors.each(rotor -> rotor.layerOffset >= 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+				fullRegions.add(new GeneratedRegion(
+					"uwu",
+					grow(
+						Tools.atlas.castRegion(rotor.region).pixmap(),
+						(int) Mathf.maxZero((rotor.x * 4 * 2)),
+						(int) Mathf.maxZero((rotor.x * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * 2))
+					),
+					null
+				));
+				if (rotor.topRegion.found()) fullRegions.add(new GeneratedRegion(
+					"uwu",
+					grow(
+						Tools.atlas.castRegion(rotor.topRegion).pixmap(),
+						(int) Mathf.maxZero((rotor.x * 4 * 2)),
+						(int) Mathf.maxZero((rotor.x * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * -2)),
+						(int) Mathf.maxZero((rotor.y * 4 * 2))
+					),
+					null
+				));
+			});
+			
+			
+			unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
+		}
+	}
+	
+	public void processRotors(SWUnitType unit) {
+		unit.rotors.each(rotor -> !rotor.flipped, rotor -> {
+			if (!rotor.blurRegion.found()) {
+				rotor.blurRegion = new GeneratedRegion(
+					(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-blur",
+					radialSprite(outline(Tools.atlas.castRegion(rotor.region).pixmap(), unit.outlineRadius, unit.outlineColor, true), rotor.blades),
+					Tools.atlas.castRegion(rotor.region).file.sibling(
+						((rotor.isSuffix ? unit.name + rotor.name : rotor.name)).substring("sw-".length()) + "-blur.png"
+					)
+				).save(true);
+			}
+			
+			if (!rotor.shineRegion.found()) {
+				rotor.shineRegion = new GeneratedRegion(
+					(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-shine",
+					shine(Tools.atlas.castRegion(rotor.blurRegion), rotor.blades),
+					Tools.atlas.castRegion(rotor.region).file.sibling(
+						((rotor.isSuffix ? unit.name + rotor.name : rotor.name)).substring("sw-".length()) + "-shine.png"
+					)
+				).save(true);
+			}
+			
+			Pixmap full = new Pixmap(rotor.region.width, rotor.region.height);
+			for (int i = 0; i < rotor.blades; i++) {
+				float deg = 360f / rotor.blades * i;
+				Pixmap copy = Tools.atlas.castRegion(rotor.region).pixmap().copy();
+				full.draw(rotate(copy, deg + rotor.rotation), 0, 0, true);
+			}
+			Tools.atlas.castRegion(rotor.region).pixmap().draw(outline(full, unit.outlineRadius, unit.outlineColor, true));
+			Tools.atlas.castRegion(rotor.region).save(true);
+			
+			if (rotor.topRegion.found()) {
+				Pixmap outlined = outline(Tools.atlas.castRegion(rotor.topRegion).pixmap(), unit.outlineRadius, unit.outlineColor, true);
+				Tools.atlas.castRegion(rotor.topRegion).pixmap().draw(outlined);
+				Tools.atlas.castRegion(rotor.topRegion).save(false);
+			}
+		});
+	}
+	
+	public void processWeapons(SWUnitType unit) {
+		unit.weapons.each(weapon -> weapon.region.found(), weapon -> {
+			if (!weapon.outlineRegion.found()) {
+				weapon.outlineRegion = new GeneratedRegion(
+					weapon.name + "-outline",
+					outline(Tools.atlas.castRegion(weapon.region).pixmap(), unit.outlineRadius, unit.outlineColor),
+					Tools.atlas.castRegion(weapon.region).file.sibling(weapon.name.substring("sw-".length()) + "-outline.png")
+				).save(true);
+			}
+			
+			if (!Tools.atlas.find(weapon.name + "-preview").found()) {
+				Seq<GeneratedRegion> previewRegions = Seq.with(
+					Tools.atlas.castRegion(weapon.outlineRegion),
+					Tools.atlas.castRegion(weapon.region)
+				);
+				
+				if (weapon.cellRegion.found() && unit.drawCell) {
+					previewRegions.add(tintCell(Tools.atlas.castRegion(weapon.cellRegion)));
+				}
+				
+				stack(weapon.name + "-preview", previewRegions).save(true);
+			}
+		});
+	}
 
+	public void processWreck(SWUnitType unit) {
+		if (unit.wrecks > 0) {
+			VoronoiNoise noise = new VoronoiNoise(unit.id, true);
+			for(int i = 0; i < unit.wrecks; i++) {
+				Pixmap wreck = Tools.atlas.castRegion(unit.fullIcon).pixmap().copy();
+				int finalI = i;
+				wreck.each((x, y) -> {
+					float angle = Mathf.mod(
+						(float) (
+							Angles.angle(x, y, wreck.width/2f, wreck.height/2f) +
+								noise.noise(x, y, unit.wrecks/90f) * 360f/unit.wrecks +
+								noise.noise(x, y, unit.wrecks/45f) * 180f/unit.wrecks
+						),
+						360f
+					);
+					if (
+						angle < 360f/unit.wrecks * finalI ||
+							angle > 360f/unit.wrecks * (finalI + 1)
+					) wreck.set(x, y, Color.clear);
+				});
+				unit.wreckRegions[i] = new GeneratedRegion(
+					unit.name + "-wreck-" + (i + 1),
+					wreck,
+					Tools.atlas.castRegion(unit.fullIcon).file.sibling(unit.name.substring("sw-".length()) + "-wreck-" + (i + 1) + ".png")
+				).save(true);
+			}
+		}
+	}
+	
+	
 	// makes a circular sprite based on a center line in a region, turns less opaque based on the amount of rotor blades and the angle.
 	public Pixmap radialSprite(Pixmap region, int blades) {
 		Pixmap out = new Pixmap(region.width, region.height);

@@ -13,6 +13,8 @@ import sw.entities.*;
 import sw.entities.units.*;
 import sw.gen.*;
 
+import static sw.SWVars.*;
+
 public class SWUnitType extends UnitType {
   // region rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
@@ -24,7 +26,6 @@ public class SWUnitType extends UnitType {
   public float outlineLayerOffset = 0f;
 
   public int wrecks = -1;
-  public TextureRegion[] wreckRegions;
 
   public SWUnitType(String name) {
     super(name);
@@ -53,7 +54,7 @@ public class SWUnitType extends UnitType {
   }
 
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
-    if (outlines) super.getRegionsToOutline(out);
+    if (outlines && !isMod) super.getRegionsToOutline(out);
   }
   
   @Override
@@ -61,12 +62,9 @@ public class SWUnitType extends UnitType {
     super.init();
     Seq<UnitRotor> rotorSeq = new Seq<>();
     
-//    Log.info("duplicating rotors");
     for(UnitRotor rotor : rotors) {
-//      Log.info("add rotor");
       var r = rotor.copy();
       r.flip();
-//      Log.info("add rotor copy");
       rotorSeq.add(r);
       rotorSeq.add(rotor);
     }
