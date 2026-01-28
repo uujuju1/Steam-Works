@@ -79,4 +79,11 @@ public interface SpriteProcessor {
 		base.dispose();
 		return region;
 	}
-}
+	
+	/**
+	 * Changes the colors of the Pixmap according to the mapper function.
+	 */
+	default Pixmap mapColors(Pixmap base, Func<Color, Color> mapper) {
+		base.each((x, y) -> base.set(x, y, mapper.get(new Color(base.get(x, y)))));
+		return base;
+	}}

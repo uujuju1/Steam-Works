@@ -112,7 +112,12 @@ public class UnitProcessor implements SpriteProcessor {
 			);
 			
 			if (unit.cellRegion.found() && unit.drawCell) {
-				fullRegions.add(tintCell(Tools.atlas.castRegion(unit.cellRegion)));
+				mapColors(Tools.atlas.castRegion(unit.cellRegion).pixmap(), from -> {
+					if (from.equals(Color.white)) return Color.valueOf("FFA664");
+					if (from.equals(Color.valueOf("DCC6C6"))) return Color.valueOf("D06B53");
+					return from;
+				});
+				fullRegions.add(Tools.atlas.castRegion(unit.cellRegion));
 			}
 			
 			unit.weapons.each(w -> w.layerOffset >= 0 && w.region.found(), w -> {
@@ -229,7 +234,12 @@ public class UnitProcessor implements SpriteProcessor {
 				);
 				
 				if (weapon.cellRegion.found() && unit.drawCell) {
-					previewRegions.add(tintCell(Tools.atlas.castRegion(weapon.cellRegion)));
+					mapColors(Tools.atlas.castRegion(unit.cellRegion).pixmap(), from -> {
+						if (from.equals(Color.white)) return Color.valueOf("FFA664");
+						if (from.equals(Color.valueOf("DCC6C6"))) return Color.valueOf("D06B53");
+						return from;
+					});
+					previewRegions.add(Tools.atlas.castRegion(weapon.cellRegion));
 				}
 				
 				stack(weapon.name + "-preview", previewRegions).save(true);
