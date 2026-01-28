@@ -19,23 +19,18 @@ public class GeneratedAtlas extends TextureAtlas implements Eachable<GeneratedAt
 		return cast;
 	}
 
-	@Override
-	public void each(Cons<? super GeneratedRegion> cons) {
+	@Override public void each(Cons<? super GeneratedRegion> cons) {
 		regions.each((name, region) -> cons.get(region));
 	}
 
-	@Override
-	public boolean has(String name) {
+	@Override public boolean has(String name) {
 		return regions.containsKey(name);
 	}
 
-	@Override
-	public GeneratedRegion find(String name) {
+	@Override public GeneratedRegion find(String name) {
 		return regions.get(name, (GeneratedRegion) error);
 	}
-
-	@Override
-	public GeneratedRegion find(String name, TextureRegion def) {
+	@Override public GeneratedRegion find(String name, TextureRegion def) {
 		return regions.get(name, castRegion(def));
 	}
 

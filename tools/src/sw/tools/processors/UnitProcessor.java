@@ -1,6 +1,7 @@
 package sw.tools.processors;
 
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
@@ -47,6 +48,7 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 				});
 
+				processParts(unit);
 				processWeapons(unit);
 				processRotors(unit);
 				processWreck(unit);
@@ -153,6 +155,21 @@ public class UnitProcessor implements SpriteProcessor {
 			
 			
 			unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
+		}
+	}
+	
+	public void processParts(SWUnitType unit) {
+		Seq<TextureRegion> outlined = new Seq<>();
+		unit.getRegionsToOutline(outlined);
+		
+		for(GeneratedRegion region : outlined.map(t -> Tools.atlas.castRegion(t))) {
+			if (!Tools.atlas.has(region.name + "-outline")) {
+				new GeneratedRegion(
+					region.name + "-outline",
+					outline(region.pixmap(), unit.outlineRadius, unit.outlineColor),
+					region.file.sibling(region.name.substring("sw-".length()) + "-outline.png")
+				).save(true);
+			}
 		}
 	}
 	

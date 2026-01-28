@@ -13,8 +13,6 @@ import sw.entities.*;
 import sw.entities.units.*;
 import sw.gen.*;
 
-import static sw.SWVars.*;
-
 public class SWUnitType extends UnitType {
   // region rotor unit stuff
   public Seq<UnitRotor> rotors = new Seq<>();
@@ -29,7 +27,7 @@ public class SWUnitType extends UnitType {
 
   public SWUnitType(String name) {
     super(name);
-    outlines = false;
+    generateIcons = false;
   }
 
   @Override
@@ -54,7 +52,7 @@ public class SWUnitType extends UnitType {
   }
 
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
-    if (outlines && !isMod) super.getRegionsToOutline(out);
+    if (outlines) super.getRegionsToOutline(out);
   }
   
   @Override
