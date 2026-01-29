@@ -206,6 +206,12 @@ public class SWUnitTypes {
 			outlineColor = Color.valueOf("2D2F39");
 			
 			range = maxRange = 160f;
+
+			treadRects = new Rect[]{
+				new Rect(8, 12, 21, 35),
+				new Rect(25, 73, 20, 32)
+			};
+			treadTimes = new int[]{7, 8};
 			
 			weapons.add(new Weapon("sw-ballistra-cannon") {{
 				mirror = false;

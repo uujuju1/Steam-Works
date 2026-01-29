@@ -20,6 +20,7 @@ public class SWUnitType extends UnitType {
   // endregion
 
   //general unit stuff
+  public int[] treadTimes;
   public boolean treadsCutOutline = true;
   public float outlineLayerOffset = 0f;
 
@@ -51,6 +52,27 @@ public class SWUnitType extends UnitType {
     }
   }
 
+  @Override
+  public <T extends Unit & Tankc> void drawTank(T unit) {
+    applyColor(unit);
+    Draw.rect(treadRegion, unit.x, unit.y, unit.rotation - 90);
+
+    if(treadRegion.found()){
+      for(int i = 0; i < treadRects.length; i ++){
+        int frame = (int)(unit.treadTime()) % treadTimes[i];
+        var region = treadRegions[i][frame];
+        var treadRect = treadRects[i];
+        float xOffset = treadRegion.width / 2f - treadRect.x - treadRect.width/2f;
+        float yOffset = treadRegion.height / 2f - treadRect.y - treadRect.height/2f;
+
+        for(int side : Mathf.signs){
+          Tmp.v1.set(xOffset * side, yOffset).rotate(unit.rotation - 90);
+          Draw.rect(region, unit.x + Tmp.v1.x / 4f, unit.y + Tmp.v1.y / 4f, treadRect.width / 4f, region.height * region.scale / 4f, unit.rotation - 90);
+        }
+      }
+    }
+  }
+
   @Override public void getRegionsToOutline(Seq<TextureRegion> out) {
     if (outlines) super.getRegionsToOutline(out);
   }
@@ -67,6 +89,13 @@ public class SWUnitType extends UnitType {
       rotorSeq.add(rotor);
     }
     rotors = rotorSeq;
+
+    if (treadTimes == null) {
+      treadTimes = new int[treadRects.length];
+      for (int i = 0; i < treadRects.length; i++) {
+        treadTimes[i] = treadFrames;
+      }
+    }
   }
   
   @Override
@@ -77,6 +106,17 @@ public class SWUnitType extends UnitType {
       wreckRegions = new TextureRegion[wrecks];
       for(int i = 0; i < wrecks; i++) {
         wreckRegions[i] = Core.atlas.find(name + "-wreck-" + (i + 1));
+      }
+    }
+
+    if (treadRegion.found()) {
+      treadRegions = new TextureRegion[treadRects.length][];
+
+      for (int i = 0; i < treadRects.length; i++) {
+        treadRegions[i] = new TextureRegion[treadTimes[i]];
+        for (int j = 0; j < treadTimes[i]; j++) {
+          treadRegions[i][j] = Core.atlas.find(name + "-tread-" + i + "-" + j);
+        }
       }
     }
     

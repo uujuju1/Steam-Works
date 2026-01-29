@@ -3,6 +3,7 @@ package sw.tools.processors;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.noise.*;
@@ -39,7 +40,7 @@ public class UnitProcessor implements SpriteProcessor {
 					).save(true);
 				}
 
-				Seq.with(unit.treadRegion, unit.legRegion, unit.legBaseRegion, unit.jointRegion, unit.baseJointRegion, unit.footRegion).each(region -> {
+				Seq.with(unit.legRegion, unit.legBaseRegion, unit.jointRegion, unit.baseJointRegion, unit.footRegion).each(region -> {
 					if (region.found()) {
 						Tools.atlas.castRegion(region).pixmap().draw(
 							outline(Tools.atlas.castRegion(region).pixmap(), unit.outlineRadius, unit.outlineColor, true)
@@ -48,6 +49,7 @@ public class UnitProcessor implements SpriteProcessor {
 					}
 				});
 
+				processTreads(unit);
 				processParts(unit);
 				processWeapons(unit);
 				processRotors(unit);
@@ -216,6 +218,37 @@ public class UnitProcessor implements SpriteProcessor {
 			}
 		});
 	}
+
+	public void processTreads(SWUnitType unit) {
+		if (!unit.treadRegion.found()) return;
+		GeneratedRegion treads = Tools.atlas.castRegion(unit.treadRegion);
+		for (int i = 0; i < unit.treadRects.length; i++) {
+			Rect treadRect = unit.treadRects[i];
+			int frames = unit.treadTimes[i];
+
+			Pixmap tread = treads.pixmap().crop((int) treadRect.x, (int) treadRect.y, (int) treadRect.width, (int) treadRect.height);
+
+			for (int j = 0; j < frames; j++) {
+				Pixmap frame = tread.copy();
+
+				int finalJ = j;
+				frame.each((x, y) -> {
+					int resY = (y + finalJ) % tread.height;
+					frame.set(x, y, tread.get(x, (y + finalJ + ((tread.getA(x, resY) == 0) ? frames : 0)) % tread.height));
+
+					if (tread.getA(x, y) == 0) frame.set(x, y, Color.clear);
+				});
+
+				new GeneratedRegion(
+					unit.name + "-tread-" + i,
+					frame,
+					treads.file.sibling(unit.name.substring("sw-".length()) + "-tread-" + i + "-" + j + ".png")
+				).save(true);
+			}
+
+			tread.dispose();
+		}
+	}
 	
 	public void processWeapons(SWUnitType unit) {
 		unit.weapons.each(weapon -> weapon.region.found(), weapon -> {
@@ -354,21 +387,5 @@ public class UnitProcessor implements SpriteProcessor {
 		}
 
 		return new GeneratedRegion(name, out, regions.find(r -> r.file != null).file.sibling(name.substring("sw-".length()) + ".png"));
-	}
-
-	// tints the cell with the proper color
-	public GeneratedRegion tintCell(GeneratedRegion region) {
-		Pixmap out = region.pixmap().copy();
-
-		out.each((x, y) -> {
-			if (out.get(x, y) == Color.whiteRgba) {
-				out.set(x, y, Color.valueOf("FFA664"));
-			}
-			if (out.get(x, y) == Color.valueOf("DCC6C6").rgba()) {
-				out.set(x, y, Color.valueOf("D06B53"));
-			}
-		});
-
-		return new GeneratedRegion(region.name, out, null);
 	}
 }

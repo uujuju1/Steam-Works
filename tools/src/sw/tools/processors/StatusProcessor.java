@@ -19,14 +19,12 @@ public class StatusProcessor implements SpriteProcessor {
 				
 				GeneratedRegion icon = Tools.atlas.castRegion(status.uiIcon);
 				
-				icon.pixmap().each((x, y) -> icon.pixmap().set(x, y, new Color(icon.pixmap().get(x, y)).mul(status.color)));
-				
-				if (status.outline) {
-					icon.pixmap().draw(outline(icon.pixmap(), 3, Pal.gray, true));
-				}
+				icon.pixmap().draw(mapColors(outline(icon.pixmap(), status.outline ? 3 : 0, Pal.gray, true), old -> {
+					if (old.equals(Color.white)) return status.color;
+					return old;
+				}));
 				
 				icon.save(false);
-				
 			} catch (Exception e) {
 				Log.err(e);
 				Log.warn("Error processing sprites for status effect @. Skipping", status);
