@@ -267,6 +267,10 @@ public class SWDistribution {
 					mirror = false;
 					reload = 1f;
 					shootOnDeath = true;
+					rotate = true;
+					rotateSpeed = 360f;
+					controllable = false;
+					aiControllable = false;
 
 					shake = 10f;
 
