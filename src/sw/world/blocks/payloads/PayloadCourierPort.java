@@ -82,6 +82,7 @@ public class PayloadCourierPort extends PayloadBlock {
 
 		stats.add(Stat.range, range / 8f, StatUnit.blocks);
 		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
+		stats.add(Stat.reload, 60f / buildTime, StatUnit.perSecond);
 	}
 
 	public class PayloadCourierPortBuild extends PayloadBlockBuild<Payload> {
@@ -171,7 +172,7 @@ public class PayloadCourierPort extends PayloadBlock {
 
 		public boolean launch() {
 			if (!getLink().launchers.contains(this)) getLink().launchers.addLast(this);
-			if ((unit == null || !unit.isValid()) && getLink().launchers.first() == this && getLink().state == awaiting) {
+			if ((unit == null || !unit.isValid()) && getLink().launchers.first() == this && getLink().state == awaiting && getLink().payload == null) {
 				if (!Vars.net.client()) {
 					unit = unitType.create(team);
 					if (unit instanceof BuildingTetherc tether) {
