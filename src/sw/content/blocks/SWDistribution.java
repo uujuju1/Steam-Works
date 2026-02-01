@@ -1,7 +1,14 @@
 package sw.content.blocks;
 
+import arc.audio.*;
+import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
+import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -10,12 +17,15 @@ import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import sw.ai.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
+import sw.type.units.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.liquid.*;
 import sw.world.blocks.payloads.*;
+import sw.world.consumers.*;
 import sw.world.draw.*;
 import sw.world.meta.*;
 
@@ -32,7 +42,7 @@ public class SWDistribution {
 
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
-		payloadCatapult,
+		courierPort,
 
 
 		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge, mechanicalConduitTunnel;
@@ -203,17 +213,91 @@ public class SWDistribution {
 			interp = Interp.linear;
 			payloadLimit = 2f;
 		}};
-		payloadCatapult = new PayloadCatapult("payload-catapult") {{
+		courierPort = new PayloadCourierPort("courier-port") {{
 			requirements(Category.units, with(
-				Items.silicon, 30,
-				SWItems.aluminium, 50,
-				SWItems.verdigris, 25
+				SWItems.aluminium, 40,
+				SWItems.iron, 30,
+				Items.graphite, 55
 			));
 			size = 3;
-			
-			consumeLiquid(Liquids.ozone, 1f/60f);
-			
-			shootEffect = SWFx.ozoneLaunch;
+
+			range = 800f;
+			buildTime = 300f;
+			payloadCapacity = 2.5f;
+			liquidCapacity = 60;
+
+			courierCreateEffect = SWFx.hydrogenLaunch;
+			courierCreateSound = Sounds.massdriver;
+			courierCreateSoundVolume = 0.25f;
+
+			courierRemoveEffect = SWFx.balloonRelease;
+			courierRemoveSound = Sounds.massdriverReceive;
+			courierRemoveSoundVolume = 0.25f;
+
+			consume(new ConsumeLiquidTrigger(Liquids.hydrogen, 15f));
+			consumeItem(SWItems.aluminium, 5);
+
+			unitType = new BalloonUnitType("courier") {{
+				controller = unit -> new CourierAI();
+				isEnemy = false;
+				allowedInPayloads = false;
+				logicControllable = false;
+				playerControllable = false;
+				payloadCapacity = 400f;
+				drawSoftShadow = false;
+				outlines = false;
+				outlineColor = Color.valueOf("3B211B");
+
+				bodyHeight = 3f;
+				ropeSpacing = 20f;
+				hitSize = 20f;
+				crashDamageMultiplier = 100f;
+				fallSpeed = 1f;
+
+				accel = 0.01f;
+				drag = 0f;
+
+				lowAltitude = false;
+				flying = true;
+				physics = false;
+				wobble = false;
+				hidden = true;
+
+				weapons.add(new Weapon() {{
+					mirror = false;
+					reload = 1f;
+					shootOnDeath = true;
+
+					shake = 10f;
+
+					bullet = new BulletType() {{
+						splashDamage = 1000;
+						splashDamagePierce = true;
+						splashDamageRadius = 60f;
+
+						keepVelocity = true;
+
+						shootEffect = Fx.none;
+						despawnEffect = Fx.none;
+						hitEffect = new WrapEffect(Fx.dynamicExplosion, Color.white, 100 / 14f);
+
+						incendAmount = 5;
+
+						fragBullet = new FireBulletType(1f, 4) {{
+							hittable = false;
+							keepVelocity = false;
+						}};
+						fragBullets = 30;
+						fragVelocityMax = 2f;
+						fragRandomSpread = 270f;
+					}
+						@Override
+						public Bullet create(Entityc owner, Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl, float lifetimeScl, Object data, Mover mover, float aimX, float aimY, Teamc target) {
+							return super.create(owner, shooter, Team.derelict, x, y, angle, damage, velocityScl, lifetimeScl, data, mover, aimX, aimY, target);
+						}
+					};
+				}});
+			}};
 		}};
 		//endregion
 

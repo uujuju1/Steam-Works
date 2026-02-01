@@ -6,9 +6,11 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.graphics.*;
+import mindustry.type.*;
 import mindustry.world.*;
 import sw.math.*;
 
@@ -96,39 +98,16 @@ public class SWFx {
       Draw.blend();
     }).layer(Layer.effect + 1),
 
-    compoundCraft = new Effect(30f, e -> {
-      rand.setSeed(e.id);
-      Draw.color(Color.valueOf("BEB5B2"));
-      Draw.z(Layer.effect);
-      Angles.randLenVectors(e.id, 30, 40f * e.finpow(), (x, y) -> {
-        Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.foutpow());
-      });
-      Draw.z(Layer.effect + 1);
-      Angles.randLenVectors(e.id + 1, 15, 40f * e.finpow(), (x, y) -> {
-        Draw.color(Color.gray);
-        Fill.circle(e.x + x, e.y + y, rand.random(3f) * e.fout());
-      });
-    }),
+    balloonRelease = new Effect(120f, e -> {
+      Draw.z(Layer.flyingUnit);
+      Parallax.getParallaxFrom(temp.set(e.x, e.y), Core.camera.position, 3f + 7f * e.fin());
+      Draw.alpha(e.foutpowdown());
+      Draw.rect("sw-courier", temp.x, temp.y);
 
-    denseAlloyCraft = new Effect(30f, e -> {
-      for(int i = 0; i < 4; i++) {
-        Draw.color(Pal.accent);
-        temp.trns(i * 90f + 45f, 6f);
-
-        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 8f - 4f * e.foutpow(), temp.angle());
-        Drawf.tri(temp.x + e.x, temp.y + e.y, 8f * e.foutpow(), 4f - 2f * e.foutpow(), temp.angle() + 180f);
-      }
-
-      Draw.z(Layer.effect);
-      Angles.randLenVectors(e.id, 30, 40f * e.finpow(), (x, y) -> {
-        Lines.stroke(e.fout(), Pal.accent);
-        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
-      });
-      Draw.z(Layer.effect + 1);
-      Angles.randLenVectors(e.id + 1, 15, 40f * e.finpow(), (x, y) -> {
-        Lines.stroke(e.fout(), Color.gray.cpy().mul(0.5f));
-        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 5f * e.fout());
-      });
+      Draw.z(Layer.darkness - 1f);
+      Draw.mixcol(Pal.shadow, 1f);
+      Draw.alpha(Pal.shadow.a * e.foutpowdown());
+      Draw.rect("sw-courier", e.x + UnitType.shadowTX * (1f + e.fin()), e.y + UnitType.shadowTY * (1f + e.fin()));
     }),
   
     cokeBurn = new Effect(60f, e -> {
@@ -250,6 +229,13 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, rand.random(1f, 2f));
       });
     }),
+    hydrogenLaunch = new Effect(60, e -> {
+      rand.setSeed(e.id);
+      Draw.color(Liquids.hydrogen.color.cpy().mul(1.25f).clamp(), 0.5f);
+      Angles.randLenVectors(e.id, 10, 5, 12 * e.finpow(), (x, y) -> {
+        Fill.circle(e.x + x, e.y + y, rand.random(2, 3) * e.foutpowdown());
+      });
+    }).layer(Layer.blockOver),
     ozoneLaunch = new Effect(30f, e -> {
       rand.setSeed(e.id);
       Draw.color(Color.valueOf("F5D5E0"));

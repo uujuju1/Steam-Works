@@ -57,9 +57,9 @@ public class SWTechTree {
         node(suspensionConveyor, () -> {
           node(belt);
         });
-        node(mechanicalPayloadConveyor, with(new Research(hydraulicFlywheel)), () -> {
+        node(mechanicalPayloadConveyor, with(new NonUnlockable()), () -> {
           node(mechanicalPayloadRouter);
-          node(payloadCatapult);
+          node(courierPort);
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
           node(mechanicalConduitJunction, () -> node(mechanicalConduitTunnel));

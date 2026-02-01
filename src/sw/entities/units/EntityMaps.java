@@ -16,6 +16,7 @@ public class EntityMaps {
 		registerEntity(CollisionlessLegsUnit.class, CollisionlessLegsUnit::new);
 		registerUnit("sw-lambda", CollisionlessLegsUnit::new);
 		registerUnit("sw-rho", UnitEntity::create);
+		registerUnit("sw-courier", BuildingTetherPayloadUnit::create);
 	}
 
 	public static <T extends Entityc> void registerEntity(Class<T> type, Prov<T> provider) {
