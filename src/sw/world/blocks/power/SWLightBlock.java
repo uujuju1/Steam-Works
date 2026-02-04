@@ -146,9 +146,9 @@ public class SWLightBlock extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			
-			if (spin != null) spin.read(read);
-			
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+
 			warmup = read.f();
 			progress = read.f();
 			totalProgress = read.f();
@@ -185,9 +185,9 @@ public class SWLightBlock extends Block {
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			
-			if (spin != null) spin.write(write);
-			
+
+			if (spinConfig != null) spin.write(write);
+
 			write.f(warmup);
 			write.f(progress);
 			write.f(totalProgress);

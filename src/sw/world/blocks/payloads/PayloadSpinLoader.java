@@ -165,7 +165,8 @@ public class PayloadSpinLoader extends PayloadBlock {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			if (spin != null) spin.read(read);
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 		}
 		
 		@Override public float totalProgress() {
@@ -191,7 +192,8 @@ public class PayloadSpinLoader extends PayloadBlock {
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			if (spin != null) spin.write(write);
+
+			if (spinConfig != null) spin.write(write);
 		}
 	}
 }

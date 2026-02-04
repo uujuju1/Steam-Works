@@ -218,10 +218,8 @@ public class AssemblerArm extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			
-			if (revision == 0 && spin == null) new SpinModule().read(read);
-			
-			if (spin != null) spin.read(read);
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 
 			warmup = read.f();
 			progress = read.f();
@@ -303,16 +301,12 @@ public class AssemblerArm extends Block {
 				consume();
 			}
 		}
-		
-		@Override
-		public byte version() {
-			return 1;
-		}
 
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			if (spin != null) spin.write(write);
+
+			if (spinConfig != null) spin.write(write);
 
 			write.f(warmup);
 			write.f(progress);

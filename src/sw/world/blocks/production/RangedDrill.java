@@ -282,9 +282,9 @@ public class RangedDrill extends Block {
 		@Override
 		public void read(Reads read, byte revision){
 			super.read(read, revision);
-			
-			if (revision > 0 && spin != null) spin.read(read);
-			
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+
 			time = read.f();
 			warmup = read.f();
 		}
@@ -379,11 +379,6 @@ public class RangedDrill extends Block {
 			}
 		}
 		
-		@Override
-		public byte version() {
-			return 1;
-		}
-		
 		@Override public float warmup() {
 			return warmup;
 		}
@@ -391,9 +386,9 @@ public class RangedDrill extends Block {
 		@Override
 		public void write(Writes write){
 			super.write(write);
-			
-			if (spin != null) spin.write(write);
-			
+
+			if (spinConfig != null) spin.write(write);
+
 			write.f(time);
 			write.f(warmup);
 		}

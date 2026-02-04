@@ -72,21 +72,15 @@ public class SWTurret extends Turret {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			
-			if (revision < 2 && spin == null) new SpinModule().read(read);
-			
-			if (spin != null) spin.read(read);
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 		}
-		
-		@Override
-		public byte version() {
-			return 2;
-		}
-		
+
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			if (spin != null) spin.write(write);
+
+			if (spinConfig != null) spin.write(write);
 		}
 	}
 }

@@ -160,10 +160,8 @@ public class BeltConveyor extends Block {
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			
-			if (revision == 0 && spin == null) new SpinModule().read(read);
-			
-			if (spin != null) spin.read(read);
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 
 			byte size = read.b();
 			for(int i = 0; i < size; i++) {
@@ -230,7 +228,8 @@ public class BeltConveyor extends Block {
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			if (spin != null) spin.write(write);
+
+			if (spinConfig != null) spin.write(write);
 
 			write.b(beltItems.size);
 			beltItems.each(beltItem -> {

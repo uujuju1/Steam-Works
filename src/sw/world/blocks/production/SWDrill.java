@@ -123,6 +123,13 @@ public class SWDrill extends Drill {
 		@Override public float progress() {
 			return progress / getDrillTime(dominantItem);
 		}
+
+		@Override
+		public void read(Reads read, byte revision) {
+			super.read(read, revision);
+
+			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+		}
 		
 		@Override public float totalProgress() {
 			return timeDrilled;
@@ -169,22 +176,15 @@ public class SWDrill extends Drill {
 			}
 		}
 		
-		@Override
-		public void read(Reads read, byte revision) {
-			super.read(read, revision);
-			
-			if (spin != null) spin.read(read);
-		}
-		
 		@Override public float warmup() {
 			return warmup;
 		}
-		
+
 		@Override
 		public void write(Writes write) {
 			super.write(write);
 			
-			if (spin != null) spin.write(write);
+			if (spinConfig != null) spin.write(write);
 		}
 	}
 }
