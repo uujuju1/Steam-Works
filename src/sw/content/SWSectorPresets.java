@@ -1,6 +1,7 @@
 package sw.content;
 
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.storage.*;
@@ -37,6 +38,23 @@ public class SWSectorPresets {
 			y = 100;
 			width = height = 200;
 			icon = () -> Icon.units;
+
+			rules = r -> {
+				r.weather.add(new Weather.WeatherEntry(
+					SWWeathers.souesiteDust,
+					5f * Time.toMinutes,
+					7.5f * Time.toMinutes,
+					2.5f * Time.toMinutes,
+					5f * Time.toMinutes
+				));
+				r.weather.add(new Weather.WeatherEntry(
+					Weathers.fog,
+					2.5f * Time.toMinutes,
+					5f * Time.toMinutes,
+					5f * Time.toMinutes,
+					7.5f * Time.toMinutes
+				));
+			};
 
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
