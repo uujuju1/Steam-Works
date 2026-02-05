@@ -26,7 +26,7 @@ public class SWEnvironment {
 	slagPlug,
 	pitfall, gratingPitfall, waterfall, chasm,
 
-	solvent,
+	solvent, deepSolvent,
 	solventCrystal,
 
 	plateWall, agedPlateWall,
@@ -249,9 +249,15 @@ public class SWEnvironment {
 		solventCrystal = new TallBlock("solvent-crystal") {{
 			variants = 2;
 		}};
-		solvent = new Floor("solvent-regular", 0) {{
+		solvent = new Floor("solvent-regular", 4) {{
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		deepSolvent = new Floor("solvent-deep", 4) {{
+			cacheLayer = CacheLayer.water;
+			isLiquid = true;
+			drownTime = 300f;
 			liquidDrop = SWLiquids.solvent;
 		}};
 		//endregion

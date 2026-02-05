@@ -128,24 +128,24 @@ public class SWTechTree {
       });
       // endregion
       // region sectors
-//      root("sw-sectors", crevasse, () -> {
-//        node(theDelta, with(new SectorComplete(crevasse)), () -> {
-//          node(abandonedMaze, with(new SectorComplete(theDelta)), () -> {
-//            node(cavern, with(
-//              new SectorComplete(abandonedMaze),
-//              new Research(coreMole)
-//            ), () -> {
-//
-//            });
-//          });
-//        });
+      root("sw-sectors", crevasse, () -> {
+        node(theDelta, with(new SectorComplete(crevasse)), () -> {
+          node(abandonedMaze, with(new SectorComplete(theDelta)), () -> {
+            node(cavern, with(
+              new SectorComplete(abandonedMaze),
+              new Research(coreMole)
+            ), () -> {
+
+            });
+          });
+        });
 //        node(kettle, with(new Research(mechanicalAssembler)), () -> {});
-//      });
+      });
       // endregion
       //region units
       root("sw-units", mechanicalAssembler, with(new Research(shaftTransmission)), () -> {
 				node(soar, () -> node(wisp, with(new SectorComplete(cavern)), () -> {}));
-        node(assemblerArm, with(new OnSector(kettle)), () -> {});
+        node(assemblerArm, with(new NonUnlockable()), () -> {});
       });
       //endregion
 		  node(coreMole, with(new SectorComplete(abandonedMaze)), () -> {});
