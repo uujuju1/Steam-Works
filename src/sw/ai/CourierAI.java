@@ -5,6 +5,8 @@ import mindustry.gen.*;
 import sw.world.blocks.payloads.*;
 
 public class CourierAI extends AIController {
+	public static float smooth = 100;
+
 	@Override
 	public void updateMovement() {
 		if (
@@ -17,10 +19,10 @@ public class CourierAI extends AIController {
 			return;
 		}
 
-		moveTo(port.getLink(), 1f, 10f);
+		moveTo(port.getLink(), 1f, smooth);
 
 		if (
-			unit.within(port.getLink(), 2f) &&
+			unit.within(port.getLink(), 4f) &&
 			port.getLink().payload == null &&
 			unit instanceof Payloadc carrier
 		) {
