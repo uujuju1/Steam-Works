@@ -50,7 +50,7 @@ public class EmberParticleWeather extends ParticleWeather {
 			if(Tmp.r3.setCentered(x, y, size + lightRadius).overlaps(Tmp.r2)){
 				Draw.color(color, alpha * state.opacity * color.a);
 				Draw.rect(region, x, y, size, size, rotation);
-				Drawf.light(x, y, lightRadius, lightColor, lightOpacity);
+				Drawf.light(x, y, lightRadius, lightColor, lightOpacity * state.opacity);
 			}
 		}
 		

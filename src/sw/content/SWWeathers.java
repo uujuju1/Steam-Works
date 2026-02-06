@@ -46,11 +46,11 @@ public class SWWeathers {
 			
 			color = Pal.darkPyraFlame;
 			lightColor = Pal.darkFlame;
-			lightOpacity = 0.3f;
+			lightOpacity = 0.15f;
 			lightRadiusMin = 20f;
 			lightRadiusMax = 40f;
 			
-			sound = Sounds.windHowl;
+			sound = Sounds.wind2;
 			soundVol = 0f;
 			soundVolOscMag = 1.5f;
 			soundVolOscScl = 1100f;
