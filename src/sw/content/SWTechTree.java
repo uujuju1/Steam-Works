@@ -75,7 +75,9 @@ public class SWTechTree {
       root("sw-power", evaporator, () -> {
         node(handWheel);
         node(combustionEngine, with(new NonUnlockable()), () -> {});
-        node(waterWheel, with(new OnSector(abandonedMaze)), () -> {});
+        node(waterWheel, with(new OnSector(abandonedMaze)), () -> {
+          node(convectionTurbine, with(new NonUnlockable()), () -> {});
+        });
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
             node(shaftGearbox);

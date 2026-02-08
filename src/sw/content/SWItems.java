@@ -26,6 +26,7 @@ public class SWItems {
     }};
     aluminium = new Item("aluminium", valueOf("8F858C")) {{
       cost = 3f;
+      hardness = 3;
     }};
     
     coke = new Item("coke", valueOf("B8B8B8")) {{

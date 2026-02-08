@@ -2,6 +2,7 @@ package sw.world.blocks.production;
 
 import arc.audio.*;
 import arc.func.*;
+import arc.graphics.g2d.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
@@ -9,6 +10,7 @@ import mindustry.ctype.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
@@ -27,6 +29,8 @@ public class SWGenericCrafter extends AttributeCrafter {
 	public boolean hasAttribute = false;
 
 	public boolean consumerScaleEfficiency = true;
+
+	public boolean forceDrawStatus = false;
 
 	public float outputRotation = -1;
 	public float outputRotationForce = 0;
@@ -112,8 +116,30 @@ public class SWGenericCrafter extends AttributeCrafter {
 			return super.create(block, team);
 		}
 
+		@Override
+		public void draw() {
+			super.draw();
+
+			if (((enableDrawStatus && consumers.length > 0) || (!hasConsumers && forceDrawStatus)) && Vars.renderer.drawStatus) drawStatus();
+		}
+
 		@Override public void drawSelect() {
 			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+		}
+
+		@Override
+		public void drawStatus() {
+			if ((enableDrawStatus && consumers.length > 0) || forceDrawStatus) {
+				float multiplier = size > 1 ? 1f : 0.64f;
+				float brcx = x + size * 8f / 2f - 8f * multiplier / 2f;
+				float brcy = y - size * 8f / 2f + 8f * multiplier / 2f;
+				Draw.z(71f);
+				Draw.color(Pal.gray);
+				Fill.square(brcx, brcy, 2.5f * multiplier, 45f);
+				Draw.color(status().color);
+				Fill.square(brcx, brcy, 1.5f * multiplier, 45f);
+				Draw.color();
+			}
 		}
 
 		@Override

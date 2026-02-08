@@ -27,7 +27,8 @@ import static mindustry.type.ItemStack.*;
 
 public class SWPower {
 	public static Block
-		handWheel, evaporator, waterWheel, combustionEngine,
+		handWheel, evaporator, waterWheel,
+		convectionTurbine, combustionEngine,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt, largeOverheadBelt,
@@ -174,6 +175,83 @@ public class SWPower {
 			
 			outputRotation = 2f;
 			outputRotationForce = 3.5f/600f;
+		}};
+
+		convectionTurbine = new SWGenericCrafter("convection-turbine") {{
+			requirements(Category.power, with(
+
+			));
+			size = 3;
+
+			hasAttribute = true;
+			attribute = Attribute.water;
+			baseEfficiency = 0f;
+			boostScale = 1f / 36f;
+			maxBoost = 1f;
+			minEfficiency = 36f;
+
+			forceDrawStatus = true;
+
+			outputLiquids = LiquidStack.with(Liquids.water, 9f / 60f);
+			outputRotation = 20f / 10f;
+			outputRotationForce = 39f / 600f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawParticles() {{
+					color = Liquids.water.color.cpy().mul(1.5f);
+					reverse = true;
+					particleInterp = t -> Interp.sine.apply(Interp.slope.apply(t)) * 0.4f + 0.5f;
+					particleSizeInterp = t -> Interp.smooth.apply(Interp.sine.apply(t));
+					particleRad = 8;
+					particleSize = 3;
+					rotateScl = -0.5f;
+				}},
+				new DrawLiquidTile(Liquids.water, 2f),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					for (Point2 offset : Geometry.d4) {
+						axles.add(new Axle("-axle") {{
+							pixelWidth = 2;
+							pixelHeight = 1;
+
+							x = 11f * offset.x;
+							y = 11f * offset.y;
+							rotation = offset.y == 0f ? 0f : -90f;
+
+							width = 2f;
+							height = 3.5f;
+
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawDefault(),
+				new DrawParts() {{
+					for (int i = 0; i < 3; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-rotator") {{
+							clampProgress = false;
+							outline = false;
+
+							rotation = 360f / 4f / 3f * finalI;
+							moveRot = -2f;
+							progress = DrawParts.spin;
+						}});
+					}
+				}},
+				new DrawRegion("-top")
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 9f / 600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9}
+				};
+			}};
 		}};
 		combustionEngine = new StackableGenericCrafter("combustion-engine") {{
 			requirements(Category.power, with(
@@ -968,7 +1046,9 @@ public class SWPower {
 					}
 				}},
 				new DrawFacingLightRegion(),
-				new DrawRegion("-rotator", 1, false),
+				new DrawRegion("-rotator", 1, false) {{
+					buildingRotate = true;
+				}},
 				new DrawParts() {{
 					for(int i : Mathf.signs) {
 						parts.add(new RegionPart("-sphere") {{
