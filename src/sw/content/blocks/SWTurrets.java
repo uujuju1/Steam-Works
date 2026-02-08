@@ -260,7 +260,7 @@ public class SWTurrets {
 
 			shootSound = Sounds.shootBreachCarbide;
 			ammo(
-				SWItems.coke, new BasicBulletType(4, 50) {{
+				SWItems.coke, new BasicBulletType(4, 100) {{
 					width = 8f;
 					height = 16f;
 					shrinkY = 0f;
