@@ -35,7 +35,6 @@ public class SWPower {
 		flywheel, clutch,
 	
 		hydraulicFlywheel,
-		winder, latch,
 
 		shaftTransmission, mechanicalGovernor;
 
@@ -195,6 +194,10 @@ public class SWPower {
 			outputLiquids = LiquidStack.with(Liquids.water, 9f / 60f);
 			outputRotation = 20f / 10f;
 			outputRotationForce = 39f / 600f;
+
+			updateEffect = SWFx.evaporate;
+			updateEffectChance = 0.2f;
+			updateEffectSpread = 0f;
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -1136,112 +1139,6 @@ public class SWPower {
 				}},
 				new DrawDefault()
 			);
-		}};
-		winder = new PayloadSpinLoader("winder") {{
-			requirements(Category.units, with(
-			
-			));
-			size = 3;
-			
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom") {{
-					buildingRotate = true;
-				}},
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelHeight = 1;
-						pixelWidth = 96;
-						
-						width = 24f;
-						height = 3.5f;
-						
-						rotation = -90f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
-				new DrawDefault(),
-				new DrawRegion("-top") {{
-					layer = Layer.blockOver + 0.1f;
-				}},
-				new DrawRegion("-gear", 1f) {{
-					layer = Layer.blockOver + 0.1f;
-				}}
-			);
-			
-			spinConfig = new SpinConfig() {{
-				resistance = 5/600f;
-				
-				allowedEdges = new int[][]{
-					new int[]{3, 9},
-					new int[]{6, 0},
-					new int[]{9, 3},
-					new int[]{0, 6}
-				};
-			}};
-		}};
-		latch = new PayloadSpinLoader("latch") {{
-			requirements(Category.units, with(
-			
-			));
-			size = 3;
-			
-			reverse = true;
-			
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom") {{
-					buildingRotate = true;
-				}},
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelHeight = 1;
-						pixelWidth = 96;
-						
-						width = 24f;
-						height = 3.5f;
-						
-						rotation = -90f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
-				new DrawDefault(),
-				new DrawParts() {{
-					name = "-gears";
-					for (int i = 0; i < 4; i++) {
-						int finalI = i;
-						parts.addAll(
-							new RegionPart("-gear") {{
-								x = Geometry.d4x(finalI) * 6.5f;
-								y = Geometry.d4y(finalI) * 6.5f;
-								moveRot = 360f * (finalI % 2 == 0 ? -1f : 1f);
-								
-								layer = Layer.blockOver + 0.1f;
-								
-								outline = false;
-								
-								progress = PartProgress.recoil.loop(360f);
-							}}
-						);
-					}
-				}},
-				new DrawRegion("-top") {{
-					layer = Layer.blockOver + 0.1f;
-				}}
-			);
-			
-			spinConfig = new SpinConfig() {{
-				allowedEdges = new int[][]{
-					new int[]{3, 9},
-					new int[]{6, 0},
-					new int[]{9, 3},
-					new int[]{0, 6}
-				};
-			}};
 		}};
 	}
 }

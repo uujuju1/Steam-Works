@@ -59,6 +59,7 @@ public class SWTechTree {
         });
         node(mechanicalPayloadConveyor, with(new NonUnlockable()), () -> {
           node(mechanicalPayloadRouter);
+          node(mechanicalPayloadLoader, () -> node(mechanicalPayloadUnloader));
           node(courierPort);
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
@@ -88,8 +89,6 @@ public class SWTechTree {
           });
           node(flywheel, with(new NonUnlockable()), () -> {});
           node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
-            node(winder);
-            node(latch);
           });
           node(shaftTransmission, Seq.with(new OnSector(theDelta)), () -> {});
         });

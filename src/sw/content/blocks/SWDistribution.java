@@ -3,10 +3,12 @@ package sw.content.blocks;
 import arc.audio.*;
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -43,6 +45,7 @@ public class SWDistribution {
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
 		courierPort,
+		mechanicalPayloadLoader, mechanicalPayloadUnloader,
 
 
 		mechanicalConduit, mechanicalConduitRouter, mechanicalConduitJunction, mechanicalConduitBridge, mechanicalConduitTunnel;
@@ -301,6 +304,121 @@ public class SWDistribution {
 						}
 					};
 				}});
+			}};
+		}};
+		mechanicalPayloadLoader = new SWPayloadLoader("mechanical-payload-loader") {{
+			requirements(Category.units, with(
+
+			));
+			size = 3;
+			hasItems = true;
+			hasLiquids = true;
+			itemCapacity = 100;
+			liquidCapacity = 100;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom") {{
+					buildingRotate = true;
+				}},
+				new DrawAxles(new Axle("-axle") {{
+						pixelHeight = 1;
+						pixelWidth = 24;
+
+						width = 24f;
+						height = 3.5f;
+
+						rotation = -90f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}),
+				new DrawFacingLightRegion(),
+				new DrawRegion("-top") {{
+					layer = Layer.blockOver + 0.1f;
+				}},
+				new DrawRegion("-gear", 1f) {{
+					layer = Layer.blockOver + 0.1f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5/600f;
+
+				allowedEdges = new int[][]{
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+					new int[]{0, 6}
+				};
+			}};
+		}};
+		mechanicalPayloadUnloader = new SWPayloadLoader("mechanical-payload-unloader") {{
+			requirements(Category.units, with(
+
+			));
+			size = 3;
+			hasItems = true;
+			hasLiquids = true;
+			itemCapacity = 100;
+			liquidCapacity = 100;
+
+			reverse = true;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom") {{
+					buildingRotate = true;
+				}},
+				new DrawAxles(
+					new Axle("-axle") {{
+						pixelHeight = 1;
+						pixelWidth = 24;
+
+						width = 24f;
+						height = 3.5f;
+
+						rotation = -90f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}}
+				),
+				new DrawFacingLightRegion(),
+				new DrawParts() {{
+					name = "-gears";
+					for (int i = 0; i < 4; i++) {
+						int finalI = i;
+						parts.addAll(
+							new RegionPart("-gear") {{
+								x = Geometry.d4x(finalI) * 6.5f;
+								y = Geometry.d4y(finalI) * 6.5f;
+								moveRot = (finalI % 2 == 0 ? -1f : 1f);
+
+								layer = Layer.blockOver + 0.1f;
+
+								outline = false;
+								clampProgress = false;
+
+								progress = DrawParts.spin;
+							}}
+						);
+					}
+				}},
+				new DrawRegion("-top") {{
+					layer = Layer.blockOver + 0.1f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+					new int[]{0, 6}
+				};
 			}};
 		}};
 		//endregion
