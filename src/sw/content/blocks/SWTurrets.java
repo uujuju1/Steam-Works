@@ -267,6 +267,7 @@ public class SWTurrets {
 
 					lifetime = 60;
 					drag = 0.02f;
+					ammoMultiplier = 5f;
 
 					collidesGround = false;
 
