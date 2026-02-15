@@ -77,6 +77,8 @@ public class SWPayloadLoader extends PayloadBlock {
 	public void setBars() {
 		super.setBars();
 		if (spinConfig != null) spinConfig.addBars(this);
+		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
+		stats.add(Stat.itemsMoved, loadingSpeed * 60f, StatUnit.perSecond);
 	}
 	
 	@Override
@@ -201,7 +203,7 @@ public class SWPayloadLoader extends PayloadBlock {
 				(payload.block().hasLiquids && payload.build.liquids.currentAmount() > 0.001f) ||
 				(payload.build instanceof RotationBatteryBuild build && build.wind > 0.001f);
 
-			return (payload.block().hasItems && !Vars.content.items().contains(item -> payload.build.items.get(item) == payload.block().itemCapacity)) ||
+			return (payload.block().hasItems && !Vars.content.items().contains(item -> payload.build.items.get(item) >= payload.block().itemCapacity)) ||
 				(payload.block().hasLiquids && payload.build.liquids.currentAmount() <= payload.block().liquidCapacity - 0.001f) ||
 				(payload.build instanceof RotationBatteryBuild build && build.wind < ((RotationBattery) build.block).maxWindup);
 		}
