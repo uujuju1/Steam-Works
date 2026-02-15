@@ -53,9 +53,10 @@ public class UnitProcessor implements SpriteProcessor {
 				processParts(unit);
 				processWeapons(unit);
 				processRotors(unit);
-				processWreck(unit);
 				
 				processFull(unit);
+
+				processWreck(unit);
 
 			} catch (Exception e) {
 				Log.err(e);
@@ -159,8 +160,7 @@ public class UnitProcessor implements SpriteProcessor {
 					null
 				));
 			});
-			
-			
+
 			unit.fullIcon = stackCentered(unit.name + "-full", fullRegions).save(true);
 		}
 	}

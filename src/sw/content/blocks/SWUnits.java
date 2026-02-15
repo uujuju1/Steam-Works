@@ -74,7 +74,7 @@ public class SWUnits {
 			);
 
 			consume(new ConsumeSpin() {{
-				minSpeed = 0.1f;
+				minSpeed = 0.4f;
 				maxSpeed = 0.6f;
 				efficiencyScale = Interp.one;
 			}});
@@ -82,7 +82,7 @@ public class SWUnits {
 			plans.add(
 				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.soar;
-					stepTime = 4f * 60f;
+					stepTime = 5f * 60f;
 					steps.putAll(
 						with(Items.silicon, 10), new Vec2(-4, 8),
 						with(SWItems.verdigris, 5), new Vec2(4, 8),
@@ -93,7 +93,7 @@ public class SWUnits {
 				}},
 				new MechanicalAssemblerPlan() {{
 					unit = SWUnitTypes.wisp;
-					stepTime = 5f * 60f;
+					stepTime = 15f * 60f;
 					steps.putAll(
 						with(Items.silicon, 20), new Vec2(-2, 2),
 						with(SWItems.aluminium, 25), new Vec2(6, 0),
