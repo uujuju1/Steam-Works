@@ -196,7 +196,6 @@ public class SWDistribution {
 		//region payloads
 		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
 			requirements(Category.units, with(
-				Items.silicon, 10,
 				SWItems.aluminium, 10,
 				SWItems.verdigris, 10
 			));
@@ -207,9 +206,9 @@ public class SWDistribution {
 		}};
 		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
 			requirements(Category.units, with(
-				Items.silicon, 10,
-				SWItems.aluminium, 10,
-				SWItems.verdigris, 10
+				SWItems.aluminium, 20,
+				SWItems.verdigris, 15,
+				SWItems.iron, 10
 			));
 			canOverdrive = false;
 			
@@ -308,7 +307,11 @@ public class SWDistribution {
 		}};
 		mechanicalPayloadLoader = new SWPayloadLoader("mechanical-payload-loader") {{
 			requirements(Category.units, with(
-
+				Items.silicon, 35,
+				SWItems.aluminium, 40,
+				SWItems.verdigris, 20,
+				SWItems.iron, 25,
+				Items.graphite, 55
 			));
 			size = 3;
 			hasItems = true;
@@ -355,7 +358,11 @@ public class SWDistribution {
 		}};
 		mechanicalPayloadUnloader = new SWPayloadLoader("mechanical-payload-unloader") {{
 			requirements(Category.units, with(
-
+				Items.silicon, 35,
+				SWItems.aluminium, 40,
+				SWItems.verdigris, 20,
+				SWItems.iron, 25,
+				Items.graphite, 55
 			));
 			size = 3;
 			hasItems = true;

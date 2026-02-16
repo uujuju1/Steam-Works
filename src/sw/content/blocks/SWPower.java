@@ -178,7 +178,10 @@ public class SWPower {
 
 		convectionTurbine = new SWGenericCrafter("convection-turbine") {{
 			requirements(Category.power, with(
-
+				SWItems.verdigris, 80,
+				SWItems.iron, 40,
+				Items.graphite, 50,
+				Items.silicon, 60
 			));
 			size = 3;
 
