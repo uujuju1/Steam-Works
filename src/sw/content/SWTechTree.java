@@ -36,7 +36,7 @@ public class SWTechTree {
       });
       // endregion
       // region defense
-      root("sw-defense", imber, () -> {
+      root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
         node(lamparine, with(new OnSector(cavern)), () -> {
@@ -55,7 +55,7 @@ public class SWTechTree {
           node(mechanicalSorter);
         });
         node(suspensionConveyor, () -> {
-          node(belt);
+          node(belt, with(new Research(combustionEngine)), () -> {});
         });
         node(mechanicalPayloadConveyor, with(new NonUnlockable()), () -> {
           node(mechanicalPayloadRouter);
@@ -88,9 +88,8 @@ public class SWTechTree {
             node(mechanicalGovernor, with(new NonUnlockable()), () -> {});
           });
           node(flywheel, with(new NonUnlockable()), () -> {});
-          node(hydraulicFlywheel, with(new NonUnlockable()), () -> {
-          });
-          node(shaftTransmission, Seq.with(new OnSector(theDelta)), () -> {});
+          node(hydraulicFlywheel, with(new NonUnlockable()), () -> {});
+          node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> {});
         });
       });
       //endregion
@@ -144,7 +143,7 @@ public class SWTechTree {
       });
       // endregion
       //region units
-      root("sw-units", mechanicalAssembler, with(new Research(shaftTransmission)), () -> {
+      root("sw-units", mechanicalAssembler, with(new OnSector(theDelta)), () -> {
 				node(soar, () -> node(wisp, with(new SectorComplete(cavern)), () -> {}));
         node(assemblerArm, with(new NonUnlockable()), () -> {});
       });

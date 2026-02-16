@@ -2,13 +2,17 @@ package sw.ui;
 
 import arc.*;
 import arc.func.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.gen.*;
 import mindustry.ui.fragments.HintsFragment.*;
 import sw.content.blocks.*;
+import sw.entities.units.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.production.StackableGenericCrafter.*;
+import sw.world.graph.*;
 import sw.world.meta.*;
 
 
@@ -30,6 +34,14 @@ public enum EventHints implements Hint {
 				return false;
 			}
 		}
+	),
+	noAcceleration(
+		() -> false,
+		() -> Groups.all.contains(entity -> {
+			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system)) return false;
+
+			return (system.builds.first() != null && system.builds.first().asBuilding().team == Vars.player.team()) && Mathf.zero(system.torque + system.friction * -Mathf.sign(system.speed));
+		})
 	),
 	transmission(
 		() -> false,
