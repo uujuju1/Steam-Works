@@ -143,7 +143,7 @@ public class SWShaders {
 
 			setUniformf("u_masksize", SWVars.renderer.getPitfallTexture().width, SWVars.renderer.getPitfallTexture().height);
 
-			setUniformf("u_scale", 64 / Mathf.log(2, 2 * Vars.renderer.getDisplayScale()));
+			setUniformf("u_scale", 64 / Mathf.log(2, 2 * Math.max(1f, Vars.renderer.getDisplayScale())));
 
 			Vars.renderer.effectBuffer.getTexture().bind(0);
 			SWVars.renderer.getPitfallTexture().bind(1);
