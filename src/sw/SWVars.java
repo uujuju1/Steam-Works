@@ -17,6 +17,8 @@ import java.util.*;
 public class SWVars implements Loadable {
 	public static SWRenderer renderer;
 
+	public static MusicPlayer musicPlayer;
+
 	public static boolean showSectorLaunchDialog = true;
 	
 	public static boolean isMod = true;
@@ -30,6 +32,8 @@ public class SWVars implements Loadable {
 			ModSettings.load();
 			renderer = new SWRenderer();
 			renderer.init();
+			musicPlayer = new MusicPlayer();
+			musicPlayer.init();
 			SWUI.load();
 		}
 	}
@@ -118,6 +122,7 @@ public class SWVars implements Loadable {
 		SWLiquids.load();
 		SWWeathers.load();
 		SWUnitTypes.load();
+		SWMusics.load();
 		SWBlocks.load();
 		DreamContent.load();
 		SWPlanets.load();

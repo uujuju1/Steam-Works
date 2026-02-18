@@ -6,6 +6,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.storage.*;
 import sw.content.blocks.*;
+import sw.gen.*;
 import sw.type.*;
 
 public class SWSectorPresets {
@@ -19,6 +20,7 @@ public class SWSectorPresets {
 			width = height = 200;
 			icon = () -> Icon.terrain;
 			alwaysUnlocked = true;
+			landMusic = SWMusics.mountainWisp;
 
 			rules = r -> {
 				r.winWave = 5;
@@ -38,6 +40,7 @@ public class SWSectorPresets {
 			y = 100;
 			width = height = 200;
 			icon = () -> Icon.units;
+			landMusic = SWMusics.dust;
 
 			rules = r -> {
 				r.weather.add(new Weather.WeatherEntry(
@@ -96,6 +99,7 @@ public class SWSectorPresets {
 			y = 200;
 			width = height = 300;
 			icon = () -> Icon.modeAttack;
+			landMusic = SWMusics.scorchedBay;
 			
 			rules = r -> {
 				r.cleanupDeadTeams = false;

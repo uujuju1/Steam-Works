@@ -31,7 +31,6 @@ public class ModLoader extends Mod {
 		Events.on(EventType.FileTreeInitEvent.class, e -> {
       if (SWVars.isMod && !Vars.headless) Core.app.post(SWShaders::load);
     });
-    Events.on(EventType.MusicRegisterEvent.class, e -> SWMusics.load());
     Events.on(EventType.ContentInitEvent.class, e -> {
       if (Core.settings.getBool("sw-hide-maps", true)) {
         Vars.content.sectors().each(this::isMod, sector -> Vars.maps.all().remove(map -> map.file == sector.generator.map.file));

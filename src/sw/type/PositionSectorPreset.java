@@ -1,6 +1,7 @@
 package sw.type;
 
 import arc.*;
+import arc.audio.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
 import arc.scene.style.*;
@@ -20,6 +21,7 @@ public class PositionSectorPreset extends SectorPreset {
 	
 	public @Nullable PositionSectorPreset launcher;
 	public CoreBlock core = (CoreBlock) Blocks.coreShard;
+	public @Nullable Music landMusic;
 
 	public float x = 0, y = 0;
 	public float width = 100, height = 100;
