@@ -122,7 +122,7 @@ void main() {
 
     // TODO fix connecting with other pitfalls
     // chasm
-    if (z >= 48 && texture2D(u_mask, hitPos / u_masksize).r < 0.9) {
+    if (z >= 48.0 && texture2D(u_mask, hitPos / u_masksize).r < 0.9) {
         float unMapped = 1.0 - 1.0/(64.0/u_scale + 1.0);
         vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1.0 - unMapped));
 

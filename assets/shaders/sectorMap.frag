@@ -91,7 +91,7 @@ void main() {
                 !(
                     abs(box.x) < boxSize.x / 2.0 - 5.0 &&
                     abs(box.y) < boxSize.y / 2.0 - 5.0
-                ) && bars >= 30
+                ) && bars >= 30.0
             ) {
                 col = vec4(vec3(0.3), 1.0);
                 isBox = true;
@@ -103,7 +103,7 @@ void main() {
                     abs(box.y) < boxSize.y / 2.0 - 5.0
                 )
             ) {
-                if (bars < 30) {
+                if (bars < 30.0) {
                     col = vec4(vec3(0.2), 1.0);
                     isBox = true;
                 } else {
