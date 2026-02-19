@@ -141,7 +141,7 @@ public class ModSettings {
 //      }).size(210f, 64f).pad(6f);
 //    }};
     Vars.ui.settings.addCategory(Core.bundle.get("sw-settings"), "sw-setting-category", table -> {
-      table.image(SWTex.settingsTitle).row();
+      table.image(SWTex.settingsTitle).padBottom(10f).row();
       table.table(Tex.button, t -> {
         t.button(
           "@settings.game",
@@ -157,6 +157,13 @@ public class ModSettings {
           iconMed,
           () -> show(1)
         ).growX().minWidth(300f).marginLeft(8f).height(50f).row();
+//        t.button(
+//          "@settings.controls",
+//          Icon.move,
+//          Styles.flatt,
+//          iconMed,
+//          () -> {}
+//        ).growX().minWidth(300f).marginLeft(8f).height(50f).row();
         t.button(
           "@settings.sw-moddata",
           Icon.save,
