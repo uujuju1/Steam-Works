@@ -38,7 +38,7 @@ public enum EventHints implements Hint {
 	noAcceleration(
 		() -> false,
 		() -> Groups.all.contains(entity -> {
-			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system)) return false;
+			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty()) return false;
 
 			return (system.builds.first() != null && system.builds.first().asBuilding().team == Vars.player.team()) && Mathf.zero(system.torque + system.friction * -Mathf.sign(system.speed));
 		})
