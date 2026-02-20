@@ -76,6 +76,10 @@ public class MusicPlayer extends SoundControl {
 		titles.put(SWMusics.fog, new String[]{"Fog", "12Three7"});
 		titles.put(SWMusics.create, new String[]{"Create", "12Three7"});
 		titles.put(SWMusics.complex, new String[]{"Complex", "12Three7"});
+
+		titles.put(SWMusics.dust, new String[]{"Dust", "Liz"});
+		titles.put(SWMusics.scorchedBay, new String[]{"Scorched Bay", "Liz"});
+		titles.put(SWMusics.mountainWisp, new String[]{"Mountain Wisp", "Liz"});
 	}
 
 	@Override
