@@ -24,7 +24,7 @@ public class SWVars implements Loadable {
 	public static boolean isMod = true;
 
   public static void init() {
-		if (isMod) dev();
+//		if (isMod) dev();
 
 		if (!Vars.headless) {
 			SWTex.load();

@@ -29,6 +29,7 @@ public class ModSettings {
     categories.add(new SettingsTable() {{
       checkPref("sw-hide-maps", false);
       checkPref("sw-replace-music", true);
+      checkPref("sw-developer-mode", false);
     }});
     // graphics
     categories.add(new SettingsTable() {{

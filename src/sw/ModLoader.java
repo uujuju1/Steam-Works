@@ -19,6 +19,13 @@ import sw.ui.*;
 public class ModLoader extends Mod {
   public ModLoader() {
     Events.on(EventType.ClientLoadEvent.class, e -> {
+      Mods.LoadedMod contextMod = Vars.mods.getMod("context");
+      if (contextMod != null && contextMod.enabled() && Core.settings.getBool("sw-developer-mode", false)) {
+        Vars.mods.getScripts().runConsole("ContextMod.loadToConsole(Vars.mods.getMod(\"sw\"), \"sw\")");
+      }
+
+      if (Vars.headless) return;
+
       if (Core.settings.getBool("sw-menu-enabled", true)) {
         try {
           Reflect.set(MenuFragment.class, Vars.ui.menufrag, "renderer", new SWMenuRenderer());
