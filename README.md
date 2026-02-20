@@ -18,5 +18,6 @@ As far as i'm aware, this task is windows only (don't have linux to test that)
 4. Running `gradlew runGame` now should open the game with its save file set to what was put in `savePath`. Along with your copy of the mod.
 - You can add other mods in your `savePath`, and they will also load during step 4. Keep in mind that if the game crashes, the crash log will still be in `C:Users\<you>\AppData\Roaming\Mindustry\crashes`
 
-
+## Ost by 12Three7
+The tracks under the name 12Three7 *are not mine nor were they made for this project* and will be taken off the mod if Drifted Notes(went by 12Three7 at the time these musics were made) contacts me telling to take them off.
 
