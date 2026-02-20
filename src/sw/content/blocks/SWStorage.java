@@ -19,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 public class SWStorage {
 	public static Block
 		compactContainer,
-		liquidBasin,
+		liquidDistributor, liquidBasin,
 		coreScaffold, coreMole;
 
 	public static void load() {
@@ -34,7 +34,17 @@ public class SWStorage {
 			itemCapacity = 50;
 			coreMerge = false;
 		}};
-		
+
+		liquidDistributor = new LiquidRouter("liquid-distributor") {{
+			requirements(Category.liquid, with(
+				SWItems.iron, 15,
+				SWItems.verdigris, 10
+			));
+			size = 2;
+			health = 250;
+			solid = true;
+			liquidCapacity = 120 * 6f;
+		}};
 		liquidBasin = new LiquidRouter("liquid-basin") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 50,
@@ -43,7 +53,7 @@ public class SWStorage {
 			size = 3;
 			health = 500;
 			solid = true;
-			liquidCapacity = 1000;
+			liquidCapacity = 120 * 12f;
 		}};
 
 		coreScaffold = new CoreBlock("core-scaffold") {{
