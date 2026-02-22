@@ -66,6 +66,7 @@ public class MusicPlayer extends SoundControl {
 	@Override
 	protected void playOnce(Music music) {
 		super.playOnce(music);
+		if(current != null || music == null || !shouldPlay()) return;
 		musicNotification(music);
 	}
 
