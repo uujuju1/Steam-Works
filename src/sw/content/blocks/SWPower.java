@@ -1037,8 +1037,6 @@ public class SWPower {
 							pixelWidth = 4;
 							pixelHeight = 1;
 							
-							spinScl = offset.x > 0 ? 0.5f : 1f;
-							
 							x = 6f * offset.x;
 							y = 4f * offset.y;
 							

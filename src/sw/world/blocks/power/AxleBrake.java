@@ -79,7 +79,7 @@ public class AxleBrake extends AxleBlock {
 		}
 		
 		@Override public float getForce() {
-			return Mathf.clamp(Mathf.map(getSpeed(), brakeSpeedTarget - brakeSpeedGradient, brakeSpeedTarget, 0f, 1f)) * -brakeStrength;
+			return Mathf.clamp(Mathf.map(getSpeed(), brakeSpeedTarget - brakeSpeedGradient, brakeSpeedTarget, 0f, 1f)) * -brakeStrength / getRatio();
 		}
 		
 		@Override public boolean outputsSpin() {

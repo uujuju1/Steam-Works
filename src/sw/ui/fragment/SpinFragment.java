@@ -4,6 +4,7 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
+import arc.math.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
@@ -23,12 +24,12 @@ import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 public class SpinFragment extends Group{
-	public boolean shown = false;
+//	public boolean shown = false;
 	
 	public @Nullable SpinGraph currentGraph;
 	public @Nullable Building currentHovered;
 	
-	private Table infoTable;
+	private Table table;
 	
 	public SpinFragment() {
 		Events.on(EventType.ResizeEvent.class, e -> setSize(Core.graphics.getWidth(), Core.graphics.getHeight()));
@@ -37,72 +38,60 @@ public class SpinFragment extends Group{
 	
 	public SpinFragment build(Group parent) {
 		parent.addChild(this);
-		visible(() -> !Vars.state.isMenu());
-		touchable(() -> shown ? Touchable.enabled : Touchable.disabled);
-		
-		buildInfo();
+		visible(() -> !Vars.state.isMenu() && Core.input.keyDown(SWBinding.spinInfo));
+		touchable = Touchable.disabled;
 		
 		update(this::update);
+
+		table = new Table(Styles.black6);
+		addChild(table);
 		
 		return this;
 	}
-	
-	private void buildInfo() {
-		fill(t -> {
-			t.bottom();
-			infoTable = t.table(Styles.black6, info -> {}).margin(10f).get();
-			changeGraph(null);
-		});
-		infoTable.actions(Actions.fadeOut(0f));
-	}
-	
-	private void changeGraph(@Nullable SpinGraph newer) {
-		currentGraph = newer;
-		
-		infoTable.clear();
-		
-		if (newer == null) {
-			infoTable.add("Please Select a graph");
+
+	protected void buildGraph(SpinGraph graph) {
+		currentGraph = graph;
+		if (!(currentHovered instanceof HasSpin spin) || graph == null) {
+			actions(Actions.fadeOut(0.25f, Interp.circleIn));
+			return;
 		} else {
-			infoTable.add(new RotationBar(
-				() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(newer.speed * 10f / getCurrentRatio(), 2)),
-				() -> newer.rotation / getCurrentRatio()
-			)).size(500f, 20f).pad(10f).get().setStyle(new RotationBarStyle() {{
-				outlineColor = Pal.darkestGray;
-				outlineRadius = 4f;
-			}});
-			
-			infoTable.row();
-			
-			infoTable.add(new SplitBar().setBar(
-				() -> newer.friction / Math.max(1f, newer.friction + newer.force()),
-				() -> newer.speed > 0 ? Color.scarlet : (newer.speed == 0 ? Pal.gray : Pal.heal),
-				() -> "-" + Strings.fixed(newer.friction * 600f * getCurrentRatio(), 2) + SWStat.force.localized(),
-				true
-			).setBar(
-				() -> {
-					float torque = newer.force();
-					return torque / Math.max(1f, newer.friction + torque);
-				},
-				() -> newer.speed > 0 ? Pal.heal : (newer.speed == 0 ? Pal.gray : Color.scarlet),
-				() -> Strings.fixed(newer.force() * 600f * getCurrentRatio(), 2) + SWStat.force.localized(),
-				false
-			)).size(500f, 20f).pad(10f);
-			
-			infoTable.row();
-			
-			infoTable.add(new Bar(
-				() -> Strings.fixed(newer.inertia, 2) + " " + SWStat.mass.localized(),
-				() -> Color.black,
-				() -> 0f
-			)).size(500f, 20f).pad(10f);
-			
-			infoTable.row();
+			actions(Actions.fadeIn(0.25f, Interp.circleOut));
 		}
+
+		table.clear();
+
+		float currentRatio = spin.getRatio();
+
+		table.defaults().pad(10);
+
+		table.add(new RotationBar(
+			() -> Core.bundle.format("bar.sw-rotation", Strings.fixed(graph.speed * 10 / currentRatio, 2)),
+			() -> graph.rotation / currentRatio
+		)).minSize(300, 20).growX().get();
+		table.row();
+
+		SplitBar forceBar = new SplitBar().setBar(
+			() -> (graph.friction + graph.torque) == 0 ? 1 : graph.friction / (graph.friction + graph.torque),
+			() -> Pal.breakInvalid,
+			() -> "-" + Strings.fixed(graph.friction * 600 * currentRatio, 2) + " " + SWStat.force.localized(),
+			true
+		).setBar(
+			() -> (graph.friction + graph.torque) == 0 ? 1 : graph.torque / (graph.friction + graph.torque),
+			() -> Pal.heal,
+			() -> Strings.fixed(graph.torque * 600 * currentRatio, 2) + " " + SWStat.force.localized(),
+			false
+		);
+		table.add(forceBar).minSize(300, 20).growX().padTop(0);
+		table.row();
+		table.label(() -> "[lightgray]" + SWStat.spinOutput.localized() + ": []" + Strings.fixed(graph.targetSpeed * 10 / currentRatio, 2) + " " + SWStat.spinMinute.localized()).padTop(0).left().row();
+		table.label(() -> "[lightgray]" + SWStat.weight.localized() + ": []" + Strings.fixed(graph.inertia * currentRatio, 2) + " " + SWStat.mass.localized()).padTop(0).left().row();
+
+		table.invalidate();
+		table.pack();
 	}
 	
 	public void drawWorld() {
-		if (currentGraph != null && shown) {
+		if (currentGraph != null && visible) {
 			Draw.draw(Layer.flyingUnitLow - 1f, () -> {
 				FrameBuffer buffer = SWVars.renderer.getBuffer("spinFragment");
 				
@@ -131,41 +120,16 @@ public class SpinFragment extends Group{
 		}
 	}
 	
-	public float getCurrentRatio() {
-		return currentHovered instanceof HasSpin spin && spin.spinConfig() != null ? spin.getRatio() : 1f;
-	}
-	
-	public void toggle() {
-		if (infoTable.hasActions() || Vars.state.isMenu()) return;
-		
-		shown = !shown;
-		Vars.ui.hudfrag.shown = !shown;
-		
-		if (shown) {
-			infoTable.actions(
-				Actions.fadeOut(0f),
-				Actions.fadeIn(0f)
-			);
-		} else {
-			infoTable.actions(
-				Actions.fadeIn(0f),
-				Actions.fadeOut(0f)
-			);
-		}
-	}
-	
 	public void update() {
 		currentHovered = Vars.world.buildWorld(Core.input.mouseWorld());
 		
-		if (Vars.state.isMenu() && shown || Core.input.keyTap(SWBinding.spinInfo)) toggle();
-		if (!shown) return;
-		
-		Vars.ui.hudfrag.shown = false;
-		
 		if (currentHovered instanceof HasSpin spin && spin.spinConfig() != null) {
-			if (spin.spinGraph() != currentGraph) changeGraph(spin.spinGraph());
+			if (spin.spinGraph() != currentGraph) buildGraph(spin.spinGraph());
+
+			Core.camera.project(Tmp.v1.set(currentHovered));
+			table.setPosition(Tmp.v1.x, Tmp.v1.y, Align.center);
 		} else {
-			if (currentGraph != null) changeGraph(null);
+			if (currentGraph != null) buildGraph(null);
 		}
 	}
 }
