@@ -21,6 +21,10 @@ public class MusicPlayer extends SoundControl {
 	public final Seq<Music> casual = Seq.with();
 	public final ObjectMap<Music, String[]> titles = new ObjectMap<>();
 
+	public MusicPlayer() {
+		musicInterval = 10 * Time.toMinutes;
+	}
+
 	public void musicNotification(Music music){
 		Table t = new Table(Styles.black3);
 		t.touchable = Touchable.disabled;
@@ -65,8 +69,8 @@ public class MusicPlayer extends SoundControl {
 
 	@Override
 	protected void playOnce(Music music) {
-		super.playOnce(music);
 		if(current != null || music == null || !shouldPlay()) return;
+		super.playOnce(music);
 		musicNotification(music);
 	}
 
