@@ -28,6 +28,8 @@ public class SpinFragment extends Group{
 	
 	public @Nullable SpinGraph currentGraph;
 	public @Nullable Building currentHovered;
+
+	public float currentRatio = 1f;
 	
 	private Table table;
 	
@@ -60,8 +62,6 @@ public class SpinFragment extends Group{
 
 		table.clear();
 
-		float currentRatio = spin.getRatio();
-
 		table.defaults().pad(10);
 
 		table.add(new RotationBar(
@@ -84,7 +84,13 @@ public class SpinFragment extends Group{
 		table.add(forceBar).minSize(300, 20).growX().padTop(0);
 		table.row();
 		table.label(() -> "[lightgray]" + SWStat.spinOutput.localized() + ": []" + Strings.fixed(graph.targetSpeed * 10 / currentRatio, 2) + " " + SWStat.spinMinute.localized()).padTop(0).left().row();
-		table.label(() -> "[lightgray]" + SWStat.weight.localized() + ": []" + Strings.fixed(graph.inertia * currentRatio, 2) + " " + SWStat.mass.localized()).padTop(0).left().row();
+		table.label(() -> "[lightgray]" + SWStat.weight.localized() + ": []" + Strings.fixed(graph.inertia == 1 ? 1f : graph.inertia * currentRatio, 2) + " " + SWStat.mass.localized()).padTop(0).left().row();
+		// TODO show where the failure happens
+		if (graph.invalid) table.add("@ui.sw-graph-invalid").width(300f).left().wrap().row();
+
+		if (Core.settings.getBool("sw-developer-mode", false)) {
+			table.label(() -> "[lightgray]Ratio: []X" + currentRatio).left().row();
+		}
 
 		table.invalidate();
 		table.pack();
@@ -125,6 +131,8 @@ public class SpinFragment extends Group{
 		
 		if (currentHovered instanceof HasSpin spin && spin.spinConfig() != null) {
 			if (spin.spinGraph() != currentGraph) buildGraph(spin.spinGraph());
+
+			currentRatio = spin.getRatio();
 
 			Core.camera.project(Tmp.v1.set(currentHovered));
 			table.setPosition(Tmp.v1.x, Tmp.v1.y, Align.center);

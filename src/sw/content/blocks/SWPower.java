@@ -706,6 +706,7 @@ public class SWPower {
 				new DrawBitmask("-tiles", b -> 0, 64)
 			);
 		}};
+
 		flywheel = new AxleBlock("flywheel") {{
 			requirements(Category.power, with(
 				SWItems.bloom, 200,
@@ -852,7 +853,6 @@ public class SWPower {
 				new DrawRegion("-top")
 			);
 		}};
-
 		shaftTransmission = new ShaftTransmission("shaft-transmission") {{
 			requirements(Category.power, with(
 				SWItems.verdigris, 50,

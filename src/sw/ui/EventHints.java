@@ -9,6 +9,7 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.ui.fragments.HintsFragment.*;
 import sw.content.blocks.*;
+import sw.core.*;
 import sw.entities.units.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.production.StackableGenericCrafter.*;
@@ -25,6 +26,22 @@ public enum EventHints implements Hint {
 		() -> false,
 		() -> Vars.control.input.block instanceof AreaDrill
 	),
+	noAcceleration(
+		() -> false,
+		() -> Groups.all.contains(entity -> {
+			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
+
+			return (system.builds.first() != null && system.builds.first().asBuilding().team == Vars.player.team()) && Mathf.zero(system.torque + system.friction * -Mathf.sign(system.speed));
+		})
+	),
+	ratios(
+		() -> Core.input.keyDown(SWBinding.spinInfo) && SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null,
+		() -> Groups.all.contains(entity -> {
+			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
+
+			return system.builds.contains(build -> build.getRatio() == 2 || build.getRatio() == 0.5f);
+		})
+	),
 	rotationBuilds(
 		() -> false,
 		() -> {
@@ -35,23 +52,23 @@ public enum EventHints implements Hint {
 			}
 		}
 	),
-	noAcceleration(
-		() -> false,
+	usefulInfo(
+		() -> Core.input.keyDown(SWBinding.spinInfo) && SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null,
 		() -> Groups.all.contains(entity -> {
-			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty()) return false;
+				if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
 
-			return (system.builds.first() != null && system.builds.first().asBuilding().team == Vars.player.team()) && Mathf.zero(system.torque + system.friction * -Mathf.sign(system.speed));
-		})
-	),
-	transmission(
-		() -> false,
-		() -> !Vars.state.rules.defaultTeam.data().getBuildings(SWPower.shaftTransmission).isEmpty()
-	);
+				return system.friction + system.torque > 50f / 600f;
+			})
+	) {{
+		visibility = visibleDesktop;
+		hintInfo = () -> new Object[]{SWBinding.spinInfo.value.key};
+	}};
 
 	final Boolp complete, shown;
 	EventHints[] requirements;
+	Prov<Object[]> hintInfo = () -> new Object[0];
 
-	final int visibility = visibleAll;
+	int visibility = visibleAll;
 	boolean cached, finished;
 
 	static final String prefix = "sw-";
@@ -101,7 +118,7 @@ public enum EventHints implements Hint {
 	}
 
 	@Override public String text() {
-		return Core.bundle.get("hint." + prefix + name(), "Missing bundle for hint: hint." + prefix + name());
+		return Core.bundle.formatString(Core.bundle.get("hint." + prefix + name(), "Missing bundle for hint: hint." + prefix + name()), hintInfo.get());
 	}
 
 	@Override
