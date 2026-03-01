@@ -65,7 +65,7 @@ void main() {
 
 //    if (p > 1) col *= vec4(0.5, 0.5, 0.5, 1);
 //    if (p > 1.25) col *= vec4(0, 0, 0, 1);
-    if (p > 0.75f) alpha = 0.5;
+    if (p > 0.75) alpha = 0.5;
     if (p > 1.0) alpha = 1.0;
 
     bool isBox = false;
