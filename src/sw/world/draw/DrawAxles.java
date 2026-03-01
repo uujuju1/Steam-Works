@@ -2,6 +2,7 @@ package sw.world.draw;
 
 import arc.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -48,11 +49,7 @@ public class DrawAxles extends DrawBlock {
 			float dy = build.y + Angles.trnsy(build.block.rotate ? build.rotdeg() : 0, axle.x, axle.y);
 
 			Draws.palette(axle.paletteLight, axle.paletteMedium, axle.paletteDark);
-			if (axle.hasSprites) {
-				Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
-			} else {
-				Draws.polyCylinder(axle.polySides, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
-			}
+			Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
 			Draws.palette();
 
 			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, axle.width, axle.height, rot);
@@ -62,27 +59,35 @@ public class DrawAxles extends DrawBlock {
 	}
 	@Override
 	public void drawPlan(Block block, BuildPlan plan, Eachable<BuildPlan> list) {
-		axles.each(axle -> axle.hasIcon, axle -> Draw.rect(axle.iconRegion, plan.drawx(), plan.drawy(), plan.rotation * 90));
+		axles.each(axle -> {
+			float rot = block.rotate ? ((plan.rotation * 90f + 90f + axle.rotation) % 180f - 90f) : axle.rotation;
+			float spin = Time.time * axle.spinScl / 2f;
+			float dx = plan.drawx() + Angles.trnsx(block.rotate ? plan.rotation * 90f : 0f, axle.x, axle.y);
+			float dy = plan.drawy() + Angles.trnsy(block.rotate ? plan.rotation * 90f : 0f, axle.x, axle.y);
+
+			Color mixcolor = Draw.getMixColor();
+			Draws.palette(
+				axle.paletteLight.cpy().lerp(mixcolor, 1f - axle.paletteLight.a * (1f - mixcolor.a)),
+				axle.paletteMedium.cpy().lerp(mixcolor, 1f - axle.paletteMedium.a * (1f - mixcolor.a)),
+				axle.paletteDark.cpy().lerp(mixcolor, 1f - axle.paletteDark.a * (1f - mixcolor.a))
+			);
+			Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
+			Draws.palette();
+			Draw.mixcol(mixcolor, mixcolor.a);
+
+			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, axle.width, axle.height, rot);
+		});
 	}
 
 	@Override
 	public TextureRegion[] icons(Block block) {
-		if (iconName != null) {
-			return new TextureRegion[]{Core.atlas.find(iconName)};
-		}
-		
-		Seq<Axle> tmp = axles.select(b -> b.hasIcon);
-		TextureRegion[] out = new TextureRegion[tmp.size];
-		for(int i = 0; i < out.length; i++) out[i] = tmp.get(i).iconRegion;
-		return out;
+		return new TextureRegion[]{Core.atlas.find(iconName)};
 	}
 
 	@Override
 	public void load(Block block) {
-		axles.each(axle -> {
-			if (axle.hasSprites) axle.regions = Core.atlas.find(block.name + axle.suffix).split(axle.pixelWidth, axle.pixelHeight)[0];
-			if (axle.hasIcon) axle.iconRegion = Core.atlas.find(axle.iconOverride == null ? block.name + axle.suffix + "-icon" : axle.iconOverride);
-			if (axle.circular) axle.shadowRegion = Core.atlas.find(block.name + axle.suffix + "-shadow");
-		});
+		if (iconName == null) iconName = block.name + "-axle-icon";
+//		axles.each(axle -> axle.load(iconName == null ? block.name : iconName));
+		axles.each(axle -> axle.load(block.name));
 	}
 }

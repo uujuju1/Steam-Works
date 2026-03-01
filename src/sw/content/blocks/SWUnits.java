@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import arc.math.*;
 import arc.math.geom.*;
+import arc.util.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -19,7 +20,7 @@ import sw.world.meta.*;
 import static mindustry.type.ItemStack.*;
 
 public class SWUnits {
-	public static Block mechanicalAssembler, assemblerArm;
+	public static Block mechanicalAssembler, assemblyOutpost, assemblerArm;
 
 	public static void load() {
 		mechanicalAssembler = new MechanicalAssembler("mechanical-assembler") {{
@@ -109,6 +110,96 @@ public class SWUnits {
 					new int[]{0, 5},
 					new int[]{2, 7},
 					new int[]{1, 4}
+				};
+			}};
+		}};
+
+		assemblyOutpost = new MechanicalAssembler("assembly-outpost") {{
+			requirements(Category.units, with());
+
+			size = 3;
+
+			areaSize = 7;
+
+			stepSound = SWSounds.hitMetal;
+			stepSoundPitchMax = 2f;
+			stepSoundPitchMin = 0.5f;
+			stepSoundVolume = 0.25f;
+
+			progressSound = SWSounds.welding;
+			progressEffect = SWFx.weld;
+			progressEffectChance = 0.25f;
+
+			armSpeed = 0.5f;
+			armStartingOffset = 2f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom")
+//				new DrawAxles(new Axle("-axle") {{
+//					x = -4;
+//					y = 0;
+//
+//					pixelWidth = 64;
+//					pixelHeight = 7;
+//
+//					width = 16f;
+//					height = 3.5f;
+//
+//					rotation = -90f;
+//
+//					paletteLight = SWPal.axleLight;
+//					paletteMedium = SWPal.axleMedium;
+//					paletteDark = SWPal.axleDark;
+//				}}),
+//				new DrawBitmask("-tiles", u -> 0, 64),
+//				new DrawArm() {{
+//					layer = Layer.groundUnit + 1;
+//
+//					armExtension = 8f;
+//					armOffset = (4f + 2f) * 8f/2f;
+//					armLength = 28f;
+//					armCurve = new Interp.SwingOut(1);
+//				}}
+			);
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.1f;
+				maxSpeed = 0.6f;
+				efficiencyScale = Interp.one;
+			}});
+
+			plans.add(
+				new MechanicalAssemblerPlan() {{
+					unit = SWUnitTypes.volare;
+					stepTime = 20f * 60f;
+					steps.putAll(
+						with(SWItems.iron, 20), new Vec2(-4, 8),
+						with(SWItems.verdigris, 25), new Vec2(4, 8),
+						with(Items.silicon, 35), new Vec2(6, 0),
+						with(SWItems.bloom, 30), new Vec2(-4, -8),
+						with(Items.graphite, 25), new Vec2()
+					);
+				}},
+				new MechanicalAssemblerPlan() {{
+					unit = SWUnitTypes.ballistra;
+					stepTime = 15f * 60f;
+					steps.putAll(
+						with(Items.silicon, 30), new Vec2(-2, 2),
+						with(Items.graphite, 35), new Vec2(6, 0),
+						with(SWItems.bloom, 25), new Vec2(0, -4),
+						with(SWItems.aluminium, 25), new Vec2(6, 0),
+						with(Items.silicon, 10), new Vec2(-2, 2)
+					);
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 50f/600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 2, 10},
+					new int[]{3, 5, 1},
+					new int[]{6, 8, 4},
+					new int[]{9, 11, 7}
 				};
 			}};
 		}};

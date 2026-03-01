@@ -33,7 +33,7 @@ public class RotationBattery extends AxleBlock {
 		}
 		
 		@Override public float totalProgress() {
-			return wind / spinGraph().ratios.get(this, 1);
+			return wind / getRatio();
 		}
 		
 		@Override

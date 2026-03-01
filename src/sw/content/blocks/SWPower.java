@@ -217,25 +217,9 @@ public class SWPower {
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 
-					for (Point2 offset : Geometry.d4) {
-						axles.add(new Axle("-axle") {{
-							pixelWidth = 2;
-							pixelHeight = 1;
-
-							x = 11f * offset.x;
-							y = 11f * offset.y;
-							rotation = offset.y == 0f ? 0f : -90f;
-
-							width = 2f;
-							height = 3.5f;
-
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}});
-					}
+					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
-				new DrawDefault(),
+				new DrawRegion(),
 				new DrawParts() {{
 					for (int i = 0; i < 3; i++) {
 						int finalI = i;
@@ -310,40 +294,9 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					iconName = "sw-combustion-engine-axle-icon";
-					
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					
-					axles.add(
-						new Axle("-axle") {{
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							x = 0f;
-							y = 10f;
-							width = 4f;
-							height = 3.5f;
-							rotation = -90f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}},
-						new Axle("-axle") {{
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							x = 0f;
-							y = -10f;
-							width = 4f;
-							height = 3.5f;
-							rotation = -90f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}}
-					);
+					axles.add(Axles.tripleBlock.position(0f, 0f, -90f, 1f));
 				}},
 				new DrawBitmask("-base", b -> {
 					int tiling = 0;
@@ -445,16 +398,9 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelHeight = 1;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					axles.add(Axles.block.copy());
+				}},
 				new DrawBitmask("-tiles", build -> {
 					int tiling = 0;
 					if (!rotate) return tiling;
@@ -483,34 +429,12 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelHeight = 1;
-
-						height = 3.5f;
-
-						rotation = -90f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-middle") {{
-						hasIcon = false;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						x = 2f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					axles.add(
+						Axles.block.position(0f, 0f, -90f, 1f),
+						Axles.halfBlock.position(2f, 0f, 0f, 1f)
+					);
+				}},
 				new DrawBitmask("-tiles", b -> 0)
 			);
 		}};
@@ -534,69 +458,44 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-shaft") {{
-						circular = true;
+				new DrawAxles() {{
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(6f * offset.x, 4f * offset.y, 0f, 1f));
+					axles.addAll(
+						new Axle("-shaft") {{
+							circular = true;
 
-						pixelWidth = 32;
-						pixelHeight = 7;
+							pixelWidth = 32;
+							pixelHeight = 7;
 
-						y = 4f;
+							y = 4f;
 
-						width = 8f;
-						height = 3.5f;
-					}},
-					new Axle("-shaft") {{
-						circular = true;
+							width = 8f;
+							height = 3.5f;
+						}},
+						new Axle("-shaft") {{
+							circular = true;
 
-						pixelWidth = 32;
-						pixelHeight = 7;
+							pixelWidth = 32;
+							pixelHeight = 7;
 
-						y = -4f;
+							y = -4f;
 
-						width = 8f;
-						height = 3.5f;
-					}},
-					new Axle("-shaft-out") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
+							width = 8f;
+							height = 3.5f;
+						}},
+						new Axle("-shaft-middle") {{
+							circular = true;
 
-						y = 4f;
+							pixelHeight = 9;
+							pixelWidth = 16;
 
-						width = 16f;
-						height = 3.5f;
+							spinScl = -1f;
 
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-shaft-out") {{
-						pixelWidth = 64;
-						pixelHeight = 7;
-
-						y = -4f;
-
-						width = 16f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-shaft-middle") {{
-						iconOverride = "sw-shaft-gearbox-shaft-icon";
-
-						circular = true;
-
-						pixelHeight = 9;
-						pixelWidth = 16;
-
-						spinScl = -1f;
-
-						width = 4f;
-						height = 4.5f;
-					}}
-				),
+							width = 4f;
+							height = 4.5f;
+						}}
+					);
+				}},
 				new DrawBitmask("-tiles", build -> 0) {{
 					tileWidth = tileHeight = 64;
 				}}
@@ -625,20 +524,9 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(new Axle("-axle") {{
-					x = 2;
-					y = 0;
-
-					width = 4f;
-					height = 3.5f;
-
-					pixelWidth = 16;
-					pixelHeight = 1;
-
-					paletteLight = SWPal.axleLight;
-					paletteMedium = SWPal.axleMedium;
-					paletteDark = SWPal.axleDark;
-				}}),
+				new DrawAxles() {{
+					axles.add(Axles.halfBlock.position(2f, 0f, 0f, 1f));
+				}},
 				new DrawBitmask("-tiles", b -> 0)
 			);
 		}};
@@ -671,38 +559,9 @@ public class SWPower {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = 0f;
-						y = -4f;
-						
-						width = 16f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = 0f;
-						y = 4f;
-						
-						width = 16f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					for (int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
+				}},
 				new DrawBitmask("-tiles", b -> 0, 64)
 			);
 		}};
@@ -746,50 +605,35 @@ public class SWPower {
 					y = -4f;
 				}},
 				new DrawAxles() {{
-					for(Point2 offset : Geometry.d4) {
-						axles.add(new Axle("-axle") {{
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							x = 10f * offset.x;
-							y = 10f * offset.y;
-							
-							width = 4f;
-							height = 3.5f;
-							
-							rotation = offset.y != 0 ? -90f : 0f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}});
-					}
+					for(Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y != 0 ? -90f : 0f, 1f));
 				}},
 				new DrawParts() {{
-					parts.add(new RegionPart("-wheel") {{
-						outline = false;
-						clampProgress = false;
-						layer = Layer.blockOver + 1f;
+					parts.add(
+						new RegionPart("-wheel") {{
+							outline = false;
+							clampProgress = false;
+							layer = Layer.blockOver + 1f;
 						
-						rotation = 180f;
-						moveRot = 180f;
+							rotation = 180f;
+							moveRot = 180f;
 						
-						progress = DrawParts.spin.loop(180f);
-					}});
-					parts.add(new RegionPart("-wheel") {{
-						outline = false;
-						clampProgress = false;
-						layer = Layer.blockOver + 1f;
+							progress = DrawParts.spin.loop(180f);
+						}},
+						new RegionPart("-wheel") {{
+							outline = false;
+							clampProgress = false;
+							layer = Layer.blockOver + 1f;
 						
-						color = Color.white;
-						colorTo = SWPal.whiteClear;
+							color = Color.white;
+							colorTo = SWPal.whiteClear;
 						
-						progress = DrawParts.spin.loop(180f).mul(2f).clamp().curve(Interp.pow5);
+							progress = DrawParts.spin.loop(180f).mul(2f).clamp().curve(Interp.pow5);
 						
-						moves.add(new PartMove(DrawParts.spin.loop(180f), 0f, 0f, 180f));
-					}});
+							moves.add(new PartMove(DrawParts.spin.loop(180f), 0f, 0f, 180f));
+						}}
+					);
 				}},
-				new DrawDefault()
+				new DrawRegion()
 			) {{
 				iconOverride = new String[]{"-icon"};
 			}};
@@ -815,40 +659,14 @@ public class SWPower {
 			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					b -> b.back() instanceof HasSpin spin ? spin.getRotation() : 0f,
-					new Axle("-axle") {{
-						pixelWidth = 3;
-						pixelHeight = 1;
-						
-						x = -2.5f;
-						y = 0f;
-						
-						width = 3f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
-				new DrawAxles(
-					b -> b.front() instanceof HasSpin spin ? spin.getRotation() : 0f,
-					new Axle("-axle") {{
-						pixelWidth = 3;
-						pixelHeight = 1;
-						
-						x = 2.5f;
-						y = 0f;
-						
-						width = 3f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					rotationOverride = b -> b.back() instanceof HasSpin spin ? spin.getRotation() : 0f;
+					axles.add(Axles.halfBlock.position(-2f, 0f, 0f, 1f));
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> b.front() instanceof HasSpin spin ? spin.getRotation() : 0f;
+					axles.add(Axles.halfBlock.position(2f, 0f, 0f, 1f));
+				}},
 				new DrawFacingLightRegion(),
 				new DrawRegion("-top")
 			);
@@ -877,99 +695,10 @@ public class SWPower {
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
 					for(Point2 offset : Geometry.d8edge) {
-						axles.add(new Axle("-axle-end") {{
-							hasIcon = false;
-							
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							spinScl = offset.x > 0 ? 0.5f : 1f;
-							
-							x = 4f * offset.x;
-							y = 6f * offset.y;
-							
-							width = 4f;
-							height = 3.5f;
-							
-							rotation = -90f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}});
+						axles.add(Axles.halfBlock.position(4f * offset.x, 6f * offset.y, -90f, offset.x > 0 ? 0.5f : 1f));
 					}
-//					new Axle("-axle-end") {{
-//						iconOverride = "sw-shaft-transmission-axle-icon";
-//
-//						pixelWidth = 16;
-//						pixelHeight = 1;
-//
-//						spinScl = 0.5f;
-//
-//						x = 6f;
-//						y = 4f;
-//
-//						width = 4f;
-//						height = 3.5f;
-//
-//						paletteLight = SWPal.axleLight;
-//						paletteMedium = SWPal.axleMedium;
-//						paletteDark = SWPal.axleDark;
-//					}},
-//						new Axle("-axle-end") {{
-//							hasIcon = false;
-//
-//							pixelWidth = 16;
-//							pixelHeight = 1;
-//
-//							x = 6f;
-//							y = -4f;
-//
-//							width = 4f;
-//							height = 3.5f;
-//
-//							paletteLight = SWPal.axleLight;
-//							paletteMedium = SWPal.axleMedium;
-//							paletteDark = SWPal.axleDark;
-//						}},
-//						new Axle("-axle-end") {{
-//							hasIcon = false;
-//
-//							pixelWidth = 16;
-//							pixelHeight = 1;
-//
-//							spinScl = 0.5f;
-//
-//							x = -6f;
-//							y = 4f;
-//
-//							width = 4f;
-//							height = 3.5f;
-//
-//							paletteLight = SWPal.axleLight;
-//							paletteMedium = SWPal.axleMedium;
-//							paletteDark = SWPal.axleDark;
-//						}},
-//						new Axle("-axle-end") {{
-//							hasIcon = false;
-//
-//							pixelWidth = 16;
-//							pixelHeight = 1;
-//
-//							x = -6f;
-//							y = -4f;
-//
-//							width = 4f;
-//							height = 3.5f;
-//
-//							paletteLight = SWPal.axleLight;
-//							paletteMedium = SWPal.axleMedium;
-//							paletteDark = SWPal.axleDark;
-//						}},
 					axles.add(
 						new Axle("-axle-middle") {{
-							iconOverride = "sw-shaft-transmission-axle-icon";
-							
 							circular = true;
 							
 							pixelWidth = 8;
@@ -983,7 +712,6 @@ public class SWPower {
 							rotation = -90f;
 						}},
 						new Axle("-axle-center") {{
-							hasIcon = false;
 							circular = true;
 							
 							pixelWidth = 4;
@@ -999,7 +727,6 @@ public class SWPower {
 							rotation = -90f;
 						}},
 						new Axle("-axle-middle") {{
-							hasIcon = false;
 							circular = true;
 							
 							pixelWidth = 8;
@@ -1032,22 +759,7 @@ public class SWPower {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					for(Point2 offset : Geometry.d8edge) {
-						axles.add(new Axle("-axle") {{
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							x = 6f * offset.x;
-							y = 4f * offset.y;
-							
-							width = 4f;
-							height = 3.5f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}});
-					}
+					for(int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
 				}},
 				new DrawFacingLightRegion(),
 				new DrawRegion("-rotator", 1, false) {{
@@ -1110,34 +822,34 @@ public class SWPower {
 			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelWidth = 1;
-						pixelHeight = 1;
-						
-						width = 2.5f;
-						height = 7f;
-						
-						paletteLight = Color.valueOf("BAA697");
-						paletteMedium = Color.valueOf("947D72");
-						paletteDark = Color.valueOf("6A504A");
-					}}
-				),
-				new DrawParts() {{
-					for (int i : Mathf.signs) {
-						parts.add(
-							new RegionPart("-piston" + (i == 1 ? "-top" : "-bottom")) {{
-								outline = false;
-								
-								x = 3.25f * i;
-								y = 5.25f * i;
-								moveY = -3.5f * i;
-								
-								progress = PartProgress.reload;
-							}}
-						);
-					}
-				}},
+//				new DrawAxles(
+//					new Axle("-axle") {{
+//						pixelWidth = 1;
+//						pixelHeight = 1;
+//
+//						width = 2.5f;
+//						height = 7f;
+//
+//						paletteLight = Color.valueOf("BAA697");
+//						paletteMedium = Color.valueOf("947D72");
+//						paletteDark = Color.valueOf("6A504A");
+//					}}
+//				),
+//				new DrawParts() {{
+//					for (int i : Mathf.signs) {
+//						parts.add(
+//							new RegionPart("-piston" + (i == 1 ? "-top" : "-bottom")) {{
+//								outline = false;
+//
+//								x = 3.25f * i;
+//								y = 5.25f * i;
+//								moveY = -3.5f * i;
+//
+//								progress = PartProgress.reload;
+//							}}
+//						);
+//					}
+//				}},
 				new DrawDefault()
 			);
 		}};

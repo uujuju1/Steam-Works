@@ -116,6 +116,7 @@ public class SWVars implements Loadable {
 	 *  <p>ModTechTree.load()
 	**/
 	public static void loadContent() {
+		Axles.load();
 		SWSounds.load();
 		SWItems.load();
 		SWStatusEffects.load();
