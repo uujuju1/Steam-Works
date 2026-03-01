@@ -400,13 +400,7 @@ public class SWPower {
 				new DrawAxles() {{
 					axles.add(Axles.block.copy());
 				}},
-				new DrawBitmask("-tiles", build -> {
-					int tiling = 0;
-					if (!rotate) return tiling;
-					if (build.front() instanceof HasSpin gas && HasSpin.connects((HasSpin) build, gas.getSpinGraphDestination((HasSpin) build))) tiling |= 1;
-					if (build.back() instanceof HasSpin gas && HasSpin.connects((HasSpin) build, gas.getSpinGraphDestination((HasSpin) build))) tiling |= 2;
-					return tiling;
-				})
+				new DrawBitmask("-tiles", build -> ((AxleBlockBuild) build).tiling)
 			);
 		}};
 		wireShaftRouter = new AxleBlock("wire-shaft-router") {{

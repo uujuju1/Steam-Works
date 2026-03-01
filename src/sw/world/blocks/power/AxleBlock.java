@@ -1,6 +1,7 @@
 package sw.world.blocks.power;
 
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -74,6 +75,7 @@ public class AxleBlock extends Block {
 
 	public class AxleBlockBuild extends Building implements HasSpin {
 		public SpinModule spin;
+		public int tiling;
 		
 		@Override
 		public Building create(Block block, Team team) {
@@ -89,6 +91,15 @@ public class AxleBlock extends Block {
 		}
 		@Override public void drawSelect() {
 			if (spinConfig != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+		}
+
+		@Override
+		public void onGraphUpdate() {
+			tiling = 0;
+			for (int i = 0; i < (spinConfig.allowedEdges == null ? getEdges().length : spinConfig.allowedEdges[rotate ? rotation : 0].length); i++) {
+				Point2 edge = getEdges()[spinConfig.allowedEdges == null ? i : spinConfig.allowedEdges[rotate ? rotation : 0][i]];
+				if (nearby(edge.x, edge.y) instanceof HasSpin spinBuild && HasSpin.connects(this, spinBuild)) tiling |= 1 << i;
+			}
 		}
 
 		@Override
