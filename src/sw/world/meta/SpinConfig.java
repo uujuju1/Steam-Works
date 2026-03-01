@@ -62,9 +62,9 @@ public class SpinConfig {
 
 	public void drawPlace(Block block, int x, int y, int rotation, boolean valid) {
 		if (hasSpin) {
-			Point2[] edges = Edges.getEdges(block.size);
+			Point2[] edges = block.getEdges();
 			if (allowedEdges != null) {
-				for(int i : allowedEdges[rotation]) {
+				for(int i : allowedEdges[block.rotate ? rotation : 0]) {
 					Draw.rect("sw-icon-spin-edge", (x + edges[i].x) * Vars.tilesize, (y + edges[i].y) * Vars.tilesize, 4, 4, 0);
 				}
 			} else {
