@@ -2,16 +2,13 @@ package sw.content.blocks;
 
 import arc.math.*;
 import arc.math.geom.*;
-import arc.util.*;
 import mindustry.content.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.entities.*;
 import sw.gen.*;
-import sw.graphics.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -47,22 +44,9 @@ public class SWUnits {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(new Axle("-axle") {{
-					x = -4;
-					y = 0;
-
-					pixelWidth = 64;
-					pixelHeight = 7;
-
-					width = 16f;
-					height = 3.5f;
-
-					rotation = -90f;
-
-					paletteLight = SWPal.axleLight;
-					paletteMedium = SWPal.axleMedium;
-					paletteDark = SWPal.axleDark;
-				}}),
+				new DrawAxles() {{
+					axles.add(Axles.doubleBlock.position(-4f, 0f, -90f, 1f));
+				}},
 				new DrawBitmask("-tiles", u -> 0, 64),
 				new DrawArm() {{
 					layer = Layer.groundUnit + 1;
@@ -134,23 +118,14 @@ public class SWUnits {
 			armStartingOffset = 2f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom")
-//				new DrawAxles(new Axle("-axle") {{
-//					x = -4;
-//					y = 0;
-//
-//					pixelWidth = 64;
-//					pixelHeight = 7;
-//
-//					width = 16f;
-//					height = 3.5f;
-//
-//					rotation = -90f;
-//
-//					paletteLight = SWPal.axleLight;
-//					paletteMedium = SWPal.axleMedium;
-//					paletteDark = SWPal.axleDark;
-//				}}),
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					axles.add(
+						Axles.halfBlock.position(-8f, 10f, -90f, 1f),
+						Axles.halfBlock.position(-8f, -10f, -90f, 1f),
+						Axles.halfBlock.position(-10f, 0, 0f, 1f)
+					);
+				}}
 //				new DrawBitmask("-tiles", u -> 0, 64),
 //				new DrawArm() {{
 //					layer = Layer.groundUnit + 1;
@@ -196,10 +171,10 @@ public class SWUnits {
 			spinConfig = new SpinConfig() {{
 				resistance = 50f/600f;
 				allowedEdges = new int[][]{
-					new int[]{0, 2, 10},
-					new int[]{3, 5, 1},
 					new int[]{6, 8, 4},
-					new int[]{9, 11, 7}
+					new int[]{9, 11, 7},
+					new int[]{0, 2, 10},
+					new int[]{3, 5, 1}
 				};
 			}};
 		}};
@@ -228,22 +203,9 @@ public class SWUnits {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(new Axle("-axle") {{
-					x = -4;
-					y = 0;
-
-					pixelWidth = 64;
-					pixelHeight = 7;
-
-					width = 16f;
-					height = 3.5f;
-
-					rotation = -90f;
-
-					paletteLight = SWPal.axleLight;
-					paletteMedium = SWPal.axleMedium;
-					paletteDark = SWPal.axleDark;
-				}}),
+				new DrawAxles() {{
+					axles.add(Axles.doubleBlock.position(-4f, 0f, -90f, 1f));
+				}},
 				new DrawBitmask("-tiles", u -> 0, 64),
 				new DrawArm() {{
 					layer = Layer.groundUnit + 1;

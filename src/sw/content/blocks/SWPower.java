@@ -15,7 +15,6 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.graphics.*;
-import sw.world.blocks.payloads.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -607,6 +606,7 @@ public class SWPower {
 				new DrawAxles() {{
 					for(Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y != 0 ? -90f : 0f, 1f));
 				}},
+				new DrawRegion(),
 				new DrawParts() {{
 					parts.add(
 						new RegionPart("-wheel") {{
@@ -632,8 +632,7 @@ public class SWPower {
 							moves.add(new PartMove(DrawParts.spin.loop(180f), 0f, 0f, 180f));
 						}}
 					);
-				}},
-				new DrawRegion()
+				}}
 			) {{
 				iconOverride = new String[]{"-icon"};
 			}};

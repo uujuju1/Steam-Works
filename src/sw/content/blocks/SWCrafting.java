@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.effect.*;
 import mindustry.gen.*;
@@ -10,9 +11,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
-import sw.entities.*;
 import sw.entities.part.*;
-import sw.graphics.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -200,68 +199,11 @@ public class SWCrafting {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
-					new Axle("-axle") {{
-						x = 8f;
-						y = 0f;
-
-						height = 3.5f;
-
-						pixelHeight = 7;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						x = 0f;
-						y = 8f;
-
-						height = 3.5f;
-
-						pixelHeight = 7;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-
-						rotation = -90f;
-
-						hasIcon = false;
-					}},
-					new Axle("-axle") {{
-						x = -8f;
-						y = 0f;
-
-						height = 3.5f;
-
-						pixelHeight = 7;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-
-						hasIcon = false;
-					}},
-					new Axle("-axle") {{
-						x = 0f;
-						y = -8f;
-
-						height = 3.5f;
-
-						pixelHeight = 7;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-
-						rotation = -90f;
-
-						hasIcon = false;
-					}}
-				),
-				new DrawDefault()
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawRegion()
 			);
 
 			spinConfig = new SpinConfig() {{
@@ -316,73 +258,10 @@ public class SWCrafting {
 					
 					rotateScl = -1f;
 				}},
-				new DrawAxles(
-					b -> ((HasSpin) b).getRotation(),
-					new Axle("-axle") {{
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = 10f;
-						y = 0f;
-						
-						width = 4f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = 0f;
-						y = 10f;
-						rotation = -90;
-						
-						width = 4f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = -10f;
-						y = 0f;
-						
-						width = 4f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-						
-						pixelWidth = 16;
-						pixelHeight = 1;
-						
-						x = 0f;
-						y = -10f;
-						rotation = -90f;
-						
-						width = 4f;
-						height = 3.5f;
-						
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
 				new DrawRegion(),
 				new DrawLiquidOutputs(),
 				new DrawRegion("-mill", 10f),
@@ -440,26 +319,8 @@ public class SWCrafting {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					iconName = "sw-crusher-axle-icon";
 					rotationOverride = b -> ((HasSpin) b).getRotation();
-					for (int i : Mathf.signs) {
-						for (int j : Mathf.signs) {
-							axles.add(new Axle("-axle") {{
-								pixelWidth = 4;
-								pixelHeight = 1;
-								
-								x = i * 10f;
-								y = j * 8f;
-								
-								width = 4f;
-								height = 3.5f;
-								
-								paletteLight = SWPal.axleLight;
-								paletteMedium = SWPal.axleMedium;
-								paletteDark = SWPal.axleDark;
-							}});
-						}
-					}
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(10f * offset.x, 8f * offset.y, 0f, 1f));
 				}},
 				new DrawParts() {{
 					parts.add(new SegmentedAxlePart() {{
@@ -544,25 +405,7 @@ public class SWCrafting {
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
-					
-					for (int i : Mathf.signs) {
-						for (int j : Mathf.signs) {
-							axles.add(new Axle("-axle") {{
-								pixelWidth = 4;
-								pixelHeight = 1;
-								
-								x = 14f * i;
-								y = 4f * j;
-								
-								width = 4f;
-								height = 3.5f;
-								
-								paletteLight = SWPal.axleLight;
-								paletteMedium = SWPal.axleMedium;
-								paletteDark = SWPal.axleDark;
-							}});
-						}
-					}
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(14f * offset.x, 4f * offset.y, 0f, 1f));
 				}},
 				new DrawParticles() {{
 					color = Pal.lightOrange;
@@ -603,7 +446,7 @@ public class SWCrafting {
 					particleHeightMax = 2f;
 					particleLife = 120f;
 				}},
-				new DrawDefault()
+				new DrawRegion()
 			);
 			
 			spinConfig = new SpinConfig() {{
@@ -615,21 +458,6 @@ public class SWCrafting {
 			}};
 		}};
 
-//		blastFurnace = new GenericCrafter("blast-furnace") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 120f;
-//
-//			consumeItems(with(SWItems.iron, 2, SWItems.coke, 1));
-//			outputItems = with(SWItems.steel, 1);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
 //			));

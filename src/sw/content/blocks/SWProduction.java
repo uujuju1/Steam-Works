@@ -13,7 +13,6 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
-import sw.graphics.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -109,39 +108,10 @@ public class SWProduction {
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
-				new DrawAxles(
-					b -> ((HasSpin) b).spinGraph().rotation / ((HasSpin) b).spinGraph().ratios.get((HasSpin) b, 1),
-					new Axle("-axle") {{
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						x = -6f;
-						y = 4;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle") {{
-						hasIcon = false;
-
-						pixelWidth = 16;
-						pixelHeight = 1;
-
-						x = -6f;
-						y = -4f;
-
-						width = 4f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(-6f, 4f * i, 0f, 1f));
+				}},
 				new DrawBitmask("-tiles", b -> 0, 64),
 				new DrawSpinningDrill() {{
 					startAxle = new Axle("-bore-start") {{
@@ -215,22 +185,7 @@ public class SWProduction {
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					
-					for(int i : Mathf.signs) {
-						axles.add(new Axle("-axle") {{
-							pixelWidth = 4;
-							pixelHeight = 1;
-							
-							x = 10f * i;
-							y = 0;
-							
-							width = 4f;
-							height = 3.5f;
-							
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}});
-					}
+					for(int i : Mathf.signs) axles.add(Axles.halfBlock.position(10f * i, 0f, 0f, 1f));
 				}},
 				new DrawFacingLightRegion(),
 				new DrawRegion("-top")
@@ -345,10 +300,11 @@ public class SWProduction {
 						}}
 					);
 				}},
-				new DrawAxles(
-					b -> ((HasSpin) b).getRotation(),
-					new Axle("-axle-in") {{
-						iconOverride = "sw-artesian-well-axle-icon";
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					for(int i : Mathf.signs) axles.add(Axles.halfBlock.position(10f * i, 0f, 0f, 1f));
+					axles.add(new Axle("-axle-in") {{
 						circular = true;
 
 						pixelWidth = 32;
@@ -357,38 +313,8 @@ public class SWProduction {
 						x = y = 0;
 						width = 8f;
 						height = 3.5f;
-					}},
-					new Axle("-axle-out") {{
-						hasIcon = false;
-
-						pixelWidth = 32;
-						pixelHeight = 1;
-
-						x = 8f;
-						y = 0f;
-						width = 8f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}},
-					new Axle("-axle-out") {{
-						hasIcon = false;
-
-						pixelWidth = 32;
-						pixelHeight = 1;
-
-						x = -8f;
-						y = 0f;
-						width = 8f;
-						height = 3.5f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+					}});
+				}},
 				new DrawFacingLightRegion()
 			);
 

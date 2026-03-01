@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.audio.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -21,8 +20,6 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.ai.*;
 import sw.content.*;
-import sw.entities.*;
-import sw.graphics.*;
 import sw.type.units.*;
 import sw.world.blocks.distribution.*;
 import sw.world.blocks.liquid.*;
@@ -101,21 +98,9 @@ public class SWDistribution {
 					32
 				),
 				new DrawCondition(
-					new DrawAxles(
-						new Axle("-cover-axle") {{
-							rotation = -90f;
-
-							width = 8f;
-							height = 3.5f;
-
-							pixelWidth = 32;
-							pixelHeight = 7;
-
-							paletteLight = SWPal.axleLight;
-							paletteMedium = SWPal.axleMedium;
-							paletteDark = SWPal.axleDark;
-						}}
-					),
+					new DrawAxles() {{
+						axles.add(Axles.block.position(0f, 0f, -90f, 1f));
+					}},
 					b -> ((BeltConveyorBuild) b).nextBuilds().contains(other -> !(other instanceof BeltConveyorBuild))
 				),
 				new DrawBitmask(
@@ -323,19 +308,9 @@ public class SWDistribution {
 				new DrawRegion("-bottom") {{
 					buildingRotate = true;
 				}},
-				new DrawAxles(new Axle("-axle") {{
-						pixelHeight = 1;
-						pixelWidth = 24;
-
-						width = 24f;
-						height = 3.5f;
-
-						rotation = -90f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}),
+				new DrawAxles() {{
+					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(0f, 10f * i, -90f, 1f));
+				}},
 				new DrawFacingLightRegion(),
 				new DrawRegion("-top") {{
 					layer = Layer.blockOver + 0.1f;
@@ -376,21 +351,9 @@ public class SWDistribution {
 				new DrawRegion("-bottom") {{
 					buildingRotate = true;
 				}},
-				new DrawAxles(
-					new Axle("-axle") {{
-						pixelHeight = 1;
-						pixelWidth = 24;
-
-						width = 24f;
-						height = 3.5f;
-
-						rotation = -90f;
-
-						paletteLight = SWPal.axleLight;
-						paletteMedium = SWPal.axleMedium;
-						paletteDark = SWPal.axleDark;
-					}}
-				),
+				new DrawAxles() {{
+					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(0f, 10f * i, -90f, 1f));
+				}},
 				new DrawFacingLightRegion(),
 				new DrawParts() {{
 					name = "-gears";
