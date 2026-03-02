@@ -428,7 +428,7 @@ public class SWPower {
 						Axles.halfBlock.position(2f, 0f, 0f, 1f)
 					);
 				}},
-				new DrawBitmask("-tiles", b -> 0)
+				new DrawRotated()
 			);
 		}};
 		shaftGearbox = new AxleBlock("shaft-gearbox") {{
@@ -489,9 +489,7 @@ public class SWPower {
 						}}
 					);
 				}},
-				new DrawBitmask("-tiles", build -> 0) {{
-					tileWidth = tileHeight = 64;
-				}}
+				new DrawFacingLightRegion()
 			);
 		}};
 		overheadBelt = new AxleBridge("overhead-belt") {{
@@ -736,7 +734,7 @@ public class SWPower {
 						}}
 					);
 				}},
-				new DrawBitmask("-tiles", b -> 0, 64)
+				new DrawFacingLightRegion(true)
 			);
 		}};
 		mechanicalGovernor = new AxleBrake("mechanical-governor") {{

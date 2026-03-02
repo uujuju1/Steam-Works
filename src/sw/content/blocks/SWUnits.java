@@ -47,7 +47,7 @@ public class SWUnits {
 				new DrawAxles() {{
 					axles.add(Axles.doubleBlock.position(-4f, 0f, -90f, 1f));
 				}},
-				new DrawBitmask("-tiles", u -> 0, 64),
+				new DrawRotated(),
 				new DrawArm() {{
 					layer = Layer.groundUnit + 1;
 
@@ -125,16 +125,16 @@ public class SWUnits {
 						Axles.halfBlock.position(-8f, -10f, -90f, 1f),
 						Axles.halfBlock.position(-10f, 0, 0f, 1f)
 					);
+				}},
+				new DrawRotated(),
+				new DrawArm() {{
+					layer = Layer.groundUnit + 1;
+
+					armExtension = 8f;
+					armOffset = (7f + 3f) * 4f;
+					armLength = 56f;
+					armCurve = new Interp.SwingOut(1);
 				}}
-//				new DrawBitmask("-tiles", u -> 0, 64),
-//				new DrawArm() {{
-//					layer = Layer.groundUnit + 1;
-//
-//					armExtension = 8f;
-//					armOffset = (4f + 2f) * 8f/2f;
-//					armLength = 28f;
-//					armCurve = new Interp.SwingOut(1);
-//				}}
 			);
 
 			consume(new ConsumeSpin() {{
@@ -206,7 +206,7 @@ public class SWUnits {
 				new DrawAxles() {{
 					axles.add(Axles.doubleBlock.position(-4f, 0f, -90f, 1f));
 				}},
-				new DrawBitmask("-tiles", u -> 0, 64),
+				new DrawRotated(),
 				new DrawArm() {{
 					layer = Layer.groundUnit + 1;
 

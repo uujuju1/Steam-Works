@@ -79,6 +79,7 @@ public class MechanicalAssembler extends Block {
 		configurable = true;
 		commandable = true;
 		saveConfig = true;
+		quickRotate = false;
 
 		consume(new ConsumeItemDynamic((MechanicalAssemblerBuild build) -> {
 			if (build.currentStep != null) return build.currentStep.key;

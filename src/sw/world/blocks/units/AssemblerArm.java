@@ -63,6 +63,7 @@ public class AssemblerArm extends Block {
 		update = true;
 		sync = true;
 		rotate = true;
+		quickRotate = false;
 
 		consume(new ConsumeItemDynamic(AssemblerArmBuild::getRecipe));
 	}

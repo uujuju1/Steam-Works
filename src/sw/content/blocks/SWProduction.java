@@ -112,7 +112,7 @@ public class SWProduction {
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(-6f, 4f * i, 0f, 1f));
 				}},
-				new DrawBitmask("-tiles", b -> 0, 64),
+				new DrawRotated(),
 				new DrawSpinningDrill() {{
 					startAxle = new Axle("-bore-start") {{
 						circular = true;
