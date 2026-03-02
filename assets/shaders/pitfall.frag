@@ -103,22 +103,22 @@ void main() {
 
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-//    // walls
-//    if (z <= 32.0) {
-//        vec2 tile = floor(hitPos / 8.0);
-//
-//        float offset = rand(tile) * 16.0;
-//
-//        if (z <= 32.0 - offset) {
-//            vec2 divisions = floor(u_wallsize / u_walltilesize);
-//            vec2 selection = floor(vec2(rand(tile + floor(z)), rand(tile + floor(z) + 1.0)) * divisions);
-//
-//            vec2 plateUV = vec2(mod(hitPos.x + hitPos.y, 8.0)/8.0, mod(z, 1.0));
-//            vec4 color = texture2D(u_wall, mapVec2(plateUV + selection, vec2(0.0), vec2(4.0), u_walluv.xy, u_walluv.zw));
-//            vec3 fade = vec3(32.0 - z)/ 32.0;
-//            gl_FragColor = color * vec4(fade, 1.0);
-//        }
-//    }
+    // walls
+    if (z <= 32.0) {
+        vec2 tile = floor(hitPos / 8.0);
+
+        float offset = rand(tile) * 16.0;
+
+        if (z <= 32.0 - offset) {
+            vec2 divisions = floor(u_wallsize / u_walltilesize);
+            vec2 selection = floor(vec2(rand(tile + floor(z)), rand(tile + floor(z) + 1.0)) * divisions);
+
+            vec2 plateUV = vec2(mod(hitPos.x + hitPos.y, 8.0)/8.0, mod(z, 1.0));
+            vec4 color = texture2D(u_wall, mapVec2(plateUV + selection, vec2(0.0), vec2(4.0), u_walluv.xy, u_walluv.zw));
+            vec3 fade = vec3(32.0 - z)/ 32.0;
+            gl_FragColor = color * vec4(fade, 1.0);
+        }
+    }
 
     // TODO fix connecting with other pitfalls
     // chasm
