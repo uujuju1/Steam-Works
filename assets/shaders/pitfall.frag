@@ -103,81 +103,81 @@ void main() {
 
     gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-    // walls
-    if (z <= 32.0) {
-        vec2 tile = floor(hitPos / 8.0);
-
-        float offset = rand(tile) * 16.0;
-
-        if (z <= 32.0 - offset) {
-            vec2 divisions = floor(u_wallsize / u_walltilesize);
-            vec2 selection = floor(vec2(rand(tile + floor(z)), rand(tile + floor(z) + 1.0)) * divisions);
-
-            vec2 plateUV = vec2(mod(hitPos.x + hitPos.y, 8.0)/8.0, mod(z, 1.0));
-            vec4 color = texture2D(u_wall, mapVec2(plateUV + selection, vec2(0.0), vec2(4.0), u_walluv.xy, u_walluv.zw));
-            vec3 fade = vec3(32.0 - z)/ 32.0;
-            gl_FragColor = color * vec4(fade, 1.0);
-        }
-    }
+//    // walls
+//    if (z <= 32.0) {
+//        vec2 tile = floor(hitPos / 8.0);
+//
+//        float offset = rand(tile) * 16.0;
+//
+//        if (z <= 32.0 - offset) {
+//            vec2 divisions = floor(u_wallsize / u_walltilesize);
+//            vec2 selection = floor(vec2(rand(tile + floor(z)), rand(tile + floor(z) + 1.0)) * divisions);
+//
+//            vec2 plateUV = vec2(mod(hitPos.x + hitPos.y, 8.0)/8.0, mod(z, 1.0));
+//            vec4 color = texture2D(u_wall, mapVec2(plateUV + selection, vec2(0.0), vec2(4.0), u_walluv.xy, u_walluv.zw));
+//            vec3 fade = vec3(32.0 - z)/ 32.0;
+//            gl_FragColor = color * vec4(fade, 1.0);
+//        }
+//    }
 
     // TODO fix connecting with other pitfalls
     // chasm
-    if (z >= 48.0 && texture2D(u_mask, hitPos / u_masksize).r < 0.9) {
-        float unMapped = 1.0 - 1.0/(64.0/u_scale + 1.0);
-        vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1.0 - unMapped));
-
-        if (
-            texture2D(u_mask, unProjected / u_masksize).r < 0.9
-        ) {
-            float startOffset = texture2D(u_noise, hitPos / 32.0 + vec2(u_time, -u_time * 2)/3600).a * 8.0;
-            float endOffset = texture2D(u_noise, hitPos / 32.0 + vec2(-u_time * 3, u_time)/3600).a * 8.0;
-
-            float fadeNoise = 0;
-            for (int i = 0; i < 4; i++) {
-                float randX = rand(vec2(i, 1.0)) * 2.0 - 1.0;
-                float randY = rand(vec2(1.0, i)) * 2.0 - 1.0;
-                fadeNoise += texture2D(u_noise, unProjected / 128.0 + vec2(u_time * randX, u_time * randY)/3600.0).a;
-            }
-            fadeNoise /= 2.0;
-            fadeNoise *= fadeNoise;
-
-            vec3 fade = vec3(min(1.0, map(z, 56.0 - startOffset, 64.0 - endOffset, 0.0, 1.0)));
-            gl_FragColor = vec4(fade * fadeNoise, 1.0) * vec4(115.0, 16.0, 7.0, 255.0)/255.0;
-        }
-    }
+//    if (z >= 48.0 && texture2D(u_mask, hitPos / u_masksize).r < 0.9) {
+//        float unMapped = 1.0 - 1.0/(64.0/u_scale + 1.0);
+//        vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1.0 - unMapped));
+//
+//        if (
+//            texture2D(u_mask, unProjected / u_masksize).r < 0.9
+//        ) {
+//            float startOffset = texture2D(u_noise, hitPos / 32.0 + vec2(u_time, -u_time * 2)/3600).a * 8.0;
+//            float endOffset = texture2D(u_noise, hitPos / 32.0 + vec2(-u_time * 3, u_time)/3600).a * 8.0;
+//
+//            float fadeNoise = 0;
+//            for (int i = 0; i < 4; i++) {
+//                float randX = rand(vec2(i, 1.0)) * 2.0 - 1.0;
+//                float randY = rand(vec2(1.0, i)) * 2.0 - 1.0;
+//                fadeNoise += texture2D(u_noise, unProjected / 128.0 + vec2(u_time * randX, u_time * randY)/3600.0).a;
+//            }
+//            fadeNoise /= 2.0;
+//            fadeNoise *= fadeNoise;
+//
+//            vec3 fade = vec3(min(1.0, map(z, 56.0 - startOffset, 64.0 - endOffset, 0.0, 1.0)));
+//            gl_FragColor = vec4(fade * fadeNoise, 1.0) * vec4(115.0, 16.0, 7.0, 255.0)/255.0;
+//        }
+//    }
 
     // waterfall
-    if (z <= 32.0 && texture2D(u_mask, hitPos / u_masksize).g < 0.9) {
-        vec4 color = vec4(110.0, 112.0, 155.0, 0)/255.0;
-        for(float i = 0.0; i < 3.0; i++) {
-            float offsetX = rand(vec2(i));
-            float offsetY = rand(vec2(z));
-            float scl = pow(2.0, i);
-            vec2 noiseUV = vec2((hitPos.x + hitPos.y + offsetX)/32.0, z/64.0/scl - u_time/120.0);
-            vec4 col = texture2D(u_noise, noiseUV);
-            col = pow(col, vec4(2.0 - z/32.0));
-
-            if (col.a > 0.25) {
-                color = mix(color, col, vec4(col.a));
-            }
-        }
-        vec3 fade = vec3(32.0 - z)/ 32.0;
-        if (color.r > 0.0) gl_FragColor = vec4(color.rgb * fade, 1.0);
-    }
+//    if (z <= 32.0 && texture2D(u_mask, hitPos / u_masksize).g < 0.9) {
+//        vec4 color = vec4(110.0, 112.0, 155.0, 0)/255.0;
+//        for(float i = 0.0; i < 3.0; i++) {
+//            float offsetX = rand(vec2(i));
+//            float offsetY = rand(vec2(z));
+//            float scl = pow(2.0, i);
+//            vec2 noiseUV = vec2((hitPos.x + hitPos.y + offsetX)/32.0, z/64.0/scl - u_time/120.0);
+//            vec4 col = texture2D(u_noise, noiseUV);
+//            col = pow(col, vec4(2.0 - z/32.0));
+//
+//            if (col.a > 0.25) {
+//                color = mix(color, col, vec4(col.a));
+//            }
+//        }
+//        vec3 fade = vec3(32.0 - z)/ 32.0;
+//        if (color.r > 0.0) gl_FragColor = vec4(color.rgb * fade, 1.0);
+//    }
 
     // grating
-    if (z >= 4.0) {
-        float unMapped = 1.0 - 1.0/(4.0/u_scale + 1.0);
-        vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1.0 - unMapped));
-
-        if (texture2D(u_mask, unProjected / u_masksize).b < 0.9) {
-            vec2 gratingUV = mod(unProjected * 4.0 / u_gratingsize, vec2(1.0));
-            vec4 color = texture2D(u_grating, mapVec2(gratingUV, vec2(0.0), vec2(1.0), u_gratinguv.xy, u_gratinguv.zw));
-            float dstPos = length(raycast(worldCenter, unProjected, vec2(0.707), 8.0, 40.0) - unProjected);
-            if (color.a > 0.0) {
-                gl_FragColor = color;
-                if (dstPos < 32.0) gl_FragColor = vec4(mix(color.rgb, vec3(0.0), vec3(0.3)), 1.0);
-            }
-        }
-    }
+//    if (z >= 4.0) {
+//        float unMapped = 1.0 - 1.0/(4.0/u_scale + 1.0);
+//        vec2 unProjected = (worldCenter * -unMapped + worldCoords) / (vec2(1.0 - unMapped));
+//
+//        if (texture2D(u_mask, unProjected / u_masksize).b < 0.9) {
+//            vec2 gratingUV = mod(unProjected * 4.0 / u_gratingsize, vec2(1.0));
+//            vec4 color = texture2D(u_grating, mapVec2(gratingUV, vec2(0.0), vec2(1.0), u_gratinguv.xy, u_gratinguv.zw));
+//            float dstPos = length(raycast(worldCenter, unProjected, vec2(0.707), 8.0, 40.0) - unProjected);
+//            if (color.a > 0.0) {
+//                gl_FragColor = color;
+//                if (dstPos < 32.0) gl_FragColor = vec4(mix(color.rgb, vec3(0.0), vec3(0.3)), 1.0);
+//            }
+//        }
+//    }
 }
