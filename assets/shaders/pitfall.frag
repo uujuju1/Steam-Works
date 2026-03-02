@@ -129,15 +129,15 @@ void main() {
         if (
             texture2D(u_mask, unProjected / u_masksize).r < 0.9
         ) {
-            float startOffset = texture2D(u_noise, hitPos / 32.0 + vec2(u_time, -u_time * 2)/3600).a * 8.0;
-            float endOffset = texture2D(u_noise, hitPos / 32.0 + vec2(-u_time * 3, u_time)/3600).a * 8.0;
+            float startOffset = texture2D(u_noise, hitPos / 32.0 + vec2(u_time, -u_time * 2.0) / 3600.0).a * 8.0;
+            float endOffset = texture2D(u_noise, hitPos / 32.0 + vec2(-u_time * 3.0, u_time) / 3600.0).a * 8.0;
 
             float fadeNoise = 0;
-//            for (int i = 0; i < 4; i++) {
-//                float randX = rand(vec2(2.0 * i, 1.0)) * 2.0 - 1.0;
-//                float randY = rand(vec2(1.0, 2.0 * i)) * 2.0 - 1.0;
-//                fadeNoise += texture2D(u_noise, unProjected / 128.0 + vec2(u_time * randX, u_time * randY)/3600.0).a;
-//            }
+            for (int i = 0; i < 4; i++) {
+                float randX = rand(vec2(2.0 * i, 1.0)) * 2.0 - 1.0;
+                float randY = rand(vec2(1.0, 2.0 * i)) * 2.0 - 1.0;
+                fadeNoise += texture2D(u_noise, unProjected / 128.0 + vec2(u_time * randX, u_time * randY)/3600.0).a;
+            }
             fadeNoise /= 2.0;
             fadeNoise *= fadeNoise;
 
