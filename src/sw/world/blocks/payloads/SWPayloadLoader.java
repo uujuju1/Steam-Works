@@ -1,7 +1,6 @@
 package sw.world.blocks.payloads;
 
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -77,14 +76,14 @@ public class SWPayloadLoader extends PayloadBlock {
 	public void setBars() {
 		super.setBars();
 		if (spinConfig != null) spinConfig.addBars(this);
-		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
-		stats.add(Stat.itemsMoved, loadingSpeed * 60f, StatUnit.perSecond);
 	}
 	
 	@Override
 	public void setStats() {
 		super.setStats();
 		if (spinConfig != null) spinConfig.addStats(stats);
+		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
+		stats.add(Stat.itemsMoved, loadingSpeed * 60f, StatUnit.perSecond);
 	}
 	
 	public class SWPayloadLoaderBuild extends PayloadBlockBuild<BuildPayload> implements HasSpin {
