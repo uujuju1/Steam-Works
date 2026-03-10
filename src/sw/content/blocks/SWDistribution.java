@@ -188,7 +188,7 @@ public class SWDistribution {
 			canOverdrive = false;
 			
 			interp = Interp.linear;
-			payloadLimit = 2f;
+			payloadLimit = 2.5f;
 		}};
 		mechanicalPayloadRouter = new PayloadRouter("mechanical-payload-router") {{
 			requirements(Category.units, with(
@@ -199,7 +199,7 @@ public class SWDistribution {
 			canOverdrive = false;
 			
 			interp = Interp.linear;
-			payloadLimit = 2f;
+			payloadLimit = 2.5f;
 		}};
 		courierPort = new PayloadCourierPort("courier-port") {{
 			requirements(Category.units, with(
@@ -294,7 +294,8 @@ public class SWDistribution {
 		mechanicalArm = new MechanicalArm("mechanical-arm") {{
 			requirements(Category.units, with());
 
-			range = 24f;
+			range = 28f;
+			payloadCapacity = 2.5f;
 			armSpeed = 0.1f;
 			armProgress = Interp.smooth;
 
@@ -344,6 +345,7 @@ public class SWDistribution {
 			hasLiquids = true;
 			itemCapacity = 100;
 			liquidCapacity = 100;
+			payloadCapacity = 2.5f;
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom") {{
@@ -385,6 +387,7 @@ public class SWDistribution {
 			hasLiquids = true;
 			itemCapacity = 100;
 			liquidCapacity = 100;
+			payloadCapacity = 2.5f;
 
 			reverse = true;
 

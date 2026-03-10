@@ -18,6 +18,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -32,24 +33,17 @@ public class MechanicalArm extends PayloadBlock {
 
 	public float range = 80f;
 
-	public float payloadCapacity = 2.5f;
+	public float payloadCapacity = 3f;
 
 	public float armSpeed = 0.5f;
-//	public float armHeight = 0.5f;
-//	public float armExtension = 0;
-//	public float armBaseExtension = 0f;
-//	public float armLength = 10f;
-//	public float armBaseLength = 10f;
 	public Interp armProgress = Interp.linear;
-
-//	public @Load(value = "@name$-arm", fallBack = "%-arm") TextureRegion armRegion;
-//	public @Load(value = "@name$-arm-base", fallBack = "%-arm-base") TextureRegion armBaseRegion;
 
 	public MechanicalArm(String name) {
 		super(name);
 		configurable = true;
 		update = true;
 		rotate = true;
+		drawArrow = false;
 
 		config(ArmConfig.class, (MechanicalArmBuild build, ArmConfig value) -> {
 			if (value.takeOffset != null) {
@@ -67,32 +61,6 @@ public class MechanicalArm extends PayloadBlock {
 			build.updatePath();
 		});
 	}
-
-//	public void drawArm(float x, float y, float offsetX, float offsetY) {
-//		InverseKinematics.solve(armLength, armBaseLength, Tmp.v1.set(-offsetX, -offsetY), true, Tmp.v2);
-//
-//		Parallax.getParallaxFrom(Tmp.v2.add(x, y).add(offsetX, offsetY), Core.camera.position, armHeight);
-//		Tmp.v1.add(x, y).add(offsetX, offsetY);
-//
-//		Lines.stroke(armBaseRegion.height/4f);
-//		Lines.line(
-//			armBaseRegion,
-//			x + Angles.trnsx(Tmp.v2.angleTo(x, y), armBaseExtension),
-//			y + Angles.trnsy(Tmp.v2.angleTo(x, y), armBaseExtension),
-//			Tmp.v2.x,
-//			Tmp.v2.y,
-//			false
-//		);
-//		Lines.stroke(armRegion.height/4f);
-//		Lines.line(
-//			armRegion,
-//			Tmp.v2.x + Angles.trnsx(Tmp.v2.angleTo(x + offsetX, y + offsetY) + 180f, armExtension),
-//			Tmp.v2.y + Angles.trnsy(Tmp.v2.angleTo(x + offsetX, y + offsetY) + 180f, armExtension),
-//			x + offsetX,
-//			y + offsetY,
-//			false
-//		);
-//	}
 
 	@Override
 	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
@@ -135,7 +103,12 @@ public class MechanicalArm extends PayloadBlock {
 	@Override
 	public void setStats() {
 		super.setStats();
+
 		if (spinConfig != null) spinConfig.addStats(stats);
+
+		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
+		stats.add(Stat.range, range / 8f, StatUnit.blocks);
+		stats.add(Stat.speed, armSpeed / 8f, StatUnit.tilesSecond);
 	}
 
 	public static class ArmConfig {
@@ -459,7 +432,7 @@ public class MechanicalArm extends PayloadBlock {
 			} else {
 				if (Vars.world.tile(putPos) != null) {
 					Tile tile = Vars.world.tile(putPos);
-					targetPos.set(tile.worldx(), tile.worldy());
+					targetPos.set(tile.worldx() + (payload instanceof BuildPayload buildPayload ? buildPayload.block().offset : 0f), tile.worldy() + (payload instanceof BuildPayload buildPayload ? buildPayload.block().offset : 0f));
 				}
 				if (getPutBuild() != null) targetPos.set(getPutBuild());
 			}
