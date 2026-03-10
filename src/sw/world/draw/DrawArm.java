@@ -21,8 +21,8 @@ public class DrawArm extends BlockDrawer {
 	public float armOffset = 0;
 	public Interp armCurve = Interp.linear;
 
-	public @Load(value = "@loadBlock.name$-arm", fallBack = "%-mechanical-arm") TextureRegion armRegion;
-	public @Load(value = "@loadBlock.name$-arm-base", fallBack = "%-mechanical-arm-base") TextureRegion armBaseRegion;
+	public @Load(value = "@loadBlock.name$-arm", fallBack = "%-arm") TextureRegion armRegion;
+	public @Load(value = "@loadBlock.name$-arm-base", fallBack = "%-arm-base") TextureRegion armBaseRegion;
 
 	public HasArm cast(Building build) {
 		try {

@@ -26,6 +26,7 @@ import sw.world.blocks.liquid.*;
 import sw.world.blocks.payloads.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
+import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -41,7 +42,7 @@ public class SWDistribution {
 
 
 		mechanicalPayloadConveyor, mechanicalPayloadRouter,
-		courierPort,
+		courierPort, mechanicalArm,
 		mechanicalPayloadLoader, mechanicalPayloadUnloader,
 
 
@@ -288,6 +289,46 @@ public class SWDistribution {
 						}
 					};
 				}});
+			}};
+		}};
+		mechanicalArm = new MechanicalArm("mechanical-arm") {{
+			requirements(Category.units, with());
+
+			range = 24f;
+			armSpeed = 0.1f;
+			armProgress = Interp.smooth;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 1f / 10f;
+				efficiencyScale = b -> 10f * b;
+			}});
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					axles.add(Axles.block.position(0f, 0f, 0f, 1f));
+				}},
+				new DrawFacingLightRegion(),
+				new DrawArmKinematics() {{
+					layer = Layer.groundUnit + 0.1f;
+					armLength = 112f / 4f - 4f;
+					armExtension = 4f;
+					armBaseLength = 48f / 4f - 2f;
+					armBaseExtension = 2f;
+					armStartingOffset.set(0f, 8f);
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 2},
+					new int[]{1, 3},
+					new int[]{2, 0},
+					new int[]{3, 1}
+				};
 			}};
 		}};
 		mechanicalPayloadLoader = new SWPayloadLoader("mechanical-payload-loader") {{
