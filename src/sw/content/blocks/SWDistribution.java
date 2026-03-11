@@ -292,7 +292,11 @@ public class SWDistribution {
 			}};
 		}};
 		mechanicalArm = new MechanicalArm("mechanical-arm") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.aluminium, 15,
+				SWItems.verdigris, 10,
+				Items.silicon, 12
+			));
 
 			range = 28f;
 			payloadCapacity = 2.5f;

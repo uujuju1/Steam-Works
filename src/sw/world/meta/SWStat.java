@@ -22,6 +22,7 @@ public class SWStat {
     spinOutputForce = new Stat("sw-spin-output-force", spin),
     friction = new Stat("sw-friction", spin),
 		maxFriction = new Stat("sw-max-friction", spin),
+		outputDuration = new Stat("sw-output-duration", spin),
 		weight = new Stat("sw-weight", spin);
   //endregion
 

@@ -72,6 +72,10 @@ public class SWStorage {
 			size = 2;
 			rotate = false;
 
+			maxWindup = 3000f;
+			speed = 50f / 10f;
+			outputForce = 400f / 600f;
+
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawRegion("-bar"),
