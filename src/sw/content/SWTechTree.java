@@ -88,7 +88,7 @@ public class SWTechTree {
             node(mechanicalGovernor, with(new NonUnlockable()), () -> {});
           });
           node(flywheel, with(new NonUnlockable()), () -> {});
-          node(hydraulicFlywheel, with(new NonUnlockable()), () -> {});
+          node(spring, with(new NonUnlockable()), () -> {});
           node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> {});
         });
       });

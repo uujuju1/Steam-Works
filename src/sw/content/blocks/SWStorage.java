@@ -11,8 +11,14 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.liquid.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.*;
+import sw.graphics.*;
+import sw.world.blocks.power.*;
 import sw.world.blocks.storage.*;
+import sw.world.draw.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -20,6 +26,7 @@ public class SWStorage {
 	public static Block
 		compactContainer,
 		liquidDistributor, liquidBasin,
+		spring,
 		coreScaffold, coreMole;
 
 	public static void load() {
@@ -54,6 +61,48 @@ public class SWStorage {
 			health = 500;
 			solid = true;
 			liquidCapacity = 120 * 12f;
+		}};
+
+		spring = new RotationBattery("spring") {{
+			requirements(Category.power, with(
+				SWItems.aluminium, 25,
+				Items.silicon, 30,
+				Items.graphite, 35
+			));
+			size = 2;
+			rotate = false;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-bar"),
+				new DrawAxles() {{
+					Axle base = new Axle("-axle") {{
+						pixelWidth = 2;
+						pixelHeight = 2;
+
+						height = 14f;
+						width = 2f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}};
+
+					for (int i = 0; i < 4; i++) {
+						axles.add(base.position(-4.5f + 3 * i, 0f, 0f, 1f/4f * (i + 1)));
+					}
+				}},
+				new DrawRegion()
+			);
+
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][] {
+					new int[]{},
+					new int[]{},
+					new int[]{},
+					new int[]{}
+				};
+			}};
 		}};
 
 		coreScaffold = new CoreBlock("core-scaffold") {{

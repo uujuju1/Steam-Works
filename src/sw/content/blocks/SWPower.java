@@ -33,7 +33,7 @@ public class SWPower {
 		overheadBelt, largeOverheadBelt,
 		flywheel, clutch,
 	
-		hydraulicFlywheel,
+//		hydraulicFlywheel,
 
 		shaftTransmission, mechanicalGovernor;
 
@@ -795,54 +795,6 @@ public class SWPower {
 					new int[]{6, 7, 2, 3}
 				};
 			}};
-		}};
-		
-		hydraulicFlywheel = new RotationBattery("hydraulic-flywheel") {{
-			requirements(Category.units, with(
-			
-			));
-			size = 2;
-			
-			maxWindup = 6000;
-			speed = 1/10f;
-			resistanceScale = 300;
-			resistanceMagnitude = 1.122f;
-			outputForce = 10/600f;
-			
-			rotate = false;
-			
-			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
-//				new DrawAxles(
-//					new Axle("-axle") {{
-//						pixelWidth = 1;
-//						pixelHeight = 1;
-//
-//						width = 2.5f;
-//						height = 7f;
-//
-//						paletteLight = Color.valueOf("BAA697");
-//						paletteMedium = Color.valueOf("947D72");
-//						paletteDark = Color.valueOf("6A504A");
-//					}}
-//				),
-//				new DrawParts() {{
-//					for (int i : Mathf.signs) {
-//						parts.add(
-//							new RegionPart("-piston" + (i == 1 ? "-top" : "-bottom")) {{
-//								outline = false;
-//
-//								x = 3.25f * i;
-//								y = 5.25f * i;
-//								moveY = -3.5f * i;
-//
-//								progress = PartProgress.reload;
-//							}}
-//						);
-//					}
-//				}},
-				new DrawDefault()
-			);
 		}};
 	}
 }

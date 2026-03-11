@@ -142,7 +142,7 @@ public class SWPayloadLoader extends PayloadBlock {
 		}
 		
 		@Override public float getForce() {
-			return reverse ? (payload != null && payload.build instanceof RotationBatteryBuild ? ((RotationBattery) payload.block()).outputForce : 0f) : 0f;
+			return reverse && payload != null && hasArrived() && payload.build instanceof RotationBatteryBuild ? ((RotationBattery) payload.block()).outputForce : 0f;
 		}
 		
 		@Override
@@ -154,10 +154,11 @@ public class SWPayloadLoader extends PayloadBlock {
 			return base;
 		}
 		
-//		@Override
-//		public float getTargetSpeed() {
-//			return (payload != null && payload.block() instanceof RotationBattery payblock && reverse && holdBattery() && hasArrived()) ? payblock.speed : 0f;
-//		}
+		@Override
+		public float getTargetSpeed() {
+			return (payload != null && payload.block() instanceof RotationBattery payblock && reverse && hasArrived()) ? payblock.speed : 0f;
+		}
+
 		public void handlePayloadResources() {
 			if (payload == null) return;
 			if (reverse) {
@@ -176,6 +177,9 @@ public class SWPayloadLoader extends PayloadBlock {
 						payload.build.liquids.remove(liquids.current(), count);
 					}
 				}
+				if (payload.build instanceof RotationBatteryBuild battery && battery.wind > 0.001f) {
+					battery.wind -= Math.min(battery.wind, getSpeed() * Time.delta);
+				}
 			} else {
 				if (payload.block().hasItems) Vars.content.items().each(item -> {
 					int count = Math.min((int) (loadingSpeed * edelta()), payload.build.getMaximumAccepted(item));
@@ -192,6 +196,9 @@ public class SWPayloadLoader extends PayloadBlock {
 						liquids.remove(liquids.current(), count);
 					}
 				}
+				if (payload.build instanceof RotationBatteryBuild battery && battery.wind < ((RotationBattery) battery.block).maxWindup - 0.001f) {
+					battery.wind += Math.min(((RotationBattery) battery.block).maxWindup - battery.wind, getSpeed() * Time.delta);
+				}
 			}
 		}
 		
@@ -204,7 +211,7 @@ public class SWPayloadLoader extends PayloadBlock {
 
 			return (payload.block().hasItems && !Vars.content.items().contains(item -> payload.build.items.get(item) >= payload.block().itemCapacity)) ||
 				(payload.block().hasLiquids && payload.build.liquids.currentAmount() <= payload.block().liquidCapacity - 0.001f) ||
-				(payload.build instanceof RotationBatteryBuild build && build.wind < ((RotationBattery) build.block).maxWindup);
+				(payload.build instanceof RotationBatteryBuild build && build.wind < ((RotationBattery) build.block).maxWindup - 0.001f);
 		}
 		
 		@Override
