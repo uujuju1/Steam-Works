@@ -20,14 +20,14 @@ public class SWTurret extends Turret {
 	}
 
 	@Override
-	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
 		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
-		drawDefaultPlanRegion(plan, list);
 	}
 
 	@Override
-	public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list) {
-		drawDefaultPlanRegion(plan, list);
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		if (spinConfig != null) spinConfig.drawPlace(this, plan.x, plan.y, plan.rotation, true);
+		super.drawPlanRegion(plan, list);
 	}
 
 	@Override
@@ -52,6 +52,7 @@ public class SWTurret extends Turret {
 		}
 
 		@Override public void drawSelect() {
+			super.drawSelect();
 			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), ((Building) this).rotation, true);
 		}
 

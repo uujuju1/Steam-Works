@@ -18,13 +18,6 @@ public class SWFx {
   public static final Rand rand = new Rand();
   public static final Vec2 temp = new Vec2();
 
-  protected static final Rect[] rects = new Rect[]{
-    new Rect(0, 0, 24, 16),
-    new Rect(16, 0, 16, 24),
-    new Rect(8, 16, 24, 16),
-    new Rect(0, 8, 16, 24)
-  };
-
   public static Effect
     boreMine = new Effect(60f, 48f, e -> {
       Draw.color(e.color);
@@ -263,7 +256,7 @@ public class SWFx {
 
       Draw.blend(Blending.additive);
       for(int i : Mathf.signs) {
-        temp.trns(e.rotation - 90f, -6f * i, -15.75f).add(e.x, e.y);
+        temp.trns(e.rotation - 90f, -6f * i, -16f - 2f - 5.75f).add(e.x, e.y);
 
         Angles.randLenVectors(e.id + i, 10, 8f * e.finpow(), e.rotation + 180f + 45f * i, 15f, (x, y) -> {
           Draw.color(Pal.accent, Pal.turretHeat, rand.random(1f));
@@ -277,38 +270,19 @@ public class SWFx {
       });
       Draw.blend();
     }),
-    thermiteCharge = new Effect(60f, e -> {
-      for (int i = 0; i < 6; i++) {
-        int in = i;
-        e.scaled((10 * i), b -> {
-          Draw.blend(Blending.additive);
-          float
-            fin = Interp.pow2.apply(b.fin()),
-            fout = Interp.sine.apply(fin * 2);
-
-          Draw.color(Color.gray);
-          Draw.alpha(0.8f);
-          Angles.randLenVectors(e.id + in, 5, 50 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * fout);
-          });
-          Draw.color(Pal.turretHeat);
-          Draw.alpha(0.7f);
-          Angles.randLenVectors(e.id + 1 + in, 7, 40 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * fout);
-          });
-          Draw.color(Pal.accent);
-          Draw.alpha(0.6f);
-          Angles.randLenVectors(e.id + 2 + in, 10, 30 * fin, e.rotation, 20, (x, y) -> {
-            Fill.circle(e.x + x, e.y + y, 3 * fout);
-          });
-          Draw.blend();
-        });
-      }
-    }),
-    soundDecay = new Effect(60f, e -> {
-      Draw.mixcol(Color.black, e.finpow());
-      Tmp.v1.trns(e.rotation, 40f * e.finpow());
-      Draw.rect("sw-sound-wave", e.x + Tmp.v1.x, e.y + Tmp.v1.y, 16, 10f * e.fout(), 90 + e.rotation);
+    thermiteTrail = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+      for (int i : Mathf.zeroOne) {
+        float offset = rand.range(4f);
+        float move = rand.random(2f, 16f);
+        Lines.stroke(rand.random(0.5f, 2f));
+        Draw.color(Pal.accent, Pal.missileYellow, Color.black, 1 - rand.random(1) * e.foutpowdown());
+        Lines.lineAngle(
+          e.x + Angles.trnsx(e.rotation + 90f, offset, move * e.finpow()),
+          e.y + Angles.trnsy(e.rotation + 90f, offset, move * e.finpow()),
+          e.rotation + 180f, rand.random(3f, 8f)
+        );
+      };
     }),
 
     weld = new Effect(20f, e -> {

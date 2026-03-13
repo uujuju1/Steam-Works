@@ -37,7 +37,9 @@ public class SWTechTree {
       // endregion
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
-        node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {});
+        node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {
+          node(thermikos, with(new NonUnlockable()), () -> {});
+        });
         node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
         node(lamparine, with(new OnSector(cavern)), () -> {
           node(grindLamp, with(new SectorComplete(cavern)), () -> {});
@@ -88,7 +90,7 @@ public class SWTechTree {
             node(mechanicalGovernor, with(new NonUnlockable()), () -> {});
           });
           node(flywheel, with(new NonUnlockable()), () -> {});
-          node(spring, with(new NonUnlockable()), () -> {});
+          node(spring, with(new Research(mechanicalPayloadUnloader)), () -> {});
           node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> {});
         });
       });

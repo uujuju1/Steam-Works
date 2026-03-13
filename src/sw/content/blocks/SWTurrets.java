@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
@@ -14,10 +15,13 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import sw.content.*;
-import sw.entities.bullet.*;
+import sw.entities.part.*;
 import sw.world.blocks.defense.*;
+import sw.world.consumers.*;
+import sw.world.draw.*;
+import sw.world.interfaces.*;
+import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
@@ -500,50 +504,159 @@ public class SWTurrets {
 //
 //			spinConfig.hasSpin = false;
 //		}};
-//		thermikos = new ConsumeTurret("thermikos") {{
-//			requirements(Category.turret, BuildVisibility.hidden, with());
-//			size = 3;
-//			scaledHealth = 220f;
-//			range = 240f;
-//			reload = 120f;
-//			recoil = 0f;
-//			rotateSpeed = 1f;
-//			moveWhileCharging = false;
-//
-//			shootY = 9f;
-//			shoot = new ShootPattern() {{
-//				firstShotDelay = 30f;
-//			}};
-//
-//			shootSound = Sounds.cannon;
-//			chargeSound = Sounds.lasercharge2;
-//
-//			consumeItems(with(Items.graphite, 2, SWItems.thermite, 3));
-//
-//			drawer = new DrawTurret() {{
-//				parts.add(
-//					new RegionPart("-cannon") {{
-//						under = true;
-//						moveY = -4f;
-//						progress = PartProgress.heat.curve(Interp.bounceIn);
-//					}}
-//				);
-//			}};
-//
-//			shootType = new ArtilleryBulletType(4f, 200f) {{
-//				splashDamage = 200f;
-//				splashDamageRadius = 16f;
-//				lifetime = 40f;
-//				width = height = 20f;
-//
-//				collides = collidesAir = collidesGround = true;
-//
-//				shootEffect = SWFx.thermiteShoot;
+		thermikos = new ConsumeTurret("thermikos") {{
+			requirements(Category.turret, with(
+				SWItems.bloom, 150,
+				SWItems.iron, 200,
+				SWItems.verdigris, 175,
+				Items.silicon, 100,
+				Items.graphite, 125
+			));
+			size = 3;
+			scaledHealth = 220f;
+			range = 50 * 8f;
+			reload = 120f;
+			recoil = 2f;
+			rotateSpeed = 1f;
+
+			outlineIcon = false;
+
+			fullOverride = "sw-thermikos-full";
+
+			shake = 3f;
+			shootY = 16f;
+			shoot = new ShootPattern() {{
+				firstShotDelay = 30f;
+			}};
+			moveWhileCharging = false;
+
+			shootSound = Sounds.unitExplode3;
+
+			consumeItems(with(SWItems.bloom, 3, SWItems.thermite, 3));
+			consumeLiquid(SWLiquids.solvent, 10f / 60f);
+			consume(new ConsumeSpin() {{
+				minSpeed = 20f / 10f;
+				maxSpeed = 30f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-wheel-outline") {{
+						under = true;
+						outline = false;
+
+						y = 6.25f;
+					}},
+					new SegmentedAxlePart() {{
+						suffix = "-wheel";
+
+						layerOffset = - 0.0001f;
+
+						y = 6.25f;
+
+						height = 20f;
+						minWidth = 5f;
+						maxWidth = 8f;
+						rotation = -90f;
+
+						lightTint = Color.valueOf("7B7B7B");
+						mediumTint = Color.valueOf("636369");
+						darkTint = Color.valueOf("4D4E58");
+
+						segmentSides = new int[]{0, 2, 4, 6, 8};
+
+						progress = DrawParts.spin.add(DrawPart.PartProgress.charge.curve(Interp.exp10In).mul(360));
+					}},
+					new RegionPart("-cannon") {{
+						under = true;
+						y = -7.25f;
+						moveY = -2f;
+						progress = PartProgress.heat.curve(Interp.bounceIn);
+					}}
+				);
+			}
+				@Override
+				public void draw(Building build) {
+					Turret turret = (Turret)build.block;
+					TurretBuild tb = (TurretBuild)build;
+
+					Draw.rect(base, build.x, build.y);
+					Draw.color();
+
+					Draw.z(shadowLayer);
+
+					Drawf.shadow(preview, build.x + tb.recoilOffset.x - turret.elevation, build.y + tb.recoilOffset.y - turret.elevation, tb.drawrot());
+
+					Draw.z(turretLayer);
+
+					drawTurret(turret, tb);
+					drawHeat(turret, tb);
+
+					if(parts.size > 0){
+						if(outline.found()){
+							//draw outline under everything when parts are involved
+							Draw.z(turretLayer - 0.01f);
+							Draw.rect(outline, build.x + tb.recoilOffset.x, build.y + tb.recoilOffset.y, tb.drawrot());
+							Draw.z(turretLayer);
+						}
+
+						float progress = tb.progress();
+
+						//TODO no smooth reload
+						DrawParts.BlockParams params = (DrawParts.BlockParams) DrawParts.params.set(build.warmup(), 1f - progress, 1f - progress, tb.heat, tb.curRecoil, tb.charge, tb.x + tb.recoilOffset.x, tb.y + tb.recoilOffset.y, tb.rotation);
+
+						params.warmup = build.warmup();
+						params.progress = build.progress();
+						params.totalProgress = build.totalProgress();
+						params.efficiency = build.efficiency;
+
+						params.spin = build instanceof HasSpin spin && spin.spin() != null ? spin.getRotation() : 0f;
+						params.ratio = build instanceof HasSpin spin && spin.spin() != null ? spin.getRatio() : 1f;
+						params.speed = build instanceof HasSpin spin && spin.spin() != null ? spin.getSpeed() : 1f;
+
+						for(var part : parts){
+							params.setRecoil(part.recoilIndex >= 0 && tb.curRecoils != null ? tb.curRecoils[part.recoilIndex] : tb.curRecoil);
+							part.draw(params);
+						}
+					}
+				}
+
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			shootType = new ArtilleryBulletType(4f, 100f) {{
+				splashDamage = 300f;
+				splashDamageRadius = 32f;
+				splashDamagePierce = true;
+
+				lifetime = 100f;
+				width = height = 20f;
+
+				collides = collidesAir = collidesGround = true;
+
+				shootEffect = SWFx.thermiteShoot;
+				trailEffect = SWFx.thermiteTrail;
+				hitEffect = new WrapEffect(Fx.dynamicExplosion, Color.white, 2f);
+				hitShake = 3;
+
+				scaleLife = false;
+				trailRotation = true;
 //				chargeEffect = SWFx.thermiteCharge;
-//			}};
-//
-//			spinConfig.hasSpin = false;
-//		}};
+			}};
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20f / 600f;
+
+				allowedEdges = new int[][] {
+					new int[] {0, 3, 6, 9},
+					new int[] {3, 6, 9, 0},
+					new int[] {6, 9, 0, 3},
+					new int[] {9, 0, 3, 6}
+				};
+			}};
+		}};
 //		swing = new ConsumeTurret("swing") {{
 //			requirements(Category.turret, BuildVisibility.hidden, with());
 //			size = 3;
