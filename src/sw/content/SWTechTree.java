@@ -40,7 +40,10 @@ public class SWTechTree {
         node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {
           node(thermikos, with(new NonUnlockable()), () -> {});
         });
-        node(ironWall, with(new OnSector(theDelta)), () -> node(ironWallLarge));
+        node(ironWall, with(new OnSector(theDelta)), () -> {
+          node(ironWallLarge);
+          node(bloomWall, () -> node(bloomWallLarge));
+        });
         node(lamparine, with(new OnSector(cavern)), () -> {
           node(grindLamp, with(new SectorComplete(cavern)), () -> {});
           node(lavaLamp, with(new SectorComplete(cavern)), () -> {});

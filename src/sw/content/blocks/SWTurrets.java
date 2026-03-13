@@ -628,7 +628,7 @@ public class SWTurrets {
 
 			shootType = new ArtilleryBulletType(4f, 100f) {{
 				splashDamage = 300f;
-				splashDamageRadius = 32f;
+				splashDamageRadius = 64f;
 				splashDamagePierce = true;
 
 				lifetime = 100f;

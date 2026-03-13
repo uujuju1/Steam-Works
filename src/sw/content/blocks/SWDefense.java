@@ -19,7 +19,7 @@ import static mindustry.type.ItemStack.*;
 public class SWDefense {
 	public static Block
 		grindLamp, lavaLamp, lamparine,
-		ironWall, ironWallLarge;
+		ironWall, ironWallLarge, bloomWall, bloomWallLarge;
 
 	public static void load() {
 		// region lamps
@@ -143,14 +143,22 @@ public class SWDefense {
 		// region walls
 		ironWall = new Wall("iron-wall") {{
 			requirements(Category.defense, with(SWItems.iron, 6));
-			health = 100 * 4;
-			absorbLasers = true;
+			scaledHealth = 400;
 		}};
 		ironWallLarge = new Wall("iron-wall-large") {{
 			requirements(Category.defense, mult(ironWall.requirements, 4));
 			size = 2;
-			health = 100 * 4 * 4;
-			absorbLasers = true;
+			scaledHealth = 400;
+		}};
+
+		bloomWall = new Wall("bloom-wall") {{
+			requirements(Category.defense, with(SWItems.bloom, 6));
+			scaledHealth = 600;
+		}};
+		bloomWallLarge = new Wall("bloom-wall-large") {{
+			requirements(Category.defense, with(SWItems.bloom, 6));
+			size = 2;
+			scaledHealth = 600;
 		}};
 		// endregion
 	}
