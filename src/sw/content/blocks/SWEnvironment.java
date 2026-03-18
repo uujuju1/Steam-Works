@@ -31,7 +31,8 @@ public class SWEnvironment {
 
 	plateWall, agedPlateWall,
 	truss, beam,
-	plate, waterloggedPlate, agedPlate, plateCross, plateVent;
+	plate, waterloggedPlate, agedPlate, plateCross, plateVent,
+	lightningRod;
 
 	public static void load() {
 		// region ores
@@ -361,6 +362,11 @@ public class SWEnvironment {
 		plateCross = new Floor("plate-cross", 0) {{
 			wall = plateWall;
 			blendGroup = plate;
+		}};
+		lightningRod = new TallBlock("lightning-rod") {{
+			variants = 2;
+			shadowAlpha = 0.3f;
+			rotationRand = 0f;
 		}};
 		// endregion
 	}
