@@ -397,12 +397,16 @@ public class SWCrafting {
 			ambientSound = Sounds.shootSublimate;
 			ambientSoundVolume = 0.25f;
 			ambientSoundPitch = 0.5f;
+
+			lightRadius = 120f;
+			lightColor = Color.orange;
 			
 			outputItems = with(SWItems.bloom, 9);
 			outputLiquids = LiquidStack.with(Liquids.slag, 7.5f / 60f);
 			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
+				new DrawLight(0.5f),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(14f * offset.x, 4f * offset.y, 0f, 1f));

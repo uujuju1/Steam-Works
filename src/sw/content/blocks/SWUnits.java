@@ -99,7 +99,13 @@ public class SWUnits {
 		}};
 
 		assemblyOutpost = new MechanicalAssembler("assembly-outpost") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.verdigris, 50,
+				SWItems.iron, 70,
+				SWItems.bloom, 120,
+				Items.graphite, 85,
+				Items.silicon, 105
+			));
 
 			size = 3;
 

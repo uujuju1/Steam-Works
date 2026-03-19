@@ -149,6 +149,10 @@ public class SWTechTree {
       // endregion
       //region units
       root("sw-units", mechanicalAssembler, with(new OnSector(theDelta)), () -> {
+        node(assemblyOutpost, with(new NonUnlockable()), () -> {
+          node(ballistra, with(new NonUnlockable()), () -> {});
+          node(volare);
+        });
 				node(soar, () -> node(wisp, with(new SectorComplete(cavern)), () -> {}));
         node(assemblerArm, with(new NonUnlockable()), () -> {});
       });

@@ -94,6 +94,7 @@ public class SWUnitTypes {
 			accel = drag = 0.05f;
 			rotateSpeed = 3f;
 			fallSpeed = 0.005f;
+			wrecks = 5;
 			
 			hitSize = 38f;
 			engineSize = 0f;
@@ -201,10 +202,10 @@ public class SWUnitTypes {
 		ballistra = new SWUnitType("ballistra") {{
 			health = 850;
 			speed = 0.7f;
-			
 			rotateSpeed = 2f;
-			
 			hitSize = 20f;
+
+			wrecks = 5;
 			
 			omniMovement = false;
 			
