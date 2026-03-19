@@ -8,14 +8,20 @@ import arc.graphics.gl.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
+import mindustry.io.*;
+import sw.maps.*;
 import sw.world.blocks.environment.*;
 
 public class SWRenderer {
 	ObjectMap<String, FrameBuffer> buffers = new ObjectMap<>();
 
+	public DarknessChunk darknessChunk;
+
 	public void init() {
 		buffers.put("pitfall", new FrameBuffer());
 		buffers.put("spinFragment", new FrameBuffer());
+
+		SaveVersion.addCustomChunk("sw-darkness", darknessChunk = new DarknessChunk());
 		
 		Events.on(WorldLoadEvent.class, e -> {
 			FrameBuffer frameBuffer = buffers.get("pitfall");
