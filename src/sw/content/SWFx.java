@@ -29,22 +29,6 @@ public class SWFx {
         Lines.circle(e.x, e.y, 4f * b.finpow());
       });
     }),
-    groundCrack = new Effect(60f, 64f, e -> {
-      rand.setSeed(e.id);
-      Draw.color(e.color, Color.grays(0.2f), Interp.exp10Out.apply(e.fout()));
-      for(int j = 0; j < 5; j++) {
-        Vec2 lastPos = new Vec2(e.x, e.y);
-        float lastRot = rand.random(360);
-
-        for(int i = 0; i < 8; i++) {
-          temp.trns(lastRot, 4).add(lastPos);
-          Lines.stroke((1.5f - 1f/8f * i) * Interp.exp5Out.apply(e.fout()));
-          Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
-          lastRot += rand.range(90);
-          lastPos.set(temp);
-        }
-      }
-    }).layer(Layer.block - 1),
 		blockCrack = new Effect(60f, e -> {
 			rand.setSeed(e.id);
 
@@ -72,7 +56,7 @@ public class SWFx {
 			});
 		}).layer(Layer.effect + 1),
   
-    parallaxFire = new Effect(90, e -> {
+    parallaxFire = new Effect(90f, e -> {
       rand.setSeed(e.id);
       
       Draw.color(Color.darkGray, Color.gray, e.finpow());
@@ -91,6 +75,18 @@ public class SWFx {
       Draw.blend();
     }).layer(Layer.effect + 1),
 
+    ballDeath = new Effect(30f, e -> {
+      Draw.color(Color.white, Pal.lancerLaser, e.fin());
+      Fill.circle(e.x, e.y, 6f * e.foutpowdown());
+
+      Lines.stroke(3f * e.foutpow());
+
+      rand.setSeed(e.id);
+      Lines.circle(e.x, e.y, 8f + 24f * e.finpow());
+      Angles.randVectors(e.id, 10, 8f + 24f * e.finpow(), (x, y) -> {
+        Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y) + 180f, rand.random(3f, 5f) * e.foutpowdown());
+      });
+    }),
     balloonRelease = new Effect(120f, e -> {
       Draw.z(Layer.flyingUnit);
       Parallax.getParallaxFrom(temp.set(e.x, e.y), Core.camera.position, 3f + 7f * e.fin());
@@ -214,6 +210,23 @@ public class SWFx {
       });
     }),
 
+    groundCrack = new Effect(60f, 64f, e -> {
+        rand.setSeed(e.id);
+        Draw.color(e.color, Color.grays(0.2f), Interp.exp10Out.apply(e.fout()));
+        for(int j = 0; j < 5; j++) {
+          Vec2 lastPos = new Vec2(e.x, e.y);
+          float lastRot = rand.random(360);
+
+          for(int i = 0; i < 8; i++) {
+            temp.trns(lastRot, 4).add(lastPos);
+            Lines.stroke((1.5f - 1f/8f * i) * Interp.exp5Out.apply(e.fout()));
+            Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
+            lastRot += rand.range(90);
+            lastPos.set(temp);
+          }
+        }
+      }).layer(Layer.block - 1),
+
     hydrogenShoot = new Effect(30f, e -> {
       rand.setSeed(e.id);
       Angles.randLenVectors(e.id, 20, 120f * e.fin(), e.rotation, 5f, (x, y) -> {
@@ -229,14 +242,6 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, rand.random(2, 3) * e.foutpowdown());
       });
     }).layer(Layer.blockOver),
-    ozoneLaunch = new Effect(30f, e -> {
-      rand.setSeed(e.id);
-      Draw.color(Color.valueOf("F5D5E0"));
-      Angles.randLenVectors(e.id, 30, 40f * e.fin(), e.rotation, 315f, (x, y) -> {
-        Draw.alpha(rand.random(0f, 0.5f) * e.fout());
-        Fill.circle(e.x + x, e.y + y, rand.random(1f, 2f));
-      });
-    }),
   
     thermiteCrush = new Effect(120f, e -> {
       rand.setSeed(e.id);

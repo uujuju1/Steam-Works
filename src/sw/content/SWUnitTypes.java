@@ -8,6 +8,7 @@ import arc.util.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
@@ -18,15 +19,18 @@ import mindustry.type.*;
 import sw.entities.bullet.*;
 import sw.gen.*;
 import sw.type.*;
+import sw.type.units.*;
 
 public class SWUnitTypes {
   public static UnitType
 		soar, volare,
 		ballistra,
 		wisp,
+		ballLightning,
 	  lambda, rho;
 
   public static void load() {
+		//region copters
 		soar = new SWUnitType("soar") {{
 			health = 250;
 			speed = 2f;
@@ -192,7 +196,8 @@ public class SWUnitTypes {
 				}}
 			);
 		}};
-		
+		//endregion
+
 		ballistra = new SWUnitType("ballistra") {{
 			health = 850;
 			speed = 0.7f;
@@ -500,6 +505,51 @@ public class SWUnitTypes {
 				}};
 			}});
 	  }};
+
+		ballLightning = new BallLightningUnitType("ball-lightning") {{
+			omniMovement = false;
+			lifetime = 600f;
+
+			speed = 4f;
+			sizeScl = 6f;
+			hitSize = 12f;
+
+			groundLayer = flyingLayer = Layer.effect - 2f;
+
+			accel = 0.01f;
+			drag = 0f;
+
+			fallEffect = fallEngineEffect = Fx.none;
+			deathExplosionEffect = SWFx.ballDeath;
+			createScorch = false;
+
+			abilities.add(
+				new MoveLightningAbility(2f, 12, 0.75f, 0f, 1f, 4f, Pal.lancerLaser) {{
+					shootEffect = Fx.none;
+
+					bullet = new BulletType() {{
+						instantDisappear = true;
+						despawnHit = true;
+						collides = false;
+
+						hitEffect = despawnEffect = Fx.none;
+
+						lightning = 4;
+						lightningDamage = 3f;
+						lightningLength = 8;
+						lightningCone = 360f;
+						lightningColor = Pal.lancerLaser;
+					}};
+				}},
+				new EnergyFieldAbility(1f, 20f, 120f) {{
+					maxTargets = 2;
+
+					effectRadius = 0f;
+
+					color = Pal.lancerLaser;
+				}}
+			);
+		}};
 	  
 	  //region core
     lambda = new SWUnitType("lambda") {{
