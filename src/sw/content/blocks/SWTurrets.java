@@ -641,7 +641,6 @@ public class SWTurrets {
 				hitEffect = new WrapEffect(Fx.dynamicExplosion, Color.white, 2f);
 				hitShake = 3;
 
-				scaleLife = false;
 				trailRotation = true;
 //				chargeEffect = SWFx.thermiteCharge;
 			}};

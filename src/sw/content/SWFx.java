@@ -9,6 +9,7 @@ import arc.util.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.effect.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -227,6 +228,40 @@ public class SWFx {
         }
       }).layer(Layer.block - 1),
 
+    healEmber = new Effect(30f, e -> {
+      if (!(e.data instanceof Building data)) return;
+
+      rand.setSeed(e.id);
+
+      Draw.color(Pal.missileYellow);
+
+      temp.x = 3 * Mathf.sign(rand.chance(0.5f));
+      temp.y = rand.range(4f);
+      temp.rotate(e.rotation);
+
+      Tmp.v6.set(temp);
+
+      float change = 0.5f;
+
+      if (e.fin() < change) {
+        float fin = e.fin() / change;
+        Bezier.quadratic(temp, fin, Tmp.v2.set(temp).add(e.x, e.y), Tmp.v3.set(temp).setLength(40).add(e.x, e.y), Tmp.v4.set(data), Tmp.v5);
+        Fill.square(temp.x, temp.y, Interp.pow2Out.apply(fin), 45 + rand.range(360) * fin);
+      } else {
+        Lines.stroke(Mathf.map(e.fin(), change, 1f, 3f, 0f));
+        Lines.square(data.x, data.y, data.hitSize() / 2f);
+      }
+
+      temp.set(Tmp.v6);
+      float ang = temp.angle();
+      temp.add(e.x, e.y);
+      Lines.stroke(e.fout());
+      Angles.randLenVectors(e.id, 5, 8f * e.finpow(), ang, 15f, (x, y) -> {
+        float angle = Angles.angle(e.x, e.y, temp.x + x, temp.y + y);
+        Lines.lineAngle(temp.x + x, temp.y + y, angle, rand.random(2f, 4f) * e.foutpow(), false);
+      });
+    }),
+
     hydrogenShoot = new Effect(30f, e -> {
       rand.setSeed(e.id);
       Angles.randLenVectors(e.id, 20, 120f * e.fin(), e.rotation, 5f, (x, y) -> {
@@ -277,7 +312,7 @@ public class SWFx {
     }),
     thermiteTrail = new Effect(60f, e -> {
       rand.setSeed(e.id);
-      for (int i : Mathf.zeroOne) {
+      for (int ignored : Mathf.zeroOne) {
         float offset = rand.range(4f);
         float move = rand.random(2f, 16f);
         Lines.stroke(rand.random(0.5f, 2f));
@@ -287,7 +322,7 @@ public class SWFx {
           e.y + Angles.trnsy(e.rotation + 90f, offset, move * e.finpow()),
           e.rotation + 180f, rand.random(3f, 8f)
         );
-      };
+      }
     }),
 
     weld = new Effect(20f, e -> {

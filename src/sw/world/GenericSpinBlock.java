@@ -46,6 +46,7 @@ public class GenericSpinBlock extends Block {
 		}
 
 		@Override public void drawSelect() {
+			super.drawSelect();
 			if (spinConfig != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 

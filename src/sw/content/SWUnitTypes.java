@@ -460,15 +460,11 @@ public class SWUnitTypes {
 					
 					trailEffect = new MultiEffect(
 						new WrapEffect(SWFx.parallaxFire, Color.white, 4f),
-						new Effect(90f, effect -> {
-							Drawf.light(effect.x, effect.y, 6f * effect.foutpow(), Color.scarlet, 0.1f);
-						})
+						new Effect(90f, effect -> Drawf.light(effect.x, effect.y, 6f * effect.foutpow(), Color.scarlet, 0.1f))
 					);
 					trailInterval = 2.5f;
 					
-					despawnEffect = new MultiEffect(e, new Effect(90f, effect -> {
-						Drawf.light(effect.x, effect.y, 24f * effect.foutpow(), Color.scarlet, 0.1f);
-					}));
+					despawnEffect = new MultiEffect(e, new Effect(90f, effect -> Drawf.light(effect.x, effect.y, 24f * effect.foutpow(), Color.scarlet, 0.1f)));
 					hitEffect = Fx.none;
 					
 					fragBullets = 5;
@@ -492,15 +488,11 @@ public class SWUnitTypes {
 						
 						trailEffect = new MultiEffect(
 							new WrapEffect(SWFx.parallaxFire, Color.white, 4f),
-							new Effect(90f, effect -> {
-								Drawf.light(effect.x, effect.y, 6f * effect.foutpow(), Color.scarlet, 0.1f);
-							})
+							new Effect(90f, effect -> Drawf.light(effect.x, effect.y, 6f * effect.foutpow(), Color.scarlet, 0.1f))
 						);
 						trailInterval = 2.5f;
 						
-						despawnEffect = new MultiEffect(e, new Effect(90f, effect -> {
-							Drawf.light(effect.x, effect.y, 24f * effect.foutpow(), Color.scarlet, 0.1f);
-						}));
+						despawnEffect = new MultiEffect(e, new Effect(90f, effect -> Drawf.light(effect.x, effect.y, 24f * effect.foutpow(), Color.scarlet, 0.1f)));
 						hitEffect = Fx.none;
 					}};
 				}};
@@ -509,6 +501,7 @@ public class SWUnitTypes {
 
 		ballLightning = new BallLightningUnitType("ball-lightning") {{
 			omniMovement = false;
+			hidden = true;
 			lifetime = 600f;
 
 			speed = 4f;

@@ -45,8 +45,9 @@ public class SWTechTree {
           node(bloomWall, () -> node(bloomWallLarge));
         });
         node(lamparine, with(new OnSector(cavern)), () -> {
-          node(grindLamp, with(new SectorComplete(cavern)), () -> {});
-          node(lavaLamp, with(new SectorComplete(cavern)), () -> {});
+          node(grindLamp, with(new NonUnlockable()), () -> {});
+          node(lavaLamp, with(new NonUnlockable()), () -> {});
+          node(repairStation, with(new NonUnlockable()), () -> {});
         });
       });
       // endregion

@@ -2,6 +2,7 @@ package sw.content.blocks;
 
 import arc.graphics.*;
 import arc.math.*;
+import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -10,18 +11,96 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
 import sw.world.consumers.*;
+import sw.world.draw.*;
+import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWDefense {
 	public static Block
+		repairStation,
 		grindLamp, lavaLamp, lamparine,
 		ironWall, ironWallLarge, bloomWall, bloomWallLarge;
 
 	public static void load() {
+		//region projectors
+		repairStation = new PartialRegenProjector("repair-station") {{
+			requirements(Category.effect, with(
+				SWItems.iron, 30,
+				SWItems.aluminium, 50,
+				Items.silicon, 25,
+				Items.graphite, 35
+			));
+
+			size = 2;
+			rotate = true;
+			drawArrow = false;
+
+			regenAmount = 10f;
+			regenPercentage = 0.01f;
+
+			healEffect = SWFx.healEmber;
+
+			consumeItem(SWItems.verdigris, 1);
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 15f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawArcSmelt() {{
+					flameColor = Pal.missileYellow;
+					drawCenter = false;
+
+					particles = 50;
+					particleLife = 240;
+					particleLen = 0.5f;
+					particleStroke = 0.5f;
+
+					blending = Blending.normal;
+					alpha = 1;
+				}},
+				new DrawParticles() {{
+					particleSizeInterp = a -> Interp.circle.apply(Interp.slope.apply(a));
+					particleSize = 2;
+					particleLife = 120f;
+
+					blending = Blending.additive;
+				}},
+				new DrawAxles() {{
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(Axles.halfBlock.position(6f * offset.x, 4f * offset.y, 0, 1f));
+					}
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+				}},
+				new DrawFacingLightRegion(),
+				new DrawGlowRegion(true) {{
+					color = Color.scarlet;
+					glowIntensity = 0.2f;
+					alpha = 1f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 2.5f / 600f;
+
+				allowedEdges = new int[][] {
+					new int[] {0, 1, 4, 5},
+					new int[] {2, 3, 6, 7},
+					new int[] {4, 5, 0, 1},
+					new int[] {6, 7, 2, 3}
+				};
+			}};
+		}};
+		//endregion
+
 		// region lamps
 		grindLamp = new SWLightBlock("grind-lamp") {{
 			requirements(Category.effect, with(
@@ -140,6 +219,7 @@ public class SWDefense {
 			);
 		}};
 		// endregion
+
 		// region walls
 		ironWall = new Wall("iron-wall") {{
 			requirements(Category.defense, with(SWItems.iron, 6));
