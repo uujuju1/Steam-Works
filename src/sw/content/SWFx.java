@@ -277,6 +277,60 @@ public class SWFx {
         Fill.circle(e.x + x, e.y + y, rand.random(2, 3) * e.foutpowdown());
       });
     }).layer(Layer.blockOver),
+
+    lightning = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+      Draw.z(Layer.light);
+
+      if (e.fin() * e.lifetime < 10f) {
+        Draw.blend(Blending.additive);
+        Draw.color(Pal.lancerLaser.cpy().mul(1.25f));
+        Draw.alpha(0.5f * Interp.pow2In.apply(1f - Mathf.clamp(Core.camera.position.dst(e.x, e.y) / 120f)) * (1 - e.fin() / (10f / e.lifetime)));
+        Draw.rect();
+        Draw.blend();
+      }
+
+      Draw.reset();
+
+      Drawf.light(e.x, e.y, 40f, Pal.lancerLaser, e.foutpow());
+      Draw.color(Pal.lancerLaser.cpy().mul(1.25f));
+      Draw.alpha(Interp.smooth.apply(e.fslope()));
+
+      float baseAngle = rand.random(360f);
+      float height = 20f;
+
+      Vec2 saved = Tmp.v5.set(e.x, e.y);
+      int savedIndex = 0;
+      for(int j = 0; j < 6; j++) {
+        Vec2 temp2 = Tmp.v6.set(saved);
+
+        float lastRand = rand.range(5f);
+
+        Vec2 old = Tmp.v2.set(temp2);
+        float angle = rand.range(1f);
+        for(int i = savedIndex; i < 20; i++) {
+          lastRand += rand.range(5f);
+          Tmp.v4.trns(baseAngle + angle, rand.random(1f, 10f), (lastRand) * i / 19f);
+          Vec2 next = Tmp.v3.set(old).add(Tmp.v4);
+
+          Lines.stroke(Interp.bounceIn.apply(e.fout()) * (1f + i / 19f * 3));
+          Lines.line(
+            Parallax.getParallaxFrom(old.x, Core.camera.position.x, (i - 1) / 19f * height),
+            Parallax.getParallaxFrom(old.y, Core.camera.position.y, (i - 1) / 19f * height),
+            Parallax.getParallaxFrom(next.x, Core.camera.position.x, i / 19f * height),
+            Parallax.getParallaxFrom(next.y, Core.camera.position.y, i / 19f * height)
+          );
+
+          old.set(next);
+          baseAngle += angle;
+
+          if (rand.chance(0.25f) && i < 10f) {
+            saved.set(next);
+            savedIndex = i;
+          }
+        }
+      }
+    }),
   
     thermiteCrush = new Effect(120f, e -> {
       rand.setSeed(e.id);
@@ -354,58 +408,58 @@ public class SWFx {
       Lines.square(e.x, e.y, block.size * 4f);
     }),
 
-    lightning = new Effect(60f, e -> {
-      rand.setSeed(e.id);
-      Draw.color(Pal.accent);
-
-      for(int branch = 0; branch < 10; branch++) {
-        float branchElevationEnd = rand.random(0.1f, 0.2f);
-
-        temp.trns(rand.random(360f), 16f).add(e.x, e.y);
-        float endX = temp.x, endY = temp.y;
-
-        float lastX = 0, lastY = 0;
-        for(int i = 0; i < 4; i++) {
-          float
-            elevationS = Mathf.map(i/4f, 0f, 1f, 0f, branchElevationEnd),
-            elevationE = Mathf.map((i + 1f)/4f, 0f, 1f, 0f, branchElevationEnd);
-
-          temp.set(e.x, e.y).lerp(endX, endY, i/4f).add(lastX, lastY);
-          lastX = rand.range(i/4f * 8f);
-          lastY = rand.range(i/4f * 8f);
-          Tmp.v2.set(e.x, e.y).lerp(endX, endY, (i + 1f)/4f).add(lastX, lastY);
-
-          Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
-          Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
-
-          Lines.stroke(1);
-          Draw.alpha(Mathf.clamp((1f - i/4f) - e.finpow()));
-          Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
-        }
-      }
-
-      float lastX = 0, lastY = 0;
-      for(int i = 0; i < 12; i++) {
-        float elevationS = i/12f, elevationE = (i + 1f)/12f;
-
-        temp.set(e.x, e.y).add(lastX, lastY);
-        lastX = rand.range(i/12f * 8f);
-        lastY = rand.range(i/12f * 8f);
-        Tmp.v2.set(e.x, e.y).add(lastX, lastY);
-
-        Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
-        Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
-
-        Lines.stroke(3f * (1f - i/12f));
-        Draw.alpha(Mathf.clamp((1f - i/12f) - e.finpow()));
-        Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
-      }
-
-      Fill.circle(e.x, e.y, 8f * e.foutpow());
-
-      Lines.stroke(e.foutpow());
-      Lines.circle(e.x, e.y, 24f * e.finpow());
-    }),
+//    lightning = new Effect(60f, e -> {
+//      rand.setSeed(e.id);
+//      Draw.color(Pal.accent);
+//
+//      for(int branch = 0; branch < 10; branch++) {
+//        float branchElevationEnd = rand.random(0.1f, 0.2f);
+//
+//        temp.trns(rand.random(360f), 16f).add(e.x, e.y);
+//        float endX = temp.x, endY = temp.y;
+//
+//        float lastX = 0, lastY = 0;
+//        for(int i = 0; i < 4; i++) {
+//          float
+//            elevationS = Mathf.map(i/4f, 0f, 1f, 0f, branchElevationEnd),
+//            elevationE = Mathf.map((i + 1f)/4f, 0f, 1f, 0f, branchElevationEnd);
+//
+//          temp.set(e.x, e.y).lerp(endX, endY, i/4f).add(lastX, lastY);
+//          lastX = rand.range(i/4f * 8f);
+//          lastY = rand.range(i/4f * 8f);
+//          Tmp.v2.set(e.x, e.y).lerp(endX, endY, (i + 1f)/4f).add(lastX, lastY);
+//
+//          Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
+//          Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
+//
+//          Lines.stroke(1);
+//          Draw.alpha(Mathf.clamp((1f - i/4f) - e.finpow()));
+//          Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
+//        }
+//      }
+//
+//      float lastX = 0, lastY = 0;
+//      for(int i = 0; i < 12; i++) {
+//        float elevationS = i/12f, elevationE = (i + 1f)/12f;
+//
+//        temp.set(e.x, e.y).add(lastX, lastY);
+//        lastX = rand.range(i/12f * 8f);
+//        lastY = rand.range(i/12f * 8f);
+//        Tmp.v2.set(e.x, e.y).add(lastX, lastY);
+//
+//        Parallax.getParallaxFrom(temp, Core.camera.position, elevationS);
+//        Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, elevationE);
+//
+//        Lines.stroke(3f * (1f - i/12f));
+//        Draw.alpha(Mathf.clamp((1f - i/12f) - e.finpow()));
+//        Lines.line(temp.x, temp.y, Tmp.v2.x, Tmp.v2.y);
+//      }
+//
+//      Fill.circle(e.x, e.y, 8f * e.foutpow());
+//
+//      Lines.stroke(e.foutpow());
+//      Lines.circle(e.x, e.y, 24f * e.finpow());
+//    }),
     realityTear = new Effect(60f, e -> {
       Color[] colors = new Color[]{Color.red, Color.green, Color.blue};
       rand.setSeed(e.id);

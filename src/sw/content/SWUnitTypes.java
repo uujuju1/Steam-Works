@@ -518,7 +518,7 @@ public class SWUnitTypes {
 			createScorch = false;
 
 			abilities.add(
-				new MoveLightningAbility(2f, 12, 0.75f, 0f, 1f, 4f, Pal.lancerLaser) {{
+				new MoveLightningAbility(2f, 12, 0.25f, 0f, 1f, 4f, Pal.lancerLaser) {{
 					shootEffect = Fx.none;
 
 					bullet = new BulletType() {{
@@ -528,8 +528,8 @@ public class SWUnitTypes {
 
 						hitEffect = despawnEffect = Fx.none;
 
-						lightning = 4;
-						lightningDamage = 3f;
+						lightning = 2;
+						lightningDamage = 1f;
 						lightningLength = 8;
 						lightningCone = 360f;
 						lightningColor = Pal.lancerLaser;

@@ -22,6 +22,7 @@ public class BallLightningUnitType extends SWUnitType {
 		hittable = targetable = false;
 		physics = false;
 		isEnemy = false;
+		useUnitCap = false;
 	}
 
 	@Override
