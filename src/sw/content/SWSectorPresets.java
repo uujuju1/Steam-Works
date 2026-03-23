@@ -12,6 +12,7 @@ import sw.type.*;
 public class SWSectorPresets {
 	public static SectorPreset
 		crevasse, theDelta,
+		liveStorm,
 		abandonedMaze, cavern;
 
 	public static void load() {
@@ -61,29 +62,32 @@ public class SWSectorPresets {
 
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
-//		kettle = new PositionSectorPreset("kettle", SWPlanets.wendi, 2) {{
-//			x = 200;
-//			y = -200;
-//			width = height = 300;
-//			icon = () -> Icon.waves;
-//
-//			rules = r -> {
-//				r.winWave = 15;
-//				r.weather.add(new Weather.WeatherEntry(
-//					SWWeathers.souesiteDust,
-//					5f * Time.toMinutes,
-//					7.5f * Time.toMinutes,
-//					2.5f * Time.toMinutes,
-//					5f * Time.toMinutes
-//				));
-//			};
-//
-//			core = (CoreBlock) SWStorage.coreScaffold;
-//
-//			launcher = (PositionSectorPreset) theDelta;
-//		}};
+		liveStorm = new PositionSectorPreset("live-storm", SWPlanets.wendi, 2) {{
+			x = 500;
+			y = 200;
+			width = height = 300;
+			icon = () -> Icon.waves;
+
+			rules = r -> {
+				r.winWave = 20;
+				r.weather.add(new Weather.WeatherEntry(
+					SWWeathers.souesiteDust,
+					5f * Time.toMinutes,
+					7.5f * Time.toMinutes,
+					2.5f * Time.toMinutes,
+					5f * Time.toMinutes
+				));
+				r.weather.add(new Weather.WeatherEntry(Weathers.fog) {{
+					always = true;
+				}});
+			};
+
+			core = (CoreBlock) SWStorage.coreScaffold;
+
+			launcher = (PositionSectorPreset) theDelta;
+		}};
 		abandonedMaze = new PositionSectorPreset("abandoned-maze", SWPlanets.wendi, 3) {{
-			x = -300;
+			x = -100;
 			y = 300;
 			width = height = 200;
 			icon = () -> Icon.terrain;
@@ -95,7 +99,7 @@ public class SWSectorPresets {
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 		cavern = new PositionSectorPreset("cavern", SWPlanets.wendi, 4) {{
-			x = -600;
+			x = -400;
 			y = 200;
 			width = height = 300;
 			icon = () -> Icon.modeAttack;

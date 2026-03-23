@@ -154,7 +154,7 @@ public class SWPower {
 						rotation = -90f;
 					}}
 				),
-				new DrawBitmask("-tiles", building -> 0, 32, Layer.block + 0.01f),
+				new DrawRotated(),
 				new DrawFlaps() {{
 					rotationFunc = building -> ((HasSpin) building).getRotation();
 					layer = Layer.block + 0.01f;

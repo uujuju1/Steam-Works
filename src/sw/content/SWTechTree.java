@@ -4,7 +4,6 @@ import arc.*;
 import arc.struct.*;
 import mindustry.content.*;
 import mindustry.ctype.*;
-import mindustry.game.*;
 import mindustry.game.Objectives.*;
 
 import static arc.struct.Seq.*;
@@ -37,17 +36,17 @@ public class SWTechTree {
       // endregion
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
-        node(trebuchet, with(new SectorComplete(abandonedMaze)), () -> {
+        node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
           node(thermikos, with(new NonUnlockable()), () -> {});
         });
         node(ironWall, with(new OnSector(theDelta)), () -> {
           node(ironWallLarge);
           node(bloomWall, () -> node(bloomWallLarge));
+          node(repairStation, with(new OnSector(liveStorm)), () -> {});
         });
         node(lamparine, with(new OnSector(cavern)), () -> {
           node(grindLamp, with(new NonUnlockable()), () -> {});
           node(lavaLamp, with(new NonUnlockable()), () -> {});
-          node(repairStation, with(new NonUnlockable()), () -> {});
         });
       });
       // endregion
@@ -144,8 +143,8 @@ public class SWTechTree {
 
             });
           });
+          node(liveStorm, with(new SectorComplete(theDelta), new Produce(aluminium)), () -> {});
         });
-//        node(kettle, with(new Research(mechanicalAssembler)), () -> {});
       });
       // endregion
       //region units
@@ -178,7 +177,7 @@ public class SWTechTree {
     return root;
   }
 
-  public static class NonUnlockable implements Objectives.Objective {
+  public static class NonUnlockable implements Objective {
     @Override public boolean complete() {
       return false;
     }
@@ -186,6 +185,24 @@ public class SWTechTree {
     @Override
     public String display() {
       return Core.bundle.get("requirement.sw-non-unlockable");
+    }
+  }
+  public static class OrObjective implements Objective {
+    public Objective one, another;
+
+    public OrObjective(Objective one, Objective another) {
+      this.one = one;
+      this.another = another;
+    }
+
+    @Override
+    public boolean complete() {
+      return one.complete() || another.complete();
+    }
+
+    @Override
+    public String display() {
+      return Core.bundle.format("requirement.sw-or-objective", one.display(), another.display());
     }
   }
 }
