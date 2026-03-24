@@ -39,8 +39,8 @@ public class DustStormWeather extends Weather {
 			float scl2 = rand.random(0.5f, 1f);
 			float size = rand.random(sizeMin, sizeMax);
 			size = Mathf.sin(Time.time, rand.random(sinSclMin, sinSclMax), size) * state.opacity;
-			float x = (rand.random(0, Vars.world.unitWidth()) + Time.time * windx * scl2);
-			float y = (rand.random(0, Vars.world.unitHeight()) + Time.time * windy * scl);
+			float x = (rand.random(0, 80000f) + Time.time * windx * scl2);
+			float y = (rand.random(0, 80000f) + Time.time * windy * scl);
 			float alpha = rand.random(minAlpha, maxAlpha);
 
 			x += Mathf.sin(y, rand.random(sinSclMin, sinSclMax), rand.random(sinMagMin, sinMagMax));

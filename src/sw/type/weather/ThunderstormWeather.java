@@ -19,11 +19,6 @@ public class ThunderstormWeather extends RainWeather {
 		super(name);
 	}
 
-	@Override
-	public boolean isHidden(){
-		return localizedName.equals(name) || hidden;
-	}
-
 	public boolean shouldSpawn(WeatherState state){
 		return Mathf.chance(spawnChance);
 	}
