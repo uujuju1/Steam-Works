@@ -12,6 +12,7 @@ public class DreamContent {
 	public static Block voidTile, voidTileWall, spikes;
 
 	public static void load() {
+		new Dream();
 		voidTile = new Floor("void-tile", 0);
 		voidTileWall =  new StaticWall("void-tile-wall") {{
 			variants = 0;
