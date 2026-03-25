@@ -2,6 +2,7 @@ package sw.dream;
 
 import arc.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.game.*;
 import sw.dream.states.*;
@@ -9,7 +10,11 @@ import sw.dream.states.*;
 public class Dream implements ApplicationListener {
 	public static Dream self;
 
-	public final Seq<DreamState> states = Seq.with(new AttractState());
+	public final Seq<DreamState> states = Seq.with(
+		new AttractState(),
+		new LimboState(),
+		new DreamState()
+	);
 
 	public int currentState = -1;
 
@@ -19,10 +24,10 @@ public class Dream implements ApplicationListener {
 
 			Events.on(EventType.ClientLoadEvent.class, e -> Core.app.addListener(this));
 
-			Events.run(EventType.Trigger.draw, () -> {
+			Time.runTask(60f, () -> Events.run(EventType.Trigger.draw, () -> {
 				// TODO does not work for some goddamm reason
 				self.draw();
-			});
+			}));
 
 		}
 	}
@@ -39,7 +44,7 @@ public class Dream implements ApplicationListener {
 		states.get(currentState).draw();
 	}
 
-	public abstract static class DreamState {
+	public static class DreamState {
 		public void draw() {
 
 		}

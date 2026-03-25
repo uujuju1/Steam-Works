@@ -11,6 +11,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import sw.content.*;
+import sw.dream.*;
 import sw.dream.Dream.*;
 import sw.dream.dummy.*;
 import sw.world.blocks.environment.*;
@@ -43,8 +44,8 @@ public class AttractState extends DreamState {
 						u.move(Tmp.v1.set(Vars.player.unit()).sub(u).clampLength(0f, 8f));
 
 						if (u.dst(Vars.player.unit()) < u.hitSize * 2f) {
-							// TODO phase 2
-							Core.app.exit();
+							Dream.self.currentState = 1;
+							Vars.logic.reset();
 						}
 					});
 				}
@@ -54,6 +55,8 @@ public class AttractState extends DreamState {
 
 	private void pushPlayer() {
 		Tile camTile = Vars.world.tileWorld(Core.camera.position.x, Core.camera.position.y);
+
+		Vars.renderer.setScale(Vars.renderer.getScale() + 0.1f);
 
 		if (camTile != null && Vars.renderer.getScale() == Mathf.round(Scl.scl(Vars.renderer.maxZoomInGame))) {
 			boolean hasPitfall = camTile.floor() instanceof Pitfall;
@@ -73,7 +76,7 @@ public class AttractState extends DreamState {
 
 		if (time == 600f) {
 			reached = true;
-			// TODO Setting for phase two, so that if the game closes it already goes there.
+			Core.settings.put("sw-fool-state", 1);
 			spawnUnits();
 		}
 	}

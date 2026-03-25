@@ -16,6 +16,19 @@ import mindustry.world.blocks.environment.*;
 import sw.entities.units.*;
 
 public class DummyLambda extends CollisionlessLegsUnit {
+	public void add() {
+		if (!this.added) {
+			this.index__all = Groups.all.addIndex(this);
+			this.index__unit = Groups.unit.addIndex(this);
+			this.index__sync = Groups.sync.addIndex(this);
+			this.index__draw = Groups.draw.addIndex(this);
+			this.added = true;
+			this.updateLastPosition();
+			this.resetLegs();
+			this.team.data().updateCount(this.type, 1);
+		}
+	}
+
 	@Override
 	public boolean serialize() {
 		return false;
