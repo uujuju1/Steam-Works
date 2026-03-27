@@ -21,6 +21,8 @@ public class LimboState extends DreamState {
 	public boolean once = false;
 	public boolean looped;
 
+	public float[] zooms = new float[4];
+
 	public float speed;
 
 	public Unit playerUnit, dummy;
@@ -60,6 +62,10 @@ public class LimboState extends DreamState {
 
 		if (hasMap && !once) {
 			loadDarkMap();
+			zooms[0] = Vars.renderer.minZoomInGame;
+			zooms[1] = Vars.renderer.maxZoomInGame;
+			zooms[2] = Vars.renderer.minZoom;
+			zooms[3] = Vars.renderer.maxZoom;
 			once = true;
 		}
 
@@ -114,11 +120,16 @@ public class LimboState extends DreamState {
 					dummy.team = Team.crux;
 				}
 			} else {
-				dummy.move(Tmp.v1.set(playerUnit).sub(dummy).setLength(speed));
+				dummy.vel.set(playerUnit).sub(dummy).setLength(speed);
 				speed += 1 / 600f * Time.delta;
 
 				if (playerUnit.dst(dummy) < dummy.hitSize * 2f) {
 					Core.settings.put("sw-fool-state", 2);
+					Vars.disableUI = false;
+					Vars.renderer.minZoomInGame = zooms[0];
+					Vars.renderer.maxZoomInGame = zooms[1];
+					Vars.renderer.minZoom = zooms[2];
+					Vars.renderer.maxZoom = zooms[3];
 					Dream.self.currentState = 2;
 					Vars.logic.reset();
 				}
