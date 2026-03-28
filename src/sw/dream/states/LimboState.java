@@ -19,7 +19,7 @@ import sw.dream.dummy.*;
 
 public class LimboState extends DreamState {
 	public boolean once = false;
-	public boolean looped;
+	public int looped;
 
 	public float[] zooms = new float[4];
 
@@ -56,6 +56,27 @@ public class LimboState extends DreamState {
 		entity.add();
 	}
 
+	private void moveUnit(Unit unit) {
+		Tmp.v1.set(playerUnit).sub(160, 160f);
+
+		Tmp.v1.x = Mathf.mod(Tmp.v1.x, Tmp.r1.width);
+		Tmp.v1.y = Mathf.mod(Tmp.v1.y, Tmp.r1.height);
+
+		Tmp.v1.add(160f, 160);
+
+		Vec2 offset = Tmp.v2.set(Tmp.v1).sub(playerUnit);
+
+		if (unit instanceof LegsUnit legsUnit) {
+			Leg[] legs = legsUnit.legs;
+
+			for (Leg leg : legs) {
+				leg.base.add(offset);
+				leg.joint.add(offset);
+			}
+		}
+		playerUnit.set(Tmp.v1);
+	}
+
 	@Override
 	public void update() {
 		boolean hasMap = Vars.state.isMenu();
@@ -70,24 +91,37 @@ public class LimboState extends DreamState {
 		}
 
 		if (!Tmp.r1.setCentered(Vars.world.unitWidth()/2f, Vars.world.unitHeight()/2f, Vars.world.unitWidth() - 320f, Vars.world.unitHeight() - 320f).contains(playerUnit.x, playerUnit.y)) {
-			Tmp.v1.set(playerUnit).sub(160, 160f);
+//			Tmp.v1.set(playerUnit).sub(160, 160f);
+//
+//			Tmp.v1.x = Mathf.mod(Tmp.v1.x, Tmp.r1.width);
+//			Tmp.v1.y = Mathf.mod(Tmp.v1.y, Tmp.r1.height);
+//
+//			Tmp.v1.add(160f, 160);
+//
+//			Vec2 offset = Tmp.v2.set(Tmp.v1).sub(playerUnit);
+//			playerUnit.set(Tmp.v1);
+//
+//			Leg[] legs = ((LegsUnit) playerUnit).legs;
+//
+//			for (Leg leg : legs) {
+//				leg.base.add(offset);
+//				leg.joint.add(offset);
+//			}
 
-			Tmp.v1.x = Mathf.mod(Tmp.v1.x, Tmp.r1.width);
-			Tmp.v1.y = Mathf.mod(Tmp.v1.y, Tmp.r1.height);
+			moveUnit(playerUnit);
+			Vec2 offset = Tmp.v2;
 
-			Tmp.v1.add(160f, 160);
-
-			Vec2 offset = Tmp.v2.set(Tmp.v1).sub(playerUnit);
-			playerUnit.set(Tmp.v1);
-
-			Leg[] legs = ((LegsUnit) playerUnit).legs;
-
-			for (Leg leg : legs) {
-				leg.base.add(offset);
-				leg.joint.add(offset);
+			Tmp.r2.setCentered(Core.camera.position.x, Core.camera.position.y, Core.camera.width, Core.camera.height).grow((SWUnitTypes.lambda.hitSize + SWUnitTypes.lambda.legLength) * 3);
+//			if (dummy != null && Tmp.r2.contains(dummy.x, dummy.y)) moveUnit(dummy);
+			if (dummy != null && Tmp.r2.contains(dummy.x, dummy.y)) {
+				dummy.move(offset);
+				for (Leg leg : ((DummyLambda) dummy).legs) {
+					leg.base.add(offset);
+					leg.joint.add(offset);
+				}
 			}
 
-			if (!looped) {
+			if (looped == 3) {
 				DummyLambda entity = (DummyLambda) (dummy = new DummyLambda());
 
 				entity.setType(SWUnitTypes.lambda);
@@ -100,7 +134,7 @@ public class LimboState extends DreamState {
 				entity.add();
 			}
 
-			looped = true;
+			looped++;
 		}
 
 		Core.camera.position.set(playerUnit);
@@ -121,17 +155,12 @@ public class LimboState extends DreamState {
 				}
 			} else {
 				dummy.vel.set(playerUnit).sub(dummy).setLength(speed);
-				speed += 1 / 600f * Time.delta;
+				speed += 1 / 1200f * Time.delta;
 
 				if (playerUnit.dst(dummy) < dummy.hitSize * 2f) {
 					Core.settings.put("sw-fool-state", 2);
-					Vars.disableUI = false;
-					Vars.renderer.minZoomInGame = zooms[0];
-					Vars.renderer.maxZoomInGame = zooms[1];
-					Vars.renderer.minZoom = zooms[2];
-					Vars.renderer.maxZoom = zooms[3];
-					Dream.self.currentState = 2;
-					Vars.logic.reset();
+					Core.settings.saveValues();
+					Core.app.exit();
 				}
 			}
 		}
