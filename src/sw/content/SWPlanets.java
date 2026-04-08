@@ -23,6 +23,8 @@ public class SWPlanets {
 			ruleSetter = r -> {
 				r.waveTeam = Team.crux;
 				r.placeRangeCheck = false;
+				r.coreDestroyClear = true;
+				r.deconstructRefundMultiplier = 1f;
 				r.showSpawns = false;
 			};
 
