@@ -12,7 +12,7 @@ import sw.type.*;
 public class SWSectorPresets {
 	public static SectorPreset
 		crevasse, theDelta,
-		liveStorm,
+		liveStorm, bayOfEmbers,
 		abandonedMaze, cavern;
 
 	public static void load() {
@@ -102,7 +102,7 @@ public class SWSectorPresets {
 			x = -400;
 			y = 200;
 			width = height = 300;
-			icon = () -> Icon.modeAttack;
+			icon = () -> Icon.modeSurvival;
 			landMusic = SWMusics.scorchedBay;
 			
 			rules = r -> {
@@ -111,6 +111,15 @@ public class SWSectorPresets {
 			
 			launcher = (PositionSectorPreset) abandonedMaze;
 			core = (CoreBlock) SWStorage.coreMole;
+		}};
+		bayOfEmbers = new PositionSectorPreset("bay-of-embers", SWPlanets.wendi, 5) {{
+			x = 700f;
+			y = 400f;
+			width = 600f;
+			height = 300f;
+			icon = () -> Icon.modeAttack;
+
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 	}
 }

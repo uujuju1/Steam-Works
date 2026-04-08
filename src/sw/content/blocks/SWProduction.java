@@ -166,6 +166,12 @@ public class SWProduction {
 				Items.graphite, 80,
 				Items.silicon, 100
 			));
+			researchCost = with(
+				SWItems.verdigris, 1000,
+				SWItems.bloom, 120,
+				Items.graphite, 800,
+				Items.silicon, 1000
+			);
 			size = 3;
 			rotate = true;
 			tier = 4;

@@ -29,15 +29,15 @@ public class SWTechTree {
       root("sw-crafting", engineSmelter, () -> {
         node(cokeOven);
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
-          node(crusher, with(new NonUnlockable()), () -> {});
-          node(blastFurnace, with(new NonUnlockable()), () -> {});
+          node(crusher, with(new OnSector(bayOfEmbers)), () -> {});
+          node(blastFurnace, with(new OnSector(bayOfEmbers)), () -> {});
         });
       });
       // endregion
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
-          node(thermikos, with(new NonUnlockable()), () -> {});
+          node(thermikos, () -> {});
         });
         node(ironWall, with(new OnSector(theDelta)), () -> {
           node(ironWallLarge);
@@ -62,15 +62,15 @@ public class SWTechTree {
         node(suspensionConveyor, () -> {
           node(belt, with(new Research(combustionEngine)), () -> {});
         });
-        node(mechanicalPayloadConveyor, with(new NonUnlockable()), () -> {
+        node(mechanicalPayloadConveyor, with(new OnSector(bayOfEmbers)), () -> {
           node(mechanicalPayloadRouter);
           node(mechanicalPayloadLoader, () -> node(mechanicalPayloadUnloader));
-          node(courierPort);
+          node(mechanicalArm, () -> node(courierPort));
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
           node(mechanicalConduitJunction, () -> node(mechanicalConduitTunnel));
           node(mechanicalConduitRouter);
-          node(liquidBasin);
+          node(liquidDistributor, () -> node(liquidBasin));
         });
         node(compactContainer, () -> {
           node(coreMole, with(new OnSector(abandonedMaze)), () -> {});
@@ -80,9 +80,9 @@ public class SWTechTree {
       //region power
       root("sw-power", evaporator, () -> {
         node(handWheel);
-        node(combustionEngine, with(new NonUnlockable()), () -> {});
+        node(combustionEngine, with(new OnSector(bayOfEmbers)), () -> {});
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {
-          node(convectionTurbine, with(new NonUnlockable()), () -> {});
+          node(convectionTurbine, with(new OnSector(bayOfEmbers)), () -> {});
         });
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
@@ -90,9 +90,9 @@ public class SWTechTree {
             node(overheadBelt, () -> node(largeOverheadBelt));
           });
           node(clutch, with(new Research(combustionEngine)), () -> {
-            node(mechanicalGovernor, with(new NonUnlockable()), () -> {});
+            node(mechanicalGovernor, () -> {});
           });
-          node(flywheel, with(new NonUnlockable()), () -> {});
+          node(flywheel, () -> {});
           node(spring, with(new Research(mechanicalPayloadUnloader)), () -> {});
           node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> {});
         });
@@ -102,7 +102,7 @@ public class SWTechTree {
       root("sw-production", mechanicalBore, () -> {
         node(hydraulicDrill, () -> {
           node(mechanicalFracker, () -> {});
-          node(auger, with(new NonUnlockable()), () -> {});
+          node(auger, () -> {});
         });
         node(liquidCollector, () -> {
           node(artesianWell, with(
@@ -144,14 +144,15 @@ public class SWTechTree {
             });
           });
           node(liveStorm, with(new SectorComplete(theDelta), new Produce(aluminium)), () -> {});
+          node(bayOfEmbers, with(new Produce(aluminium), new Research(trebuchet)), () -> {});
         });
       });
       // endregion
       //region units
       root("sw-units", mechanicalAssembler, with(new OnSector(theDelta)), () -> {
-        node(assemblyOutpost, with(new NonUnlockable()), () -> {
-          node(ballistra, with(new NonUnlockable()), () -> {});
-          node(volare);
+        node(assemblyOutpost, () -> {
+          node(ballistra, with(new SectorComplete(bayOfEmbers)), () -> {});
+          node(volare, with(new OnSector(bayOfEmbers)), () -> {});
         });
 				node(soar, () -> node(wisp, with(new SectorComplete(cavern)), () -> {}));
         node(assemblerArm, with(new NonUnlockable()), () -> {});

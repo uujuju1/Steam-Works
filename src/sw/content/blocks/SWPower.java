@@ -565,6 +565,7 @@ public class SWPower {
 				Items.silicon, 30,
 				Items.graphite, 40
 			));
+			researchCost = mult(requirements, 10);
 			size = 3;
 			rotate = false;
 			

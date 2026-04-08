@@ -236,7 +236,7 @@ public class SWDefense {
 			scaledHealth = 600;
 		}};
 		bloomWallLarge = new Wall("bloom-wall-large") {{
-			requirements(Category.defense, with(SWItems.bloom, 6));
+			requirements(Category.defense, mult(bloomWall.requirements, 4));
 			size = 2;
 			scaledHealth = 600;
 		}};

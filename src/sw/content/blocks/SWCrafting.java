@@ -370,6 +370,7 @@ public class SWCrafting {
 				Items.graphite, 300,
 				Items.silicon, 280
 			));
+			researchCost = mult(requirements, 10);
 			size = 4;
 			itemCapacity = 24;
 			

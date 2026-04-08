@@ -512,6 +512,7 @@ public class SWTurrets {
 				Items.silicon, 100,
 				Items.graphite, 125
 			));
+			researchCost = mult(requirements, 10);
 			size = 3;
 			scaledHealth = 220f;
 			range = 50 * 8f;

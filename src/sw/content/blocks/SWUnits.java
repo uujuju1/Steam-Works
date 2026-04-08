@@ -106,6 +106,13 @@ public class SWUnits {
 				Items.graphite, 85,
 				Items.silicon, 105
 			));
+			researchCost = with(
+				SWItems.verdigris, 500,
+				SWItems.iron, 700,
+				SWItems.bloom, 120,
+				Items.graphite, 850,
+				Items.silicon, 1050
+			);
 
 			size = 3;
 
