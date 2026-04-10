@@ -182,6 +182,8 @@ public class MechanicalAssembler extends Block {
 	public void init() {
 		updateClipRadius(areaSize * tilesize);
 		super.init();
+
+		if (spinConfig != null) spinConfig.init(this);
 	}
 
 	@Override
@@ -224,70 +226,6 @@ public class MechanicalAssembler extends Block {
 	public void setStats() {
 		super.setStats();
 		if (spinConfig != null) spinConfig.addStats(stats);
-
-//		stats.add(Stat.output, table -> {
-//			table.row();
-//
-//			plans.each(plan -> {
-//				table.table(Styles.grayPanel, planTable -> {
-//					if(plan.unit.isBanned()){
-//						planTable.image(Icon.cancel).color(Pal.remove).size(40);
-//						return;
-//					}
-//
-//					if(plan.unit.unlockedNow()) {
-//						planTable.image(plan.unit.uiIcon).size(40).pad(10).left().scaling(Scaling.fit);
-//
-//						planTable.table(info -> {
-//							info.add(plan.unit.localizedName).left();
-//							info.row();
-//							info.add(
-//								Strings.autoFixed(plan.stepTime * plan.steps.size / 60, 1) + " " + Core.bundle.get("unit.seconds")
-//							).color(Color.lightGray);
-//            }).left();
-//
-//						planTable.pane(Styles.smallPane, req -> {
-//							plan.steps.each((requirement, pos) -> {
-//
-//								if (plan.unit instanceof SWUnitType type && type.wrecks > 0) {
-//									Stack icon = new Stack();
-//
-//									if (plan.steps.keys().toSeq().indexOf(requirement) >= type.wrecks) {
-//										icon.add(new Image(type.uiIcon).setScaling(Scaling.fit));
-//									} else {
-//										for(int j = 0; j < plan.steps.keys().toSeq().indexOf(requirement); j++) {
-//											icon.add(new Image(type.wreckRegions[j]).setScaling(Scaling.fit));
-//										}
-//									}
-//
-//									req.add(icon).height(40).pad(10).left().growX();
-//								} else {
-//									req.image(plan.unit.uiIcon).height(40).pad(10).left().scaling(Scaling.fit).growX();
-//								}
-//
-//								for(ItemStack stack : requirement) {
-//									req.stack(
-//										new Table(o -> {
-//											o.left();
-//											o.image(stack.item.uiIcon).size(32f).scaling(Scaling.fit);
-//										}),
-//										new Table(i -> {
-//											i.left().bottom();
-//											i.add(stack.amount > 1000 ? UI.formatAmount(stack.amount) : stack.amount + "").style(Styles.outlineLabel);
-//										})
-//									).pad(5f).right();
-//								}
-//
-//								req.row();
-//              });
-//            }).growX().right().pad(10).height(60);
-//					} else {
-//						planTable.image(Icon.lock).color(Pal.darkerGray).size(40);
-//					}
-//				}).growX().pad(5);
-//				table.row();
-//			});
-//		});
 
 		stats.add(Stat.output, stat -> stat.table(Styles.black6, table -> plans.each(plan -> table.table(Styles.grayPanel, planTable -> {
 			Table resources = SWStat.assemblerPlanRequirements(new Table(), plan, false);

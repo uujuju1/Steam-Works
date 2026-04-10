@@ -1,10 +1,10 @@
 package sw.world.interfaces;
 
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
-import mindustry.world.*;
 import sw.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.meta.*;
@@ -14,12 +14,24 @@ public interface HasSpin {
 	default Building asBuilding() {
 		return (Building) this;
 	}
+
 	/**
 	 * Method indicating if a building can connect to another building. Mutually inclusive.
 	 */
 	static boolean connects(@Nullable HasSpin from, @Nullable HasSpin to) {
 		if (from == null || to == null) return false;
-		return from.connectTo(to) && to.connectTo(from);
+		return from.connectTo(to) && to.connectTo(from) && (to.asBuilding().proximity.contains(to.asBuilding()) || edgeConnects(from, to));
+	}
+	static boolean edgeConnects(HasSpin from, HasSpin to) {
+//		Building fromBuild = from.asBuilding(), toBuild = to.asBuilding();
+//		for (Point2 offset : from.spinConfig().outAllowedEdges[fromBuild.rotation]) {
+//			return to.spinConfig().inAllowedEdges[toBuild.rotation].contains(offset2 ->
+//				fromBuild.tileX() + offset.x == toBuild.tileX() + offset.x &&
+//				fromBuild.tileY() + offset.y == toBuild.tileY() + offset.y
+//			);
+//		}
+		return !from.nextConnections(to).isEmpty() && !to.nextConnections(from).isEmpty();
+//		return true;
 	}
 
 	/**
@@ -31,16 +43,16 @@ public interface HasSpin {
 		boolean hasSpin = spinConfig().hasSpin;
 		boolean sameTeam = other.asBuilding().team == asBuilding().team;
 		boolean isAllowed = !spinConfig().connectors.contains(other.asBuilding().block) ^ spinConfig().connectorAllowList;
-		boolean isEdge = !asBuilding().proximity.contains((Building) other);
-		if (spinConfig().allowedEdges != null) {
-			for(int i : spinConfig().allowedEdges[asBuilding().rotation]) {
-				isEdge |= asBuilding().nearby(
-					Edges.getEdges(asBuilding().block.size)[i].x,
-					Edges.getEdges(asBuilding().block.size)[i].y
-				) == other;
-			}
-		} else isEdge = true;
-		return hasSpin && sameTeam && isEdge && isAllowed;
+//		boolean isEdge = !asBuilding().proximity.contains((Building) other);
+//		if (spinConfig().allowedEdges != null) {
+//			for(int i : spinConfig().allowedEdges[asBuilding().rotation]) {
+//				isEdge |= asBuilding().nearby(
+//					Edges.getEdges(asBuilding().block.size)[i].x,
+//					Edges.getEdges(asBuilding().block.size)[i].y
+//				) == other;
+//			}
+//		} else isEdge = true;
+		return hasSpin && sameTeam && isAllowed;
 	}
 
 	default boolean consumesSpin() {
@@ -72,6 +84,12 @@ public interface HasSpin {
 		return spin().graph;
 	}
 
+	default Seq<Point2> getConnectingInnerEdges() {
+		return spinConfig().inAllowedEdges[asBuilding().rotation];
+	}
+	default Seq<Point2> getConnectingOuterEdges() {
+		return spinConfig().outAllowedEdges[asBuilding().rotation];
+	}
 	/**
 	 * @return The force that this build applies on the system.
 	 */
@@ -124,6 +142,17 @@ public interface HasSpin {
 			     .select(b -> b instanceof HasSpin a && connects(this, a.getSpinGraphDestination(this)))
 			     .map(a -> ((HasSpin) a)
 				   .getSpinGraphDestination(this));
+	}
+
+	default Seq<Point2> nextConnections(HasSpin to) {
+		Seq<Point2> out = new Seq<>();
+		for (Point2 offset : spinConfig().outAllowedEdges[asBuilding().rotation]) {
+			if (to.spinConfig().inAllowedEdges[to.asBuilding().rotation].contains(offset2 ->
+				asBuilding().tileX() + offset.x == to.asBuilding().tileX() + offset2.x &&
+				asBuilding().tileY() + offset.y == to.asBuilding().tileY() + offset2.y
+			)) out.add(offset);
+		}
+		return out;
 	}
 
 	/**

@@ -174,6 +174,8 @@ public class RangedDrill extends Block {
 	public void init(){
 		updateClipRadius((range + 2) * tilesize);
 		super.init();
+
+		if (spinConfig != null) spinConfig.init(this);
 	}
 	
 	@Override

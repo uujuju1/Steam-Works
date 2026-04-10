@@ -53,6 +53,12 @@ public class BeltConveyor extends Block {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		if (spinConfig != null) spinConfig.init(this);
+	}
+
+	@Override
 	public void load() {
 		super.load();
 		drawer.load(this);

@@ -63,6 +63,12 @@ public class SWGenericCrafter extends AttributeCrafter {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		if (spinConfig != null) spinConfig.init(this);
+	}
+
+	@Override
 	public void getDependencies(Cons<UnlockableContent> cons){
 		//just requires items
 		for(ItemStack stack : requirements){

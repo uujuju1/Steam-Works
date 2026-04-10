@@ -44,6 +44,12 @@ public class SpinConfig {
 	public Seq<Block> connectors = new Seq<>();
 	public boolean connectorAllowList = false;
 
+	/**
+	 * Set internally.
+	 * <p>Edges sequence for allowed connections.
+	 */
+	public Seq<Point2>[] outAllowedEdges, inAllowedEdges;
+
 	public void addBars(Block block) {
 		if (!hasSpin) return;
 		block.addBar("sw-spin", building -> {
@@ -70,6 +76,37 @@ public class SpinConfig {
 			} else {
 				for(Point2 i : edges) {
 					Draw.rect("sw-icon-spin-edge", (x + i.x) * Vars.tilesize, (y + i.y) * Vars.tilesize, 4, 4, 0);
+				}
+			}
+		}
+	}
+
+	public void init(Block block) {
+		if (allowedEdges == null) {
+			outAllowedEdges = new Seq[]{
+				Seq.with(block.getEdges()),
+				Seq.with(block.getEdges()),
+				Seq.with(block.getEdges()),
+				Seq.with(block.getEdges())
+			};
+			inAllowedEdges = new Seq[]{
+				Seq.with(block.getInsideEdges()),
+				Seq.with(block.getInsideEdges()),
+				Seq.with(block.getInsideEdges()),
+				Seq.with(block.getInsideEdges())
+			};
+		} else {
+			Point2[] outEdges = block.getEdges();
+			Point2[] inEdges = block.getInsideEdges();
+			outAllowedEdges = new Seq[]{Seq.with(), Seq.with(), Seq.with(), Seq.with()};
+			inAllowedEdges = new Seq[]{Seq.with(), Seq.with(), Seq.with(), Seq.with()};
+
+			for (int rot = 0; rot < 4; rot++) {
+				Seq<Point2> out = outAllowedEdges[rot];
+				Seq<Point2> in = inAllowedEdges[rot];
+				for (int i : allowedEdges[Math.min(rot, allowedEdges.length - 1)]) {
+					out.add(outEdges[i]);
+					in.add(inEdges[i]);
 				}
 			}
 		}

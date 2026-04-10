@@ -25,6 +25,12 @@ public class GenericSpinBlock extends Block {
 	}
 
 	@Override
+	public void init() {
+		super.init();
+		if (spinConfig != null) spinConfig.init(this);
+	}
+
+	@Override
 	public void setBars() {
 		super.setBars();
 		if (spinConfig != null) spinConfig.addBars(this);

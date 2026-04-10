@@ -69,6 +69,12 @@ public class SWLightBlock extends Block {
 	public TextureRegion[] icons(){
 		return drawer.finalIcons(this);
 	}
+
+	@Override
+	public void init() {
+		super.init();
+		if (spinConfig != null) spinConfig.init(this);
+	}
 	
 	@Override
 	public void load() {
