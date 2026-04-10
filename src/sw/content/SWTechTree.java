@@ -72,9 +72,7 @@ public class SWTechTree {
           node(mechanicalConduitRouter);
           node(liquidDistributor, () -> node(liquidBasin));
         });
-        node(compactContainer, () -> {
-          node(coreMole, with(new OnSector(abandonedMaze)), () -> {});
-        });
+        node(compactContainer);
       });
       // endregion
       //region power
