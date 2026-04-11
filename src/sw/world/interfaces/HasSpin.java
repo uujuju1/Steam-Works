@@ -127,14 +127,14 @@ public interface HasSpin {
 		return spin() != null ? spinGraph().speed / getRatio() : 0f;
 	}
 	/**
-	 * Returns the speed that this block should try to reach.
+	 * @return The speed that this block should try to reach.
 	 */
 	default float getTargetSpeed() {
 		return 0;
 	}
 
 	/**
-	 * Returns a seq with the buildings that this build can connect to.
+	 * @return A seq with the buildings that this build can connect to.
 	 */
 	default Seq<HasSpin> nextBuilds() {
 		if (spinConfig().disconnected) return Seq.with();
@@ -144,13 +144,28 @@ public interface HasSpin {
 				   .getSpinGraphDestination(this));
 	}
 
+	/**
+	 * @return A seq with the connections that this build has to the specified build.
+	 */
 	default Seq<Point2> nextConnections(HasSpin to) {
 		Seq<Point2> out = new Seq<>();
-		for (Point2 offset : spinConfig().outAllowedEdges[asBuilding().rotation]) {
-			if (to.spinConfig().inAllowedEdges[to.asBuilding().rotation].contains(offset2 ->
-				asBuilding().tileX() + offset.x == to.asBuilding().tileX() + offset2.x &&
-				asBuilding().tileY() + offset.y == to.asBuilding().tileY() + offset2.y
-			)) out.add(offset);
+
+		Seq<Point2> outer = getConnectingOuterEdges(), inner = getConnectingInnerEdges();
+		Seq<Point2> outerTo = to.getConnectingOuterEdges(), innerTo = to.getConnectingInnerEdges();
+
+		for (int i = 0; i < outer.size; i++) {
+			Point2 offset = outer.get(i), offsetInner = inner.get(i);
+
+			for(int j = 0; j < outerTo.size; j++) {
+				Point2 offsetTo = outerTo.get(j), offsetToInner = innerTo.get(j);
+
+				if (
+					asBuilding().tileX() + offset.x == to.asBuilding().tileX() + offsetToInner.x &&
+					asBuilding().tileY() + offset.y == to.asBuilding().tileY() + offsetToInner.y &&
+					asBuilding().tileX() + offsetInner.x == to.asBuilding().tileX() + offsetTo.x &&
+					asBuilding().tileY() + offsetInner.y == to.asBuilding().tileY() + offsetTo.y
+				) out.add(offset);
+			}
 		}
 		return out;
 	}
