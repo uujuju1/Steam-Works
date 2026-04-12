@@ -23,6 +23,8 @@ public class MusicPlayer extends SoundControl {
 
 	public MusicPlayer() {
 		musicInterval = 10 * Time.toMinutes;
+
+		setupFilters();
 	}
 
 	public void musicNotification(Music music){
@@ -56,13 +58,11 @@ public class MusicPlayer extends SoundControl {
 	public void init() {
 		Events.on(EventType.ClientLoadEvent.class, e -> {
 			if (!Vars.headless && Core.settings.getBool("sw-replace-music", true)) {
+				control.sound.bossMusic.clear();
+				control.sound.darkMusic.clear();
+				control.sound.ambientMusic.clear();
 				Vars.control.sound = this;
 				reload();
-			}
-		});
-		Events.on(EventType.SectorLaunchEvent.class, e -> {
-			if (!Vars.headless && e.sector.preset instanceof PositionSectorPreset modPreset && modPreset.landMusic != null) {
-				Time.run(modPreset.core.landDuration, () -> playOnce(modPreset.landMusic));
 			}
 		});
 	}
@@ -77,14 +77,27 @@ public class MusicPlayer extends SoundControl {
 	@Override
 	protected void reload() {
 		super.reload();
-		casual.add(SWMusics.fog, SWMusics.create, SWMusics.complex);
-		titles.put(SWMusics.fog, new String[]{"Fog", "12Three7"});
-		titles.put(SWMusics.create, new String[]{"Create", "12Three7"});
-		titles.put(SWMusics.complex, new String[]{"Complex", "12Three7"});
+		casual.addAll(
+			SWMusics.asTerras,
+			SWMusics.pendahuluan,
+			SWMusics.terlahirKembali,
+			SWMusics.pendaratanPertama,
+			SWMusics.passadoEsquecido
+		);
+//		titles.put(SWMusics.fog, new String[]{"Fog", "12Three7"});
+//		titles.put(SWMusics.create, new String[]{"Create", "12Three7"});
+//		titles.put(SWMusics.complex, new String[]{"Complex", "12Three7"});
 
-		titles.put(SWMusics.dust, new String[]{"Dust", "Liz"});
-		titles.put(SWMusics.scorchedBay, new String[]{"Scorched Bay", "Liz"});
-		titles.put(SWMusics.mountainWisp, new String[]{"Mountain Wisp", "Liz"});
+//		titles.put(SWMusics.dust, new String[]{"Dust", "Liz"});
+//		titles.put(SWMusics.scorchedBay, new String[]{"Scorched Bay", "Liz"});
+//		titles.put(SWMusics.mountainWisp, new String[]{"Mountain Wisp", "Liz"});
+
+
+		Events.on(EventType.SectorLaunchEvent.class, e -> {
+			if (!Vars.headless && e.sector.preset instanceof PositionSectorPreset modPreset && modPreset.landMusic != null) {
+				Time.run(modPreset.core.landDuration, () -> playOnce(modPreset.landMusic));
+			}
+		});
 	}
 
 	@Override
@@ -97,6 +110,12 @@ public class MusicPlayer extends SoundControl {
 				lastPlayed = Time.millis();
 				playOnce(casual.random(lastRandomPlayed));
 			}
+		}
+
+		if (current != null) {
+			current.setVolume(Core.settings.getInt("musicvol", 100) / 100f);
+
+			if (Core.settings.getInt("musicvol", 100) == 0) stop();
 		}
 
 		updateLoops();

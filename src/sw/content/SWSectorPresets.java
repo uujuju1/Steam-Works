@@ -21,7 +21,7 @@ public class SWSectorPresets {
 			width = height = 200;
 			icon = () -> Icon.terrain;
 			alwaysUnlocked = true;
-			landMusic = SWMusics.mountainWisp;
+			landMusic = SWMusics.chamadoDoVazio;
 
 			rules = r -> {
 				r.winWave = 5;
@@ -41,7 +41,7 @@ public class SWSectorPresets {
 			y = 100;
 			width = height = 200;
 			icon = () -> Icon.units;
-			landMusic = SWMusics.dust;
+			landMusic = SWMusics.asTerras;
 
 			rules = r -> {
 				r.weather.add(new Weather.WeatherEntry(
@@ -68,6 +68,8 @@ public class SWSectorPresets {
 			width = height = 300;
 			icon = () -> Icon.waves;
 
+			landMusic = SWMusics.motorPerpetuo;
+
 			rules = r -> {
 				r.winWave = 20;
 				r.weather.add(new Weather.WeatherEntry(
@@ -91,6 +93,8 @@ public class SWSectorPresets {
 			y = 300;
 			width = height = 200;
 			icon = () -> Icon.terrain;
+
+			landMusic = SWMusics.passadoEsquecido;
 			
 			rules = r -> {
 				r.waves = false;
@@ -103,7 +107,7 @@ public class SWSectorPresets {
 			y = 200;
 			width = height = 300;
 			icon = () -> Icon.modeSurvival;
-			landMusic = SWMusics.scorchedBay;
+			landMusic = SWMusics.passadoEsquecido;
 			
 			rules = r -> {
 				r.cleanupDeadTeams = false;
@@ -118,6 +122,8 @@ public class SWSectorPresets {
 			width = 600f;
 			height = 300f;
 			icon = () -> Icon.modeAttack;
+
+			landMusic = SWMusics.pendaratanPertama;
 
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
