@@ -8,6 +8,7 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.serialization.*;
 import mindustry.*;
 import mindustry.audio.*;
 import mindustry.game.*;
@@ -84,14 +85,18 @@ public class MusicPlayer extends SoundControl {
 			SWMusics.pendaratanPertama,
 			SWMusics.passadoEsquecido
 		);
-//		titles.put(SWMusics.fog, new String[]{"Fog", "12Three7"});
-//		titles.put(SWMusics.create, new String[]{"Create", "12Three7"});
-//		titles.put(SWMusics.complex, new String[]{"Complex", "12Three7"});
 
-//		titles.put(SWMusics.dust, new String[]{"Dust", "Liz"});
-//		titles.put(SWMusics.scorchedBay, new String[]{"Scorched Bay", "Liz"});
-//		titles.put(SWMusics.mountainWisp, new String[]{"Mountain Wisp", "Liz"});
+		JsonValue r = new JsonReader().parse(Vars.tree.get("music/names.json")).get("titles");
+		for(JsonValue value = r.child; value != null; value = value.next){
+			try {
+				Music music = (Music) SWMusics.class.getField(Strings.kebabToCamel(value.getString("music"))).get(null);
+				String name = value.getString("name"), author = value.getString("author");
 
+				titles.put(music, new String[]{name, author});
+			} catch (NoSuchFieldException | IllegalAccessException e) {
+				Log.err("Failed to parse music title for @. Does it exist?", value.get("music"));
+			}
+		}
 
 		Events.on(EventType.SectorLaunchEvent.class, e -> {
 			if (!Vars.headless && e.sector.preset instanceof PositionSectorPreset modPreset && modPreset.landMusic != null) {
