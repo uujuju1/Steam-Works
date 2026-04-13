@@ -23,6 +23,8 @@ import sw.world.interfaces.*;
 
 public class AxleBridge extends AxleBlock {
 	private static int buildCounter;
+	private static AxleBridgeBuild lastBuild;
+	private static float maxRange = -1;
 
 	public float range = 40f;
 
@@ -158,7 +160,7 @@ public class AxleBridge extends AxleBlock {
 		}
 	}
 
-	public int findBridges(Tile from, Team team, Boolf<AxleBridgeBuild> filter, Cons<AxleBridgeBuild> cons) {
+	public int findBridges(Tile from, Team team, float range, Boolf<AxleBridgeBuild> filter, Cons<AxleBridgeBuild> cons) {
 		buildCounter = 0;
 		Vars.indexer.eachBlock(team, from.worldx(), from.worldy(), range, b -> b instanceof AxleBridgeBuild build && filter.get(build), b -> {
 			buildCounter++;
@@ -182,6 +184,8 @@ public class AxleBridge extends AxleBlock {
 	public void init() {
 		super.init();
 		updateClipRadius(range + 4f);
+
+		maxRange = Math.max(maxRange, range);
 	}
 
 	@Override
@@ -250,53 +254,59 @@ public class AxleBridge extends AxleBlock {
 		public void drawConfigure() {
 			Drawf.select(x, y, size * 4f + 1, Pal.accent);
 
-			int links = findBridges(tile, team, b -> b.link == pos() || link == b.pos(), b -> {
+			int links = findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), b -> {
 				if (link == b.pos()) Drawf.select(b.x, b.y, b.block.size * 4 + 2, Pal.place);
 			});
 
 			if (links <= maxConnections) {
-				findBridges(tile, team, b -> b.link != pos() && link != b.pos() && b != this, b -> Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove));
+				findBridges(tile, team, maxRange, b -> b.link != pos() && link != b.pos() && b != this && b.dst(this) < ((AxleBridge) b.block).range, b -> {
+					Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove);
+				});
 			}
 		}
 
 		@Override
 		public void drawSelect() {
-			findBridges(tile, team, b -> b.link == pos(), b -> {
+			findBridges(tile, team, maxRange, b -> b.link == pos(), b -> {
+				float rad = ((AxleBridge) b.block).radius;
+				float angle = b.angleTo(this);
 				Lines.stroke(3f, Pal.gray);
-				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
+				Lines.circle(b.x, b.y, rad);
 				Lines.line(
-					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
-					x - Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
+					b.x + Angles.trnsx(angle, rad),
+					b.y + Angles.trnsy(angle, rad),
+					x - Angles.trnsx(angle, radius),
+					y - Angles.trnsy(angle, radius)
 				);
 				Lines.stroke(1f, Pal.accent);
-				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
+				Lines.circle(b.x, b.y, rad);
 				Lines.line(
-					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
-					x - Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
+					b.x + Angles.trnsx(angle, rad),
+					b.y + Angles.trnsy(angle, rad),
+					x - Angles.trnsx(angle, radius),
+					y - Angles.trnsy(angle, radius)
 				);
 			});
 
 			if (getLink() != null) {
 				var b = getLink();
+				float rad = ((AxleBridge) b.block).radius;
+				float angle = b.angleTo(this);
 				Lines.stroke(3f, Pal.gray);
-				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
+				Lines.circle(b.x, b.y, rad);
 				Lines.line(
-					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
-					x - Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
+					b.x + Angles.trnsx(angle, rad),
+					b.y + Angles.trnsy(angle, rad),
+					x - Angles.trnsx(angle, radius),
+					y - Angles.trnsy(angle, radius)
 				);
 				Lines.stroke(1f, Pal.place);
-				Lines.circle(b.x, b.y, ((AxleBridge) b.block).radius);
+				Lines.circle(b.x, b.y, rad);
 				Lines.line(
-					b.x + Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					b.y + Angles.trnsy(b.angleTo(this), b.block.size * 2f),
-					x - Angles.trnsx(b.angleTo(this), b.block.size * 2f),
-					y - Angles.trnsy(b.angleTo(this), b.block.size * 2f)
+					b.x + Angles.trnsx(angle, rad),
+					b.y + Angles.trnsy(angle, rad),
+					x - Angles.trnsx(angle, radius),
+					y - Angles.trnsy(angle, radius)
 				);
 			}
 
@@ -319,7 +329,7 @@ public class AxleBridge extends AxleBlock {
 		@Override
 		public Seq<HasSpin> nextBuilds() {
 			var seq = super.nextBuilds();
-			findBridges(tile, team, b -> b.link == pos() || link == b.pos(), seq::add);
+			findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), seq::add);
 			return seq;
 		}
 
@@ -381,7 +391,7 @@ public class AxleBridge extends AxleBlock {
 
 		@Override
 		public void updateTile() {
-			if (getLink() != null && getLink().spinGraph() != spinGraph()) spinGraph().mergeFlood(getLink());
+//			if (getLink() != null && getLink().spinGraph() != spinGraph()) spinGraph().mergeFlood(getLink());
 		}
 
 		@Override
