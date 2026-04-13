@@ -672,7 +672,6 @@ public class SWPower {
 			size = 2;
 
 			highEdges = new int[]{1, 2};
-			lowEdges = new int[]{0, 3};
 			spinConfig = new SpinConfig() {{
 				resistance = 3f/600f;
 				allowedEdges = new int[][]{

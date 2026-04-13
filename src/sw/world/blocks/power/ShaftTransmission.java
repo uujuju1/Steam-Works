@@ -3,6 +3,7 @@ package sw.world.blocks.power;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.entities.units.*;
@@ -14,7 +15,7 @@ public class ShaftTransmission extends AxleBlock {
 
 	// TODO make a way to generate the lowEdges array
 	public int[] highEdges;
-	@Deprecated public int[] lowEdges;
+	public int[] lowEdges;
 
 	public ShaftTransmission(String name) {
 		super(name);
@@ -37,32 +38,46 @@ public class ShaftTransmission extends AxleBlock {
 		drawer.drawPlan(this, plan, list);
 	}
 
-	public class ShaftTransmissionBuild extends AxleBlockBuild {
-		public boolean isHigh(HasSpin other) {
-			for(int i : highEdges) {
-				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
-				if (nearby(edge.x, edge.y) == other) {
-					if (other.spinConfig().allowedEdges == null) return true;
-					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
-						if (
-							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) return true;
+	@Override
+	public void init() {
+		super.init();
+
+		if (spinConfig != null && highEdges != null) {
+			Seq<Point2> edges = spinConfig.outAllowedEdges[0];
+
+			lowEdges = new int[edges.size - highEdges.length];
+
+			int k = 0;
+			for (int i = 0; i < edges.size; i++) {
+				boolean isHigh = false;
+				for (int j : highEdges) {
+					if (j == i) {
+						isHigh = true;
+						break;
 					}
 				}
+				if (!isHigh) {
+					lowEdges[k] = i;
+					k++;
+				}
+			}
+		}
+	}
+
+	public class ShaftTransmissionBuild extends AxleBlockBuild {
+		public boolean isHigh(HasSpin other) {
+			Seq<Point2> edges = getConnectingOuterEdges();
+			Seq<Point2> connectingEdges = nextConnections(other);
+			for(int i : highEdges) {
+				if (connectingEdges.contains(edges.get(i))) return true;
 			}
 			return false;
 		}
 		public boolean isLow(HasSpin other) {
+			Seq<Point2> edges = getConnectingOuterEdges();
+			Seq<Point2> connectingEdges = nextConnections(other);
 			for(int i : lowEdges) {
-				Point2 edge = getEdges()[spinConfig.allowedEdges[rotation][i]];
-				if (nearby(edge.x, edge.y) == other) {
-					if (other.spinConfig().allowedEdges == null) return true;
-					for(int otherI : other.spinConfig().allowedEdges[other.asBuilding().rotation]) {
-						if (
-							other.asBuilding().tile.nearby(Edges.getInsideEdges(other.asBuilding().block.size)[otherI]) == tile.nearby(edge)
-						) return true;
-					}
-				}
+				if (connectingEdges.contains(edges.get(i))) return true;
 			}
 			return false;
 		}
