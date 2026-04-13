@@ -97,7 +97,7 @@ public class SWPayloadLoader extends PayloadBlock {
 
 		@Override
 		public boolean acceptItem(Building source, Item item) {
-			return items.total() < itemCapacity && !(source instanceof SWPayloadLoaderBuild);
+			return items.get(item) < itemCapacity && (!reverse || (payload != null && source == payload.build));
 		}
 
 		@Override
