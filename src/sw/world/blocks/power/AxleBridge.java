@@ -253,12 +253,10 @@ public class AxleBridge extends AxleBlock {
 		public void drawConfigure() {
 			Drawf.select(x, y, size * 4f + 1, Pal.accent);
 
-			int links = findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), b -> {
-				if (link == b.pos()) Drawf.select(b.x, b.y, b.block.size * 4 + 2, Pal.place);
-			});
+			if (getLink() != null) Drawf.select(getLink().x, getLink().y, getLink().block.size * 4f + 2f, Pal.place);
 
-			if (links <= maxConnections) {
-				findBridges(tile, team, maxRange, b -> b.link != pos() && link != b.pos() && b != this && b.dst(this) < ((AxleBridge) b.block).range, b -> {
+			if (links() < maxConnections) {
+				findBridges(tile, team, range, b -> b.spinGraph() != spinGraph() && b.links() < ((AxleBridge) b.block).maxConnections, b -> {
 					Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove);
 				});
 			}
@@ -309,7 +307,7 @@ public class AxleBridge extends AxleBlock {
 				);
 			}
 
-//			Drawf.dashCircle(x, y, range, Pal.accent);
+			Drawf.dashCircle(x, y, range, Pal.accent);
 		}
 
 		public AxleBridgeBuild getLink() {
@@ -332,13 +330,6 @@ public class AxleBridge extends AxleBlock {
 		@Override
 		public Seq<HasSpin> nextBuilds() {
 			var seq = super.nextBuilds();
-
-//			new IntSeq(incoming).each(i -> {
-//				Building next = Vars.world.build(i);
-//
-//				if (!(next instanceof AxleBridgeBuild build) || !build.isValid() || build.link != pos()) incoming.removeValue(i);
-//			});
-
 			incoming.each(i -> {
 				Building next = Vars.world.build(i);
 
@@ -346,52 +337,11 @@ public class AxleBridge extends AxleBlock {
 			});
 			if (getLink() != null) seq.add(getLink());
 
-//			findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), seq::add);
 			return seq;
 		}
 
 		@Override
 		public boolean onConfigureBuildTapped(Building other) {
-//			AxleBridgeBuild link = getLink();
-//			if (this != other) {
-//				if (
-//					other != null &&
-//					other.team == team &&
-//					dst(other) <= range &&
-//					other instanceof AxleBridgeBuild bridge &&
-//					(
-//						spinGraph().builds.count(b -> b instanceof AxleBridgeBuild linked && (linked.link == pos() || (link != null && link.pos() == linked.pos()))) <= maxConnections ||
-//						bridge.getLink() == this
-//					)
-//				) {
-//					if (bridge.link == pos()) {
-//						configure(bridge.pos());
-//						other.configure(-1);
-//						return false;
-//					}
-//					if (other != getLink()) {
-//						configure(other.pos());
-//						if (link != null) {
-//							spinGraph().removeBuild(link);
-//							new SpinGraph().mergeFlood(link);
-//						}
-//					} else {
-//						configure(-1);
-//						spinGraph().removeBuild(link);
-//						new SpinGraph().mergeFlood(link);
-//					}
-//					spinGraph().mergeFlood(this);
-//					return false;
-//				}
-//				return true;
-//			} else {
-//				configure(-1);
-//				if (link != null) {
-//					spinGraph().removeBuild(link);
-//					new SpinGraph().mergeFlood(link);
-//				}
-//			}
-//			return false;
 			AxleBridgeBuild link = getLink();
 
 			if (
@@ -422,14 +372,16 @@ public class AxleBridge extends AxleBlock {
 				return true;
 			}
 			// Case neither of the above, link, reverse if needed and possibe
-			if (((AxleBridge) build.block).radius <= radius) {
-				if (link != null) link.incoming.removeValue(pos());
-				configure(build.pos());
-				build.incoming.add(pos());
-			} else if (build.getLink() == null) {
-				build.configure(pos());
-				incoming.add(build.pos());
-			}
+			if (build.links() < ((AxleBridge) build.block).maxConnections && links() < maxConnections) {
+				if (((AxleBridge) build.block).radius <= radius) {
+					if (link != null) link.incoming.removeValue(pos());
+					configure(build.pos());
+					build.incoming.add(pos());
+				} else if (build.getLink() == null) {
+					build.configure(pos());
+					incoming.add(build.pos());
+				}
+			} else return true;
 
 			new SpinGraph().mergeFlood(this);
 
