@@ -23,7 +23,8 @@ import sw.world.interfaces.*;
 
 public class AxleBridge extends AxleBlock {
 	private static int buildCounter;
-	private static AxleBridgeBuild lastBuild;
+	// TODO make it autoconnect like normal bridges maybe
+//	private static AxleBridgeBuild lastBuild;
 	private static float maxRange = -1;
 
 	public float range = 40f;
@@ -256,7 +257,7 @@ public class AxleBridge extends AxleBlock {
 			if (getLink() != null) Drawf.select(getLink().x, getLink().y, getLink().block.size * 4f + 2f, Pal.place);
 
 			if (links() < maxConnections) {
-				findBridges(tile, team, range, b -> b.spinGraph() != spinGraph() && b.links() < ((AxleBridge) b.block).maxConnections, b -> {
+				findBridges(tile, team, range, b -> link != b.pos() && b.link != pos() && b.links() < ((AxleBridge) b.block).maxConnections, b -> {
 					Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove);
 				});
 			}
