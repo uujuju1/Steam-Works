@@ -28,7 +28,7 @@ public class AxleBridge extends AxleBlock {
 
 	public float range = 40f;
 
-	public int maxConnections = 3;
+	public int maxConnections = 4;
 
 	public float radius = 3f;
 	public float spinScl = 1/4f;
@@ -200,12 +200,10 @@ public class AxleBridge extends AxleBlock {
 
 		addBar("connections", entity -> {
 			AxleBridgeBuild build = entity.as();
-//			int links = findBridges(build.tile, build.team, b -> b.link == build.pos() || build.link == b.pos(), b -> {});
-			Floatp links = () -> build.spinGraph().builds.count(b -> b instanceof AxleBridgeBuild bridge && (bridge.link == build.pos() || build.link == bridge.pos()));
 			return new Bar(
-				() -> Core.bundle.format("bar.powerlines", links.get(), maxConnections + 1),
+				() -> Core.bundle.format("bar.powerlines", build.links(), maxConnections),
 				() -> Pal.accent,
-				() -> links.get() / (maxConnections + 1f)
+				() -> (float) build.links() / maxConnections
 			);
 		});
 	}
@@ -220,6 +218,7 @@ public class AxleBridge extends AxleBlock {
 
 	public class AxleBridgeBuild extends AxleBlockBuild {
 		public int link = -1;
+		public IntSeq incoming = new IntSeq();
 
 		@Override public Point2 config() {
 			return Point2.unpack(link).sub(tileX(), tileY());
@@ -310,7 +309,7 @@ public class AxleBridge extends AxleBlock {
 				);
 			}
 
-			Drawf.dashCircle(x, y, range, Pal.accent);
+//			Drawf.dashCircle(x, y, range, Pal.accent);
 		}
 
 		public AxleBridgeBuild getLink() {
@@ -326,54 +325,114 @@ public class AxleBridge extends AxleBlock {
 			return other;
 		}
 
+		public int links() {
+			return incoming.size + Mathf.num(getLink() != null);
+		}
+
 		@Override
 		public Seq<HasSpin> nextBuilds() {
 			var seq = super.nextBuilds();
-			findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), seq::add);
+
+//			new IntSeq(incoming).each(i -> {
+//				Building next = Vars.world.build(i);
+//
+//				if (!(next instanceof AxleBridgeBuild build) || !build.isValid() || build.link != pos()) incoming.removeValue(i);
+//			});
+
+			incoming.each(i -> {
+				Building next = Vars.world.build(i);
+
+				if (next instanceof AxleBridgeBuild build && build.isValid() && build.link == pos()) seq.add((HasSpin) Vars.world.build(i));
+			});
+			if (getLink() != null) seq.add(getLink());
+
+//			findBridges(tile, team, maxRange, b -> b.link == pos() || link == b.pos(), seq::add);
 			return seq;
 		}
 
 		@Override
 		public boolean onConfigureBuildTapped(Building other) {
+//			AxleBridgeBuild link = getLink();
+//			if (this != other) {
+//				if (
+//					other != null &&
+//					other.team == team &&
+//					dst(other) <= range &&
+//					other instanceof AxleBridgeBuild bridge &&
+//					(
+//						spinGraph().builds.count(b -> b instanceof AxleBridgeBuild linked && (linked.link == pos() || (link != null && link.pos() == linked.pos()))) <= maxConnections ||
+//						bridge.getLink() == this
+//					)
+//				) {
+//					if (bridge.link == pos()) {
+//						configure(bridge.pos());
+//						other.configure(-1);
+//						return false;
+//					}
+//					if (other != getLink()) {
+//						configure(other.pos());
+//						if (link != null) {
+//							spinGraph().removeBuild(link);
+//							new SpinGraph().mergeFlood(link);
+//						}
+//					} else {
+//						configure(-1);
+//						spinGraph().removeBuild(link);
+//						new SpinGraph().mergeFlood(link);
+//					}
+//					spinGraph().mergeFlood(this);
+//					return false;
+//				}
+//				return true;
+//			} else {
+//				configure(-1);
+//				if (link != null) {
+//					spinGraph().removeBuild(link);
+//					new SpinGraph().mergeFlood(link);
+//				}
+//			}
+//			return false;
 			AxleBridgeBuild link = getLink();
-			if (this != other) {
-				if (
-					other != null &&
-					other.team == team &&
-					dst(other) <= range &&
-					other instanceof AxleBridgeBuild bridge &&
-					(
-						spinGraph().builds.count(b -> b instanceof AxleBridgeBuild linked && (linked.link == pos() || (link != null && link.pos() == linked.pos()))) <= maxConnections ||
-						bridge.getLink() == this
-					)
-				) {
-					if (bridge.link == pos()) {
-						configure(bridge.pos());
-						other.configure(-1);
-						return false;
-					}
-					if (other != getLink()) {
-						configure(other.pos());
-						if (link != null) {
-							spinGraph().removeBuild(link);
-							new SpinGraph().mergeFlood(link);
-						}
-					} else {
-						configure(-1);
-						spinGraph().removeBuild(link);
-						new SpinGraph().mergeFlood(link);
-					}
-					spinGraph().mergeFlood(this);
-					return false;
-				}
-				return true;
-			} else {
+
+			if (
+				!(other instanceof AxleBridgeBuild build) ||
+				!other.isValid() ||
+				other.team != team ||
+				spin == null
+			) return true;
+
+			// Case other is the link, deselect
+			if (link == other) {
 				configure(-1);
-				if (link != null) {
-					spinGraph().removeBuild(link);
-					new SpinGraph().mergeFlood(link);
-				}
+				link.incoming.removeValue(pos());
+
+				new SpinGraph().mergeFlood(this);
+
+				return false;
 			}
+			// Case other's link is this, reverse if possible
+			if (build.getLink() == this && ((AxleBridge) build.block).radius <= radius) {
+				configure(build.pos());
+				build.configure(-1);
+				incoming.removeValue(build.pos());
+				build.incoming.add(pos());
+
+				new SpinGraph().mergeFlood(this);
+
+				return true;
+			}
+			// Case neither of the above, link, reverse if needed and possibe
+			if (((AxleBridge) build.block).radius <= radius) {
+				if (link != null) link.incoming.removeValue(pos());
+				configure(build.pos());
+				build.incoming.add(pos());
+			} else if (build.getLink() == null) {
+				build.configure(pos());
+				incoming.add(build.pos());
+			}
+
+			new SpinGraph().mergeFlood(this);
+
 			return false;
 		}
 		
@@ -387,11 +446,37 @@ public class AxleBridge extends AxleBlock {
 			super.read(read, revision);
 
 			link = read.i();
+
+			if (revision == 1) {
+				byte size = read.b();
+
+				for (int i = 0; i < size; i++) {
+					incoming.add(read.i());
+				}
+			}
 		}
 
 		@Override
-		public void updateTile() {
-//			if (getLink() != null && getLink().spinGraph() != spinGraph()) spinGraph().mergeFlood(getLink());
+		public void update() {
+			super.update();
+
+			// changes
+			if (getLink() != null) getLink().incoming.addUnique(pos());
+
+			new IntSeq(incoming).each(i -> {
+				Building next = Vars.world.build(i);
+
+				if (!(next instanceof AxleBridgeBuild build) || !build.isValid() || build.link != pos()) incoming.removeValue(i);
+			});
+			incoming.each(i -> {
+				if (Vars.world.build(i) instanceof AxleBridgeBuild build && build.spinGraph() != spinGraph()) new SpinGraph().mergeFlood(this);
+			});
+
+			if (getLink() != null && getLink().spinGraph() != spinGraph()) new SpinGraph().mergeFlood(this);
+		}
+
+		@Override public byte version() {
+			return 1;
 		}
 
 		@Override
@@ -399,6 +484,9 @@ public class AxleBridge extends AxleBlock {
 			super.write(write);
 
 			write.i(link);
+
+			write.b(incoming.size);
+			incoming.each(write::i);
 		}
 	}
 }
