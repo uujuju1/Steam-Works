@@ -3,8 +3,8 @@ package sw.ui.dialog;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.scene.*;
+import arc.input.*;
+import arc.math.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -25,25 +25,24 @@ import mindustry.ui.fragments.MenuFragment.*;
 import sw.*;
 import sw.content.*;
 import sw.gen.*;
-import sw.graphics.*;
-import sw.graphics.SWShaders.*;
 import sw.type.*;
-import sw.ui.*;
+import sw.ui.elements.*;
 
 import java.util.*;
 
-import static arc.Core.*;
 import static mindustry.Vars.*;
-import static mindustry.ui.dialogs.PlanetDialog.*;
+import static sw.ui.elements.CampaignView.*;
 
 public class SectorLaunchDialog extends BaseDialog {
 	Planet planet;
 	public static Planet lastPlanet;
 	public static float minX, minY, maxX, maxY;
+
+	private static boolean dragging;
 	
 	PositionSectorPreset currentSector;
 	
-	public SectorView view;
+	public CampaignView view;
 	public Table sectorTable;
 	
 	public SectorLaunchDialog() {
@@ -58,26 +57,63 @@ public class SectorLaunchDialog extends BaseDialog {
 		
 		cont.clear();
 		cont.stack(
-			new Table(t -> t.add(view = new SectorView())),
+			new Table(t -> t.add(view = new CampaignView())),
 			new Table(t -> t.add(titleTable).growX()).top(),
-//			new Table(t -> t.add(buttons).growX()).bottom()
 			buttons
 		).grow();
 		
 		shown(() -> {
-			view.offsetX = view.offsetY = 0;
-			view.rebuild(SWPlanets.wendi);
-			if (currentSector == null) {
-				view.move((minX - maxX) / 2f, (minY - maxY) / 2f);
-			} else {
-				view.moveTo(currentSector);
+			view.build(SWPlanets.wendi);
+//			view.offsetX = view.offsetY = 0;
+//			view.rebuild(SWPlanets.wendi);
+//			if (currentSector == null) {
+//				view.move((minX - maxX) / 2f, (minY - maxY) / 2f);
+//			} else {
+//				view.moveTo(currentSector);
+//			}
+		});
+
+		addListener(new InputListener(){
+			@Override
+			public boolean scrolled(InputEvent event, float x, float y, float amountX, float amountY){
+				view.setScl(Mathf.clamp(view.scl() - amountY / 10f * view.scl(), 0.25f, 1f));
+				return true;
+			}
+
+			@Override
+			public boolean mouseMoved(InputEvent event, float x, float y){
+				view.requestScroll();
+				return super.mouseMoved(event, x, y);
 			}
 		});
 		
 		addCaptureListener(new ElementGestureListener(){
 			@Override
 			public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-				view.move(deltaX, deltaY);
+				dragging = true;
+				view.move(-deltaX, -deltaY);
+			}
+
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int count, KeyCode button) {
+				if (button == KeyCode.mouseLeft && !dragging) {
+					PositionSectorPreset at = view.getAt(x, y);
+					if (at != null && (at.unlocked() || debugSelect)) {
+						if (view.getSelected() != at) {
+							view.select(at);
+							selectSector(at);
+						} else {
+							view.select(null);
+							unSelectSector();
+						}
+					}
+				}
+				dragging = false;
+			}
+
+			@Override
+			public void zoom(InputEvent event, float initialDistance, float distance) {
+				view.setScl(Mathf.clamp(distance / initialDistance, 0.25f, 1f));
 			}
 		});
 	}
@@ -179,18 +215,18 @@ public class SectorLaunchDialog extends BaseDialog {
 			hide();
 			return;
 		}
-		
+
 		if(!debugSelect) {
 			Sector attacked = planet.sectors.find(s -> s.isAttacked() && s != sector.sector);
 			if(attacked != null && planet.sectors.count(Sector::isAttacked) < 2 && attacked.preset instanceof PositionSectorPreset preset) {
 				Vars.ui.showInfoOnHidden(
 					Core.bundle.format("sector.noswitch", attacked.name(), attacked.planet.localizedName),
-					() -> view.moveTo(preset)
+					() -> view.setPos(preset.x + preset.width / 2f, preset.y + preset.height / 2)
 				);
 				return;
 			}
 		}
-		
+
 		if(control.saves.getCurrent() != null && Vars.state.isGame()) {
 			try {
 				control.saves.getCurrent().save();
@@ -199,7 +235,7 @@ public class SectorLaunchDialog extends BaseDialog {
 				ui.showException("[accent]" + Core.bundle.get("savefail"), e);
 			}
 		}
-		
+
 		if (!sector.planet.sectors.contains(Sector::hasBase) || sector.sector.hasBase()) {
 			Vars.control.playSector(sector.sector);
 			hide();
@@ -214,19 +250,19 @@ public class SectorLaunchDialog extends BaseDialog {
 			if (Vars.state.getSector() == null || Vars.state.getSector().preset != launcher) {
 				Vars.ui.showInfoOnHidden(
 					Core.bundle.format("ui.sw-launch-from", finalLauncher.localizedName),
-					() -> view.moveTo(finalLauncher)
+					() -> view.setPos(finalLauncher.x + finalLauncher.width / 2f, finalLauncher.y + finalLauncher.height / 2)
 				);
 				return;
 			}
-			
+
 			ui.planet.loadouts.show(sector.core, launcher.sector, sector.sector, () -> {
-				if (settings.getBool("skipcoreanimation")) {
+				if (Core.settings.getBool("skipcoreanimation")) {
 					Vars.control.playSector(finalLauncher.sector, sector.sector);
-					
+
 					Time.runTask(8f, this::hide);
 				} else {
 					hide();
-					
+
 					Time.runTask(5f, () -> {
 						Vars.renderer.showLaunch(Vars.player.core());
 						Time.runTask(Vars.player.core().launchDuration() - 8, () -> Vars.control.playSector(finalLauncher.sector, sector.sector));
@@ -240,7 +276,7 @@ public class SectorLaunchDialog extends BaseDialog {
 		currentSector = sector;
 		sectorTable.clear();
 		sectorTable.setBackground(SWTex.buttonSideUpOver);
-		
+
 		sectorTable.add(sector.localizedName).color(Pal.accent).row();
 		sectorTable.image(((TextureRegionDrawable) Tex.whiteui).tint(Pal.accent)).padTop(10).padBottom(10).growX().row();
 		if (sector.sector.hasSave() && sector.sector.info.resources.any()) sectorTable.table(res -> {
@@ -344,114 +380,114 @@ public class SectorLaunchDialog extends BaseDialog {
 		sectorTable.setBackground(null);
 	}
 	
-	public static class SectorView extends Group {
-		public SectorLaunchShader shader;
-		
-		public float offsetX, offsetY;
-		
-		public Cons<PositionSectorPreset> clickSector = sector -> {
-			if (SWUI.sectorLaunchDialog.currentSector == sector) {
-				SWUI.sectorLaunchDialog.unSelectSector();
-			} else {
-				SWUI.sectorLaunchDialog.selectSector(sector);
-			}
-		};
-		public Boolf<PositionSectorPreset> sectorChecked = sector -> SWUI.sectorLaunchDialog.currentSector == sector;
-		
-		public ObjectMap<Element, PositionSectorPreset> sectors = new ObjectMap<>();
-		
-		public SectorView() {
-			shader = SWShaders.sectorLaunchShader;
-		}
-		
-		public void addSector(PositionSectorPreset preset) {
-			Button button = new Button(SWStyles.sector);
-			button.setSize(preset.width, preset.height);
-			button.setPosition(preset.x + offsetX, preset.y + offsetY);
-			sectors.put(button, preset);
-			
-			button.clicked(() -> clickSector.get(preset));
-			button.update(() -> {
-				button.setChecked(sectorChecked.get(preset));
-				button.updateVisibility();
-			});
-			button.visible(() -> preset.visible.get(preset.sector));
-			button.touchable(() -> preset.visible.get(preset.sector) ? Touchable.enabled : Touchable.disabled);
-			
-			button.table(Styles.black6, icon -> {
-				icon.image(preset.icon.get()).grow().scaling(Scaling.fit);
-			}).size(preset.width / 3f, preset.height / 3f);
-			
-			addChild(button);
-			
-			minX = Math.min(minX, preset.x);
-			minY = Math.min(minY, preset.y);
-			maxX = Math.max(maxX, preset.x + preset.width);
-			maxY = Math.max(maxY, preset.y + preset.height);
-		}
-		
-		@Override
-		public void draw() {
-			super.draw();
-
-			shader.pos.set(offsetX, offsetY);
-			shader.opacity = parentAlpha * color.a;
-			shader.lights.clear();
-			children.each(child -> {
-				if (sectors.get(child) != null && sectors.get(child).clearFog.get(sectors.get(child).sector)) {
-					shader.lights.add(child.x + x + child.getWidth() / 2f);
-					shader.lights.add(child.y + y + child.getHeight() / 2f);
-					shader.lights.add(child.getWidth());
-					shader.lights.add(child.getHeight());
-				}
-			});
-
-			shader.boxes.clear();
-			children.each(child -> {
-				if (sectors.get(child) != null && sectors.get(child).hasOverlay.get(sectors.get(child).sector)) {
-					shader.boxes.add(child.x + x + child.getWidth() / 2f);
-					shader.boxes.add(child.y + y + child.getHeight() / 2f);
-					shader.boxes.add(child.getWidth());
-					shader.boxes.add(child.getHeight());
-				}
-			});
-			Draw.blit(shader);
-		}
-		
-		public void rebuild(Planet planet) {
-			minX = minY = Float.POSITIVE_INFINITY;
-			maxX = maxY = Float.NEGATIVE_INFINITY;
-			clear();
-			sectors.clear();
-			planet.sectors.each(sector -> {
-				if (sector.preset instanceof PositionSectorPreset preset) {
-					Image image = new Image(preset.viewRegion).setScaling(Scaling.fit);
-					image.setSize(preset.viewRegion.width, preset.viewRegion.height);
-					image.setPosition(
-						preset.x + offsetX - preset.viewRegion.width / 2f + preset.width / 2f,
-						preset.y + offsetY - preset.viewRegion.height / 2f + preset.height / 2f
-					);
-					
-					addChild(image);
-				};
-			});
-			planet.sectors.each(sector -> {
-				if (sector.preset instanceof PositionSectorPreset preset) addSector(preset);
-			});
-			children.each(e -> e.moveBy(-minX, -minY));
-		}
-		
-		public void move(float deltaX, float deltaY) {
-			offsetX += deltaX;
-			offsetY += deltaY;
-			children.each(e -> e.moveBy(deltaX, deltaY));
-		}
-		
-		public void moveTo(PositionSectorPreset sector) {
-			move(
-				-offsetX + minX - sector.x - sector.width/2f,
-				-offsetY + minY - sector.y - sector.height/2f
-			);
-		}
-	}
+//	public static class SectorView extends Group {
+//		public SectorLaunchShader shader;
+//
+//		public float offsetX, offsetY;
+//
+//		public Cons<PositionSectorPreset> clickSector = sector -> {
+//			if (SWUI.sectorLaunchDialog.currentSector == sector) {
+//				SWUI.sectorLaunchDialog.unSelectSector();
+//			} else {
+//				SWUI.sectorLaunchDialog.selectSector(sector);
+//			}
+//		};
+//		public Boolf<PositionSectorPreset> sectorChecked = sector -> SWUI.sectorLaunchDialog.currentSector == sector;
+//
+//		public ObjectMap<Element, PositionSectorPreset> sectors = new ObjectMap<>();
+//
+//		public SectorView() {
+//			shader = SWShaders.sectorLaunchShader;
+//		}
+//
+//		public void addSector(PositionSectorPreset preset) {
+//			Button button = new Button(SWStyles.sector);
+//			button.setSize(preset.width, preset.height);
+//			button.setPosition(preset.x + offsetX, preset.y + offsetY);
+//			sectors.put(button, preset);
+//
+//			button.clicked(() -> clickSector.get(preset));
+//			button.update(() -> {
+//				button.setChecked(sectorChecked.get(preset));
+//				button.updateVisibility();
+//			});
+//			button.visible(() -> preset.visible.get(preset.sector));
+//			button.touchable(() -> preset.visible.get(preset.sector) ? Touchable.enabled : Touchable.disabled);
+//
+//			button.table(Styles.black6, icon -> {
+//				icon.image(preset.icon.get()).grow().scaling(Scaling.fit);
+//			}).size(preset.width / 3f, preset.height / 3f);
+//
+//			addChild(button);
+//
+//			minX = Math.min(minX, preset.x);
+//			minY = Math.min(minY, preset.y);
+//			maxX = Math.max(maxX, preset.x + preset.width);
+//			maxY = Math.max(maxY, preset.y + preset.height);
+//		}
+//
+//		@Override
+//		public void draw() {
+//			super.draw();
+//
+//			shader.pos.set(offsetX, offsetY);
+//			shader.opacity = parentAlpha * color.a;
+//			shader.lights.clear();
+//			children.each(child -> {
+//				if (sectors.get(child) != null && sectors.get(child).clearFog.get(sectors.get(child).sector)) {
+//					shader.lights.add(child.x + x + child.getWidth() / 2f);
+//					shader.lights.add(child.y + y + child.getHeight() / 2f);
+//					shader.lights.add(child.getWidth());
+//					shader.lights.add(child.getHeight());
+//				}
+//			});
+//
+//			shader.boxes.clear();
+//			children.each(child -> {
+//				if (sectors.get(child) != null && sectors.get(child).hasOverlay.get(sectors.get(child).sector)) {
+//					shader.boxes.add(child.x + x + child.getWidth() / 2f);
+//					shader.boxes.add(child.y + y + child.getHeight() / 2f);
+//					shader.boxes.add(child.getWidth());
+//					shader.boxes.add(child.getHeight());
+//				}
+//			});
+//			Draw.blit(shader);
+//		}
+//
+//		public void rebuild(Planet planet) {
+//			minX = minY = Float.POSITIVE_INFINITY;
+//			maxX = maxY = Float.NEGATIVE_INFINITY;
+//			clear();
+//			sectors.clear();
+//			planet.sectors.each(sector -> {
+//				if (sector.preset instanceof PositionSectorPreset preset) {
+//					Image image = new Image(preset.viewRegion).setScaling(Scaling.fit);
+//					image.setSize(preset.viewRegion.width, preset.viewRegion.height);
+//					image.setPosition(
+//						preset.x + offsetX - preset.viewRegion.width / 2f + preset.width / 2f,
+//						preset.y + offsetY - preset.viewRegion.height / 2f + preset.height / 2f
+//					);
+//
+//					addChild(image);
+//				};
+//			});
+//			planet.sectors.each(sector -> {
+//				if (sector.preset instanceof PositionSectorPreset preset) addSector(preset);
+//			});
+//			children.each(e -> e.moveBy(-minX, -minY));
+//		}
+//
+//		public void move(float deltaX, float deltaY) {
+//			offsetX += deltaX;
+//			offsetY += deltaY;
+//			children.each(e -> e.moveBy(deltaX, deltaY));
+//		}
+//
+//		public void moveTo(PositionSectorPreset sector) {
+//			move(
+//				-offsetX + minX - sector.x - sector.width/2f,
+//				-offsetY + minY - sector.y - sector.height/2f
+//			);
+//		}
+//	}
 }

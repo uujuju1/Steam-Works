@@ -30,6 +30,7 @@ public class SWShaders {
 	public static class SectorLaunchShader extends Shader {
 		public Vec2 pos = new Vec2();
 		public float opacity = 1f;
+		public float scale = 1f;
 		public FloatSeq lights = new FloatSeq(), boxes = new FloatSeq();
 		
 		public Texture texture;
@@ -54,6 +55,7 @@ public class SWShaders {
 			setUniformf("u_position", pos);
 			setUniformf("u_size", texture.width, texture.height);
 			setUniformf("u_opacity", opacity);
+			setUniformf("u_scale", scale);
 			
 			setUniformf("u_time", Time.globalTime);
 			

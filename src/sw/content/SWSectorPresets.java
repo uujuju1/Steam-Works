@@ -40,7 +40,7 @@ public class SWSectorPresets {
 			x = 300;
 			y = 100;
 			width = height = 200;
-			icon = () -> Icon.units;
+			icon = () -> Icon.effect;
 			landMusic = SWMusics.asTerras;
 
 			rules = r -> {

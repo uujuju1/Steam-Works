@@ -12,7 +12,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.storage.*;
 
 public class PositionSectorPreset extends SectorPreset {
-	public Prov<Drawable> icon = () -> Icon.waves;
+	public Prov<TextureRegionDrawable> icon = () -> Icon.waves;
 	
 	public Boolf<Sector>
 		clearFog = Sector::hasBase,

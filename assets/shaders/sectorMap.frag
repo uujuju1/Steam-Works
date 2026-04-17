@@ -12,6 +12,8 @@ uniform vec2 u_resolution;
 uniform vec2 u_size;
 uniform vec2 u_position;
 
+uniform float u_scale;
+
 uniform int u_points_length;
 uniform float u_points[LENGTH];
 
@@ -32,7 +34,7 @@ float noise(vec2 pos) {
 
 void main() {
     vec2 uv = vec2(v_texCoords.x, 1.0 - v_texCoords.y);
-    vec2 scale = u_size/u_resolution;
+    vec2 scale = u_size/u_resolution * u_scale;
 
     float overY = u_size.y - u_resolution.y;
 
