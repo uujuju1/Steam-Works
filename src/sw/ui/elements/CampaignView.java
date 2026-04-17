@@ -3,23 +3,25 @@ package sw.ui.elements;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import sw.graphics.*;
+import sw.math.*;
 import sw.type.*;
 
 public class CampaignView extends Element {
 	public static boolean debugSelect = false;
 
-	private Seq<PositionSectorPreset> sectors = new Seq<>();
+	private final Seq<PositionSectorPreset> sectors = new Seq<>();
 
 	private float offsetX, offsetY, scale = 1;
-
 	private PositionSectorPreset selected;
 
 	public void build(Planet planet) {
@@ -28,6 +30,11 @@ public class CampaignView extends Element {
 
 	@Override
 	public void draw() {
+		PositionSectorPreset hover = getAt(Core.input.mouseX(), Core.input.mouseY());
+		if (hover != null && hover.visible.get(hover.sector)) {
+			Core.graphics.cursor(Graphics.Cursor.SystemCursor.hand);
+		} else Core.graphics.restoreCursor();
+
 		validate();
 		float alpha = parentAlpha * color.a;
 
@@ -78,6 +85,8 @@ public class CampaignView extends Element {
 				selected.width * scale,
 				selected.height * scale
 			);
+
+			drawTails();
 		}
 	}
 
@@ -113,6 +122,44 @@ public class CampaignView extends Element {
 		Draw.blit(shader);
 		Core.camera = c;
 		Draw.flush();
+	}
+
+	// assumes selected is not null
+	public void drawTails() {
+		float scale = Scl.scl(this.scale);
+		if (selected.launcher != null) {
+			Tmp.v2.set(
+				Core.graphics.getWidth() / 2f - offsetX + (selected.x + selected.width / 2f) * scale,
+				Core.graphics.getHeight() / 2f - offsetY + (selected.y + selected.width / 2f) * scale
+			);
+			Tmp.v4.set(
+				Core.graphics.getWidth() / 2f - offsetX + (selected.launcher.x + selected.launcher.width / 2f) * scale,
+				Core.graphics.getHeight() / 2f - offsetY + (selected.launcher.y + selected.launcher.width / 2f) * scale
+			);
+			Parallax.getParallaxFrom(Tmp.v3.set(Tmp.v2).lerp(Tmp.v4, 0.5f), Core.scene.getViewport().getCamera().position, 10f, scale / 10f);
+			Tmp.v6.set(Tmp.v2);
+			Lines.stroke(5f, Pal.accent);
+			Fill.circle(Tmp.v2.x, Tmp.v2.y, 2.5f);
+			Fill.circle(Tmp.v4.x, Tmp.v4.y, 2.5f);
+			for (int i = 0; i < 10; i++) {
+				Bezier.quadratic(
+					Tmp.v1,
+					i / 9f,
+					Tmp.v2, Tmp.v3, Tmp.v4,
+					Tmp.v5
+				);
+
+				Lines.line(Tmp.v6.x, Tmp.v6.y, Tmp.v1.x, Tmp.v1.y, false);
+				Tmp.v6.set(Tmp.v1);
+			}
+			Bezier.quadratic(
+				Tmp.v1,
+				1f - Time.globalTime / 240f % 1f,
+				Tmp.v2, Tmp.v3, Tmp.v4,
+				Tmp.v5
+			);
+			Fill.circle(Tmp.v1.x, Tmp.v1.y, 5f);
+		}
 	}
 
 	public PositionSectorPreset getAt(float x, float y) {

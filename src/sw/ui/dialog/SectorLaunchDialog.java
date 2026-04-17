@@ -62,16 +62,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			buttons
 		).grow();
 		
-		shown(() -> {
-			view.build(SWPlanets.wendi);
-//			view.offsetX = view.offsetY = 0;
-//			view.rebuild(SWPlanets.wendi);
-//			if (currentSector == null) {
-//				view.move((minX - maxX) / 2f, (minY - maxY) / 2f);
-//			} else {
-//				view.moveTo(currentSector);
-//			}
-		});
+		shown(() -> view.build(SWPlanets.wendi));
 
 		addListener(new InputListener(){
 			@Override
@@ -98,7 +89,7 @@ public class SectorLaunchDialog extends BaseDialog {
 			public void touchUp(InputEvent event, float x, float y, int count, KeyCode button) {
 				if (button == KeyCode.mouseLeft && !dragging) {
 					PositionSectorPreset at = view.getAt(x, y);
-					if (at != null && (at.unlocked() || debugSelect)) {
+					if (at != null && (at.visible.get(at.sector) || debugSelect)) {
 						if (view.getSelected() != at) {
 							view.select(at);
 							selectSector(at);
@@ -181,13 +172,13 @@ public class SectorLaunchDialog extends BaseDialog {
 		titleTable.margin(10);
 	}
 	
-	// yoinked from planetDialog
+//	 yoinked from planetDialog
 	void displayItems(Table c, float scl, ObjectMap<Item, SectorInfo.ExportStat> stats, String name){
 		displayItems(c, scl, stats, name, t -> {});
 	}
 	void displayItems(Table c, float scl, ObjectMap<Item, SectorInfo.ExportStat> stats, String name, Cons<Table> builder){
 		Table t = new Table().left();
-		
+
 		int i = 0;
 		for(var item : content.items()){
 			var stat = stats.get(item);
@@ -201,7 +192,7 @@ public class SectorLaunchDialog extends BaseDialog {
 				}
 			}
 		}
-		
+
 		if(t.getChildren().any()){
 			c.defaults().left();
 			c.add(name).row();
@@ -302,14 +293,10 @@ public class SectorLaunchDialog extends BaseDialog {
 			
 			c.add(Core.bundle.get("sectors.time") + " [accent]" + sector.save.getPlayTime()).left().row();
 			
-//			if(sector.info.waves && sector.hasBase()){
-//				c.add(Core.bundle.get("sectors.wave") + " [accent]" + (sector.info.wave + sector.info.wavesPassed)).left().row();
-//			}
-			
 			if(sector.isAttacked() || !sector.hasBase()){
 				c.add(Core.bundle.get("sectors.threat") + " [accent]" + sector.displayThreat()).left().row();
 			}
-			
+
 			if(sector.save != null && sector.info.resources.any()){
 				c.add("@sectors.resources").left().row();
 				c.table(t -> {

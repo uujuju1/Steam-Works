@@ -14,6 +14,10 @@ public class Parallax {
 	}
 
 	public static Vec2 getParallaxFrom(Vec2 from, Vec2 ref, float elevation) {
-		return from.add(temp.set(from).sub(ref).scl(elevation * Vars.renderer.getDisplayScale()/48f));
+		return getParallaxFrom(from, ref, elevation, Vars.renderer.getDisplayScale()/48f);
+	}
+
+	public static Vec2 getParallaxFrom(Vec2 from, Vec2 ref, float elevation, float scale) {
+		return from.add(temp.set(from).sub(ref).scl(elevation * scale));
 	}
 }
