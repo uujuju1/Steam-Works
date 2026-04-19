@@ -745,7 +745,7 @@ public class SWPower {
 				Items.silicon, 40
 			));
 			size = 2;
-			brakeStrength = 50f / 600f;
+			strength = 50f / 600f;
 			
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -769,11 +769,11 @@ public class SWPower {
 							
 							moves.add(
 								new PartMove(
-									params -> Mathf.sinDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.speed.mul(1f / 10f).clamp().mul(2f / 6f).add(1f).get(params),
+									params -> Mathf.sinDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.progress.mul(2f / 6f).add(1f).get(params),
 									6f * i, 0f, 0f
 								),
 								new PartMove(
-									params -> Mathf.cosDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.speed.mul(1f / 10f).clamp().mul(2f / 6f).add(1f).get(params),
+									params -> Mathf.cosDeg((DrawParts.spin.get(params) + 90) % 360f) * DrawParts.progress.mul(2f / 6f).add(1f).get(params),
 									0f, -6f * i, 0f
 								)
 							);
