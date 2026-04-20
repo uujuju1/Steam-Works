@@ -43,15 +43,6 @@ public interface HasSpin {
 		boolean hasSpin = spinConfig().hasSpin;
 		boolean sameTeam = other.asBuilding().team == asBuilding().team;
 		boolean isAllowed = !spinConfig().connectors.contains(other.asBuilding().block) ^ spinConfig().connectorAllowList;
-//		boolean isEdge = !asBuilding().proximity.contains((Building) other);
-//		if (spinConfig().allowedEdges != null) {
-//			for(int i : spinConfig().allowedEdges[asBuilding().rotation]) {
-//				isEdge |= asBuilding().nearby(
-//					Edges.getEdges(asBuilding().block.size)[i].x,
-//					Edges.getEdges(asBuilding().block.size)[i].y
-//				) == other;
-//			}
-//		} else isEdge = true;
 		return hasSpin && sameTeam && isAllowed;
 	}
 

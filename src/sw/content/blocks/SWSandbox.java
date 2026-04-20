@@ -37,13 +37,6 @@ public class SWSandbox {
 				new DrawRegion(),
 				new DrawParts() {{
 					parts.add(
-						new RegionPart("-wheel") {{
-							outline = false;
-							clampProgress = false;
-							moveRot = 2f;
-
-							progress = DrawParts.spin;
-						}},
 						new RegionPart("-brake-down") {{
 							outline = false;
 							moveY = -5/4f;
@@ -55,6 +48,13 @@ public class SWSandbox {
 							moveY = 5/4f;
 
 							progress = DrawParts.progress.inv();
+						}},
+						new RegionPart("-wheel") {{
+							outline = false;
+							clampProgress = false;
+							moveRot = 2f;
+
+							progress = DrawParts.spin;
 						}}
 					);
 				}}

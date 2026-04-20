@@ -32,10 +32,8 @@ public class SWPower {
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt, largeOverheadBelt,
 		flywheel, clutch,
-	
-//		hydraulicFlywheel,
 
-		shaftTransmission, mechanicalGovernor;
+		shaftTransmission, adjustableGearTrain, mechanicalGovernor;
 
 	public static void load() {
 		handWheel = new HandCrank("hand-wheel") {{
@@ -671,6 +669,8 @@ public class SWPower {
 			));
 			size = 2;
 
+			configurable = false;
+
 			highEdges = new int[]{1, 2};
 			spinConfig = new SpinConfig() {{
 				resistance = 3f/600f;
@@ -686,7 +686,7 @@ public class SWPower {
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
 					for(Point2 offset : Geometry.d8edge) {
-						axles.add(Axles.halfBlock.position(4f * offset.x, 6f * offset.y, -90f, offset.x > 0 ? 0.5f : 1f));
+						axles.add(Axles.halfBlock.position(4f * offset.x, 6f * offset.y, -90f, offset.x > 0 ? 0.75f : 1.5f));
 					}
 					axles.add(
 						new Axle("-axle-middle") {{
@@ -701,6 +701,8 @@ public class SWPower {
 							height = 2f;
 							
 							rotation = -90f;
+
+							spinScl = 1.5f;
 						}},
 						new Axle("-axle-center") {{
 							circular = true;
@@ -708,8 +710,9 @@ public class SWPower {
 							pixelWidth = 4;
 							pixelHeight = 1;
 							
-							spinScl = -(35f/60f);
-							
+//							spinScl = -(35f/60f);
+							spinScl = -1f;
+
 							x = -0.75f;
 							
 							width = 4f;
@@ -723,7 +726,7 @@ public class SWPower {
 							pixelWidth = 8;
 							pixelHeight = 1;
 							
-							spinScl = 0.5f;
+							spinScl = 0.75f;
 							
 							x = 4f;
 							
@@ -736,6 +739,22 @@ public class SWPower {
 				}},
 				new DrawFacingLightRegion(true)
 			);
+		}};
+		adjustableGearTrain = new ShaftTransmission("adjustable-gear-train") {{
+			requirements(Category.power, with());
+			size = 3;
+
+			multiplier = 10f;
+			highEdges = new int[]{1, 2, 4, 5};
+			spinConfig = new SpinConfig() {{
+				resistance = 10f/600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 2, 4, 6, 8, 10},
+					new int[]{3, 5, 7, 9, 11, 1},
+					new int[]{6, 8, 10, 0, 2, 4},
+					new int[]{9, 11, 1, 3, 5, 7}
+				};
+			}};
 		}};
 		mechanicalGovernor = new AxleBrake("mechanical-governor") {{
 			requirements(Category.power, with(
