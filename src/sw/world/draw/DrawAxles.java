@@ -2,7 +2,6 @@ package sw.world.draw;
 
 import arc.*;
 import arc.func.*;
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
@@ -12,7 +11,6 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.entities.*;
-import sw.graphics.*;
 
 public class DrawAxles extends DrawBlock {
 	public @Nullable String iconName;
@@ -48,11 +46,7 @@ public class DrawAxles extends DrawBlock {
 			float dx = build.x + Angles.trnsx(build.block.rotate ? build.rotdeg() : 0, axle.x, axle.y);
 			float dy = build.y + Angles.trnsy(build.block.rotate ? build.rotdeg() : 0, axle.x, axle.y);
 
-			Draws.palette(axle.paletteLight, axle.paletteMedium, axle.paletteDark);
-			Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
-			Draws.palette();
-
-			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, axle.width, axle.height, rot);
+			axle.draw(dx, dy, rot, spin);
 		});
 		Draw.reset();
 		Draw.z(z);
@@ -65,17 +59,7 @@ public class DrawAxles extends DrawBlock {
 			float dx = plan.drawx() + Angles.trnsx(block.rotate ? plan.rotation * 90f : 0f, axle.x, axle.y);
 			float dy = plan.drawy() + Angles.trnsy(block.rotate ? plan.rotation * 90f : 0f, axle.x, axle.y);
 
-			Color mixcolor = Draw.getMixColor();
-			Draws.palette(
-				axle.paletteLight.cpy().lerp(mixcolor, 1f - axle.paletteLight.a * (1f - mixcolor.a)),
-				axle.paletteMedium.cpy().lerp(mixcolor, 1f - axle.paletteMedium.a * (1f - mixcolor.a)),
-				axle.paletteDark.cpy().lerp(mixcolor, 1f - axle.paletteDark.a * (1f - mixcolor.a))
-			);
-			Draws.regionCylinder(axle.regions, dx, dy, axle.width, axle.height, spin, rot, axle.circular);
-			Draws.palette();
-			Draw.mixcol(mixcolor, mixcolor.a);
-
-			if (axle.circular) Draw.rect(axle.shadowRegion, dx, dy, axle.width, axle.height, rot);
+			axle.draw(dx, dy, rot, spin);
 		});
 	}
 
@@ -87,7 +71,6 @@ public class DrawAxles extends DrawBlock {
 	@Override
 	public void load(Block block) {
 		if (iconName == null) iconName = block.name + "-axle-icon";
-//		axles.each(axle -> axle.load(iconName == null ? block.name : iconName));
 		axles.each(axle -> axle.load(block.name));
 	}
 }

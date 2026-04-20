@@ -54,11 +54,7 @@ public class DrawSpinningDrill extends DrawBlock {
 					dy = face.worldy();
 
 				Draws.palette(startAxle.paletteLight, startAxle.paletteMedium, startAxle.paletteDark);
-				if (startAxle.hasSprites) {
-					Draws.regionCylinder(startAxle.regions, dsx, dsy, startAxle.width, startAxle.height, (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl, build.rotdeg(), startAxle.circular);
-				} else {
-					Draws.polyCylinder(startAxle.polySides, dsx, dsy, startAxle.width, startAxle.height, (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl, build.rotdeg(), startAxle.circular);
-				}
+				Draws.regionCylinder(startAxle.regions[0], dsx, dsy, startAxle.width, startAxle.height, (build.rotation == 1 || build.rotation == 2 ? -1f : 1f) * spin * startAxle.spinScl, build.rotdeg(), startAxle.circular);
 				Draws.palette();
 
 				if (build.rotation == 1 || build.rotation == 2) Draw.yscl = -1;
@@ -69,11 +65,7 @@ public class DrawSpinningDrill extends DrawBlock {
 						float lx = (dx - dsx)/dst * j + dsx, ly = (dy - dsy)/dst * j + dsy;
 
 						Draws.palette(middleAxle.paletteLight, middleAxle.paletteMedium, middleAxle.paletteDark);
-						if (middleAxle.hasSprites) {
-							Draws.regionCylinder(middleAxle.regions, lx, ly, middleAxle.width, middleAxle.height, spin * middleAxle.spinScl, rot, middleAxle.circular);
-						} else {
-							Draws.polyCylinder(middleAxle.polySides, lx, ly, middleAxle.width, middleAxle.height, spin * middleAxle.spinScl, rot, middleAxle.circular);
-						}
+						Draws.regionCylinder(middleAxle.regions[0], lx, ly, middleAxle.width, middleAxle.height, spin * middleAxle.spinScl, rot, middleAxle.circular);
 						Draws.palette();
 
 						if (build.rotation == 1 || build.rotation == 2) Draw.yscl = -1;
@@ -85,21 +77,13 @@ public class DrawSpinningDrill extends DrawBlock {
 					Tmp.v1.trns(30f * j + build.rotdeg(), -4f).add(dx, dy);
 
 					Draws.palette(endAxle.paletteLight, endAxle.paletteMedium, endAxle.paletteDark);
-					if (endAxle.hasSprites) {
-						Draws.regionCylinder(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
-					} else {
-						Draws.polyCylinder(endAxle.polySides, Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
-					}
+					Draws.regionCylinder(endAxle.regions[0], Tmp.v1.x, Tmp.v1.y, endAxle.width, endAxle.height, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
 					Draws.palette();
 
 					Tmp.v1.trns(30f * j + build.rotdeg(), -4f + endAxle.width * 3f/4f).add(dx, dy);
 
 					Draws.palette(endAxle.paletteLight, endAxle.paletteMedium, endAxle.paletteDark);
-					if (endAxle.hasSprites) {
-						Draws.regionCylinder(endAxle.regions, Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
-					} else {
-						Draws.polyCylinder(endAxle.polySides, Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
-					}
+					Draws.regionCylinder(endAxle.regions[0], Tmp.v1.x, Tmp.v1.y, endAxle.width/2f, endAxle.height/2f, (j == 0 ? -1f : 1f) * spin * endAxle.spinScl, rot + 30f * j, endAxle.circular);
 					Draws.palette();
 				}
 				Draw.z(z);
@@ -115,10 +99,6 @@ public class DrawSpinningDrill extends DrawBlock {
 		Draw.reset();
 	}
 
-	@Override public TextureRegion[] icons(Block block) {
-		return new TextureRegion[]{};
-	}
-
 	@Override
 	public void load(Block block) {
 		itemRegion = Core.atlas.find(block.name + "-item", "drill-item-" + block.size);
@@ -127,13 +107,17 @@ public class DrawSpinningDrill extends DrawBlock {
 		boreRegion = Core.atlas.find(block.name + "-bore-middle-top");
 		endBoreRegion = Core.atlas.find(block.name + "-bore-end-top");
 
-		if (startAxle.hasSprites) startAxle.regions = Core.atlas.find(block.name + startAxle.suffix).split(startAxle.pixelWidth, startAxle.pixelHeight)[0];
-		if (startAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+		startAxle.load(block.name);
+		middleAxle.load(block.name);
+		endAxle.load(block.name);
 
-		if (endAxle.hasSprites) endAxle.regions = Core.atlas.find(block.name + endAxle.suffix).split(endAxle.pixelWidth, endAxle.pixelHeight)[0];
-		if (endAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+//		startAxle.regions = Core.atlas.find(block.name + startAxle.suffix).split(startAxle.pixelWidth, startAxle.pixelHeight);
+//		startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
 
-		if (middleAxle.hasSprites) middleAxle.regions = Core.atlas.find(block.name + middleAxle.suffix).split(middleAxle.pixelWidth, middleAxle.pixelHeight)[0];
-		if (middleAxle.circular) startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+//		endAxle.regions = Core.atlas.find(block.name + endAxle.suffix).split(endAxle.pixelWidth, endAxle.pixelHeight);
+//		startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
+
+//		middleAxle.regions = Core.atlas.find(block.name + middleAxle.suffix).split(middleAxle.pixelWidth, middleAxle.pixelHeight);
+//		startAxle.shadowRegion = Core.atlas.find(block.name + startAxle.suffix + "-shadow");
 	}
 }

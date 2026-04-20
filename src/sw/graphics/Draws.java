@@ -6,17 +6,17 @@ import arc.math.*;
 import arc.util.*;
 
 public class Draws {
-	public static Color paletteLight = Color.clear;
-	public static Color paletteMedium = Color.clear;
-	public static Color paletteDark = Color.clear;
+	public static final Color paletteLight = new Color();
+	public static final Color paletteMedium = new Color();
+	public static final Color paletteDark = new Color();
 
 	public static void palette() {
-		paletteLight = paletteMedium = paletteDark = Color.clear;
+		palette(Color.clear, Color.clear, Color.clear);
 	}
 	public static void palette(Color light, Color medium, Color dark) {
-		paletteLight = light;
-		paletteMedium = medium;
-		paletteDark = dark;
+		paletteLight.set(light);
+		paletteMedium.set(medium);
+		paletteDark.set(dark);
 	}
 
 	public static void regionCylinder(TextureRegion[] regions, float x, float y, float width, float height, float angle, float rotation, boolean circular) {

@@ -1,9 +1,10 @@
 package sw.entities;
 
-import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
+import sw.annotations.Annotations.*;
+import sw.gen.*;
 import sw.graphics.*;
 
 public class Axle implements Cloneable {
@@ -20,16 +21,11 @@ public class Axle implements Cloneable {
 	public int pixelWidth = 32;
 	public int pixelHeight = 32;
 
-	@Deprecated public int polySides = 1;
-
-	@Deprecated public boolean hasSprites = true;
-	@Deprecated public boolean hasIcon = true;
-
 	public boolean circular = false;
 
-	public TextureRegion[] regions;
-	@Deprecated public TextureRegion iconRegion;
-	public TextureRegion shadowRegion;
+//	public TextureRegion[] regions;
+	public @Load(value = "@name$", splits = true, width = "pixelWidth", height = "pixelHeight") TextureRegion[][] regions;
+	public @Load("@name$-shadow") TextureRegion shadowRegion;
 
 	public Color paletteLight = SWPal.axleMedium;
 	public Color paletteMedium = SWPal.axleMedium;
@@ -51,12 +47,30 @@ public class Axle implements Cloneable {
 		}
 	}
 
-	public void load(String base) {
-		String trueName = name == null ? (base == null ? "" : base) + suffix : name;
+	public void draw(float x, float y, float rotation, float angle) {
+		Color mixcolor = Draw.getMixColor();
+		if (!mixcolor.equals(Color.clear)) {
+			Draws.palette(
+				mixcolor.cpy().lerp(paletteLight, paletteLight.a).a(1f - ((1f - mixcolor.a) * (1f - paletteLight.a))),
+				mixcolor.cpy().lerp(paletteMedium, paletteMedium.a).a(1f - ((1f - mixcolor.a) * (1f - paletteMedium.a))),
+				mixcolor.cpy().lerp(paletteDark, paletteDark.a).a(1f - ((1f - mixcolor.a) * (1f - paletteDark.a)))
+			);
+		} else Draws.palette(paletteLight, paletteMedium, paletteDark);
+		Draws.regionCylinder(regions[0], x, y, width, height, angle, rotation, circular);
+		Draws.palette();
+		Draw.mixcol(mixcolor, mixcolor.a);
 
-		if (hasSprites) regions = Core.atlas.find(trueName).split(pixelWidth, pixelHeight)[0];
-		shadowRegion = Core.atlas.find(trueName + "-shadow");
-		iconRegion = Core.atlas.find("error");
+		if (circular) Draw.rect(shadowRegion, x, y, width, height, rotation);
+	}
+
+	public void load(String base) {
+		if (name == null) name = (base == null ? "" : base) + suffix;
+
+		SWContentRegionRegistry.load(this);
+//		String trueName = name == null ? (base == null ? "" : base) + suffix : name;
+
+//		if (hasSprites) regions = Core.atlas.find(trueName).split(pixelWidth, pixelHeight)[0];
+//		shadowRegion = Core.atlas.find(trueName + "-shadow");
 	}
 
 	public Axle position(float x, float y, float rot, float rotScl) {
