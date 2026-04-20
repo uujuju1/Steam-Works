@@ -231,57 +231,6 @@ public class SegmentedAxlePart extends DrawPart {
 				default -> {}
 			}
 		}
-		
-//		a.forEach(cos => {
-//			Draw.color(cos == cosMin ? Color.red : Color.green)
-//			Draw.z(z + Mathf.sign(!(cos == cosMin ^ cosMin > 0)))
-//			Draw.rect(
-//				regions[cos == cosMin ? 0 : 2],
-//				x + Angles.trnsx(rotation, (radius/2 + inRadius/2) * cos),
-//				y + Angles.trnsy(rotation, (radius/2 + inRadius/2) * cos),
-//				(radius - inRadius) * cos,
-//				height,
-//				rotation
-//			)
-//		})
-//
-//		let mx = Angles.trnsx(rotation, radius * cosMin)
-//		mx += Angles.trnsx(rotation, radius * cosMax)
-//		mx /= 2
-//
-//		let my = Angles.trnsy(rotation, radius * cosMin)
-//		my += Angles.trnsy(rotation, radius * cosMax)
-//		my /= 2
-//
-//		Draw.color()
-//		Draw.z(z + 2 * Mathf.sign(sinMiddle < 0))
-//		Draw.rect(
-//			regions[1],
-//			x + mx,
-//			y + my,
-//			2 * radius * Mathf.sin(Mathf.degreesToRadians * (180 * arc)) * sinMiddle,
-//			height,
-//			rotation
-//		)
-//
-//		mx = Angles.trnsx(rotation, inRadius * cosMin)
-//		mx += Angles.trnsx(rotation, inRadius * cosMax)
-//		mx /= 2
-//
-//		my = Angles.trnsy(rotation, inRadius * cosMin)
-//		my += Angles.trnsy(rotation, inRadius * cosMax)
-//		my /= 2
-//
-//		Draw.color(Color.blue)
-//		Draw.z(z + 2 * Mathf.sign(sinMiddle > 0))
-//		Draw.rect(
-//			regions[3],
-//			x + mx,
-//			y + my,
-//			2 * inRadius * Mathf.sin(Mathf.degreesToRadians * (180 * arc)) * sinMiddle,
-//			height,
-//			rotation
-//		)
 	}
 	
 	@Override
