@@ -1,14 +1,14 @@
 package sw.world.blocks.sandbox;
 
-import arc.scene.ui.*;
+import arc.graphics.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import arc.util.io.*;
+import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.meta.*;
+import sw.ui.*;
 import sw.world.blocks.power.*;
-import sw.world.meta.*;
 
 public class SpinSource extends AxleBlock {
 	public SpinSource(String name) {
@@ -21,45 +21,35 @@ public class SpinSource extends AxleBlock {
 		category = Category.power;
 		group = BlockGroup.power;
 
-		config(SpinSourceEntry.class, (SpinSourceBuild build, SpinSourceEntry cons) -> {
-			build.targetSpeed = cons.targetSpeed;
-			build.force = cons.force;
+		config(float[].class, (SpinSourceBuild build, float[] values) -> {
+			build.targetSpeed = values[0];
+			build.force = values[1];
 		});
-		configClear((SpinSourceBuild build) -> {
-			build.targetSpeed = build.force = 0;
-		});
+		configClear((SpinSourceBuild build) -> build.targetSpeed = build.force = 0);
 	}
 
 	public class SpinSourceBuild extends AxleBlockBuild {
 		public float targetSpeed, force;
 
 		@Override
-		public SpinSourceEntry config() {
-			return new SpinSourceEntry(targetSpeed, force);
+		public float[] config() {
+			return new float[]{targetSpeed, force};
 		}
 
 		@Override
-		public void buildConfiguration(Table table) {
-			table.table(Styles.black6, cont -> {
-				cont.add(SWStat.spinOutput.localized() + ":").growX().right().padRight(5f);
-				cont.field(Float.toString(targetSpeed), TextField.TextFieldFilter.floatsOnly, s -> {
-					configure(new SpinSourceEntry(Strings.parseFloat(s, 0), force));
-				});
-				cont.add(SWStat.spinMinute.localized()).growX().left().padLeft(5f);
-				cont.row();
-				cont.add(SWStat.spinOutputForce.localized() + ":").growX().right().padRight(5f);
-				cont.field(Float.toString(force), TextField.TextFieldFilter.floatsOnly, s -> {
-					configure(new SpinSourceEntry(targetSpeed, Strings.parseFloat(s, 0)));
-				});
-				cont.add(SWStat.force.localized()).growX().left().padLeft(5f);
+		public void buildConfiguration(Table cont) {
+			cont.table(Styles.black6, table -> {
+				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new float[]{value / 10f, force}), () -> targetSpeed * 10f);
+				table.image(Tex.whiteui).color(Color.gray).padTop(10f).padBottom(10f).height(4f).growX().row();
+				SWTables.buildFloatSlider(table, "@stat.sw-spin-output-force", value -> configure(new float[]{targetSpeed, value / 600f}), () -> force * 600f);
 			}).margin(10f);
 		}
 
 		@Override public float getForce() {
-			return force/600f / getRatio();
+			return force / getRatio();
 		}
 		@Override public float getTargetSpeed() {
-			return targetSpeed/10f * getRatio();
+			return targetSpeed * getRatio();
 		}
 		
 		@Override
@@ -84,13 +74,13 @@ public class SpinSource extends AxleBlock {
 		}
 	}
 
-	public static class SpinSourceEntry {
-		public float targetSpeed;
-		public float force;
-
-		public SpinSourceEntry(float targetSpeed, float force) {
-			this.targetSpeed = targetSpeed;
-			this.force = force;
-		}
-	}
+//	public static class SpinSourceEntry {
+//		public float targetSpeed;
+//		public float force;
+//
+//		public SpinSourceEntry(float targetSpeed, float force) {
+//			this.targetSpeed = targetSpeed;
+//			this.force = force;
+//		}
+//	}
 }
