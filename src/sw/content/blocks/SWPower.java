@@ -709,8 +709,7 @@ public class SWPower {
 							
 							pixelWidth = 4;
 							pixelHeight = 1;
-							
-//							spinScl = -(35f/60f);
+
 							spinScl = -1f;
 
 							x = -0.75f;
@@ -743,6 +742,50 @@ public class SWPower {
 		adjustableGearTrain = new ShaftTransmission("adjustable-gear-train") {{
 			requirements(Category.power, with());
 			size = 3;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = build -> {
+						ShaftTransmissionBuild b = ((ShaftTransmissionBuild) build);
+						return b.getRotation() * (1f + b.currentRatioScale) / 2f / b.currentRatioScale;
+					};
+
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(Axles.halfBlock.position( 8f * offset.x, 10f * offset.y, -90f, 1f));
+					}
+				}},
+				new DrawAxles() {{
+					rotationOverride = build -> {
+						ShaftTransmissionBuild b = ((ShaftTransmissionBuild) build);
+						return b.getRotation() * (1f + b.currentRatioScale) / 2f;
+					};
+
+					for (int i : Mathf.signs) {
+						axles.add(Axles.halfBlock.position(10f * i, 0f, 0f, 1f));
+					}
+				}},
+				new DrawFacingLightRegion(),
+				new DrawAxles() {{
+					iconName = "sw-adjustable-gear-train-gear-icon";
+					SegmentedAxle gear = new SegmentedAxle("-gear") {{
+						pixelWidth = 16;
+						pixelHeight = 10;
+						segmentSides = new int[]{0, 2, 4, 6, 8};
+
+						width = 4f;
+						minHeight = 16f;
+						height = 18f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}};
+					for (int i : Mathf.signs) {
+						axles.add(gear.position(4f * i, 0f, 0f, -1));
+					}
+				}}
+			);
 
 			multiplier = 10f;
 			highEdges = new int[]{1, 2, 4, 5};

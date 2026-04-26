@@ -97,6 +97,10 @@ public class ShaftTransmission extends AxleBlock {
 			}).margin(10f);
 		}
 
+		@Override public Float config() {
+			return currentRatioScale;
+		}
+
 		public boolean isHigh(HasSpin other) {
 			Seq<Point2> edges = getConnectingOuterEdges();
 			Seq<Point2> connectingEdges = nextConnections(other);

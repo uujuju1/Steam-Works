@@ -23,9 +23,9 @@ public class SegmentedAxle extends Axle {
 	/**
 	 * Size of the inner ring.
 	 */
-	public float minWidth = 4f;
+	public float minHeight = 4f;
 	/**
-	 * When true, a regular axle is drawn in the center, with its width set to {@link #minWidth}.
+	 * When true, a regular axle is drawn in the center, with its width set to {@link #minHeight}.
 	 */
 	public boolean drawInner = true;
 
@@ -57,18 +57,19 @@ public class SegmentedAxle extends Axle {
 		drawOrder.clear();
 		for(int i : segmentSides) drawOrder.add(i);
 
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (angle + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(x, y, rotation - 90f, i * 360f/sides));
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (angle + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(x, y, rotation - 90f, angle + i * 360f/sides));
 		if (drawInner) {
 			Draws.palette(l, m, d);
-			Draws.regionCylinder(regions[0], x, y, minWidth, height, angle, rotation, false);
+			Draws.regionCylinder(regions[0], x, y, width, minHeight, angle, rotation, false);
 			Draws.palette();
 		}
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (angle + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(x, y, rotation - 90f, i * 360f/sides));
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (angle + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(x, y, rotation - 90f, angle + i * 360f/sides));
+		Draw.mixcol(mixcolor, mixcolor.a);
 	}
 
 	public void drawSegment(float x, float y, float rotation, float angle) {
-		float radius = width / 2f;
-		float inRadius = minWidth / 2f;
+		float radius = height / 2f;
+		float inRadius = minHeight / 2f;
 		float arc = 1f / sides;
 
 		float mod = Mathf.mod(angle, 360);
@@ -103,9 +104,9 @@ public class SegmentedAxle extends Axle {
 					my /= 2f;
 
 					if (cosMiddle > 0f) {
-						Tmp.c1.set(m).lerp(l, Mathf.clamp(cosMiddle));
+						Tmp.c1.set(m).lerp(d, Mathf.clamp(cosMiddle));
 					} else {
-						Tmp.c1.set(d).lerp(m, Mathf.clamp(cosMiddle + 1f));
+						Tmp.c1.set(l).lerp(m, Mathf.clamp(cosMiddle + 1f));
 					}
 					Draw.mixcol(Tmp.c1, Tmp.c1.a);
 
@@ -113,25 +114,25 @@ public class SegmentedAxle extends Axle {
 						topSegmentRegion,
 						x + mx,
 						y + my,
+						width,
 						2 * radius * Mathf.sin(Mathf.degreesToRadians * (180 * arc)) * sinMiddle,
-						height,
-						rotation
+						rotation + 90f
 					);
 				}
 				case 2 -> {
 					if (sinMiddle > 0f) {
-						Tmp.c1.set(m).lerp(d, Mathf.clamp(sinMiddle));
+						Tmp.c1.set(m).lerp(l, Mathf.clamp(sinMiddle));
 					} else {
-						Tmp.c1.set(l).lerp(m, Mathf.clamp(sinMiddle + 1f));
+						Tmp.c1.set(d).lerp(m, Mathf.clamp(sinMiddle + 1f));
 					}
 					Draw.mixcol(Tmp.c1, Tmp.c1.a);
 					Draw.rect(
 						rightSegmentRegion,
 						x + Angles.trnsx(rotation, (radius/2 + inRadius/2) * cosMax),
 						y + Angles.trnsy(rotation, (radius/2 + inRadius/2) * cosMax),
+						width,
 						(radius - inRadius) * cosMax,
-						height,
-						rotation
+						rotation + 90f
 					);
 				}
 				case 3 -> {
@@ -144,34 +145,34 @@ public class SegmentedAxle extends Axle {
 					my /= 2f;
 
 					if (cosMiddle > 0f) {
-						Tmp.c1.set(m).lerp(d, Mathf.clamp(cosMiddle));
+						Tmp.c1.set(m).lerp(l, Mathf.clamp(cosMiddle));
 					} else {
-						Tmp.c1.set(l).lerp(m, Mathf.clamp(cosMiddle + 1f));
+						Tmp.c1.set(d).lerp(m, Mathf.clamp(cosMiddle + 1f));
 					}
 					Draw.mixcol(Tmp.c1, Tmp.c1.a);
 					Draw.rect(
 						bottomSegmentRegion,
 						x + mx,
 						y + my,
+						width,
 						2 * inRadius * Mathf.sin(Mathf.degreesToRadians * (180 * arc)) * sinMiddle,
-						height,
-						rotation
+						rotation + 90f
 					);
 				}
 				case 4 -> {
 					if (sinMiddle > 0f) {
-						Tmp.c1.set(m).lerp(l, Mathf.clamp(sinMiddle));
+						Tmp.c1.set(m).lerp(d, Mathf.clamp(sinMiddle));
 					} else {
-						Tmp.c1.set(d).lerp(m, Mathf.clamp(sinMiddle + 1f));
+						Tmp.c1.set(l).lerp(m, Mathf.clamp(sinMiddle + 1f));
 					}
 					Draw.mixcol(Tmp.c1, Tmp.c1.a);
 					Draw.rect(
 						leftSegmentRegion,
 						x + Angles.trnsx(rotation, (radius/2 + inRadius/2) * cosMin),
 						y + Angles.trnsy(rotation, (radius/2 + inRadius/2) * cosMin),
+						width,
 						(radius - inRadius) * cosMin,
-						height,
-						rotation
+						rotation + 90f
 					);
 				}
 				default -> {}
