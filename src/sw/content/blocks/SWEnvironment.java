@@ -14,13 +14,16 @@ import sw.world.meta.*;
 
 public class SWEnvironment {
 	public static Block
-	oreVerdigris, oreIron, fissure, oreGraphite, collapsedSilicon, oreAluminium,
+	oreVerdigris, oreIron, fissure, oreGraphite, collapsedSilicon, oreAluminium, exposedCrystalBud,
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
 	
 	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
 	magmaticFlowrock, hotFlowrock,
+
+	encrustedCrystal, softCrust, exposedCrystal, crustWall,
+	encrustedCrystalline, crystalline,
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
 	slagPlug,
@@ -51,6 +54,9 @@ public class SWEnvironment {
 			variants = 4;
 		}};
 		oreAluminium = new OreBlock(SWItems.aluminium) {{
+			variants = 4;
+		}};
+		exposedCrystalBud = new OreBlock("exposed-crystal-bud", Items.thorium) {{
 			variants = 4;
 		}};
 
@@ -146,6 +152,26 @@ public class SWEnvironment {
 			emitLight = true;
 			lightColor = Pal.darkFlame.cpy().a(0.3f);
 			lightRadius = 60f;
+		}};
+		//endregion
+
+		//region crystal
+		crustWall = new StaticWall("crust-wall");
+		encrustedCrystal = new Floor("encrusted-crystal", 4) {{
+			wall = crustWall;
+		}};
+		softCrust = new Floor("soft-crust", 4) {{
+			wall = crustWall;
+		}};
+		exposedCrystal = new Floor("exposed-crystal", 4);
+
+		crystalline = new TallBlock("crystalline") {{
+			variants = 2;
+			clipSize = 192f;
+		}};
+		encrustedCrystalline = new TallBlock("encrusted-crystalline") {{
+			variants = 2;
+			clipSize = 192f;
 		}};
 		//endregion
 
