@@ -22,7 +22,7 @@ public class SWEnvironment {
 	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
 	magmaticFlowrock, hotFlowrock,
 
-	encrustedCrystal, softCrust, exposedCrystal, crustWall,
+	encrustedCrystal, softCrust, exposedCrystal, crustWall, smallCrystal, smallEncrustedCrystal,
 	encrustedCrystalline, crystalline,
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
@@ -113,16 +113,22 @@ public class SWEnvironment {
 		
 		//region flowstone
 		flowstoneWall = new StaticWall("flowstone-wall");
+		flowrockBoulder = new Prop("flowrock-boulder") {{
+			variants = 2;
+		}};
 		flowstone = new Floor("flowstone", 4) {{
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 		}};
 		flowrock = new Floor("flowrock", 4) {{
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 			
 			attributes.set(Attribute.heat, 0.25f);
 		}};
 		flowrockCrater = new Floor("flowrock-crater", 2) {{
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 			
 			attributes.set(Attribute.water, 3f);
 			attributes.set(Attribute.heat, 0.5f);
@@ -131,12 +137,14 @@ public class SWEnvironment {
 			variants = 0;
 			parent = blendGroup = flowrock;
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 			
 			attributes.set(Attribute.water, 4f);
 			attributes.set(Attribute.heat, 0.5f);
 		}};
 		hotFlowrock = new Floor("hot-flowrock", 4) {{
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 			
 			attributes.set(Attribute.heat, 0.75f);
 			
@@ -146,6 +154,7 @@ public class SWEnvironment {
 		}};
 		magmaticFlowrock = new Floor("magmatic-flowrock", 4) {{
 			wall = flowstoneWall;
+			decoration = flowrockBoulder;
 			
 			attributes.set(Attribute.heat, 1f);
 			
@@ -157,13 +166,23 @@ public class SWEnvironment {
 
 		//region crystal
 		crustWall = new StaticWall("crust-wall");
+		smallCrystal = new Prop("small-crystal") {{
+			variants = 2;
+		}};
+		smallEncrustedCrystal = new Prop("small-encrusted-crystal") {{
+			variants = 2;
+		}};
 		encrustedCrystal = new Floor("encrusted-crystal", 4) {{
 			wall = crustWall;
+			decoration = smallEncrustedCrystal;
 		}};
 		softCrust = new Floor("soft-crust", 4) {{
 			wall = crustWall;
+			decoration = smallEncrustedCrystal;
 		}};
-		exposedCrystal = new Floor("exposed-crystal", 4);
+		exposedCrystal = new Floor("exposed-crystal", 4) {{
+			decoration = smallCrystal;
+		}};
 
 		crystalline = new TallBlock("crystalline") {{
 			variants = 2;
