@@ -1,10 +1,12 @@
 package sw.content.blocks;
 
+import arc.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.effect.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -12,6 +14,7 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.part.*;
+import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -25,6 +28,7 @@ public class SWCrafting {
 		cokeOven, engineSmelter, waterBallMill,
 		
 		crusher, blastFurnace,
+		constructionManifold, deconstructionManifold,
 		wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
 		
 		crystalFurnace, rte, kitchenGarden;
@@ -461,6 +465,29 @@ public class SWCrafting {
 					new int[]{0, 1, 8, 9}
 				};
 			}};
+		}};
+
+		constructionManifold = new DrawerConstructor("construction-manifold") {{
+			requirements(Category.units, with());
+			size = 3;
+			rotate = false;
+
+			outputsPayload = false;
+
+			// sillies with load order
+			Events.on(EventType.ClientLoadEvent.class, e -> {
+				filter.addAll(
+					SWDefense.ironWall, SWDefense.ironWallLarge,
+					SWDefense.bloomWall, SWDefense.bloomWallLarge,
+					SWStorage.compactContainer, SWStorage.liquidDistributor
+				);
+			});
+		}};
+		deconstructionManifold = new DrawerDeconstructor("deconstruction-manifold") {{
+			requirements(Category.units, with());
+			size = 3;
+
+			maxPayloadSize = 2.5f;
 		}};
 
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
