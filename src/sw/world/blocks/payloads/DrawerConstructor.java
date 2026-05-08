@@ -121,7 +121,7 @@ public class DrawerConstructor extends Constructor {
 		}
 
 		@Override public float progress() {
-			return progress;
+			return progress / recipe().buildTime;
 		}
 
 		@Override

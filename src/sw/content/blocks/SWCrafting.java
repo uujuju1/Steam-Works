@@ -474,6 +474,16 @@ public class SWCrafting {
 
 			outputsPayload = false;
 
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawConstruct(b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().uiIcon : null),
+				new DrawRegion()
+			);
+
 			// sillies with load order
 			Events.on(EventType.ClientLoadEvent.class, e -> {
 				filter.addAll(
@@ -488,6 +498,19 @@ public class SWCrafting {
 			size = 3;
 
 			maxPayloadSize = 2.5f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawConstruct(b -> ((PayloadDeconstructorBuild) b).deconstructing != null ? ((PayloadDeconstructorBuild) b).deconstructing.icon() : null) {{
+					drawColor = Pal.remove;
+					reverse = true;
+				}},
+				new DrawRegion()
+			);
 		}};
 
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
