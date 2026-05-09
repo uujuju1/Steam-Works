@@ -1,5 +1,6 @@
 package sw.world.blocks.payloads;
 
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
@@ -21,6 +22,8 @@ import sw.world.modules.*;
  */
 public class DrawerConstructor extends Constructor {
 	public SpinConfig spinConfig;
+
+	public Sound buildSound = Sounds.none;
 
 	public DrawBlock drawer = new DrawDefault();
 
@@ -138,6 +141,13 @@ public class DrawerConstructor extends Constructor {
 
 		@Override public float totalProgress() {
 			return time;
+		}
+
+		@Override
+		public void updateTile() {
+			if (payload == null && efficiency > 0 && recipe() != null && progress + buildSpeed * edelta() > recipe().buildTime) buildSound.at(this, 1f, 1f);
+
+			super.updateTile();
 		}
 
 		@Override public float warmup() {

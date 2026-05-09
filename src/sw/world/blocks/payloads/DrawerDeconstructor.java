@@ -1,6 +1,8 @@
 package sw.world.blocks.payloads;
 
+import arc.audio.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -18,6 +20,8 @@ import sw.world.modules.*;
 
 public class DrawerDeconstructor extends PayloadDeconstructor {
 	public SpinConfig spinConfig;
+
+	public Sound deconstructSound = Sounds.none;
 
 	public DrawBlock drawer = new DrawDefault();
 
@@ -72,6 +76,8 @@ public class DrawerDeconstructor extends PayloadDeconstructor {
 
 	public class DrawerDeconstructorBuild extends PayloadDeconstructorBuild implements HasSpin {
 		public SpinModule spin;
+
+		public boolean isDeconstructing;
 
 		@Override
 		public boolean acceptPayload(Building source, Payload payload) {
@@ -130,6 +136,20 @@ public class DrawerDeconstructor extends PayloadDeconstructor {
 
 		@Override public float totalProgress() {
 			return time;
+		}
+
+		@Override
+		public void updateTile() {
+			super.updateTile();
+
+			if (deconstructing == null) speedScl = Mathf.approachDelta(speedScl, 0, 0.1f);
+
+			if (deconstructing != null) isDeconstructing = true;
+
+			if (isDeconstructing && deconstructing == null) {
+				deconstructSound.at(this, 1f, 1f);
+				isDeconstructing = false;
+			}
 		}
 
 		@Override public float warmup() {

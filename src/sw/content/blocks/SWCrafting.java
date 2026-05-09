@@ -14,6 +14,7 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.part.*;
+import sw.gen.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -472,7 +473,11 @@ public class SWCrafting {
 			size = 3;
 			rotate = false;
 
+			ambientSound = SWSounds.welding;
+			ambientSoundVolume = 0.25f;
 			outputsPayload = false;
+			buildSpeed = 1f;
+			buildSound = Sounds.payloadDrop2;
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -481,7 +486,19 @@ public class SWCrafting {
 					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawConstruct(b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().uiIcon : null),
-				new DrawRegion()
+				new DrawRegion(),
+				new DrawQuadArms() {{
+					armSpeedScl = 0.01f;
+					armHeight = 1f;
+					armLength = 14f;
+					armExtension = 2f;
+					maxTipRadius = 6f;
+
+					layer = Layer.blockBuilding + 5f;
+
+					tipEffect = SWFx.weld;
+					tipEffectChance = 0.075f;
+				}}
 			);
 
 			// sillies with load order
@@ -492,12 +509,27 @@ public class SWCrafting {
 					SWStorage.compactContainer, SWStorage.liquidDistributor
 				);
 			});
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9},
+					new int[]{3, 6, 9, 0},
+					new int[]{6, 9, 0, 3},
+					new int[]{9, 0, 3, 6}
+				};
+			}};
 		}};
 		deconstructionManifold = new DrawerDeconstructor("deconstruction-manifold") {{
 			requirements(Category.units, with());
 			size = 3;
 
+			ambientSound = SWSounds.welding;
+			ambientSoundVolume = 0.25f;
 			maxPayloadSize = 2.5f;
+			deconstructSpeed = 1f;
+			deconstructSound = Sounds.blockBreak2;
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
@@ -509,8 +541,31 @@ public class SWCrafting {
 					drawColor = Pal.remove;
 					reverse = true;
 				}},
-				new DrawRegion()
+				new DrawRegion(),
+				new DrawQuadArms() {{
+					armSpeedScl = 0.01f;
+					armHeight = 1f;
+					armLength = 14f;
+					armExtension = 2f;
+					maxTipRadius = 6f;
+
+					layer = Layer.blockBuilding + 5f;
+
+					tipEffect = new WrapEffect(SWFx.unweld, Pal.remove);
+					tipEffectChance = 0.075f;
+				}}
 			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9},
+					new int[]{3, 6, 9, 0},
+					new int[]{6, 9, 0, 3},
+					new int[]{9, 0, 3, 6}
+				};
+			}};
 		}};
 
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
