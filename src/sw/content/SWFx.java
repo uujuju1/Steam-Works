@@ -395,15 +395,29 @@ public class SWFx {
 
       Draw.rect();
     }),
-    unweld = new Effect(20f, e -> {
-      Draw.color(e.color);
+    weldConstruct = new Effect(20f, e -> {
+      Draw.color(Pal.accent);
 
-      for(int i : Mathf.signs) Drawf.tri(e.x, e.y, 2f, 4f * e.foutpowdown(), i * 90f + 90f);
-
-	    Lines.stroke(e.fout());
+	    Lines.stroke(e.fout() / 2);
 	    Angles.randLenVectors(e.id, 10, 16f * e.finpow(), (x, y) -> {
 		    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.foutpow());
 	    });
+    }),
+    weldDeconstruct = new Effect(20f, e -> {
+      Draw.color(Pal.remove);
+
+      Lines.stroke(e.fout() / 2f);
+      rand.setSeed(e.id);
+      for (int i = 0; i < 10; i++) {
+        float angle = rand.random(360f);
+        temp.trns(angle, rand.random(16f) * e.finpow());
+        Lines.lineAngle(
+          e.x + Angles.trnsx(angle - 90f, 1f) + temp.x,
+          e.y + Angles.trnsy(angle - 90f, 1f) + temp.y,
+          angle,
+          e.foutpow() * 3f
+        );
+      }
     }),
     wispFire = new WrapEffect(parallaxFire, Color.white, 4f),
 

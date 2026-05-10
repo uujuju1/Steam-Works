@@ -473,6 +473,12 @@ public class SWCrafting {
 			size = 3;
 			rotate = false;
 
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 50f / 10f;
+				efficiencyScale = s -> 1f + (s - 0.5f) / 4.5f;
+			}});
+
 			ambientSound = SWSounds.welding;
 			ambientSoundVolume = 0.25f;
 			outputsPayload = false;
@@ -488,16 +494,19 @@ public class SWCrafting {
 				new DrawConstruct(b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().uiIcon : null),
 				new DrawRegion(),
 				new DrawQuadArms() {{
-					armSpeedScl = 0.01f;
+					armSpeedScl = 25f;
 					armHeight = 1f;
 					armLength = 14f;
 					armExtension = 2f;
-					maxTipRadius = 6f;
+					armBaseOffset = 10f;
+					maxTipRadius = b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().size * 4f : 0f;
+
+					progressCurve = a -> 1f - Interp.smooth.apply(Math.min(a / 0.9f, -10f * (a - 1f)));
 
 					layer = Layer.blockBuilding + 5f;
 
-					tipEffect = SWFx.weld;
-					tipEffectChance = 0.075f;
+					tipEffect = SWFx.weldConstruct;
+					tipEffectChance = 0.2f;
 				}}
 			);
 
@@ -542,17 +551,21 @@ public class SWCrafting {
 					reverse = true;
 				}},
 				new DrawRegion(),
-				new DrawQuadArms() {{
-					armSpeedScl = 0.01f;
+				new DrawQuadSaws() {{
+					armSpeedScl = 25f;
 					armHeight = 1f;
 					armLength = 14f;
 					armExtension = 2f;
-					maxTipRadius = 6f;
+					armBaseOffset = 10f;
+					maxTipRadius = b -> ((PayloadDeconstructorBuild) b).deconstructing != null ? ((PayloadDeconstructorBuild) b).deconstructing.size() / 2f : 0f;
+					rotateSpeed = 25f;
+
+					progressCurve = a -> Interp.smooth.apply(Math.min(a / 0.9f, -10f * (a - 1f)));
 
 					layer = Layer.blockBuilding + 5f;
 
-					tipEffect = new WrapEffect(SWFx.unweld, Pal.remove);
-					tipEffectChance = 0.075f;
+					tipEffect = SWFx.weldDeconstruct;
+					tipEffectChance = 0.2f;
 				}}
 			);
 
