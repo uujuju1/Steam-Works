@@ -17,7 +17,7 @@ import sw.math.*;
 
 public class DrawQuadArms extends BlockDrawer {
 	public float armBaseOffset = 8f;
-	public float armLength = 1f;
+	public float armLength = 12f;
 	public float armExtension = 0f;
 
 	public Floatf<Building> maxTipRadius = b -> 1f;

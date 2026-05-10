@@ -1,11 +1,13 @@
 package sw.content.blocks;
 
 import arc.*;
+import arc.graphics.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.game.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -27,7 +29,7 @@ public class SWStorage {
 		compactContainer,
 		liquidDistributor, liquidBasin,
 		spring,
-		coreScaffold, coreMole;
+		coreScaffold, coreMole, coreBunker;
 
 	public static void load() {
 		compactContainer = new StorageBlock("compact-container") {{
@@ -149,10 +151,35 @@ public class SWStorage {
 			
 			fadeOutInterp = a -> Interp.swingOut.apply(Mathf.clamp(2f * (1f - a) - 1f));
 		}};
+		coreBunker = new FallCore("core-bunker") {{
+			requirements(Category.effect, with(
+				SWItems.verdigris, 500,
+				SWItems.aluminium, 300,
+				Items.graphite, 200
+			));
+			researchCost = with(
+				SWItems.verdigris, 2000,
+				SWItems.aluminium, 1000,
+				Items.graphite, 1500
+			);
+			size = 5;
+			health = 4500;
+			unitType = SWUnitTypes.rho;
+			itemCapacity = 9000;
+			unitCapModifier = 20;
+
+			landDuration = 60f;
+			landZoomInterp = new Interp.PowIn(4);
+			launchEffect = new MultiEffect(
+				Fx.launch,
+				new WrapEffect(Fx.dynamicExplosion, Color.white, 5f)
+			);
+		}};
 		
 		Events.on(EventType.ClientLoadEvent.class, e -> {
 			putSchem(coreScaffold, Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU="));
 			putSchem(coreMole, Schematics.readBase64("bXNjaAF4nBXLSwqAIBhF4euDiGorrqKxK4gGZv9A8IUKDaK9p5wz/SAgJGQ0gTDvqZBOnrDYFBvFpk0Gfz+sN1VbXG4uRQCTNxf5Cn6cDFt9lO1QhSEBNu79NxEWeA=="));
+			putSchem(coreBunker, Schematics.readBase64("bXNjaAF4nCXLMQqAIBQG4F/RhoTO0AW8RM2dIBrM3iDVM9RoiO5eEN/8QUMrKHY7wfQxUdudvFJC7SMX4jK4A/J+YBbKPoWjhMgAqs3NtGXIcRJo8mX9d+38X0AA8iNexXcYVw=="));
 		});
 	}
 	

@@ -399,7 +399,7 @@ public class SWFx {
       Draw.color(Pal.accent);
 
 	    Lines.stroke(e.fout() / 2);
-	    Angles.randLenVectors(e.id, 10, 16f * e.finpow(), (x, y) -> {
+	    Angles.randLenVectors(e.id, 5, 16f * e.finpow(), (x, y) -> {
 		    Lines.lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.foutpow());
 	    });
     }),
@@ -408,7 +408,7 @@ public class SWFx {
 
       Lines.stroke(e.fout() / 2f);
       rand.setSeed(e.id);
-      for (int i = 0; i < 10; i++) {
+      for (int i = 0; i < 5; i++) {
         float angle = rand.random(360f);
         temp.trns(angle, rand.random(16f) * e.finpow());
         Lines.lineAngle(

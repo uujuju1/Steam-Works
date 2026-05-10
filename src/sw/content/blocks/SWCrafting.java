@@ -494,9 +494,9 @@ public class SWCrafting {
 				new DrawConstruct(b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().uiIcon : null),
 				new DrawRegion(),
 				new DrawQuadArms() {{
-					armSpeedScl = 25f;
+					armSpeedScl = 50f;
 					armHeight = 1f;
-					armLength = 14f;
+					armLength = 10f;
 					armExtension = 2f;
 					armBaseOffset = 10f;
 					maxTipRadius = b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().size * 4f : 0f;
@@ -534,6 +534,12 @@ public class SWCrafting {
 			requirements(Category.units, with());
 			size = 3;
 
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 50f / 10f;
+				efficiencyScale = s -> 1f + (s - 0.5f) / 4.5f;
+			}});
+
 			ambientSound = SWSounds.welding;
 			ambientSoundVolume = 0.25f;
 			maxPayloadSize = 2.5f;
@@ -552,9 +558,9 @@ public class SWCrafting {
 				}},
 				new DrawRegion(),
 				new DrawQuadSaws() {{
-					armSpeedScl = 25f;
+					armSpeedScl = 50f;
 					armHeight = 1f;
-					armLength = 14f;
+					armLength = 10f;
 					armExtension = 2f;
 					armBaseOffset = 10f;
 					maxTipRadius = b -> ((PayloadDeconstructorBuild) b).deconstructing != null ? ((PayloadDeconstructorBuild) b).deconstructing.size() / 2f : 0f;
