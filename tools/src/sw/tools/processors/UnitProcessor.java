@@ -69,7 +69,7 @@ public class UnitProcessor implements SpriteProcessor {
 		if (unit.fullIcon == unit.region) {
 			Seq<GeneratedRegion> fullRegions = new Seq<>();
 			
-			unit.rotors.each(rotor -> rotor.layerOffset < 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+			unit.rotors.each(rotor -> rotor.layerOffset < 0 && ((rotor.mirrored && rotor.x != 0) || !rotor.flipped), rotor -> {
 				fullRegions.add(new GeneratedRegion(
 					"uwu",
 					grow(
@@ -136,7 +136,7 @@ public class UnitProcessor implements SpriteProcessor {
 				fullRegions.add(new GeneratedRegion("uwu", pix, null));
 			});
 			
-			unit.rotors.each(rotor -> rotor.layerOffset >= 0 && (rotor.mirrored || !rotor.flipped), rotor -> {
+			unit.rotors.each(rotor -> rotor.layerOffset >= 0 && ((rotor.mirrored && rotor.x != 0) || !rotor.flipped), rotor -> {
 				fullRegions.add(new GeneratedRegion(
 					"uwu",
 					grow(
@@ -181,7 +181,7 @@ public class UnitProcessor implements SpriteProcessor {
 	}
 	
 	public void processRotors(SWUnitType unit) {
-		unit.rotors.each(rotor -> !rotor.flipped, rotor -> {
+		unit.rotors.each(rotor -> !rotor.flipped && rotor.genSprites, rotor -> {
 			if (!rotor.blurRegion.found()) {
 				rotor.blurRegion = new GeneratedRegion(
 					(rotor.isSuffix ? unit.name + rotor.name : rotor.name) + "-blur",

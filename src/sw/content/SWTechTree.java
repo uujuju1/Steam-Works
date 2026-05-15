@@ -156,7 +156,9 @@ public class SWTechTree {
         node(assemblerArm, with(new NonUnlockable()), () -> {});
       });
       //endregion
-		  node(coreMole, with(new SectorComplete(abandonedMaze)), () -> {});
+		  node(coreMole, with(new SectorComplete(abandonedMaze)), () -> {
+        node(coreBunker, with(new SectorComplete(bayOfEmbers)), () -> {});
+      });
     });
   }
 

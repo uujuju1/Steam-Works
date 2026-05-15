@@ -83,9 +83,11 @@ public class SWUnitType extends UnitType {
     Seq<UnitRotor> rotorSeq = new Seq<>();
     
     for(UnitRotor rotor : rotors) {
-      var r = rotor.copy();
-      r.flip();
-      rotorSeq.add(r);
+      if (rotor.mirrored) {
+        var r = rotor.copy();
+        r.flip();
+        rotorSeq.add(r);
+      }
       rotorSeq.add(rotor);
     }
     rotors = rotorSeq;
@@ -156,6 +158,10 @@ public class SWUnitType extends UnitType {
      * Flips the sprite during sprite generation
      */
     public boolean flipped;
+    /**
+     * Used for rotors that share a sprite, so that outlines aren't stacked on top of one another.
+		 */
+    public boolean genSprites = true;
     /**
      * If true, this rotor rotates along with the unit.
      */

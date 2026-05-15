@@ -16,6 +16,7 @@ public class EntityMaps {
 		registerEntity(CollisionlessLegsUnit.class, CollisionlessLegsUnit::new);
 		registerUnit("sw-lambda", CollisionlessLegsUnit::new);
 		registerUnit("sw-rho", UnitEntity::create);
+		registerUnit("sw-psi", CopterUnit::new);
 		registerUnit("sw-courier", BuildingTetherPayloadUnit::create);
 		registerUnit("sw-ball-lightning", TimedKillUnit::create);
 	}

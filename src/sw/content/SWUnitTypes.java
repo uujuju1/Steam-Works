@@ -16,6 +16,7 @@ import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.type.weapons.*;
 import sw.entities.bullet.*;
 import sw.gen.*;
 import sw.type.*;
@@ -27,7 +28,8 @@ public class SWUnitTypes {
 		ballistra,
 		wisp,
 		ballLightning,
-	  lambda, rho;
+
+	  lambda, rho, psi;
 
   public static void load() {
 		//region copters
@@ -51,6 +53,8 @@ public class SWUnitTypes {
 				x = 0f;
 				y = 3.75f;
         blades = 3;
+
+				mirrored = true;
 
 				speed = 10f;
 				shineSpeed = -2f;
@@ -107,6 +111,8 @@ public class SWUnitTypes {
 					y = -9.75f;
 					rotation = 90f;
 					blades = 2;
+
+					mirrored = true;
 					
 					speed = 8f;
 					shineSpeed = -2f;
@@ -649,6 +655,97 @@ public class SWUnitTypes {
 					rangeOverride = r;
 				}};
 			}});
+		}};
+
+		psi = new SWUnitType("psi") {{
+			health = 250;
+			speed = 4f;
+			accel = drag = 0.05f;
+			rotateSpeed = 3f;
+			fallSpeed = 0.005f;
+			hitSize = 20f;
+			buildSpeed = 1.25f;
+			mineTier = 1;
+			mineSpeed = 10;
+
+			flying = true;
+
+			for (Point2 offset : Geometry.d8edge) {
+				parts.add(new RegionPart("-gear") {{
+					layerOffset = -0.001f;
+
+					x = 5.5f * offset.x;
+					y = 5.5f * offset.y;
+
+					moveRot = offset.x * offset.y * 360;
+
+					progress = PartProgress.time.loop(360f);
+				}});
+			}
+
+			rotors.add(
+				new UnitRotor("-rotor", true) {{
+					x = 12f;
+					y = 0f;
+					rotation = 90f;
+					blades = 2;
+
+					mirrored = true;
+
+					speed = 12f;
+					shineSpeed = -3f;
+
+					blurAlpha = 0.5f;
+				}}
+			);
+
+			for (int i : Mathf.signs) {
+				rotors.add(
+					new UnitRotor("-rotor-vertical", true) {{
+						x = 0f;
+						y = 12f * i;
+						rotation = 0f;
+						blades = 2;
+						genSprites = i == 1;
+
+						speed = 12f * i;
+						shineSpeed = -3f * i;
+
+						blurAlpha = 0.5f;
+					}}
+				);
+			}
+
+			weapons.add(new TeleportWeapon(120f));
+
+			for (Point2 offset : Geometry.d4) {
+				weapons.add(new RepairBeamWeapon() {{
+					x = 12f * offset.x;
+					y = 12f * offset.y;
+
+					rotate = true;
+					rotateSpeed = 361f;
+					minWarmup = 0.8f;
+					mirror = false;
+
+					shootY = 0f;
+					beamWidth = 0.7f;
+					aimDst = 0f;
+					shootCone = 15f;
+
+					repairSpeed = 10f;
+					fractionRepairSpeed = 0f;
+					recentDamageMultiplier = 0f;
+
+					targetUnits = targetBuildings = true;
+					laserColor = Pal.accent;
+					healColor = Pal.accent;
+
+					bullet = new BulletType(){{
+						maxRange = 120f;
+					}};
+				}});
+			}
 		}};
 		//endregion
   }

@@ -153,18 +153,16 @@ public class SWStorage {
 		}};
 		coreBunker = new FallCore("core-bunker") {{
 			requirements(Category.effect, with(
-				SWItems.verdigris, 500,
-				SWItems.aluminium, 300,
-				Items.graphite, 200
+				SWItems.verdigris, 1500,
+				SWItems.aluminium, 800,
+				SWItems.bloom, 600,
+				Items.silicon, 900,
+				Items.graphite, 500
 			));
-			researchCost = with(
-				SWItems.verdigris, 2000,
-				SWItems.aluminium, 1000,
-				Items.graphite, 1500
-			);
+			researchCost = mult(requirements, 4);
 			size = 5;
 			health = 4500;
-			unitType = SWUnitTypes.rho;
+			unitType = SWUnitTypes.psi;
 			itemCapacity = 9000;
 			unitCapModifier = 20;
 
