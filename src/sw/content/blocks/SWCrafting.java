@@ -469,7 +469,12 @@ public class SWCrafting {
 		}};
 
 		constructionManifold = new DrawerConstructor("construction-manifold") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.aluminium, 100,
+				SWItems.verdigris, 120,
+				SWItems.bloom, 50,
+				Items.silicon, 150
+			));
 			size = 3;
 			rotate = false;
 
@@ -531,7 +536,12 @@ public class SWCrafting {
 			}};
 		}};
 		deconstructionManifold = new DrawerDeconstructor("deconstruction-manifold") {{
-			requirements(Category.units, with());
+			requirements(Category.units, with(
+				SWItems.aluminium, 100,
+				SWItems.verdigris, 120,
+				SWItems.bloom, 50,
+				Items.silicon, 150
+			));
 			size = 3;
 
 			consume(new ConsumeSpin() {{

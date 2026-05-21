@@ -32,6 +32,9 @@ public class SWTechTree {
           node(crusher, with(new OnSector(bayOfEmbers)), () -> {});
           node(blastFurnace, with(new OnSector(bayOfEmbers)), () -> {});
         });
+        node(constructionManifold, with(new OnSector(brokenCorridors)), () -> {
+          node(deconstructionManifold);
+        });
       });
       // endregion
       // region defense
@@ -62,10 +65,14 @@ public class SWTechTree {
         node(suspensionConveyor, () -> {
           node(belt, with(new Research(combustionEngine)), () -> {});
         });
-        node(mechanicalPayloadConveyor, with(new OnSector(bayOfEmbers)), () -> {
-          node(mechanicalPayloadRouter);
-          node(mechanicalPayloadLoader, () -> node(mechanicalPayloadUnloader));
-          node(mechanicalArm, () -> node(courierPort));
+        node(courierPort, with(new OnSector(brokenCorridors)), () -> {
+          node(mechanicalArm, () -> {
+            node(mechanicalPayloadLoader);
+            node(mechanicalPayloadUnloader);
+          });
+          node(mechanicalPayloadConveyor, with(new OnSector(bayOfEmbers)), () -> {
+            node(mechanicalPayloadRouter);
+          });
         });
         node(mechanicalConduit, with(new Research(liquidCollector)), () -> {
           node(mechanicalConduitJunction, () -> node(mechanicalConduitTunnel));
@@ -92,7 +99,7 @@ public class SWTechTree {
           });
           node(flywheel, () -> {});
           node(spring, with(new Research(mechanicalPayloadUnloader)), () -> {});
-          node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> {});
+          node(shaftTransmission, Seq.with(new Research(mechanicalAssembler)), () -> node(adjustableGearTrain));
         });
       });
       //endregion
@@ -118,7 +125,7 @@ public class SWTechTree {
           nodeProduce(coke, () -> {});
         });
         nodeProduce(iron, () -> {
-          nodeProduce(SWItems.aluminium, () -> {});
+          nodeProduce(aluminium, () -> {});
           nodeProduce(Items.sand, () -> {
             nodeProduce(Items.silicon, () -> {});
           });
@@ -132,17 +139,16 @@ public class SWTechTree {
       // endregion
       // region sectors
       root("sw-sectors", crevasse, () -> {
-        node(theDelta, with(new SectorComplete(crevasse)), () -> {
-          node(abandonedMaze, with(new SectorComplete(theDelta)), () -> {
-            node(cavern, with(
-              new SectorComplete(abandonedMaze),
-              new Research(coreMole)
-            ), () -> {
+        node(theDelta, () -> {
+          node(abandonedMaze, () -> {
+            node(cavern, with(new Research(coreMole)), () -> {
 
             });
           });
-          node(liveStorm, with(new SectorComplete(theDelta), new Produce(aluminium)), () -> {});
-          node(bayOfEmbers, with(new Produce(aluminium), new Research(trebuchet)), () -> {});
+          node(liveStorm, with(new Produce(aluminium)), () -> {});
+          node(brokenCorridors, with(new Produce(aluminium), new Research(trebuchet)), () -> {
+            node(bayOfEmbers, () -> {});
+          });
         });
       });
       // endregion
@@ -156,7 +162,7 @@ public class SWTechTree {
         node(assemblerArm, with(new NonUnlockable()), () -> {});
       });
       //endregion
-		  node(coreMole, with(new SectorComplete(abandonedMaze)), () -> {
+		  node(coreMole, with(new OnSector(abandonedMaze)), () -> {
         node(coreBunker, with(new SectorComplete(bayOfEmbers)), () -> {});
       });
     });

@@ -557,7 +557,7 @@ public class SWPower {
 
 		flywheel = new AxleBlock("flywheel") {{
 			requirements(Category.power, with(
-				SWItems.bloom, 200,
+				SWItems.bloom, 100,
 				SWItems.aluminium, 50,
 				SWItems.verdigris, 100,
 				Items.silicon, 30,
@@ -740,7 +740,13 @@ public class SWPower {
 			);
 		}};
 		adjustableGearTrain = new ShaftTransmission("adjustable-gear-train") {{
-			requirements(Category.power, with());
+			requirements(Category.power, with(
+				SWItems.bloom, 50,
+				SWItems.aluminium, 150,
+				SWItems.verdigris, 120,
+				Items.silicon, 130,
+				Items.graphite, 140
+			));
 			size = 3;
 
 			drawer = new DrawMulti(

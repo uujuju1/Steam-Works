@@ -12,6 +12,7 @@ import sw.type.*;
 public class SWSectorPresets {
 	public static SectorPreset
 		crevasse, theDelta,
+		brokenCorridors,
 		liveStorm, bayOfEmbers,
 		abandonedMaze, cavern;
 
@@ -126,6 +127,27 @@ public class SWSectorPresets {
 			landMusic = SWMusics.pendaratanPertama;
 
 			core = (CoreBlock) SWStorage.coreScaffold;
+		}};
+		brokenCorridors = new PositionSectorPreset("broken-corridors", SWPlanets.wendi, 6) {{
+			x = -100;
+			y = 600f;
+			width = height = 200;
+			icon = () -> Icon.production;
+
+			landMusic = SWMusics.motorPerpetuo;
+
+			rules = r -> {
+				r.winWave = 10;
+				r.weather.add(new Weather.WeatherEntry(
+					SWWeathers.souesiteDust,
+					5f * Time.toMinutes,
+					7.5f * Time.toMinutes,
+					2.5f * Time.toMinutes,
+					5f * Time.toMinutes
+				));
+			};
+
+			core = (CoreBlock) SWStorage.coreMole;
 		}};
 	}
 }
