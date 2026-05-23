@@ -17,6 +17,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.weapons.*;
+import sw.ai.*;
 import sw.entities.bullet.*;
 import sw.gen.*;
 import sw.type.*;
@@ -506,6 +507,7 @@ public class SWUnitTypes {
 	  }};
 
 		ballLightning = new BallLightningUnitType("ball-lightning") {{
+			controller = u -> new RandomAI();
 			omniMovement = false;
 			hidden = true;
 			lifetime = 600f;
