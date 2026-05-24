@@ -566,8 +566,9 @@ public class SWUnitTypes {
 			fallSpeed = buildSpeed = 1f;
 			mineTier = 1;
 			mineSpeed = 5;
+			boostMultiplier = 5f;
 	    coreUnitDock = lowAltitude = true;
-			flying = true;
+			groundLayer = flyingLayer = Layer.flyingUnitLow;
 
 			legCount = 8;
 			legGroupSize = 2;
