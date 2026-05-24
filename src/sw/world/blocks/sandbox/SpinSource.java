@@ -21,7 +21,7 @@ public class SpinSource extends AxleBlock {
 		category = Category.power;
 		group = BlockGroup.power;
 
-		config(float[].class, (SpinSourceBuild build, float[] values) -> {
+		config(Float[].class, (SpinSourceBuild build, Float[] values) -> {
 			build.targetSpeed = values[0];
 			build.force = values[1];
 		});
@@ -32,16 +32,16 @@ public class SpinSource extends AxleBlock {
 		public float targetSpeed, force;
 
 		@Override
-		public float[] config() {
-			return new float[]{targetSpeed, force};
+		public Float[] config() {
+			return new Float[]{targetSpeed, force};
 		}
 
 		@Override
 		public void buildConfiguration(Table cont) {
 			cont.table(Styles.black6, table -> {
-				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new float[]{value / 10f, force}), () -> targetSpeed * 10f);
+				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new Float[]{value / 10f, force}), () -> targetSpeed * 10f);
 				table.image(Tex.whiteui).color(Color.gray).padTop(10f).padBottom(10f).height(4f).growX().row();
-				SWTables.buildFloatSlider(table, "@stat.sw-spin-output-force", value -> configure(new float[]{targetSpeed, value / 600f}), () -> force * 600f);
+				SWTables.buildFloatSlider(table, "@stat.sw-spin-output-force", value -> configure(new Float[]{targetSpeed, value / 600f}), () -> force * 600f);
 			}).margin(10f);
 		}
 
@@ -73,14 +73,4 @@ public class SpinSource extends AxleBlock {
 			force = read.f();
 		}
 	}
-
-//	public static class SpinSourceEntry {
-//		public float targetSpeed;
-//		public float force;
-//
-//		public SpinSourceEntry(float targetSpeed, float force) {
-//			this.targetSpeed = targetSpeed;
-//			this.force = force;
-//		}
-//	}
 }

@@ -45,20 +45,14 @@ public class MechanicalArm extends PayloadBlock {
 		rotate = true;
 		drawArrow = false;
 
-		config(ArmConfig.class, (MechanicalArmBuild build, ArmConfig value) -> {
-			if (value.takeOffset != null) {
-				build.takePos = Point2.unpack(build.pos()).add(value.takeOffset).pack();
-			} else {
-				build.takePos = value.takePos;
-			}
-			if (value.putOffset != null) {
-				build.putPos = Point2.unpack(build.pos()).add(value.putOffset).pack();
-			} else {
-				build.putPos = value.putPos;
-			}
+		config(int[].class, (MechanicalArmBuild build, int[] value) -> {
+			build.takePos = value[0];
+			build.putPos = value[1];
+		});
 
-			build.updateTargets();
-			build.updatePath();
+		config(Point2[].class, (MechanicalArmBuild build, Point2[] value) -> {
+			build.takePos = Point2.unpack(build.pos()).add(value[0]).pack();
+			build.putPos = Point2.unpack(build.pos()).add(value[1]).pack();
 		});
 	}
 
@@ -117,23 +111,6 @@ public class MechanicalArm extends PayloadBlock {
 		stats.add(Stat.speed, armSpeed / 8f, StatUnit.tilesSecond);
 	}
 
-	public static class ArmConfig {
-		public int takePos = -1;
-		public int putPos = -1;
-
-		public Point2 takeOffset;
-		public Point2 putOffset;
-
-		public ArmConfig(int takePos, int putPos) {
-			this.takePos = takePos;
-			this.putPos = putPos;
-		}
-		public ArmConfig(Point2 takeOffset, Point2 putOffset) {
-			this.takeOffset = takeOffset;
-			this.putOffset = putOffset;
-		}
-	}
-
 	public class MechanicalArmBuild extends PayloadBlockBuild<Payload> implements HasSpin, HasArm {
 		public SpinModule spin;
 
@@ -168,8 +145,13 @@ public class MechanicalArm extends PayloadBlock {
 			if (didSomething) updateTargets();
 		}
 
-		@Override public ArmConfig config() {
-			return new ArmConfig(Point2.unpack(takePos).sub(tileX(), tileY()), Point2.unpack(putPos).sub(tileX(), tileY()));
+//		@Override public ArmConfig config() {
+//			return new ArmConfig(Point2.unpack(takePos).sub(tileX(), tileY()), Point2.unpack(putPos).sub(tileX(), tileY()));
+//		}
+
+		@Override
+		public Point2[] config() {
+			return new Point2[]{Point2.unpack(takePos).sub(tileX(), tileY()), Point2.unpack(putPos).sub(tileX(), tileY())};
 		}
 
 		@Override
@@ -185,7 +167,6 @@ public class MechanicalArm extends PayloadBlock {
 
 			drawer.draw(this);
 
-			updatePath();
 			payVector.set(currentArmPos.x - x, currentArmPos.y - y);
 			if (Vars.world.tile(takePos) != null && Vars.world.tile(putPos) != null){
 				Draw.z(Layer.blockOver);
@@ -371,10 +352,12 @@ public class MechanicalArm extends PayloadBlock {
 			TypeIO.readVec2(read, targetPos);
 			TypeIO.readVec2(read, startPos);
 			moveProgress = read.f();
+
+			updatePath();
 		}
 
 		public void selectPos(int pos) {
-			configure(new ArmConfig(puttingConfig ? takePos : pos, puttingConfig ? pos : putPos));
+			configure(new int[]{puttingConfig ? takePos : pos, puttingConfig ? pos : putPos});
 		}
 
 		@Override public boolean shouldConsume() {
@@ -450,6 +433,7 @@ public class MechanicalArm extends PayloadBlock {
 				float total = targetPos.dst(startPos)/armSpeed;
 
 				moveProgress += edelta();
+				updatePath();
 
 				if (moveProgress >= total) act();
 			}

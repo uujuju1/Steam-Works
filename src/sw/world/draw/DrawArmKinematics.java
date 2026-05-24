@@ -42,16 +42,17 @@ public class DrawArmKinematics extends BlockDrawer {
 
 		Vec2 pos = cast(build).getArmPos();
 
-		drawArm(build.x, build.y, pos.x - build.x, pos.y - build.y);
+		drawArm(build.x, build.y, pos.x - build.x, pos.y - build.y, true);
 
 		Draw.z(z);
 		Draw.reset();
 	}
 
-	public void drawArm(float x, float y, float offsetX, float offsetY) {
+	public void drawArm(float x, float y, float offsetX, float offsetY, boolean doParallax) {
 		InverseKinematics.solve(armLength, armBaseLength, Tmp.v1.set(-offsetX, -offsetY), true, Tmp.v2);
 
-		Parallax.getParallaxFrom(Tmp.v2.add(x, y).add(offsetX, offsetY), Core.camera.position, armHeight);
+		Tmp.v2.add(x, y).add(offsetX, offsetY);
+		if (doParallax) Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight);
 		Tmp.v1.add(x, y).add(offsetX, offsetY);
 
 		if (armGrabberRegion.found()) Draw.rect(armGrabberRegion, x + offsetX, y + offsetY);
@@ -84,7 +85,7 @@ public class DrawArmKinematics extends BlockDrawer {
 
 		Vec2 pos = Tmp.v1.set(armStartingOffset).rotate(plan.rotation * 90f);
 
-		drawArm(plan.drawx(), plan.drawy(), pos.x, pos.y);
+		drawArm(plan.drawx(), plan.drawy(), pos.x, pos.y, plan.worldContext);
 
 		Draw.z(z);
 		Draw.reset();

@@ -21,9 +21,9 @@ public class DrawQuadSaws extends DrawQuadArms {
 	}
 
 	@Override
-	public void drawArm(float tipX, float tipY, float baseX, float baseY) {
+	public void drawArm(float tipX, float tipY, float baseX, float baseY, boolean doParallax) {
 		Draw.rect(tipRegion, tipX, tipY, totalProgress);
-		super.drawArm(tipX, tipY, baseX, baseY);
+		super.drawArm(tipX, tipY, baseX, baseY, doParallax);
 	}
 
 	@Override

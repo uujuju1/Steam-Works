@@ -64,7 +64,7 @@ public class DrawArm extends BlockDrawer {
 		Tmp.v1.trns(plan.rotation * 90f, (armLength + armExtension)/2f).add(plan.drawx(), plan.drawy());
 
 		Tmp.v2.set(plan.drawx(), plan.drawy()).sub(Tmp.v1).setLength(armLength).add(Tmp.v1);
-		Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight);
+		if (plan.worldContext) Parallax.getParallaxFrom(Tmp.v2, Core.camera.position, armHeight);
 		Tmp.v3.set(Tmp.v2).sub(Tmp.v1).setLength(armExtension);
 
 		Lines.stroke(armBaseRegion.height/4f);

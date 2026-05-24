@@ -49,7 +49,8 @@ public class DrawQuadArms extends BlockDrawer {
 
 			drawArm(
 				tipX + build.x, tipY + build.y,
-				baseX + build.x, baseY + build.y
+				baseX + build.x, baseY + build.y,
+				true
 			);
 
 			if (Mathf.chance(tipEffectChance * build.warmup()) && !Vars.state.isPaused()) {
@@ -59,13 +60,15 @@ public class DrawQuadArms extends BlockDrawer {
 		Draw.z(z);
 	}
 
-	public void drawArm(float tipX, float tipY, float baseX, float baseY) {
-		Vec2 midPos = Parallax.getParallaxFrom(Tmp.v1.trns(Angles.angle(tipX, tipY, baseX, baseY), armLength).add(tipX, tipY), Core.camera.position, armHeight);
+	public void drawArm(float tipX, float tipY, float baseX, float baseY, boolean doParallax) {
+		Vec2 midPos = Tmp.v1.trns(Angles.angle(tipX, tipY, baseX, baseY), armLength).add(tipX, tipY);
+		if (doParallax) Parallax.getParallaxFrom(Tmp.v1, Core.camera.position, armHeight);
 
 		Lines.stroke((float) armBaseRegion.height / 4f);
 		Lines.line(armBaseRegion, baseX, baseY, midPos.x, midPos.y, false);
 
-		Parallax.getParallaxFrom(Tmp.v1.trns(Angles.angle(tipX, tipY, baseX, baseY), armLength + armExtension).add(tipX, tipY), Core.camera.position, armHeight);
+		Tmp.v1.trns(Angles.angle(tipX, tipY, baseX, baseY), armLength + armExtension).add(tipX, tipY);
+		if (doParallax) Parallax.getParallaxFrom(Tmp.v1, Core.camera.position, armHeight);
 
 		Lines.stroke((float) armRegion.height / 4f);
 		Lines.line(armRegion, midPos.x, midPos.y, tipX, tipY, false);
@@ -77,7 +80,7 @@ public class DrawQuadArms extends BlockDrawer {
 			float baseX = armBaseOffset * offset.x + plan.drawx();
 			float baseY = armBaseOffset * offset.y + plan.drawy();
 
-			drawArm(plan.drawx(), plan.drawy(), baseX, baseY);
+			drawArm(plan.drawx(), plan.drawy(), baseX, baseY, plan.worldContext);
 		}
 	}
 }
