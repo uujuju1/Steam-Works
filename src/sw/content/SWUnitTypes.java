@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
-import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
@@ -17,6 +16,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.weapons.*;
+import sw.*;
 import sw.ai.*;
 import sw.entities.bullet.*;
 import sw.gen.*;
@@ -284,8 +284,11 @@ public class SWUnitTypes {
 			circleTarget = true;
 			range = maxRange = 15f * 8f;
 			hitSize = 10f;
+
+			flowfieldPathType = SWVars.pathfind.costPrefferingEmpty;
+			pathCost = SWVars.pathfind.getCost(SWVars.pathfind.costPrefferingEmpty);
 			
-			aiController = FlyingAI::new;
+//			aiController = FlyingAI::new;
 			
 			wrecks = 3;
 			

@@ -19,6 +19,8 @@ public class SWVars implements Loadable {
 
 	public static MusicPlayer musicPlayer;
 
+	public static SWPathfinds pathfind;
+
 	public static boolean showSectorLaunchDialog = true;
 	
 	public static boolean isMod = true;
@@ -117,6 +119,7 @@ public class SWVars implements Loadable {
 	**/
 	public static void loadContent() {
 		Axles.load();
+		pathfind = new SWPathfinds();
 		SWSounds.load();
 		SWItems.load();
 		SWStatusEffects.load();
