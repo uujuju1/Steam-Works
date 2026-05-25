@@ -28,6 +28,29 @@ public class ResourceSource extends PowerGenerator {
 		config(Config.class, (ResourceSourceBuild b, Config config) -> {
 			b.con.set(config);
 		});
+		config(Object[].class, (ResourceSourceBuild b, Object[] value) -> {
+			int itemLength = (int) value[0], liquidLength = (int) value[1];
+			float power = (float) value[2], heat = (float) value[3];
+
+			Config con = new Config();
+
+			con.power = power;
+			con.heat = heat;
+
+			for (int i = 0; i < itemLength; i++) {
+				if (i >= content.items().size) break;
+				boolean val = (boolean) value[4 + i];
+				con.itemBits.set(i, val);
+			}
+
+			for (int i = 0; i < liquidLength; i++) {
+				if (i >= content.liquids().size) break;
+				boolean val = (boolean) value[4 + itemLength + i];
+				con.liquidBits.set(i, val);
+			}
+
+			b.con.set(con);
+		});
 		configClear((ResourceSourceBuild b) -> b.con = new Config());
 	}
 
@@ -50,8 +73,16 @@ public class ResourceSource extends PowerGenerator {
 			});
 		}
 
-		@Override public Config config() {
-			return con;
+		@Override public Object[] config() {
+			Seq<Object> values = Seq.with(content.items().size, content.liquids().size, con.power, con.heat);
+
+			for (int i = 0; i < content.items().size; i++) {
+				values.add(con.itemBits.get(i));
+			}
+			for (int i = 0; i < content.liquids().size; i++) {
+				values.add(con.liquidBits.get(i));
+			}
+			return values.toArray();
 		}
 
 		@Override

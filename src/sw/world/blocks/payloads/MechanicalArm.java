@@ -145,10 +145,6 @@ public class MechanicalArm extends PayloadBlock {
 			if (didSomething) updateTargets();
 		}
 
-//		@Override public ArmConfig config() {
-//			return new ArmConfig(Point2.unpack(takePos).sub(tileX(), tileY()), Point2.unpack(putPos).sub(tileX(), tileY()));
-//		}
-
 		@Override
 		public Point2[] config() {
 			return new Point2[]{Point2.unpack(takePos).sub(tileX(), tileY()), Point2.unpack(putPos).sub(tileX(), tileY())};
