@@ -16,6 +16,6 @@ public class LambdaUnit extends LegsUnit {
 
 	@Override
 	public float speed() {
-		return super.speed() * (Core.input.keyDown(Binding.boost) ? type.boostMultiplier : 1f);
+		return super.speed() * (Core.input.keyDown(Binding.boost) || Core.camera.position.dst(this) > type.buildRange ? type.boostMultiplier : 1f);
 	}
 }
