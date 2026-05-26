@@ -180,7 +180,7 @@ public class SWDistribution {
 		//endregion
 
 		//region payloads
-		mechanicalPayloadConveyor = new PayloadConveyor("mechanical-payload-conveyor") {{
+		mechanicalPayloadConveyor = new SWPayloadConveyor("mechanical-payload-conveyor") {{
 			requirements(Category.units, with(
 				SWItems.aluminium, 10,
 				SWItems.verdigris, 10
