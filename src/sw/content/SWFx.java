@@ -163,6 +163,20 @@ public class SWFx {
       });
     }),
 
+    dustSmokeColor = new Effect(300f, e -> {
+      Color baseColor = e.color;
+
+      Draw.z(Layer.effect + 1);
+      rand.setSeed(e.id);
+      for(int i = 0; i < 20; i++) {
+        Parallax.getParallaxFrom(temp.trns(rand.random(360f), rand.random(4f, 8f) + rand.random(4f, 16f) * e.finpow()).add(e.x, e.y), Core.camera.position, rand.random(1f, 10f) * e.finpow());
+        float x = temp.x, y = temp.y;
+
+        Draw.color(baseColor.cpy().mul(0.75f), baseColor, baseColor.cpy().mul(1.25f), rand.random(1f));
+        Fill.circle(x, y, rand.random(1f, 8f) * (1f - Mathf.pow(e.fin(), rand.random(2f, 20f))));
+      }
+    }),
+
     engineBurn = new Effect(120f, e -> {
       Draw.blend(Blending.additive);
       for(int s = 0; s < 2; s++) {
@@ -212,21 +226,21 @@ public class SWFx {
     }),
 
     groundCrack = new Effect(60f, 64f, e -> {
-        rand.setSeed(e.id);
-        Draw.color(e.color, Color.grays(0.2f), Interp.exp10Out.apply(e.fout()));
-        for(int j = 0; j < 5; j++) {
-          Vec2 lastPos = new Vec2(e.x, e.y);
-          float lastRot = rand.random(360);
+      rand.setSeed(e.id);
+      Draw.color(e.color, Color.grays(0.2f), Interp.exp10Out.apply(e.fout()));
+      for(int j = 0; j < 5f / 8f * e.rotation; j++) {
+        Vec2 lastPos = new Vec2(e.x, e.y);
+        float lastRot = rand.random(360);
 
-          for(int i = 0; i < 8; i++) {
-            temp.trns(lastRot, 4).add(lastPos);
-            Lines.stroke((1.5f - 1f/8f * i) * Interp.exp5Out.apply(e.fout()));
-            Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
-            lastRot += rand.range(90);
-            lastPos.set(temp);
-          }
+        for(int i = 0; i < e.rotation; i++) {
+          temp.trns(lastRot, 4).add(lastPos);
+          Lines.stroke((1.5f - 1f/8f * i) * Interp.exp5Out.apply(e.fout()));
+          Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
+          lastRot += rand.range(90);
+          lastPos.set(temp);
         }
-      }).layer(Layer.block - 1),
+      }
+    }).layer(Layer.block - 1),
 
     healEmber = new Effect(30f, e -> {
       if (!(e.data instanceof Building data)) return;

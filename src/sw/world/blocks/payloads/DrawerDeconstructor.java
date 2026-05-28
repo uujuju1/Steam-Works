@@ -153,7 +153,7 @@ public class DrawerDeconstructor extends PayloadDeconstructor {
 		}
 
 		@Override public float warmup() {
-			return speedScl;
+			return efficiency > 0f ? speedScl : 0f;
 		}
 
 		@Override

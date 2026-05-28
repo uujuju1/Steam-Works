@@ -301,7 +301,7 @@ public class SWDistribution {
 			range = 28f;
 			payloadCapacity = 2.5f;
 			armSpeed = 0.1f;
-			armProgress = Interp.smooth;
+			armProgress = Interp.pow5;
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 1f / 10f;

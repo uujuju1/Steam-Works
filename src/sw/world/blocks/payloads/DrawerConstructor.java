@@ -11,6 +11,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
+import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -24,6 +25,7 @@ public class DrawerConstructor extends Constructor {
 	public SpinConfig spinConfig;
 
 	public Sound buildSound = Sounds.none;
+	public boolean consumerScaleEfficiency = true;
 
 	public DrawBlock drawer = new DrawDefault();
 
@@ -101,7 +103,17 @@ public class DrawerConstructor extends Constructor {
 		}
 		@Override public void drawSelect() {
 			super.drawSelect();
+			drawOverlay(x, y, rotation);
 			if (spinConfig != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
+		}
+
+		@Override
+		public float efficiencyScale() {
+			float mul = 1f;
+			if (consumerScaleEfficiency) for(Consume cons : consumers) {
+				mul *= cons.efficiencyMultiplier(this);
+			}
+			return mul;
 		}
 
 		@Override

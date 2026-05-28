@@ -1,8 +1,10 @@
 package sw.content.blocks;
 
+import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -13,6 +15,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -24,7 +27,7 @@ import static mindustry.type.ItemStack.*;
 public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
-		auger,
+		auger, quarry,
 	
 		castingOutlet,
 		liquidCollector, artesianWell, pumpjack;
@@ -66,7 +69,12 @@ public class SWProduction {
 			health = 160;
 			tier = 2;
 			drillTime = hardnessDrillMultiplier = 240;
-			drillEffect = SWFx.groundCrack;
+			drillEffect = new WrapEffect(SWFx.groundCrack, Color.white, 8) {
+				@Override
+				public void create(float x, float y, float rotation, Color color, Object data){
+					effect.create(x, y, this.rotation, color, data);
+				}
+			};
 			drillEffectRnd = 0f;
 			ambientSound = Sounds.drillCharge;
 			mineRect = new Rect(0, 0, 4, 4);
@@ -177,7 +185,9 @@ public class SWProduction {
 			tier = 4;
 			drillTime = hardnessDrillMultiplier = 67.5f;
 			liquidBoostIntensity = 1f;
-			
+			drillMultipliers.put(Items.thorium, 1f / 1.6f);
+			drillMultipliers.put(SWItems.iron, 3f / (8f / 3f));
+
 			consume(new ConsumeSpin() {{
 				minSpeed = 20f / 10f;
 				maxSpeed = 100f / 10f;
@@ -205,6 +215,90 @@ public class SWProduction {
 					new int[]{3, 9},
 					new int[]{6, 0},
 					new int[]{9, 3}
+				};
+			}};
+		}};
+
+		quarry = new MultiAttributeConstructor("quarry") {{
+			requirements(Category.production, with(
+				SWItems.bloom, 200,
+				SWItems.iron, 230,
+				Items.graphite, 180,
+				Items.silicon, 100,
+				Items.thorium, 80
+			));
+			size = 4;
+			configurable = false;
+			rotate = false;
+			drawArrow = false;
+			outputsPayload = false;
+
+			cutShadow = true;
+			attributeArea = new Rect().setCentered(1, 1, 2);
+
+			baseAttribute = 0f;
+			minAttribute = 4f;
+			attributeScl = 0.25f;
+
+			buildSound = Sounds.drillImpact;
+			ambientSound = Sounds.drillCharge;
+
+			addRecipes(
+				SWAttribute.thoriumRich, SWDefense.thoriumClump
+			);
+			consumeBuilder.clear();
+			consume(new ConsumeSpin() {{
+				minSpeed = 90f / 10f;
+				maxSpeed = 110f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(Axles.halfBlock.position(14f * offset.x, 4 * offset.y, 0, 1f));
+					}
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(Axles.halfBlock.position(4f * offset.x, 14f * offset.y, -90, 1f));
+					}
+				}},
+				new DrawRegion(),
+				new DrawParts() {{
+					for (int i = 0; i < 8; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-nail" + (finalI < 4 ? "-light" : "-dark")) {{
+							outline = false;
+
+							x = Angles.trnsx(finalI * 45f, 10.5f * (finalI % 2 != 0 ? Mathf.sqrt2 : 1f));
+							y = Angles.trnsy(finalI * 45f, 10.5f * (finalI % 2 != 0 ? Mathf.sqrt2 : 1f));
+							rotation = finalI * 45f;
+
+							moveX = Angles.trnsx(finalI * 45f, -4f * (finalI % 2 != 0 ? Mathf.sqrt2 : 1f));
+							moveY = Angles.trnsy(finalI * 45f, -4f * (finalI % 2 != 0 ? Mathf.sqrt2 : 1f));
+
+							progress = params -> {
+								if (!(params instanceof BlockParams blockParams)) return 0f;
+								float a = blockParams.progress;
+								if (a <= 0.2f) return 25 * a * a - 10 * a + 1;
+								if (a >= 0.9f) return 75 * a * a - 135 * a + 61;
+								float s = 0.2f + 7f / 80f * finalI;
+								if (a < s) return 0f;
+								if (a > s + 7f / 80) return 0.25f;
+								return Interp.pow2.apply(80 / 7f * (a - s))/4f;
+							};
+						}});
+					}
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 200 / 600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 4, 5, 8, 9, 12, 13},
 				};
 			}};
 		}};

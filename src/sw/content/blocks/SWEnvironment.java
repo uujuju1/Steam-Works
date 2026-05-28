@@ -182,6 +182,8 @@ public class SWEnvironment {
 		}};
 		exposedCrystal = new Floor("exposed-crystal", 4) {{
 			decoration = smallCrystal;
+
+			attributes.set(SWAttribute.thoriumRich, 1f);
 		}};
 
 		crystalline = new TallBlock("crystalline") {{

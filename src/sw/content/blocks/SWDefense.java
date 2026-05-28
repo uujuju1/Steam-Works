@@ -4,6 +4,7 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -24,7 +25,8 @@ public class SWDefense {
 	public static Block
 		repairStation,
 		grindLamp, lavaLamp, lamparine,
-		ironWall, ironWallLarge, bloomWall, bloomWallLarge;
+		ironWall, ironWallLarge, bloomWall, bloomWallLarge,
+		thoriumClump;
 
 	public static void load() {
 		//region projectors
@@ -241,5 +243,18 @@ public class SWDefense {
 			scaledHealth = 600;
 		}};
 		// endregion
+
+		thoriumClump = new Wall("thorium-clump") {{
+			requirements(Category.defense, with(Items.thorium, 50));
+			size = 2;
+			buildTime = 60 * 10f;
+			buildCostMultiplier = 1f;
+			scaledHealth = 800;
+
+			placeEffect = new MultiEffect(
+				new WrapEffect(SWFx.groundCrack, Items.thorium.color, 16f),
+				new WrapEffect(SWFx.dustSmokeColor, Items.thorium.color)
+			);
+		}};
 	}
 }
