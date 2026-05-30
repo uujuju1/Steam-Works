@@ -11,6 +11,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
@@ -245,7 +246,7 @@ public class SWDefense {
 		// endregion
 
 		thoriumClump = new Wall("thorium-clump") {{
-			requirements(Category.defense, with(Items.thorium, 50));
+			requirements(Category.defense, BuildVisibility.editorOnly, with(Items.thorium, 50));
 			size = 2;
 			buildTime = 60 * 10f;
 			buildCostMultiplier = 1f;

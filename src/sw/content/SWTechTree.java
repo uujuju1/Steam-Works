@@ -21,7 +21,7 @@ import static sw.content.blocks.SWStorage.*;
 import static sw.content.blocks.SWTurrets.*;
 import static sw.content.blocks.SWUnits.*;
 
-@SuppressWarnings("UnusedReturnValue")
+@SuppressWarnings({"UnusedReturnValue", "CodeBlock2Expr"})
 public class SWTechTree {
   public static void load() {
 	  SWPlanets.wendi.techTree = nodeRoot("Steam Works", coreScaffold, () -> {
@@ -107,12 +107,12 @@ public class SWTechTree {
       root("sw-production", mechanicalBore, () -> {
         node(hydraulicDrill, () -> {
           node(mechanicalFracker, () -> {});
-          node(auger, () -> {});
+          node(auger, () -> {
+            node(quarry, with(new NonUnlockable()), () -> {});
+          });
         });
         node(liquidCollector, () -> {
-          node(artesianWell, with(
-            new Produce(solvent)
-          ), () -> {});
+          node(artesianWell, with(new Produce(solvent)), () -> {});
           node(pumpjack, with(new OnSector(abandonedMaze)), () -> {
             node(castingOutlet, with(new Research(liquidBasin)), () -> {});
           });
