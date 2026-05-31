@@ -160,6 +160,12 @@ public class SWGenericCrafter extends AttributeCrafter {
 		@Override public float getForce() {
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * (forceScales ? efficiency : 1) * warmup / getRatio() : 0;
 		}
+
+		@Override
+		public float getProgressIncrease(float base){
+			return super.getProgressIncrease(base) / (scaleLiquidConsumption && efficiencyMultiplier() != 0 ? efficiencyMultiplier() : 1f);
+		}
+
 		@Override public float getTargetSpeed() {
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * (speedScales ? efficiency : 1) * warmup * getRatio() : 0;
 		}

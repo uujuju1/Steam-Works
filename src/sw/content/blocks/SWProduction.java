@@ -191,6 +191,10 @@ public class SWProduction {
 			consume(new ConsumeSpin() {{
 				minSpeed = 20f / 10f;
 				maxSpeed = 100f / 10f;
+
+				minEfficiency = 0.5f;
+				maxEfficiency = 2f;
+				showGraph = true;
 				
 				efficiencyScale = speed -> Mathf.map(speed, 2f, 10f, 0.5f, 2f);
 			}});
@@ -354,8 +358,13 @@ public class SWProduction {
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 0.5f;
-				maxSpeed = 35f;
-				efficiencyScale = t -> Mathf.pow(Mathf.map(t, 0.5f, 35.5f, 0f, 1f), 20f) + 1f;
+				maxSpeed = 20f;
+
+				minEfficiency = 1f;
+				maxEfficiency = 2f;
+				showGraph = true;
+
+				efficiencyScale = t -> Mathf.pow(Mathf.map(t, 0.5f, 20f, 0f, 1f), 5f) + 1f;
 			}});
 
 			hasAttribute = true;

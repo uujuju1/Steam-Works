@@ -312,6 +312,10 @@ public class SWCrafting {
 			consume(new ConsumeSpin() {{
 				minSpeed = 1f;
 				maxSpeed = 70f / 10f;
+
+				minEfficiency = 0f;
+				maxEfficiency = 1.5f;
+				showGraph = true;
 				
 				efficiencyScale = speed -> {
 					if (speed < 3) return Mathf.pow(Mathf.map(speed, 1, 3, 0f, 1f), 2f) / 2f;
@@ -388,6 +392,10 @@ public class SWCrafting {
 			consume(new ConsumeSpin() {{
 				minSpeed = 40 / 10f;
 				maxSpeed = 60f / 10f;
+
+				minEfficiency = 0.5f;
+				maxEfficiency = 1.5f;
+				showGraph = true;
 				
 				efficiencyScale = speed -> Mathf.map(speed, 4, 6, 0.5f, 1.5f);
 			}});

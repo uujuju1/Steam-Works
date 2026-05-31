@@ -108,7 +108,7 @@ public class MechanicalArm extends PayloadBlock {
 
 		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
 		stats.add(Stat.range, range / 8f, StatUnit.blocks);
-		stats.add(Stat.speed, armSpeed / 8f, StatUnit.tilesSecond);
+		stats.add(Stat.speed, armSpeed * 8f, StatUnit.tilesSecond);
 	}
 
 	public class MechanicalArmBuild extends PayloadBlockBuild<Payload> implements HasSpin, HasArm {

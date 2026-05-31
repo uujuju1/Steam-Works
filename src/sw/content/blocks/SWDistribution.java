@@ -305,7 +305,11 @@ public class SWDistribution {
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 1f / 10f;
-				efficiencyScale = b -> 10f * b;
+				efficiencyScale = b -> Mathf.sqrt(10 * b);
+
+				minEfficiency = 0f;
+				maxEfficiency = Mathf.sqrt(1000f);
+				showGraph = true;
 			}});
 
 			drawer = new DrawMulti(
