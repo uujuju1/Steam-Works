@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -106,7 +107,7 @@ public class SWPower {
 				new DrawIcon()
 			);
 			
-			updateEffect = SWFx.evaporate;
+			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 8f);
 			updateEffectSpread = 0f;
 			updateEffectChance = 0.5f;
 			

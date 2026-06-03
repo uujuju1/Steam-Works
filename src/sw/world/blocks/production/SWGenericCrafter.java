@@ -151,7 +151,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		@Override
 		public float efficiencyMultiplier() {
 			float mul = 1f;
-			if (consumerScaleEfficiency) for(Consume cons : consumers) {
+			if (consumerScaleEfficiency) for(Consume cons : nonOptionalConsumers) {
 				mul *= cons.efficiencyMultiplier(this);
 			}
 			return (hasAttribute ? super.efficiencyMultiplier() : 1f) * mul;

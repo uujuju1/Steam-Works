@@ -210,18 +210,19 @@ public class SWFx {
       }
     }).layer(Layer.effect + 1),
     evaporate = new Effect(60f, e -> {
+      float scl = e.rotation / 8f;
       rand.setSeed(e.id);
 
-      Angles.randLenVectors(e.id, 10, 8f, (x, y) ->  {
+      Angles.randLenVectors(e.id, 10 + (int) (5 * (scl - 1)), 8f * scl, (x, y) ->  {
         Parallax.getParallaxFrom(
           temp.set(e.x + x, e.y + y),
           Core.camera.position,
-          rand.random(1f, 5f) * e.finpow()
+          rand.random(1f, 5f * scl) * e.finpow()
         );
 
         Draw.color(Color.white, Pal.darkerGray, rand.random(1f));
         Draw.alpha(e.fslope() / 5f);
-        Fill.circle(temp.x, temp.y, rand.random(1f, 2f) * e.finpow());
+        Fill.circle(temp.x, temp.y, rand.random(scl, 2f * scl) * e.finpow());
       });
     }),
 

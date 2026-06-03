@@ -6,6 +6,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -30,7 +31,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace,
 		constructionManifold, deconstructionManifold,
-		wedger, pyrolysisSynthetizer, oxidationPlant, pressureKiln,
+		wedger, pyrolysisSynthetizer, pressureKiln,
 		
 		crystalFurnace, rte, kitchenGarden;
 	
@@ -605,6 +606,154 @@ public class SWCrafting {
 			}};
 		}};
 
+		rte = new ReactorCrafter("rte") {{
+			requirements(Category.crafting, with());
+			size = 5;
+
+			scaleLiquidConsumption = false;
+			craftTime = 300;
+			liquidCapacity = 5000;
+			consumeItem(Items.thorium, 1);
+			consumeLiquid(Liquids.water, 100f / 60f).optional(true, false);
+			outputItems = with(Items.lead, 1);
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 1000f / 60f);
+
+			meltLiquid = Liquids.slag;
+			meltDamage = 0.5f;
+			puddleAmount = 2;
+			puddleChance = 0.125f;
+
+			blowUpDamage = 3500;
+			blowUpDamageRadius = 80f;
+			blowUpEffect = new WrapEffect(Fx.dynamicExplosion, Color.white, 5f);
+
+			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 16f);
+			updateEffectSpread = 0f;
+			updateEffectChance = 0.5f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-rods"),
+				new DrawGlowRegion("-rods-glow1") {{
+					layer = -1f;
+
+					color = Color.white;
+
+					glowScale = 25f;
+				}},
+				new DrawGlowRegion("-rods-glow2") {{
+					layer = -1f;
+
+					color = Color.white;
+
+					glowScale = 50f;
+				}},
+				new DrawGlowRegion("-rods-glow3") {{
+					layer = -1f;
+
+					color = Color.white;
+
+					glowScale = 75f;
+				}},
+				new DrawParticles() {{
+					color = Liquids.water.color.cpy().mul(1.5f);
+
+					rotateScl = 1f;
+
+					particleInterp = Interp.pow2In;
+					particleSize = 5f;
+					particleRad = 16f;
+				}},
+				new DrawParticles() {{
+					color = Liquids.water.color.cpy().mul(2f);
+
+					rotateScl = -1f;
+
+					particleInterp = Interp.pow2Out;
+					particleSize = 5f;
+					particleRad = 16f;
+
+					reverse = true;
+				}},
+				new DrawParts() {{
+					for (int i = 0; i < 3; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-blades") {{
+							clampProgress = false;
+							outline = false;
+							rotation = 120f * finalI;
+							moveRot = 3f + 0.75f * finalI;
+							progress = DrawParts.totalProgress;
+						}});
+					}
+					for (int i = 0; i < 3; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-blades") {{
+							clampProgress = false;
+							outline = false;
+							rotation = 120f * finalI;
+							xScl = -1f;
+							moveRot = -3f - 0.75f * finalI;
+							progress = DrawParts.totalProgress;
+						}});
+					}
+				}},
+				new DrawRegion(),
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Pal.turretHeat;
+
+					x = 14f;
+					y = -14f;
+
+					height = 1f;
+					divisions = 20;
+					radius = 3f;
+					alpha = 0.05f;
+					layer = Layer.blockOver;
+				}},
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Pal.turretHeat;
+
+					x = 14f;
+					y = 14f;
+
+					height = 1f;
+					divisions = 20;
+					radius = 3f;
+					alpha = 0.05f;
+					layer = Layer.blockOver;
+				}},
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Pal.turretHeat;
+
+					x = -14f;
+					y = -14f;
+
+					height = 1f;
+					divisions = 20;
+					radius = 3f;
+					alpha = 0.05f;
+					layer = Layer.blockOver;
+				}},
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Pal.turretHeat;
+
+					x = -14f;
+					y = 14f;
+
+					height = 1f;
+					divisions = 20;
+					radius = 3f;
+					alpha = 0.05f;
+					layer = Layer.blockOver;
+				}}
+			);
+		}};
+
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
 //			));
@@ -655,22 +804,6 @@ public class SWCrafting {
 //				}}
 //			);
 //		}};
-//		oxidationPlant = new GenericCrafter("oxidation-plant") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItems(with(SWItems.iron, 2, SWItems.aluminium, 1));
-//			consumeLiquid(Liquids.ozone, 2f/60f);
-//			outputItems = with(SWItems.thermite, 3);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
 //
 //		rte = new GenericCrafter("rte") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
@@ -702,21 +835,6 @@ public class SWCrafting {
 //
 //			consumeItems(with(Items.lead, 1, Items.sand, 2));
 //			outputItems = with(Items.metaglass, 2);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
-//		kitchenGarden = new GenericCrafter("kitchen-garden") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeLiquids(LiquidStack.with(Liquids.water, 0.1f, SWLiquids.primordialSoup, 0.1f));
-//			outputLiquids = LiquidStack.with(SWLiquids.primordialSoup, 0.2f);
 //
 //			drawer = new DrawMulti(
 //				new DrawDefault()
