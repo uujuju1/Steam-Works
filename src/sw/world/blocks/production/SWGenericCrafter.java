@@ -37,6 +37,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 	public boolean speedScales = false;
 	public boolean forceScales = false;
 
+	public boolean rotateCraftEffect = false;
 	public Sound craftSound = Sounds.none;
 	public float craftSoundVolume = 1f;
 	
@@ -112,7 +113,21 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 		@Override
 		public void craft() {
-			super.craft();
+			consume();
+
+			if(outputItems != null){
+				for(var output : outputItems){
+					for(int i = 0; i < output.amount; i++){
+						offload(output.item);
+					}
+				}
+			}
+
+			if(wasVisible){
+				craftEffect.at(x, y, rotateCraftEffect ? rotdeg() : 0f);
+			}
+			progress %= 1f;
+
 			craftSound.at(x, y, 1f, craftSoundVolume);
 		}
 		

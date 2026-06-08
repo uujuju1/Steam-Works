@@ -29,6 +29,7 @@ public class SWPower {
 	public static Block
 		handWheel, evaporator, waterWheel,
 		convectionTurbine, combustionEngine,
+		piston, crankshaft,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt, largeOverheadBelt,
@@ -251,7 +252,7 @@ public class SWPower {
 			));
 			size = 3;
 			
-			connectEdge = new boolean[]{false, true, false, true};
+			connectSide = new boolean[]{false, true, false, true};
 			
 			Boolf<Building> hasTop = b -> {
 				for(int i = 2; i < 5; i++) {
@@ -373,6 +374,118 @@ public class SWPower {
 				resistance = 10f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{3, 9}
+				};
+			}};
+		}};
+
+		piston = new SWGenericCrafter("piston") {{
+			requirements(Category.power, with());
+			size = 3;
+
+			rotate = true;
+			drawArrow = true;
+
+			ambientSound = Sounds.loopSteam;
+			ambientSoundPitch = 0.5f;
+			ambientSoundVolume = 0.01f;
+
+			rotateCraftEffect = true;
+			craftEffect = SWFx.ventSmoke;
+			craftTime = 10f;
+			consumeLiquid(SWLiquids.steam, 200f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-rotator", 3f),
+				new DrawRotated(),
+				new DrawRotated("-top") {{
+					layer = Layer.block + 0.05f;
+				}}
+			);
+		}};
+		crankshaft = new StackableGenericCrafter("crankshaft") {{
+			requirements(Category.power, with(
+
+			));
+			size = 3;
+			rotate = true;
+
+			stackBlock = piston;
+			useNearbyEfficiency = true;
+			requireFacing = true;
+			boost = 0.5f;
+			minBoost = 0f;
+			scaleLiquidConsumption = true;
+
+			outputRotation = 100f / 10f;
+			outputRotationForce = 200f / 600f;
+			speedScales = forceScales = true;
+
+			connectSide = new boolean[]{false, true, false, true};
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					axles.add(Axles.tripleBlock.position(0, 0, 0, 1f));
+				}},
+				new DrawRotated(),
+				new DrawCondition(
+					new DrawParts() {{
+						parts.add(new RegionPart("-piston") {{
+							outline = false;
+							clampProgress = false;
+							x = 6f;
+							y = -12f + 5f / 4f;
+
+							layerOffset = 0.01f;
+
+							moveY = -14f / 4f;
+							progress = DrawParts.spin.add(params -> Mathf.randomSeed((long) (params.x + params.y + 6), 360f)).loop(360f).curve(Interp.slope).curve(Interp.sine);
+
+							moves.add(new PartMove(
+								params -> -params.rotation + params.rotation % 180 + 90,
+								0, 0, 0, 0, 1
+							));
+						}});
+					}},
+					b -> b.right() != null && b.right().block == piston && b.right().front() == b
+				),
+				new DrawCondition(
+					new DrawParts() {{
+						parts.add(new RegionPart("-piston") {{
+							outline = false;
+							clampProgress = false;
+							x = -6f;
+							y = 12f + 5f / 4f;
+
+							layerOffset = 0.01f;
+
+							moveY = -14f / 4f;
+							progress = DrawParts.spin.add(params -> Mathf.randomSeed((long) (params.x + params.y - 6f), 360f)).loop(360f).curve(Interp.slope).curve(Interp.sine);
+
+							moves.add(new PartMove(
+								params -> -params.rotation + params.rotation % 180 + 90,
+								0, 0, 0, 0, 1
+							));
+						}});
+					}},
+					b -> b.left() != null && b.left().block == piston && b.left().front() == b
+				),
+				new DrawRotated("-top") {{
+					layer = Layer.block + 0.05f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 6},
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3}
 				};
 			}};
 		}};

@@ -114,7 +114,7 @@ public class SWCrafting {
 
 			craftTime = 180f;
 
-			connectEdge = new boolean[]{true, false, true, false};
+			connectSide = new boolean[]{true, false, true, false};
 
 			ambientSound = Sounds.loopSmelter;
 			updateEffect = SWFx.cokeBurn;
@@ -236,6 +236,7 @@ public class SWCrafting {
 			regionRotated1 = 4;
 			liquidOutputDirections = new int[]{1, 3};
 
+			ambientSound = Sounds.loopMachineSpin;
 			consume(new ConsumeSpin() {{
 				minSpeed = 15f / 10f;
 				maxSpeed = 25f / 10f;
@@ -610,6 +611,8 @@ public class SWCrafting {
 			requirements(Category.crafting, with());
 			size = 5;
 
+			ambientSound = Sounds.loopThoriumReactor;
+			ambientSoundVolume = 0.1f;
 			scaleLiquidConsumption = false;
 			craftTime = 300;
 			liquidCapacity = 5000;

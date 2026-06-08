@@ -394,6 +394,19 @@ public class SWFx {
       }
     }),
 
+    ventSmoke = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+      Draw.alpha(0.25f * e.foutpowdown());
+
+      for(int i : Mathf.signs) {
+        Angles.randLenVectors(e.id + i, 5, 16f * e.fin(), e.rotation + 90f * i, 5f, (x, y) -> {
+          temp.trns(e.rotation + 90f * i, 8f).add(e.x, e.y).add(x, y);
+          Parallax.getParallaxFrom(temp, Core.camera.position, e.finpowdown());
+          Fill.circle(temp.x, temp.y, rand.random(1f, 3f) * e.finpow());
+        });
+      }
+    }),
+
     weld = new Effect(20f, e -> {
       Draw.color(Pal.accent);
 

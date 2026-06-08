@@ -1,21 +1,43 @@
 package sw.world.blocks.production;
 
 import arc.*;
-import arc.math.*;
+import arc.graphics.g2d.*;
 import arc.math.geom.*;
+import arc.util.*;
+import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import sw.annotations.Annotations.*;
 
 public class StackableGenericCrafter extends SWGenericCrafter {
-//	public Effect updateEffectStatic = Fx.none;
-
-	public boolean[] connectEdge = new boolean[]{true, true, true, true};
+	public boolean[] connectSide = new boolean[]{true, true, true, true};
 
 	public float boost = 0.25f;
+	public float minBoost = 1f;
+	public boolean addBoost;
+
+	public Block stackBlock;
+	public boolean useNearbyEfficiency;
+	public boolean requireFacing;
+
+	public @Load("@name$-stack") TextureRegion guideRegion;
 
 	public StackableGenericCrafter(String name) {
 		super(name);
+	}
+
+	@Override
+	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
+		super.drawPlanRegion(plan, list);
+		if (guideRegion.found()) Draw.rect(guideRegion, plan.drawx(), plan.drawy(), plan.rotation * 90f);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		if (stackBlock == null) stackBlock = this;
 	}
 
 	@Override
@@ -26,70 +48,33 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	}
 
 	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {
-//		@Override
-//		public float edelta() {
-//			return super.edelta() * getEfficiency();
-//		}
-
 		@Override
 		public float efficiencyScale() {
-			return getEfficiency() * super.efficiencyScale();
+			return addBoost ? getEfficiency() + super.efficiencyScale() : getEfficiency() * super.efficiencyScale();
 		}
 
 		public float getEfficiency() {
 			Point2[] edges = Edges.getEdges(size);
-			int offset = Mathf.floor((size - 1f)/2f);
 
-			float eff = 1;
+			float eff = minBoost;
 			for(int i = 0; i < 4; i++) {
-				Building other = null;
+				if (connectSide[(rotation + i) % 4]) {
+					Building nearby = nearby(
+						edges[i * size].x,
+						edges[i * size].y
+					);
 
-				if (connectEdge[i]) {
-					for (int pos = 0; pos < size; pos++) {
-						Building nearby = nearby(
-							edges[Mathf.mod(pos - offset + i * size, edges.length)].x,
-							edges[Mathf.mod(pos - offset + i * size, edges.length)].y
-						);
-
-						if (other != null && nearby != other) break;
-						if (nearby != null && nearby.block == block) {
-							other = nearby;
-							if (pos == size - 1) eff += boost;
-						}
+					if (
+						nearby != null &&
+						nearby.block == stackBlock &&
+						(nearby.tileX() == tileX() || nearby.tileY() == tileY()) &&
+						(!requireFacing || nearby.front() == this)
+					) {
+						eff += boost * (useNearbyEfficiency ? nearby.efficiency : 1f);
 					}
 				}
 			}
 			return eff;
 		}
-
-//		@Override
-//		public void updateTile() {
-//			if (efficiency > 0) {
-//
-//				progress += getProgressIncrease(craftTime);
-//				warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
-//
-//				//continuously output based on efficiency
-//				if (outputLiquids != null) {
-//					float inc = getProgressIncrease(1f);
-//					for (var output : outputLiquids) {
-//						handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
-//					}
-//				}
-//
-//				if (wasVisible && Mathf.chanceDelta(updateEffectChance)) {
-//					updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4));
-//					updateEffectStatic.at(x, y);
-//				}
-//			} else {
-//				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
-//			}
-//
-//			totalProgress += warmup * edelta();
-//
-//			if (progress >= 1f) craft();
-//
-//			dumpOutputs();
-//		}
 	}
 }

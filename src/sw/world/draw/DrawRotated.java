@@ -15,11 +15,22 @@ import static sw.annotations.Annotations.*;
 public class DrawRotated extends BlockDrawer {
 	public String suffix = "";
 
+	public float layer = -1;
+
 	public @Load("@loadBlock.name$@suffix$") TextureRegion region;
-	public @Load("@loadBlock.name$@suffix$-flip") TextureRegion flippedRegion;
+	public @Load(value = "@loadBlock.name$@suffix$-flip", fallBack = "@loadBlock.name$@suffix$") TextureRegion flippedRegion;
+
+	public DrawRotated(String suffix) {
+		this.suffix = suffix;
+	}
+	public DrawRotated() {
+
+	}
 
 	@Override
 	public void draw(Building build) {
+		float z = Draw.z();
+		if (layer > 0) Draw.z(layer);
 		Draw.yscl = Mathf.sign(build.rotation % 2 == 0);
 		Draw.rect(
 			build.rotation > 1 ? flippedRegion : region,
@@ -27,6 +38,7 @@ public class DrawRotated extends BlockDrawer {
 			build.rotdeg() % 180f
 		);
 		Draw.yscl = 1f;
+		Draw.z(z);
 	}
 
 	@Override
