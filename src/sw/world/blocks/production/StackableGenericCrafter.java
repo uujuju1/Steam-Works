@@ -49,8 +49,8 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 
 	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {
 		@Override
-		public float efficiencyScale() {
-			return addBoost ? getEfficiency() + super.efficiencyScale() : getEfficiency() * super.efficiencyScale();
+		public float efficiencyMultiplier() {
+			return addBoost ? getEfficiency() + super.efficiencyMultiplier() : getEfficiency() * super.efficiencyMultiplier();
 		}
 
 		public float getEfficiency() {

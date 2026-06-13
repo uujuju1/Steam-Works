@@ -226,22 +226,22 @@ public class SWDefense {
 		// region walls
 		ironWall = new Wall("iron-wall") {{
 			requirements(Category.defense, with(SWItems.iron, 6));
-			scaledHealth = 400;
+			scaledHealth = 300;
 		}};
 		ironWallLarge = new Wall("iron-wall-large") {{
 			requirements(Category.defense, mult(ironWall.requirements, 4));
 			size = 2;
-			scaledHealth = 400;
+			scaledHealth = 300;
 		}};
 
 		bloomWall = new Wall("bloom-wall") {{
 			requirements(Category.defense, with(SWItems.bloom, 6));
-			scaledHealth = 600;
+			scaledHealth = 500;
 		}};
 		bloomWallLarge = new Wall("bloom-wall-large") {{
 			requirements(Category.defense, mult(bloomWall.requirements, 4));
 			size = 2;
-			scaledHealth = 600;
+			scaledHealth = 500;
 		}};
 		// endregion
 
@@ -250,7 +250,7 @@ public class SWDefense {
 			size = 2;
 			buildTime = 60 * 10f;
 			buildCostMultiplier = 1f;
-			scaledHealth = 800;
+			scaledHealth = 700;
 
 			placeEffect = new MultiEffect(
 				new WrapEffect(SWFx.groundCrack, Items.thorium.color, 16f),

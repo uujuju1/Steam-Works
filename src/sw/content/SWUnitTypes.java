@@ -40,6 +40,7 @@ public class SWUnitTypes {
 			accel = drag = 0.05f;
 			rotateSpeed = 6f;
 			fallSpeed = 0.005f;
+			armor = 5;
 
 			wrecks = 4;
 
@@ -75,7 +76,7 @@ public class SWUnitTypes {
           recoilTime = 60f;
 
           shootSound = Sounds.shootArtillery;
-					bullet = new BasicBulletType(4, 10) {{
+					bullet = new BasicBulletType(4, 30) {{
             recoil = 1f;
 
             width = 10f;

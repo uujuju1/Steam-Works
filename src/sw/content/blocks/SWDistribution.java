@@ -54,12 +54,12 @@ public class SWDistribution {
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 1
 			));
+			researchCost = with(
+				SWItems.verdigris, 5
+			);
 			health = 100;
 			speed = 0.04f;
 			displayedSpeed = 5f;
-			researchCost = with(
-				SWItems.verdigris, 30
-			);
 		}};
 		suspensionConveyor = new MechanicalConveyor("suspension-conveyor") {{
 			requirements(Category.distribution, with(
@@ -125,6 +125,9 @@ public class SWDistribution {
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 5
 			));
+			researchCost = with(
+				SWItems.verdigris, 30
+			);
 			health = 100;
 			solid = false;
 		}};
@@ -450,6 +453,9 @@ public class SWDistribution {
 			requirements(Category.liquid, with(
 				SWItems.iron, 2
 			));
+			researchCost = with(
+				SWItems.iron, 30
+			);
 			padding = 0.75f;
 			
 			liquidCapacity = 20f;
@@ -459,6 +465,10 @@ public class SWDistribution {
 				SWItems.iron, 2,
 				Items.graphite, 2
 			));
+			researchCost = with(
+				SWItems.iron, 50,
+				Items.graphite, 80
+			);
 			
 			liquidCapacity = 120f;
 		}};
@@ -467,6 +477,10 @@ public class SWDistribution {
 				SWItems.iron, 3,
 				Items.graphite, 3
 			));
+			researchCost = with(
+				SWItems.iron, 80,
+				Items.graphite, 80
+			);
 
 			((LiquidPipe) mechanicalConduit).junctionReplacement = this;
 		}};
@@ -475,6 +489,10 @@ public class SWDistribution {
 				SWItems.iron, 10,
 				Items.graphite, 10
 			));
+			researchCost = with(
+				SWItems.iron, 50,
+				Items.graphite, 80
+			);
 
 			range = 10;
 		}};

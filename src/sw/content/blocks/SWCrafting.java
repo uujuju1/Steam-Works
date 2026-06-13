@@ -104,10 +104,10 @@ public class SWCrafting {
 				Items.silicon, 30
 			));
 			researchCost = with(
-				SWItems.iron, 100,
-				SWItems.verdigris, 120,
-				Items.graphite, 85,
-				Items.silicon, 60
+				SWItems.iron, 90,
+				SWItems.verdigris, 100,
+				Items.graphite, 55,
+				Items.silicon, 40
 			);
 			size = 3;
 			health = 240;

@@ -47,6 +47,7 @@ public class SWProduction {
 			range = 5;
 			ambientSound = Sounds.loopCombustion;
 			ambientSoundVolume = 0.01f;
+			drillSoundVolume = 0.5f;
 
 			useAllowList = true;
 			drillMultipliers.put(Items.graphite, 1);
@@ -77,6 +78,7 @@ public class SWProduction {
 			};
 			drillEffectRnd = 0f;
 			ambientSound = Sounds.drillCharge;
+			drillSoundVolume = 0.5f;
 			mineRect = new Rect(0, 0, 4, 4);
 
 			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
@@ -101,6 +103,7 @@ public class SWProduction {
 			range = 5;
 			ambientSound = Sounds.loopDrill;
 			ambientSoundVolume = 0.14f;
+			drillSoundVolume = 0.5f;
 
 			useAllowList = true;
 			drillMultipliers.put(Items.sand, 1f);

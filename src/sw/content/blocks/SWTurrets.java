@@ -207,14 +207,15 @@ public class SWTurrets {
 				Items.graphite, 10
 			));
 			researchCost = with(
-				SWItems.verdigris, 80,
-				SWItems.iron, 60,
+				SWItems.verdigris, 40,
+				SWItems.iron, 50,
 				Items.graphite, 20
 			);
 			size = 2;
-			scaledHealth = 220;
+			scaledHealth = 150;
 			reload = 240f;
-			range = 140f;
+			range = 160f;
+			maxAmmo = 5;
 
 			outlineIcon = false;
 
@@ -276,7 +277,7 @@ public class SWTurrets {
 					collidesGround = false;
 
 					status = StatusEffects.burning;
-					statusDuration = 60f;
+					statusDuration = 180f;
 
 					trailEffect = Fx.disperseTrail;
 					trailInterval = 1f;
