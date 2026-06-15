@@ -30,7 +30,12 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	@Override
 	public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list) {
 		super.drawPlanRegion(plan, list);
-		if (guideRegion.found()) Draw.rect(guideRegion, plan.drawx(), plan.drawy(), plan.rotation * 90f);
+		if (guideRegion.found()) {
+			float oldAlpha = Draw.getColorAlpha();
+			Draw.alpha(oldAlpha * Core.settings.getInt("sw-stack-hint-opacity") / 100f);
+			Draw.rect(guideRegion, plan.drawx(), plan.drawy(), plan.rotation * 90f);
+			Draw.alpha(oldAlpha);
+		}
 	}
 
 	@Override

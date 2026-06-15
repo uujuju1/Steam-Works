@@ -1,8 +1,6 @@
 package sw.core;
 
 import arc.*;
-import arc.graphics.*;
-import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -33,6 +31,7 @@ public class ModSettings {
     }});
     // graphics
     categories.add(new SettingsTable() {{
+      sliderPref("sw-stack-hint-opacity", 50, 0, 100, value -> value + "%");
       checkPref("sw-menu-enabled", true);
       checkPref("sw-menu-override", true);
       checkPref("sw-ui-filter", true);
