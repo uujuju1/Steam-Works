@@ -101,6 +101,7 @@ public class SWUnitTypes {
 			rotateSpeed = 3f;
 			fallSpeed = 0.005f;
 			wrecks = 5;
+			armor = 10f;
 			
 			hitSize = 38f;
 			engineSize = 0f;
@@ -372,7 +373,7 @@ public class SWUnitTypes {
 					}}
 				);
 				
-				bullet = new BulletType(3f, 40f) {{
+				bullet = new BulletType(3f, 30f) {{
 					parts.addAll(
 						new ShapePart() {{
 							circle = true;

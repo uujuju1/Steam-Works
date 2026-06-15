@@ -73,6 +73,7 @@ public class SWSectorPresets {
 
 			rules = r -> {
 				r.winWave = 20;
+				r.showSpawns = true;
 				r.weather.add(new Weather.WeatherEntry(
 					SWWeathers.souesiteDust,
 					5f * Time.toMinutes,

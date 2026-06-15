@@ -131,7 +131,7 @@ public class SWStorage {
 			));
 			researchCost = with(
 				SWItems.verdigris, 2000,
-				SWItems.aluminium, 1000,
+				SWItems.aluminium, 500,
 				Items.graphite, 1500
 			);
 			size = 3;

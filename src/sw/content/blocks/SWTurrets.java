@@ -15,6 +15,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.part.*;
 import sw.world.blocks.defense.*;
@@ -272,7 +273,7 @@ public class SWTurrets {
 
 					lifetime = 60;
 					drag = 0.02f;
-					ammoMultiplier = 5f;
+					ammoMultiplier = 2.5f;
 
 					collidesGround = false;
 
@@ -315,7 +316,23 @@ public class SWTurrets {
 					}};
 				}}
 			);
-		}};
+			coolant = consume(new ConsumeLiquidBoosters() {{
+				amount = 20f / 60f;
+				boosters.put(Liquids.water, 2);
+				boosters.put(SWLiquids.steam, 4);
+			}});
+		}
+
+			@Override
+			public void setStats() {
+				super.setStats();
+
+				if(coolant != null){
+					stats.remove(Stat.booster);
+					coolant.display(stats);
+				}
+			}
+		};
 		trebuchet = new ItemTurret("trebuchet") {{
 			requirements(Category.turret, with(
 				SWItems.iron, 45,
@@ -515,7 +532,7 @@ public class SWTurrets {
 			));
 			researchCost = mult(requirements, 10);
 			size = 3;
-			scaledHealth = 220f;
+			scaledHealth = 180f;
 			range = 50 * 8f;
 			reload = 120f;
 			recoil = 2f;
@@ -657,7 +674,23 @@ public class SWTurrets {
 					new int[] {9, 0, 3, 6}
 				};
 			}};
-		}};
+			coolant = consume(new ConsumeLiquidBoosters() {{
+				amount = 20f / 60f;
+				boosters.put(Liquids.water, 2);
+				boosters.put(SWLiquids.steam, 4);
+			}});
+		}
+
+			@Override
+			public void setStats() {
+				super.setStats();
+
+				if(coolant != null){
+					stats.remove(Stat.booster);
+					coolant.display(stats);
+				}
+			}
+		};
 //		swing = new ConsumeTurret("swing") {{
 //			requirements(Category.turret, BuildVisibility.hidden, with());
 //			size = 3;

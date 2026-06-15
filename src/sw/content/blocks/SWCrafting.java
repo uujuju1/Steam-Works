@@ -226,6 +226,7 @@ public class SWCrafting {
 				SWItems.aluminium, 20,
 				Items.silicon, 30
 			));
+			researchCost = mult(requirements, 3);
 			size = 3;
 			health = 240;
 			rotate = true;
@@ -276,7 +277,7 @@ public class SWCrafting {
 			);
 			
 			spinConfig = new SpinConfig() {{
-				resistance = 20f / 600f;
+				resistance = 15f / 600f;
 				
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9},
