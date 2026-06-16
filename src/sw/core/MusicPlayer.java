@@ -64,6 +64,9 @@ public class MusicPlayer extends SoundControl {
 				control.sound.ambientMusic.clear();
 				Vars.control.sound = this;
 				reload();
+				ambientMusic.clear();
+				darkMusic.clear();
+				bossMusic.clear();
 			}
 		});
 	}

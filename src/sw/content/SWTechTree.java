@@ -132,7 +132,10 @@ public class SWTechTree {
           nodeProduce(bloom, () -> {});
         });
         nodeProduce(solvent, () -> {
-          nodeProduce(Liquids.water, () -> {});
+          nodeProduce(Liquids.water, () -> {
+            nodeProduce(Liquids.ozone, () -> {});
+            nodeProduce(Liquids.hydrogen, () -> {});
+          });
           nodeProduce(Liquids.slag, () -> {});
         });
       });
