@@ -216,11 +216,13 @@ public class SWTurrets {
 			scaledHealth = 150;
 			reload = 240f;
 			range = 160f;
-			maxAmmo = 5;
 
 			outlineIcon = false;
 
 			targetGround = false;
+
+			consumeItem(Items.silicon, 5);
+			consumeLiquid(Liquids.ozone, 1f / 60f);
 
 			drawer = new DrawTurret() {{
 				parts.add(
@@ -232,12 +234,12 @@ public class SWTurrets {
 						under = true;
 						outline = false;
 
-						progress = DrawPart.PartProgress.heat.curve(Interp.exp10Out);
+						progress = PartProgress.heat.curve(Interp.exp10Out);
 
 						color = Color.white;
 						colorTo = Color.clear;
 
-						heatProgress = DrawPart.PartProgress.charge.compress(0.5f, 1f).curve(Interp.exp10);
+						heatProgress = PartProgress.charge.compress(0.5f, 1f).curve(Interp.exp10);
 					}},
 					new RegionPart("-sparker") {{
 						mirror = true;
@@ -247,10 +249,10 @@ public class SWTurrets {
 						y = 3.75f;
 
 						moves.add(
-							new PartMove(DrawPart.PartProgress.charge.compress(0f, 0.5f).curve(Interp.exp10Out), 0f, -2f, 0f),
-							new PartMove(DrawPart.PartProgress.charge.compress(0f, 0.5f).curve(Interp.pow10In), -0.75f, 0f, 0f),
-							new PartMove(DrawPart.PartProgress.charge.compress(0.5f, 1f).curve(Interp.bounceOut), 0.75f, 3f, 0f),
-							new PartMove(DrawPart.PartProgress.heat.curve(Interp.smooth), 0f, -2f, 0f)
+							new PartMove(PartProgress.charge.compress(0f, 0.5f).curve(Interp.exp10Out), 0f, -2f, 0f),
+							new PartMove(PartProgress.charge.compress(0f, 0.5f).curve(Interp.pow10In), -0.75f, 0f, 0f),
+							new PartMove(PartProgress.charge.compress(0.5f, 1f).curve(Interp.bounceOut), 0.75f, 3f, 0f),
+							new PartMove(PartProgress.heat.curve(Interp.smooth), 0f, -2f, 0f)
 						);
 					}}
 				);
@@ -357,7 +359,7 @@ public class SWTurrets {
 					moveX = -0.75f;
 					
 					clampProgress = false;
-					progress = DrawPart.PartProgress.reload.curve(Interp.swing);
+					progress = PartProgress.reload.curve(Interp.swing);
 				}});
 			}};
 			
@@ -390,7 +392,6 @@ public class SWTurrets {
 //			reload = 15f;
 //			shootY = 12f;
 //			range = 240f;
-//			shootSound = Sounds.shootBig;
 //
 //			consumeItem(Items.silicon, 1);
 //
@@ -438,6 +439,7 @@ public class SWTurrets {
 //					}}
 //				);
 //			}};
+//
 //			shootType = new BasicBulletType(3f, 20) {{
 //				shrinkY = 0f;
 //				width = 8f;
@@ -482,46 +484,82 @@ public class SWTurrets {
 //
 //			spinConfig.hasSpin = false;
 //		}};
-//
-//		push = new ConsumeTurret("push") {{
-//			requirements(Category.turret, BuildVisibility.hidden, with());
-//			size = 3;
-//			scaledHealth = 220f;
-//			range = 240f;
-//			reload = 120f;
-//			rotateSpeed = 1f;
-//
-//			drawer = new DrawTurret() {{
-//				parts.addAll(
-//					new RegionPart("-side") {{
-//						mirror = true;
-//						moveX = 2f;
-//						progress = DrawPart.PartProgress.reload.inv().delay(0.25f).inv().curve(Interp.circle);
-//					}},
-//					new RegionPart("-support") {{
-//						mirror = under = true;
-//						moveY = 4f;
-//						progress = DrawPart.PartProgress.reload.inv().mul(3).clamp().curve(Interp.circleIn);
-//					}}
-//				);
-//			}};
-//
-//			shootSound = Sounds.shootSmite;
-//			shootType = new BasicBulletType(3f, 30, "sw-sound-wave") {{
-//				width = 16;
-//				height = 10;
-//				lifetime = 80f;
-//				trailInterval = 10;
-//				knockback = 8f;
-//				pierceCap = 5;
-//				smokeEffect = shootEffect = Fx.none;
-//				hitEffect = despawnEffect = trailEffect = SWFx.soundDecay;
-//				trailRotation = true;
-//				pierce = pierceBuilding = true;
-//			}};
-//
-//			spinConfig.hasSpin = false;
-//		}};
+
+		push = new ConsumeTurret("push") {{
+			requirements(Category.turret, with());
+			size = 3;
+			scaledHealth = 180f;
+			range = 22.5f * 8f;
+			reload = 60f;
+			rotateSpeed = 5f;
+
+			linearWarmup = true;
+			minWarmup = 0.95f;
+
+			outlineIcon = false;
+
+			drawer = new DrawTurret() {{
+				parts.addAll(
+					new RegionPart("-front") {{
+						mirror = true;
+
+						x = 6.25f;
+						y = 6.75f;
+						moveX = -1.75f;
+
+						progress = PartProgress.warmup.curve(Interp.smooth);
+
+						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5).delay(0.75f), 0.5f, -2f, 0, 0, 0));
+					}},
+					new RegionPart("-handle") {{
+						mirror = true;
+
+						progress = DrawPart.PartProgress.warmup.curve(Interp.smooth);
+
+						x = 6.25f;
+						moveX = -1f;
+						moveY = 1f;
+						moveRot = 10f;
+
+						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5), 0.25f, -1f, 0, 0, -5));
+					}}
+				);
+			}
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			shootSound = Sounds.blockExplodeExplosiveAlt;
+
+			shoot = new ShootPattern() {{
+				shots = 20;
+			}};
+			shootY = 6f;
+			shootCone = 40f;
+			inaccuracy = 40f;
+			shootType = new BasicBulletType(8f, 10, "mine-bullet") {{
+				width = height = 10f;
+				shrinkX = shrinkY = 0f;
+				lifetime = 22.5f * 8f / speed;
+
+				lifeScaleRandMin = 0.9f;
+				lifeScaleRandMax = 1.1f;
+				velocityScaleRandMin = 0.8f;
+				velocityScaleRandMax = 1.2f;
+				knockback = 6f;
+				trailWidth = 2.5f;
+				trailLength = 10;
+				trailEffect = Fx.disperseTrail;
+				trailInterval = 1;
+				hitEffect = despawnEffect = new MultiEffect(
+					new WrapEffect(SWFx.hitCrossColor, hitColor, 4f),
+					SWFx.hitBulletBigColor
+				);
+				trailRotation = true;
+				impact = true;
+				frontColor = trailColor = Items.silicon.color.cpy().mul(1.5f);
+				backColor = hitColor = Items.silicon.color.cpy().mul(1.25f);
+			}};
+		}};
 		thermikos = new ConsumeTurret("thermikos") {{
 			requirements(Category.turret, with(
 				SWItems.bloom, 150,
@@ -586,7 +624,7 @@ public class SWTurrets {
 
 						segmentSides = new int[]{0, 2, 4, 6, 8};
 
-						progress = DrawParts.spin.add(DrawPart.PartProgress.charge.curve(Interp.exp10In).mul(360));
+						progress = DrawParts.spin.add(PartProgress.charge.curve(Interp.exp10In).mul(360));
 					}},
 					new RegionPart("-cannon") {{
 						under = true;

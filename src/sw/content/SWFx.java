@@ -277,6 +277,25 @@ public class SWFx {
       });
     }),
 
+    hitBulletBigColor = new Effect(13, e -> {
+      Draw.color(Color.white, e.color, e.fin());
+      Lines.stroke(0.5f + e.fout() * 1.5f);
+
+      Angles.randLenVectors(e.id, 8, e.finpow() * 30f, e.rotation, 50f, (x, y) -> {
+        float ang = Mathf.angle(x, y);
+        Lines.lineAngle(e.x + x, e.y + y, ang, e.fout() * 4 + 1.5f);
+      });
+    }),
+
+    hitCrossColor = new Effect(30f, e -> {
+      rand.setSeed(e.id);
+      Draw.color(e.color);
+      float rotation = rand.random(360f);
+      for (int i = 0; i < 4; i++) {
+        Drawf.tri(e.x, e.y, e.rotation * e.foutpow(), e.rotation * 2 * e.foutpowdown(), rotation + i * 90);
+      }
+    }),
+
     hydrogenShoot = new Effect(30f, e -> {
       rand.setSeed(e.id);
       Angles.randLenVectors(e.id, 20, 120f * e.fin(), e.rotation, 5f, (x, y) -> {
