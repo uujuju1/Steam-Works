@@ -18,6 +18,7 @@ public class SWEnvironment {
 
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
+	souesiteCrack,
 	
 	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
 	magmaticFlowrock, hotFlowrock,
@@ -95,6 +96,12 @@ public class SWEnvironment {
 			decoration = souesiteBoulder;
 
 			attributes.set(Attribute.water, 1.5f);
+		}};
+		souesiteCrack = new MultiTileFloor("souesite-crack", fissuredSouesite.asFloor()) {{
+			variants = 3;
+			attributes.set(Attribute.oil, 1f);
+
+			extension = 5;
 		}};
 
 		souesiteShallowerSolvent = new Floor("souesite-shallower-solvent", 2) {{
