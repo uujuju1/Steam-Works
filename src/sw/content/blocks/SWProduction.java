@@ -15,6 +15,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -27,7 +28,7 @@ import static mindustry.type.ItemStack.*;
 public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
-		auger, quarry,
+		auger, quarry, rig,
 	
 		castingOutlet,
 		liquidCollector, artesianWell, pumpjack;
@@ -170,6 +171,7 @@ public class SWProduction {
 				};
 			}};
 		}};
+
 		auger = new SWDrill("auger") {{
 			requirements(Category.production, with(
 				SWItems.verdigris, 100,
@@ -225,7 +227,6 @@ public class SWProduction {
 				};
 			}};
 		}};
-
 		quarry = new MultiAttributeConstructor("quarry") {{
 			requirements(Category.production, with(
 				SWItems.bloom, 200,
@@ -309,7 +310,113 @@ public class SWProduction {
 				};
 			}};
 		}};
-		
+		rig = new AreaAttributeCrafter("rig") {{
+			requirements(Category.production, with());
+			size = 3;
+			rotate = true;
+
+			liquidCapacity = 100f;
+
+			hasAttribute = true;
+			requireVisible = true;
+			displayEfficiency = true;
+			areaRect = new Rect(0, 0, 5, 5);
+			attribute = Attribute.oil;
+			minEfficiency = 21f;
+			baseEfficiency = 0f;
+			boostScale = 1f / 21f;
+
+			ambientSound = Sounds.loopGrind;
+			ambientSoundVolume = 0.5f;
+			ambientSoundPitch = 0.5f;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 2.5f / 10f;
+				maxSpeed = 7.5f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+			outputLiquids = LiquidStack.with(Liquids.oil, 50f / 60f, SWLiquids.gas, 100f / 60f);
+			liquidOutputDirections = new int[]{1, 3};
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawRegion("-gear", 2),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					axles.add(Axles.tripleBlock.position(8f, 0f, -90f, 1f));
+					axles.add(new Axle("-wheel") {{
+						pixelWidth = 2;
+						pixelHeight = 1;
+
+						circular = true;
+
+						x = 8f;
+						y = 0;
+						width = 2f;
+						height = 8f;
+						rotation = -90f;
+						spinScl = -1f;
+
+						paletteLight = SWPal.axleLight;
+						paletteMedium = SWPal.axleMedium;
+						paletteDark = SWPal.axleDark;
+					}});
+				}},
+				new DrawRotated() {{
+					layer = Layer.block + 0.01f;
+				}},
+				new DrawParts() {{
+					parts.add(new RegionPart("-driver") {{
+						outline = false;
+
+						x = 11f / 4f;
+						moveX = -19f / 4f;
+
+						layerOffset = 0.01f;
+
+						progress = DrawParts.spin.add(180f).loop(360f).slope().curve(Interp.sine);
+					}});
+
+					parts.add(new RegionPart("-outputs1") {{
+						outline = false;
+						clampProgress = false;
+
+						growX = -1f;
+
+						layerOffset = 0.01f;
+
+						growProgress = param -> param.rotation / 90 - 1 > 0 && param.rotation / 90 - 1 < 3 ? 1 : 0;
+					}});
+					parts.add(new RegionPart("-outputs2") {{
+						outline = false;
+						clampProgress = false;
+
+						growX = -1f;
+
+						layerOffset = 0.01f;
+
+						growProgress = param -> param.rotation / 90 - 1 > 0 && param.rotation / 90 - 1 < 3 ? 0 : 1;
+					}});
+				}},
+				new DrawRotated("-top") {{
+					layer = Layer.block + 0.01f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 400f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{2, 10},
+					new int[]{5, 1},
+					new int[]{8, 4},
+					new int[]{11, 7}
+				};
+			}};
+		}};
+
 		castingOutlet = new SingleItemMultiCrafter("casting-outlet") {{
 			requirements(Category.production, with(
 				SWItems.iron, 20,

@@ -145,6 +145,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public void drawSelect() {
+			drawOverlay(x, y, rotation);
 			if (spin != null) spinConfig.drawPlace(block, tileX(), tileY(), rotation, true);
 		}
 
