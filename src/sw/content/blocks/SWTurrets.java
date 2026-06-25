@@ -221,9 +221,6 @@ public class SWTurrets {
 
 			targetGround = false;
 
-			consumeItem(Items.silicon, 5);
-			consumeLiquid(Liquids.ozone, 1f / 60f);
-
 			drawer = new DrawTurret() {{
 				parts.add(
 					new RegionPart("-floor") {{
@@ -498,6 +495,9 @@ public class SWTurrets {
 
 			outlineIcon = false;
 
+			consumeItem(Items.silicon, 5);
+			consumeLiquid(Liquids.ozone, 1f / 60f);
+
 			drawer = new DrawTurret() {{
 				parts.addAll(
 					new RegionPart("-front") {{
@@ -509,7 +509,7 @@ public class SWTurrets {
 
 						progress = PartProgress.warmup.curve(Interp.smooth);
 
-						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5).delay(0.75f), 0.5f, -2f, 0, 0, 0));
+						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5).mul(PartProgress.warmup).delay(0.75f), 0.5f, -2f, 0, 0, 0));
 					}},
 					new RegionPart("-handle") {{
 						mirror = true;
@@ -521,7 +521,7 @@ public class SWTurrets {
 						moveY = 1f;
 						moveRot = 10f;
 
-						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5), 0.25f, -1f, 0, 0, -5));
+						moves.add(new PartMove(PartProgress.reload.curve(Interp.pow5).mul(PartProgress.warmup), 0.25f, -1f, 0, 0, -5));
 					}}
 				);
 			}

@@ -338,6 +338,7 @@ public class SWProduction {
 			}});
 			outputLiquids = LiquidStack.with(Liquids.oil, 50f / 60f, SWLiquids.gas, 100f / 60f);
 			liquidOutputDirections = new int[]{1, 3};
+			dumpExtraLiquid = false;
 
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),

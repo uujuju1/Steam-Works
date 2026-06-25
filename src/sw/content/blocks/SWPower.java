@@ -285,6 +285,7 @@ public class SWPower {
 			craftTime = 50f;
 			updateEffectChance = 0.01f;
 			updateEffectSpread = 0f;
+			scaleLiquidConsumption = true;
 			
 			outputRotation = 50f / 10f;
 			outputRotationForce = 160f / 600f;

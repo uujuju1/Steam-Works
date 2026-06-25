@@ -7,9 +7,8 @@ import sw.world.meta.*;
 public class RotationBattery extends AxleBlock {
 	public float maxWindup;
 	public float speed;
-//	public float resistanceScale;
-//	public float resistanceMagnitude;
 	public float outputForce;
+	public float efficiencyScale = 0.9f;
 	
 	public RotationBattery(String name) {
 		super(name);
@@ -22,6 +21,7 @@ public class RotationBattery extends AxleBlock {
 		stats.add(SWStat.outputDuration, maxWindup / speed / 60f, StatUnit.seconds);
 		stats.add(SWStat.spinOutput, speed * 10f, SWStat.spinMinute);
 		stats.add(SWStat.spinOutputForce, outputForce * 600f, SWStat.force);
+		stats.add(Stat.maxEfficiency, efficiencyScale * 100f, StatUnit.percent);
 	}
 
 	public class RotationBatteryBuild extends AxleBlockBuild {

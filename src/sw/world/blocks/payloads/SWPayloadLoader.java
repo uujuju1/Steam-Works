@@ -148,7 +148,9 @@ public class SWPayloadLoader extends PayloadBlock {
 		}
 		
 		@Override public float getForce() {
-			return reverse && payload != null && hasArrived() && payload.build instanceof RotationBatteryBuild ? ((RotationBattery) payload.block()).outputForce / getRatio() : 0f;
+			return reverse && payload != null && hasArrived() &&
+				payload.build instanceof RotationBatteryBuild ?
+				((RotationBattery) payload.block()).outputForce / getRatio() * ((RotationBatteryBuild) payload.build).wind / ((RotationBattery) payload.block()).maxWindup : 0f;
 		}
 		
 		@Override
@@ -162,7 +164,7 @@ public class SWPayloadLoader extends PayloadBlock {
 		
 		@Override
 		public float getTargetSpeed() {
-			return (payload != null && payload.block() instanceof RotationBattery payblock && reverse && hasArrived()) ? payblock.speed * getRatio() : 0f;
+			return reverse && payload != null && hasArrived() && payload.block() instanceof RotationBattery payblock ? payblock.speed * getRatio() * ((RotationBatteryBuild) payload.build).wind / payblock.maxWindup : 0f;
 		}
 
 		public void handlePayloadResources() {
@@ -179,8 +181,8 @@ public class SWPayloadLoader extends PayloadBlock {
 				if (payload.block().hasLiquids && payload.build.liquids.currentAmount() > 0.001f) {
 					float count = Math.min(loadingSpeed * edelta(), Math.min(payload.build.liquids.currentAmount(), liquidCapacity - liquids.get(liquids.current())));
 					if (count > 0) {
-						handleLiquid(payload.build, liquids.current(), count);
-						payload.build.liquids.remove(liquids.current(), count);
+						handleLiquid(payload.build, payload.build.liquids.current(), count);
+						payload.build.liquids.remove(payload.build.liquids.current(), count);
 					}
 				}
 				if (payload.build instanceof RotationBatteryBuild battery && battery.wind > 0.001f) {
@@ -203,7 +205,7 @@ public class SWPayloadLoader extends PayloadBlock {
 					}
 				}
 				if (payload.build instanceof RotationBatteryBuild battery && battery.wind < ((RotationBattery) battery.block).maxWindup - 0.001f) {
-					battery.wind += Math.min(((RotationBattery) battery.block).maxWindup - battery.wind, getSpeed() * Time.delta);
+					battery.wind += Math.min(((RotationBattery) battery.block).maxWindup - battery.wind, getSpeed() * Time.delta * ((RotationBattery) battery.block).efficiencyScale);
 				}
 			}
 		}
