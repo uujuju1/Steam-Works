@@ -33,8 +33,8 @@ public class SWPower {
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
 		overheadBelt, largeOverheadBelt,
-		flywheel, clutch,
 
+		flywheel, clutch,
 		shaftTransmission, adjustableGearTrain, mechanicalGovernor;
 
 	public static void load() {
