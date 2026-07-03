@@ -479,7 +479,11 @@ public class SWCrafting {
 			}};
 		}};
 		sieve = new SWGenericCrafter("sieve") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.verdigris, 25,
+				Items.silicon, 30,
+				Items.graphite, 35
+			));
 			size = 2;
 
 			craftTime = 240f;

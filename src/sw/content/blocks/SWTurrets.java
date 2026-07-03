@@ -483,7 +483,12 @@ public class SWTurrets {
 //		}};
 
 		push = new ConsumeTurret("push") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.aluminium, 100,
+				SWItems.iron, 80,
+				Items.silicon, 120,
+				Items.graphite, 150
+			));
 			size = 3;
 			scaledHealth = 180f;
 			range = 22.5f * 8f;
