@@ -76,12 +76,14 @@ public class SWEnvironment {
 			decoration = souesiteBoulder;
 
 			attributes.set(Attribute.water, 2f);
+			attributes.set(SWAttribute.coveredInAlumina, 0.25f);
 		}};
 		largeSouesiteCrater = new SteamVent("large-souesite-crater") {{
 			variants = 0;
 			effect = Fx.none;
 
 			attributes.set(Attribute.water, 2f);
+			attributes.set(SWAttribute.coveredInAlumina, 0.25f);
 		}};
 		souesite = new Floor("souesite", 4) {{
 			wall = souesiteWall;
@@ -90,18 +92,25 @@ public class SWEnvironment {
 			((SteamVent) largeSouesiteCrater).blendGroup = this;
 
 			attributes.set(Attribute.water, 1f);
+			attributes.set(SWAttribute.coveredInAlumina, 1f);
 		}};
 		fissuredSouesite = new Floor("fissured-souesite", 4) {{
 			wall = souesiteWall;
 			decoration = souesiteBoulder;
 
 			attributes.set(Attribute.water, 1.5f);
+			attributes.set(SWAttribute.coveredInAlumina, 0.75f);
 		}};
 		souesiteCrack = new MultiTileFloor("souesite-crack", fissuredSouesite.asFloor()) {{
 			variants = 3;
 			attributes.set(Attribute.oil, 1f);
 
+			decoration = souesiteBoulder;
+
 			extension = 5;
+
+			attributes.set(Attribute.water, 1.5f);
+			attributes.set(SWAttribute.coveredInAlumina, 0.25f);
 		}};
 
 		souesiteShallowerSolvent = new Floor("souesite-shallower-solvent", 2) {{

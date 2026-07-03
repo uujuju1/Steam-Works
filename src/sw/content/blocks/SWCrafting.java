@@ -29,7 +29,7 @@ public class SWCrafting {
 	public static Block
 		cokeOven, engineSmelter, waterBallMill,
 		
-		crusher, blastFurnace,
+		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
 		wedger, pyrolysisSynthetizer, pressureKiln,
 		
@@ -477,6 +477,37 @@ public class SWCrafting {
 					new int[]{0, 1, 8, 9}
 				};
 			}};
+		}};
+		sieve = new SWGenericCrafter("sieve") {{
+			requirements(Category.crafting, with());
+			size = 2;
+
+			craftTime = 240f;
+			consumeLiquid(Liquids.water, 2f / 60f);
+			outputItems = with(SWItems.aluminium, 1, Items.sand, 3);
+
+			hasAttribute = true;
+			displayEfficiency = true;
+			attribute = SWAttribute.coveredInAlumina;
+			boostScale = 1/4f;
+			minEfficiency = 1f;
+			baseEfficiency = 0f;
+			maxBoost = 4f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(Liquids.water, 1.5f),
+				new DrawParts() {{
+					parts.add(new RegionPart("-sieve") {{
+						clampProgress = false;
+						outline = false;
+
+						moves.add(new PartMove(params -> Mathf.sinDeg(!(params instanceof DrawParts.BlockParams p) ? 0 : p.totalProgress * 6) * DrawParts.warmup.get(params), 0f, 1f, 0));
+						moves.add(new PartMove(params -> Mathf.cosDeg(!(params instanceof DrawParts.BlockParams p) ? 0 : p.totalProgress * 6) * DrawParts.warmup.get(params), 1f, 0f, 0));
+					}});
+				}},
+				new DrawRegion()
+			);
 		}};
 
 		constructionManifold = new DrawerConstructor("construction-manifold") {{
