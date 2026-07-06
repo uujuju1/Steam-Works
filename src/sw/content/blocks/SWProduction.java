@@ -42,7 +42,7 @@ public class SWProduction {
 				SWItems.verdigris, 20
 			);
 			size = 2;
-			health = 160;
+			scaledHealth = 80f;
 			drillTime = 480f;
 			tier = 1;
 			range = 5;
@@ -68,7 +68,7 @@ public class SWProduction {
 				Items.graphite, 20
 			);
 			size = 2;
-			health = 160;
+			scaledHealth = 80f;
 			tier = 2;
 			drillTime = hardnessDrillMultiplier = 240;
 			drillEffect = new WrapEffect(SWFx.groundCrack, Color.white, 8) {
@@ -98,7 +98,7 @@ public class SWProduction {
 			);
 
 			size = 2;
-			health = 160;
+			scaledHealth = 80f;
 			drillTime = 60f;
 			tier = 1;
 			range = 5;
@@ -311,7 +311,13 @@ public class SWProduction {
 			}};
 		}};
 		rig = new AreaAttributeCrafter("rig") {{
-			requirements(Category.production, with());
+			requirements(Category.production, with(
+				SWItems.bloom, 100,
+				SWItems.aluminium, 150,
+				SWItems.verdigris, 200,
+				SWItems.iron, 175,
+				Items.silicon, 180
+			));
 			size = 3;
 			rotate = true;
 

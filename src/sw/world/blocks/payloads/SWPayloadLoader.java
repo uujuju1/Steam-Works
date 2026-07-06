@@ -149,8 +149,8 @@ public class SWPayloadLoader extends PayloadBlock {
 		
 		@Override public float getForce() {
 			return reverse && payload != null && hasArrived() &&
-				payload.build instanceof RotationBatteryBuild ?
-				((RotationBattery) payload.block()).outputForce / getRatio() * ((RotationBatteryBuild) payload.build).wind / ((RotationBattery) payload.block()).maxWindup : 0f;
+				payload.block() instanceof RotationBattery payblock ?
+				payblock.outputForce / getRatio() : 0f;
 		}
 		
 		@Override
@@ -164,7 +164,7 @@ public class SWPayloadLoader extends PayloadBlock {
 		
 		@Override
 		public float getTargetSpeed() {
-			return reverse && payload != null && hasArrived() && payload.block() instanceof RotationBattery payblock ? payblock.speed * getRatio() * ((RotationBatteryBuild) payload.build).wind / payblock.maxWindup : 0f;
+			return reverse && payload != null && hasArrived() && payload.block() instanceof RotationBattery payblock ? payblock.speed * getRatio() : 0f;
 		}
 
 		public void handlePayloadResources() {

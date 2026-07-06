@@ -17,6 +17,11 @@ import sw.world.meta.*;
 public class ConsumeSpin extends Consume {
 	public float minSpeed = Float.NEGATIVE_INFINITY;
 	public float maxSpeed = Float.POSITIVE_INFINITY;
+
+	/**
+	 * Extra low or high value that the consumer may be able to accept.
+	 */
+	public float tolerance = 0.001f;
 	
 	/**
 	 * Interpolation curve between the speed and the efficiency multiplier.
@@ -35,7 +40,8 @@ public class ConsumeSpin extends Consume {
 		}
 	}
 	
-	@Override public void display(Stats stats) {
+	@Override
+	public void display(Stats stats) {
 		stats.add(SWStat.spinRequirement, table -> {
 			if (showGraph) {
 				Element stat = table.getCells().size != 0 ? table.getCells().first().get() : null;
@@ -99,11 +105,11 @@ public class ConsumeSpin extends Consume {
 	
 	@Override
 	public float efficiency(Building build) {
-		return getSpeed(build) >= minSpeed && getSpeed(build) <= maxSpeed ? 1f : 0f;
+		return getSpeed(build) + tolerance >= minSpeed && getSpeed(build) - tolerance <= maxSpeed ? 1f : 0f;
 	}
 	@Override
 	public float efficiencyMultiplier(Building build) {
-		if (getSpeed(build) >= minSpeed && getSpeed(build) <= maxSpeed) {
+		if (getSpeed(build) + tolerance >= minSpeed && getSpeed(build) - tolerance <= maxSpeed) {
 			return efficiencyScale.apply(getSpeed(build));
 		}
 		return 0f;

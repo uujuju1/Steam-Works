@@ -570,6 +570,7 @@ public class SWUnitTypes {
 			mineSpeed = 5;
 			boostMultiplier = 5f;
 	    coreUnitDock = lowAltitude = true;
+			canDrown = false;
 			groundLayer = flyingLayer = Layer.flyingUnitLow;
 
 			legCount = 8;
