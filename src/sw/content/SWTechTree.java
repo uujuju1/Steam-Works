@@ -42,6 +42,7 @@ public class SWTechTree {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
           node(thermikos, () -> {});
         });
+        node(push, with(new OnSector(liveStorm)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> {
           node(ironWallLarge);
           node(bloomWall, () -> node(bloomWallLarge));
@@ -112,7 +113,10 @@ public class SWTechTree {
           });
         });
         node(liquidCollector, () -> {
-          node(artesianWell, with(new Produce(solvent)), () -> {});
+          node(artesianWell, with(new Produce(solvent)), () -> {
+            node(sieve, with(new OnSector(bayOfEmbers)), () -> {});
+            node(rig, with(new OnSector(bayOfEmbers)), () -> {});
+          });
           node(pumpjack, with(new OnSector(abandonedMaze)), () -> {
             node(castingOutlet, with(new Research(liquidBasin)), () -> {});
           });

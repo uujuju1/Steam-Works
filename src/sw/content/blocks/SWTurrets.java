@@ -216,6 +216,7 @@ public class SWTurrets {
 			scaledHealth = 150;
 			reload = 240f;
 			range = 160f;
+			maxAmmo = 5;
 
 			outlineIcon = false;
 
