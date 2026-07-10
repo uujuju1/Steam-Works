@@ -39,71 +39,7 @@ public class Annotations {
 	//endregion
 	
 	//region entities
-	/**
-	 * Defines a component of an entity.
-	*/
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface Component {
-		boolean vanilla() default false;
-		
-		boolean base() default false;
-		
-		boolean genInterface() default true;
-	}
-	/**
-	 * Defines a Base component of an entity.
-	 */
-	@Target(ElementType.TYPE)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface BaseComponent {}
-	
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface Entity {
-		Class[] value();
-		
-		boolean isFinal() default true;
-		
-		boolean pooled() default false;
-		
-		boolean genio() default true;
-		
-		boolean serialize() default true;
-		
-		boolean vanilla() default false;
-	}
-	
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface Replace {}
-	@Target(ElementType.FIELD)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface Import {}
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface MethodPriority {
-		float value();
-	}
-	@Target(ElementType.METHOD)
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface Internal {}
-	/** Indicates that a field will be interpolated when synced. */
-	@Target({ElementType.FIELD})
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface SyncField{
-		/** If true, the field will be linearly interpolated. If false, it will be interpolated as an angle. */
-		boolean value();
-		/** If true, the field is clamped to 0-1. */
-		boolean clamped() default false;
-	}
-	/** Indicates that a field will not be read from the server when syncing the local player state. */
-	@Target({ElementType.FIELD})
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface SyncLocal{}
-	/** Indicates that a field should not be synced to clients (but may still be non-transient) */
-	@Target({ElementType.FIELD})
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface NoSync{}
+
 	//endregion
 	
 	//region load

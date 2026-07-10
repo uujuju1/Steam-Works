@@ -39,7 +39,7 @@ public class ConsumeLiquidBoosters extends ConsumeLiquidBase {
 	}
 
 	public Liquid getCurrentBooster(Building build) {
-		Liquid cur = boosters.keys().toArray().max(liquid -> build.liquids.get(liquid));
+		Liquid cur = boosters.keys().toSeq().max(liquid -> build.liquids.get(liquid));
 		return build.liquids.get(cur) > 0.001f ? cur : null;
 	}
 

@@ -371,7 +371,8 @@ public class MechanicalArm extends PayloadBlock {
 				build.tile.remove();
 				build.afterPickedUp();
 				payload = new BuildPayload(build);
-				build.payloadRotation = payRotation = build.rotation * 90f;
+//				build.payloadRotation =
+				payRotation = build.rotation * 90f;
 
 				return true;
 			}

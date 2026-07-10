@@ -88,7 +88,7 @@ public class SWContinuousTurret extends ConsumeTurret {
 
 			super.updateTile();
 
-			unit.ammo(canConsume() ? unit.type().ammoCapacity : 0);
+			unit.ammo(canConsume() ? maxAmmo : 0);
 
 			if (bullets.any()) {
 				bullets.each(this::updateBullet);

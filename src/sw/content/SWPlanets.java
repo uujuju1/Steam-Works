@@ -25,7 +25,7 @@ public class SWPlanets {
 				r.placeRangeCheck = false;
 				r.coreDestroyClear = true;
 				r.deconstructRefundMultiplier = 1f;
-				r.showSpawns = false;
+				r.hideSpawns = false;
 			};
 
 			iconColor = Pal.lancerLaser;

@@ -1,21 +1,53 @@
-import arc.files.*
-import arc.util.*
-import arc.util.serialization.*
-import arc.struct.*
-import java.io.*
-import java.util.regex.*
+
+import arc.files.Fi
+import arc.util.OS
+import arc.util.serialization.JsonReader
+import arc.util.serialization.Jval
+import java.io.BufferedWriter
+import java.io.FileWriter
+import java.util.regex.Pattern
 
 buildscript{
     val arcVersion: String by project
 
     dependencies{
-        classpath("com.github.Anuken.Arc:arc-core:$arcVersion")
+//        classpath("com.github.Anuken.Arc:arc-core:$arcVersion")
+        classpath("Anuken:Mindustry:$arcVersion")
     }
 
     repositories{
-        maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-        maven("https://maven.xpdustry.com/mindustry")
-        maven("https://jitpack.io")
+        //Downloads the dependencies JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/download/[revision]/Mindustry.jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
+
+        //If the version is set to 'latest', downloads the latest Mindustry *release* as a dependency
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/[revision]/download/Mindustry.jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
+
+        //For depending on the absolute newest commit for Mindustry
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/download/master/[revision].jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
     }
 }
 
@@ -56,14 +88,43 @@ allprojects{
     sourceSets["main"].java.setSrcDirs(listOf(layout.projectDirectory.dir("src")))
 
     dependencies{
-        annotationProcessor(jabel())
+//        annotationProcessor(jabel())
     }
 
     repositories{
         mavenCentral()
-        maven("https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository")
-        maven("https://maven.xpdustry.com/mindustry")
-        maven("https://jitpack.io")
+        //Downloads the dependencies JAR file from Mindustry releases; does not use any real repository. Surprisingly, this is the most reliable option.
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/download/[revision]/Mindustry.jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
+
+        //If the version is set to 'latest', downloads the latest Mindustry *release* as a dependency
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/[revision]/download/Mindustry.jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
+
+        //For depending on the absolute newest commit for Mindustry
+        ivy{
+            url = uri("https://github.com/")
+            patternLayout{
+                artifact("/[organisation]/[module]/releases/download/master/[revision].jar")
+            }
+            metadataSources{
+                artifact()
+            }
+        }
     }
 
     tasks.withType<JavaCompile>().configureEach{
@@ -82,8 +143,9 @@ project(":annotations") {
 
     dependencies {
         implementation(javapoet())
-        implementation(mindustry(":core"))
-        implementation(arc(":arc-core"))
+//        implementation(mindustry(":core"))
+//        implementation(arc(":arc-core"))
+        implementation("Anuken:Mindustry:$mindustryVersion")
     }
 
     tasks.withType<JavaCompile>().configureEach {
@@ -109,18 +171,19 @@ project(":tools") {
     tasks.withType<JavaCompile>().configureEach{
         // Use Java 17+ syntax, but target Java 8 bytecode version.
         sourceCompatibility = "17"
-        options.apply{
-            release = 8
-        }
+//        options.apply{
+//            release = 8
+//        }
     }
     dependencies{
         implementation(rootProject)
 
         annotationProcessor(project(":annotations"))
 
-        implementation(mindustry(":core"))
-        implementation(arc(":arc-core"))
-        implementation(arc(":natives-desktop"))
+        implementation("Anuken:Mindustry:$mindustryVersion")
+//        implementation(mindustry(":core"))
+//        implementation(arc(":arc-core"))
+//        implementation(arc(":natives-desktop"))
     }
 
     tasks.register<JavaExec>("run"){
@@ -166,19 +229,20 @@ project(":") {
     tasks.withType<JavaCompile>().configureEach {
         // Use Java 17+ syntax, but target Java 8 bytecode version.
         sourceCompatibility = "17"
-        options.apply {
-            release = 8
-        }
+//        options.apply {
+//            release = 8
+//        }
 
-        dependsOn("fetchComponents")
-        exclude(modFetch.replace(".", "/"))
+//        dependsOn("fetchComponents")
+//        exclude(modFetch.replace(".", "/"))
     }
 
     dependencies {
         compileOnly(project(":annotations"))
-        compileOnly(jabel())
-        compileOnly(mindustry(":core"))
-        compileOnly(arc(":arc-core"))
+//        compileOnly(jabel())
+        compileOnly("Anuken:Mindustry:$mindustryVersion")
+//        compileOnly(mindustry(":core"))
+//        compileOnly(arc(":arc-core"))
 
         annotationProcessor(project(":annotations"))
     }
@@ -410,66 +474,66 @@ project(":") {
     }
 
     // taken from omaloon and kotlinfied it
-    class Fetcher(val run: UnsafeRunnable) {
-        private var error: Throwable? = null
+//    class Fetcher(val run: UnsafeRunnable) {
+//        private var error: Throwable? = null
+//
+//        fun execute(){
+//            try{
+//                run.run()
+//                error = null
+//            }catch(e: Throwable){
+//                Log.err(e)
+//                error = e
+//            }
+//        }
+//    }
 
-        fun execute(){
-            try{
-                run.run()
-                error = null
-            }catch(e: Throwable){
-                Log.err(e)
-                error = e
-            }
-        }
-    }
-
-    tasks.register<DefaultTask>("fetchComponents") {
-        val outputDir: File = file("$buildDir/generated/sources/fetched/java/main/${modFetch.replace(".", "/")}")
-        outputs.dir(outputDir)
-
-        doLast {
-            delete(outputDir)
-            outputDir.mkdirs()
-
-            val fetched: Seq<Fetcher> = Seq()
-
-            Fetcher {
-                Http.get("https://api.github.com/repos/Anuken/Mindustry/contents/core/src/mindustry/entities/comp?ref=$mindustryVersion")
-                    .error {e: Throwable -> throw RuntimeException(e) }
-                    .block {content: Http.HttpResponse ->
-                        val comps: Jval.JsonArray = Jval.read(content.resultAsString).asArray()
-
-                        comps.each {comp: Jval ->
-                            val name = comp.get("name").asString()
-                            val link = comp.get("download_url").asString()
-
-                            fetched.add((Fetcher {
-                                Http.get(link)
-                                    .error {e: Throwable -> throw RuntimeException("Failed to fetch at $name", e)}
-                                    .block {component: Http.HttpResponse ->
-                                        val file = Fi(outputDir).child(name)
-
-                                        var fileString = component.resultAsString
-                                            .replaceFirst("mindustry.entities.comp", modFetch)
-                                            .replaceFirst("mindustry.annotations.Annotations.*", "sw.annotations.Annotations.*")
-                                            .replace("@Component\n", "@Component()\n")
-                                            .replace("@Component(", "@Component(vanilla = true, ")
-                                            .replace(", )", ")")
-                                            .replace("@EntityDef(", "@Entity(vanilla = true, ")
-                                            .replace("@InternalImpl", "@Internal")
-                                            .replace("@Final", "")
-                                            .replace("@Readonly", "")
-
-                                        file.writeString(fileString)
-                                        println("Fetched $name")
-                                    }
-                            }))
-                        }
-                    }
-            }.execute()
-
-            fetched.each {f: Fetcher -> f.execute()}
-        }
-    }
+//    tasks.register<DefaultTask>("fetchComponents") {
+//        val outputDir: File = file("$buildDir/generated/sources/fetched/java/main/${modFetch.replace(".", "/")}")
+//        outputs.dir(outputDir)
+//
+//        doLast {
+//            delete(outputDir)
+//            outputDir.mkdirs()
+//
+//            val fetched: Seq<Fetcher> = Seq()
+//
+//            Fetcher {
+//                Http.get("https://api.github.com/repos/Anuken/Mindustry/contents/core/src/mindustry/entities/comp?ref=$mindustryVersion")
+//                    .error {e: Throwable -> throw RuntimeException(e) }
+//                    .block {content: Http.HttpResponse ->
+//                        val comps: Jval.JsonArray = Jval.read(content.resultAsString).asArray()
+//
+//                        comps.each {comp: Jval ->
+//                            val name = comp.get("name").asString()
+//                            val link = comp.get("download_url").asString()
+//
+//                            fetched.add((Fetcher {
+//                                Http.get(link)
+//                                    .error {e: Throwable -> throw RuntimeException("Failed to fetch at $name", e)}
+//                                    .block {component: Http.HttpResponse ->
+//                                        val file = Fi(outputDir).child(name)
+//
+//                                        var fileString = component.resultAsString
+//                                            .replaceFirst("mindustry.entities.comp", modFetch)
+//                                            .replaceFirst("mindustry.annotations.Annotations.*", "sw.annotations.Annotations.*")
+//                                            .replace("@Component\n", "@Component()\n")
+//                                            .replace("@Component(", "@Component(vanilla = true, ")
+//                                            .replace(", )", ")")
+//                                            .replace("@EntityDef(", "@Entity(vanilla = true, ")
+//                                            .replace("@InternalImpl", "@Internal")
+//                                            .replace("@Final", "")
+//                                            .replace("@Readonly", "")
+//
+//                                        file.writeString(fileString)
+//                                        println("Fetched $name")
+//                                    }
+//                            }))
+//                        }
+//                    }
+//            }.execute()
+//
+//            fetched.each {f: Fetcher -> f.execute()}
+//        }
+//    }
 }
