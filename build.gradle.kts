@@ -460,9 +460,14 @@ project(":") {
 
         doLast {
             val process = ProcessBuilder(game)
-                .directory(project.rootDir)
                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                 .redirectError(ProcessBuilder.Redirect.INHERIT)
+
+            if (Fi.get(game).extEquals("jar")) {
+                process.command("java", "-jar", game)
+            } else {
+                process.directory(project.rootDir)
+            }
 
             val environment = process.environment()
             if (save.exists()) {
