@@ -24,7 +24,8 @@ public class CourierAI extends AIController {
 		if (
 			unit.within(port.getLink(), 4f) &&
 			port.getLink().payload == null &&
-			unit instanceof Payloadc carrier
+			unit instanceof Payloadc carrier &&
+			!carrier.payloads().isEmpty()
 		) {
 			port.getLink().handlePayload(port.getLink(), carrier.payloads().peek());
 			port.getLink().launchers.remove(port);
