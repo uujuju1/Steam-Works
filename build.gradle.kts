@@ -20,7 +20,7 @@ buildscript{
         ivy{
             url = uri("https://github.com/")
             patternLayout{
-                artifact("/[organisation]/[module]/releases/download/[revision]/Mindustry.jar")
+                artifact("/[organisation]/[module]/releases/download/[revision]/dependencies.jar")
             }
             metadataSources{
                 artifact()
@@ -31,7 +31,7 @@ buildscript{
         ivy{
             url = uri("https://github.com/")
             patternLayout{
-                artifact("/[organisation]/[module]/releases/[revision]/download/Mindustry.jar")
+                artifact("/[organisation]/[module]/releases/[revision]/download/dependencies.jar")
             }
             metadataSources{
                 artifact()
@@ -97,7 +97,7 @@ allprojects{
         ivy{
             url = uri("https://github.com/")
             patternLayout{
-                artifact("/[organisation]/[module]/releases/download/[revision]/Mindustry.jar")
+                artifact("/[organisation]/[module]/releases/download/[revision]/dependencies.jar")
             }
             metadataSources{
                 artifact()
@@ -108,7 +108,7 @@ allprojects{
         ivy{
             url = uri("https://github.com/")
             patternLayout{
-                artifact("/[organisation]/[module]/releases/[revision]/download/Mindustry.jar")
+                artifact("/[organisation]/[module]/releases/[revision]/download/dependencies.jar")
             }
             metadataSources{
                 artifact()

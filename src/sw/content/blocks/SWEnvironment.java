@@ -19,6 +19,9 @@ public class SWEnvironment {
 	souesite, fissuredSouesite, souesiteCrater, largeSouesiteCrater, souesiteWall, souesiteBoulder,
 	souesiteShallowerSolvent, souesiteShallowSolvent,
 	souesiteCrack,
+
+	jade, fissuredJade, jadeWall,
+	cascadingJade, cascadingFissuredJade,
 	
 	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
 	magmaticFlowrock, hotFlowrock,
@@ -124,6 +127,22 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.water;
 			isLiquid = true;
 			liquidDrop = SWLiquids.solvent;
+		}};
+		//endregion
+
+		//region jade
+		jadeWall = new StaticWall("jade-wall");
+		jade = new Floor("jade", 4) {{
+			wall = jadeWall;
+		}};
+		fissuredJade = new Floor("fissured-jade", 4) {{
+			wall = jadeWall;
+		}};
+		cascadingJade = new Floor("cascading-jade", 2) {{
+			wall = jadeWall;
+		}};
+		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
+			wall = jadeWall;
 		}};
 		//endregion
 		
@@ -325,66 +344,6 @@ public class SWEnvironment {
 			liquidDrop = SWLiquids.solvent;
 		}};
 		//endregion
-
-		/*
-
-		// region glacier
-		glacierWall = new StaticWall("glacier-wall");
-		glacier = new Floor("glacier", 4) {{
-			wall = glacierWall;
-		}};
-		glacierCrater = new Floor("glacier-crater", 2) {{
-			wall = glacierWall;
-		}};
-		weatheredGlacier = new Floor("weathered-glacier", 4) {{
-			wall = glacierWall;
-		}};
-		// endregion
-
-		// region blue ice
-		blueSolventIceWall = new StaticWall("blue-solvent-ice-wall");
-		blueSolventIce = new Floor("blue-solvent-ice", 4) {{
-			wall = blueSolventIceWall;
-		}};
-		blueSolventIceCrater = new Floor("blue-solvent-ice-crater", 2) {{
-			wall = blueSolventIceWall;
-		}};
-		crystallineBlue = new Floor("crystalline-blue", 4) {{
-			wall = blueSolventIceWall;
-		}};
-		// endregion
-
-		//region erosion
-		erosionWall = new StaticWall("erosion-wall");
-		erosionBoulder = new Prop("erosion-boulder") {{
-			variants = 2;
-		}};
-		erosion = new Floor("erosion", 4) {{
-			wall = erosionWall;
-			decoration = erosionBoulder;
-		}};
-		erosionCrater = new Floor("erosion-crater", 2) {{
-			wall = erosionWall;
-			decoration = erosionCrater;
-		}};
-		//endregion
-
-		//region melt stone
-		meltStoneWall = new StaticWall("melt-stone-wall");
-		meltStoneBoulder = new Prop("melt-stone-boulder") {{
-			variants = 2;
-		}};
-		meltStone = new Floor("melt-stone", 4) {{
-			wall = meltStoneWall;
-			decoration = meltStoneBoulder;
-		}};
-		meltPebbles = new Floor("melt-pebbles", 4) {{
-			wall = meltStoneWall;
-			decoration = meltStoneBoulder;
-		}};
-		//endregion
-
-		*/
 
 		// region plate
 		plateWall = new StaticWall("plate-wall");
