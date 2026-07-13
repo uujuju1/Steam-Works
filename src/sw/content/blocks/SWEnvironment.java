@@ -143,6 +143,7 @@ public class SWEnvironment {
 		}};
 		ruinedJade = new Floor("ruined-jade", 2) {{
 			wall = jadeWall;
+			placeableOn = false;
 		}};
 		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
 			wall = jadeWall;
