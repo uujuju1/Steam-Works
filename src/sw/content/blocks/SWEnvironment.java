@@ -138,15 +138,27 @@ public class SWEnvironment {
 		fissuredJade = new Floor("fissured-jade", 4) {{
 			wall = jadeWall;
 		}};
-		cascadingJade = new Floor("cascading-jade", 2) {{
+		cascadingJade = new EffectFloor("cascading-jade") {{
 			wall = jadeWall;
 			cacheLayer = CacheLayer.water;
 			liquidDrop = SWLiquids.solvent;
+
+			variants = 2;
+
+			effect = SWFx.solventDrip;
+			effectTime = 30f;
+			effectTimeRand = 1f;
 		}};
-		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
+		cascadingFissuredJade = new EffectFloor("cascading-fissured-jade") {{
 			wall = jadeWall;
 			cacheLayer = CacheLayer.water;
 			liquidDrop = SWLiquids.solvent;
+
+			variants = 2;
+
+			effect = SWFx.solventDrip;
+			effectTime = 30f;
+			effectTimeRand = 1f;
 		}};
 		ruinedJade = new Floor("ruined-jade", 2) {{
 			wall = jadeWall;

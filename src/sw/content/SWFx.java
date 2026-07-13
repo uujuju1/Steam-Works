@@ -365,6 +365,29 @@ public class SWFx {
         }
       }
     }),
+
+    solventDrip = new Effect(60f, e -> {
+      rand.setSeed(e.id);
+      Draw.color(Color.valueOf("98adc1"));
+
+      float halfFin = Math.min(1f, e.fin() * 2f);
+      float halfFinpow = Interp.pow2Out.apply(halfFin);
+      float halfFinpow2 = Interp.pow2Out.apply(Mathf.maxZero(e.fin() * 2f - 1f));
+
+      Draw.alpha(halfFin * 0.5f);
+
+      temp.set(e.x + rand.range(4f), e.y + rand.range(4f));
+      float bottomX = temp.x, bottomY = temp.y;
+      Parallax.getParallaxFrom(temp, Core.camera.position, 24f).lerp(bottomX, bottomY, halfFinpow);
+
+      if (e.fin() > 0.5f) {
+        Lines.stroke(1f - halfFinpow2);
+        Lines.circle(bottomX, bottomY, 2f * halfFinpow2);
+      }
+
+      Lines.stroke(2f * (1f - Interp.pow2In.apply(halfFin)));
+      Lines.lineAngle(temp.x, temp.y, temp.angleTo(bottomX, bottomY), 4f * (1f - halfFin));
+    }),
   
     thermiteCrush = new Effect(120f, e -> {
       rand.setSeed(e.id);
