@@ -21,7 +21,7 @@ public class SWEnvironment {
 	souesiteCrack,
 
 	jade, fissuredJade, jadeWall,
-	cascadingJade, cascadingFissuredJade,
+	cascadingJade, cascadingFissuredJade, ruinedJade,
 	
 	flowstone, flowrock, flowrockCrater, largeFlowrockCrater, flowstoneWall, flowrockBoulder,
 	magmaticFlowrock, hotFlowrock,
@@ -139,6 +139,9 @@ public class SWEnvironment {
 			wall = jadeWall;
 		}};
 		cascadingJade = new Floor("cascading-jade", 2) {{
+			wall = jadeWall;
+		}};
+		ruinedJade = new Floor("ruined-jade", 2) {{
 			wall = jadeWall;
 		}};
 		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
