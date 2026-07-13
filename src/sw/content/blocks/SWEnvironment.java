@@ -140,13 +140,17 @@ public class SWEnvironment {
 		}};
 		cascadingJade = new Floor("cascading-jade", 2) {{
 			wall = jadeWall;
+			cacheLayer = CacheLayer.water;
+			liquidDrop = SWLiquids.solvent;
+		}};
+		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
+			wall = jadeWall;
+			cacheLayer = CacheLayer.water;
+			liquidDrop = SWLiquids.solvent;
 		}};
 		ruinedJade = new Floor("ruined-jade", 2) {{
 			wall = jadeWall;
 			placeableOn = false;
-		}};
-		cascadingFissuredJade = new Floor("cascading-fissured-jade", 2) {{
-			wall = jadeWall;
 		}};
 		//endregion
 		

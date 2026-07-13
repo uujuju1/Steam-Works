@@ -37,6 +37,7 @@ public class SWVars implements Loadable {
 			musicPlayer = new MusicPlayer();
 			musicPlayer.init();
 			SWUI.load();
+			SWEnv.loadRenderers();
 		}
 	}
 	
