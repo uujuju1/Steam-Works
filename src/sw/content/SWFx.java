@@ -368,7 +368,7 @@ public class SWFx {
 
     solventDrip = new Effect(60f, e -> {
       rand.setSeed(e.id);
-      Draw.color(Color.valueOf("98adc1"));
+      Draw.color(e.color);
 
       float halfFin = Math.min(1f, e.fin() * 2f);
       float halfFinpow = Interp.pow2Out.apply(halfFin);

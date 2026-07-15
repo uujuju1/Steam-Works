@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
+import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.part.*;
@@ -33,7 +34,7 @@ public class SWCrafting {
 		constructionManifold, deconstructionManifold,
 		wedger, pyrolysisSynthetizer, pressureKiln,
 		
-		crystalFurnace, rte, kitchenGarden;
+		crystalFurnace, rte, coolingTower;
 	
 	public static Block compoundSmelter;
 	public static Block densePress;
@@ -790,6 +791,34 @@ public class SWCrafting {
 					alpha = 0.05f;
 					layer = Layer.blockOver;
 				}}
+			);
+		}};
+		coolingTower = new GenericCrafter("cooling-tower") {{
+			requirements(Category.crafting, with());
+			size = 3;
+
+			ambientSound = Sounds.rain;
+			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 8f);
+			updateEffectChance = 0.5f;
+			updateEffectSpread = 0f;
+			consumeLiquid(SWLiquids.steam, 110f / 60f);
+			outputLiquids = LiquidStack.with(Liquids.water, 10f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawParts() {{
+					for (int i = 0; i < 3; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-rotator") {{
+							clampProgress = false;
+							outline = false;
+							rotation = 120f * finalI;
+							moveRot = 3f;
+							progress = DrawParts.totalProgress;
+						}});
+					}
+				}},
+				new DrawRegion()
 			);
 		}};
 

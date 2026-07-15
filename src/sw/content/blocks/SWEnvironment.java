@@ -146,6 +146,7 @@ public class SWEnvironment {
 			variants = 2;
 
 			effect = SWFx.solventDrip;
+			effectColor = Color.valueOf("98adc1");
 			effectTime = 30f;
 			effectTimeRand = 1f;
 		}};
@@ -157,6 +158,7 @@ public class SWEnvironment {
 			variants = 2;
 
 			effect = SWFx.solventDrip;
+			effectColor = Color.valueOf("98adc1");
 			effectTime = 30f;
 			effectTimeRand = 1f;
 		}};
