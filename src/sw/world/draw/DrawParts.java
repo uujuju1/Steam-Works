@@ -13,6 +13,7 @@ import sw.world.interfaces.*;
 
 public class DrawParts extends BlockDrawer {
 	public boolean vanillaOutlines = false;
+	public boolean hasIcon = true;
 
 	public String name = "";
 
@@ -63,7 +64,7 @@ public class DrawParts extends BlockDrawer {
 
 	@Override
 	public TextureRegion[] icons(Block block) {
-		if (previewRegion.found()) return new TextureRegion[]{previewRegion};
+		if (hasIcon) return new TextureRegion[]{previewRegion};
 		return new TextureRegion[]{};
 	}
 

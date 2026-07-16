@@ -419,7 +419,7 @@ public class SWPower {
 			scaleLiquidConsumption = true;
 
 			outputRotation = 100f / 10f;
-			outputRotationForce = 200f / 600f;
+			outputRotationForce = 220f / 600f;
 			speedScales = forceScales = true;
 
 			connectSide = new boolean[]{false, true, false, true};

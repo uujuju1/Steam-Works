@@ -15,6 +15,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.effect.*;
 import sw.entities.part.*;
 import sw.gen.*;
 import sw.world.blocks.payloads.*;
@@ -34,7 +35,7 @@ public class SWCrafting {
 		constructionManifold, deconstructionManifold,
 		wedger, pyrolysisSynthetizer, pressureKiln,
 		
-		crystalFurnace, rte, coolingTower;
+		burner, rte, coolingTower;
 	
 	public static Block compoundSmelter;
 	public static Block densePress;
@@ -644,6 +645,95 @@ public class SWCrafting {
 			}};
 		}};
 
+		burner = new SWGenericCrafter("burner") {{
+			requirements(Category.crafting, with());
+			size = 4;
+
+			ambientSound = Sounds.beamLustre;
+			consumeLiquids(LiquidStack.with(
+				SWLiquids.gas, 50f / 60f,
+				SWLiquids.solvent, 12f / 60f
+			));
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 50f / 10f;
+
+				showGraph = true;
+				efficiencyScale = s -> Interp.pow5In.apply(Mathf.map(s, 0.5f, 5f, 0f, 1f));
+			}});
+			outputItems = with(Items.graphite, 1);
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 110f / 60f);
+			updateEffect = new ParallaxFireEffect() {{
+				maxHeight = 8f;
+				minHeight = 6f;
+				minRadius = 8f;
+				maxRadius = 24f;
+				particles = 2;
+				layer = Layer.effect;
+				taperCurve = Interp.pow2Out;
+				heightCurve = Interp.pow2In;
+				sizeCurve = a -> Interp.circle.apply(Interp.slope.apply(a));
+				lifetime = 120f;
+			}};
+			updateEffectChance = 0.5f;
+			updateEffectSpread = 0f;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(4f * offset.x, 14f * offset.y, -90f, 1f));
+				}},
+				new DrawParts() {{
+					hasIcon = false;
+
+					parts.add(new ShapePart() {{
+						radius = 7.5f;
+						radiusTo = 8f;
+						stroke = 0f;
+						strokeTo = 1f;
+						progress = DrawParts.warmup.curve(Interp.smooth);
+						color = Color.valueOf("9799A3");
+						sides = 28;
+						hollow = true;
+					}});
+				}},
+				new DrawRegion(),
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Pal.turretHeat;
+					alpha = 0.05f;
+					height = 3f;
+					heightWeaveScl = 5f;
+					heightWeaveMag = 0.25f;
+					divisions = 40;
+					radius = 12f;
+					radiusTo = 6f;
+
+					warmupCurve = Interp.pow5;
+				}},
+				new DrawLightPillar() {{
+					blending = Blending.additive;
+					color = Color.valueOf("5096D4");
+					alpha = 0.1f;
+					height = 1.5f;
+					heightWeaveScl = 5f;
+					heightWeaveMag = 0.25f;
+					divisions = 20;
+					radius = 8f;
+					radiusTo = 4f;
+
+					warmupCurve = Interp.pow5;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20f / 600f;
+				allowedEdges = new int[][]{
+					new int[]{4, 5, 12, 13},
+				};
+			}};
+		}};
 		rte = new ReactorCrafter("rte") {{
 			requirements(Category.crafting, with());
 			size = 5;
