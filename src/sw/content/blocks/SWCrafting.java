@@ -670,10 +670,11 @@ public class SWCrafting {
 				maxRadius = 24f;
 				particles = 2;
 				layer = Layer.effect;
+				taper = 0.8f;
 				taperCurve = Interp.pow2Out;
 				heightCurve = Interp.pow2In;
 				sizeCurve = a -> Interp.circle.apply(Interp.slope.apply(a));
-				lifetime = 120f;
+				lifetime = 60f;
 			}};
 			updateEffectChance = 0.5f;
 			updateEffectSpread = 0f;
