@@ -15,6 +15,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
+import sw.entities.effect.*;
 import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
@@ -28,7 +29,7 @@ import static mindustry.type.ItemStack.*;
 public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
-		auger, quarry, rig,
+		auger, quarry, rig, atmosphericSiphon,
 	
 		castingOutlet,
 		liquidCollector, artesianWell, pumpjack;
@@ -420,6 +421,55 @@ public class SWProduction {
 					new int[]{5, 1},
 					new int[]{8, 4},
 					new int[]{11, 7}
+				};
+			}};
+		}};
+		atmosphericSiphon = new SWGenericCrafter("atmospheric-siphon") {{
+			requirements(Category.production, with());
+			size = 3;
+			envRequired = SWEnv.gasPocket;
+			liquidCapacity = 100f;
+
+			updateEffect = new ParticlePillarEffect() {{
+				color1 = Color.white;
+				color2 = Color.valueOf("E3D8B6");
+
+				lifetime = 60f;
+
+				particles = 2;
+				sizeMin = 2f;
+				sizeMax = 4f;
+
+				heightInterp = a -> Interp.pow5In.apply(1f - a);
+				sizeInterp = a -> Interp.pow2Out.apply(1f - a);
+			}};
+			updateEffectChance = 0.25f;
+			consume(new ConsumeSpin() {{
+				minSpeed = 1f;
+				maxSpeed = 50f / 10f;
+
+				minEfficiency = 1f;
+				maxEfficiency = 2f;
+
+				showGraph = true;
+				efficiencyScale = speed -> 1f + Interp.pow2.apply(Mathf.map(speed, 1f, 5f, 0f, 1f));
+			}});
+			outputLiquids = LiquidStack.with(SWLiquids.gas, 25f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawLiquidTile(SWLiquids.gas, 2f),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawRegion()
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 40f / 600f;
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9}
 				};
 			}};
 		}};

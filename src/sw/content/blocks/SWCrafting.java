@@ -648,6 +648,7 @@ public class SWCrafting {
 		burner = new SWGenericCrafter("burner") {{
 			requirements(Category.crafting, with());
 			size = 4;
+			liquidCapacity = 200;
 
 			ambientSound = Sounds.beamLustre;
 			consumeLiquids(LiquidStack.with(
