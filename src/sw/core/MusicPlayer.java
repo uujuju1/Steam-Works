@@ -83,10 +83,14 @@ public class MusicPlayer extends SoundControl {
 		super.reload();
 		casual.addAll(
 			SWMusics.asTerras,
+			SWMusics.passadoEsquecido,
+			SWMusics.motorPerpetuo,
+			SWMusics.chamadoDoVazio,
+			SWMusics.ouroEscuro,
+
 			SWMusics.pendahuluan,
 			SWMusics.terlahirKembali,
-			SWMusics.pendaratanPertama,
-			SWMusics.passadoEsquecido
+			SWMusics.pendaratanPertama
 		);
 
 		JsonValue r = new JsonReader().parse(Vars.tree.get("music/names.json")).get("titles");
