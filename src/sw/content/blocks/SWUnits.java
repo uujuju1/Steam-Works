@@ -109,7 +109,7 @@ public class SWUnits {
 			researchCost = with(
 				SWItems.verdigris, 500,
 				SWItems.iron, 700,
-				SWItems.bloom, 120,
+				SWItems.bloom, 50,
 				Items.graphite, 850,
 				Items.silicon, 1050
 			);

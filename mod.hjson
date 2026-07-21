@@ -4,5 +4,5 @@ author: "Liz Aurora"
 main: "sw.ModLoader"
 description: "No nowhere has nothing anywhere."
 version: 2
-minGameVersion: 159
+minGameVersion: 159.7
 java: true
