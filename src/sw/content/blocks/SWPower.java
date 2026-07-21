@@ -672,7 +672,7 @@ public class SWPower {
 
 		flywheel = new AxleBlock("flywheel") {{
 			requirements(Category.power, with(
-				SWItems.bloom, 100,
+				SWItems.bloom, 20,
 				SWItems.aluminium, 50,
 				SWItems.verdigris, 100,
 				Items.silicon, 30,

@@ -12,7 +12,7 @@ import sw.type.*;
 public class SWSectorPresets {
 	public static SectorPreset
 		crevasse, theDelta,
-		brokenCorridors,
+		brokenCorridors, caustics,
 		liveStorm, bayOfEmbers,
 		abandonedMaze, cavern;
 
@@ -73,7 +73,7 @@ public class SWSectorPresets {
 
 			rules = r -> {
 				r.winWave = 20;
-				r.hideSpawns = true;
+				r.hideSpawns = false;
 				r.weather.add(new Weather.WeatherEntry(
 					SWWeathers.souesiteDust,
 					5f * Time.toMinutes,
@@ -149,6 +149,14 @@ public class SWSectorPresets {
 			};
 
 			core = (CoreBlock) SWStorage.coreMole;
+		}};
+		caustics = new PositionSectorPreset("caustics", SWPlanets.wendi, 7) {{
+			x = 200f;
+			y = 300;
+			width = height = 300;
+			icon = () -> Icon.modeAttack;
+
+			landMusic = SWMusics.ouroEscuro;
 		}};
 	}
 }

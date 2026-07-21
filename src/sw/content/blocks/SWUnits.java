@@ -102,7 +102,7 @@ public class SWUnits {
 			requirements(Category.units, with(
 				SWItems.verdigris, 50,
 				SWItems.iron, 70,
-				SWItems.bloom, 120,
+				SWItems.bloom, 30,
 				Items.graphite, 85,
 				Items.silicon, 105
 			));

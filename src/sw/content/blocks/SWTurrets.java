@@ -501,7 +501,7 @@ public class SWTurrets {
 
 			outlineIcon = false;
 
-			consumeItem(Items.silicon, 5);
+			consumeItem(Items.silicon, 1);
 			consumeLiquid(Liquids.ozone, 1f / 60f);
 
 			drawer = new DrawTurret() {{
