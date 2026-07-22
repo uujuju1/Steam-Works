@@ -3,6 +3,7 @@ package sw.matryoshka.world;
 import mindustry.*;
 import mindustry.ai.*;
 import mindustry.core.*;
+import mindustry.gen.*;
 import sw.matryoshka.entities.*;
 
 /**
@@ -15,8 +16,12 @@ public class Nesting {
 
 	public NestedGroups groups = new NestedGroups();
 
+	public float x, y;
+
 	public Nesting(int width, int height) {
 		world.resize(width, height);
+		world.tiles.fill();
+		groups.init();
 		groups.resize(0, 0, world.unitWidth(), world.unitHeight());
 	}
 
@@ -29,6 +34,19 @@ public class Nesting {
 			origin = self;
 
 			returnWorld = Vars.world;
+
+			all = Groups.all;
+			build = Groups.build;
+			bullet = Groups.bullet;
+			draw = Groups.draw;
+			fire = Groups.fire;
+			label = Groups.label;
+			player = Groups.player;
+			powerGraph = Groups.powerGraph;
+			puddle = Groups.puddle;
+			sync = Groups.sync;
+			unit = Groups.unit;
+			weather = Groups.weather;
 		}};
 	}
 }
