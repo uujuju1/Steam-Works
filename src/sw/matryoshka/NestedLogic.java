@@ -1,9 +1,21 @@
 package sw.matryoshka;
 
 import arc.*;
+import arc.graphics.g2d.*;
+import sw.graphics.*;
 import sw.matryoshka.world.*;
 
 public class NestedLogic implements ApplicationListener {
+	public boolean shoouldDraw;
+
+	public void draw() {
+		Draw.blit(SWShaders.hintBackgroundShader);
+	}
+
+	@Override
+	public void update() {
+		if (shoouldDraw) draw();
+	}
 
 	/**
 	 * Standard vanilla like updating loop for a Nesting.

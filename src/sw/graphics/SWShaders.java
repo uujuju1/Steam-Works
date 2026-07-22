@@ -19,12 +19,22 @@ public class SWShaders {
 
 	public static CacheLayer pitfallLayer;
 
+	public static Shader hintBackgroundShader;
+
 	public static void load() {
 		sectorLaunchShader = new SectorLaunchShader("sectorMap");
 		
 		pitfall = new PitfallShader("pitfall");
 		pitfallLayer = new CacheLayer.ShaderLayer(pitfall);
 		CacheLayer.add(pitfallLayer);
+
+		hintBackgroundShader = new Shader(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/hintBackground.frag")) {
+			@Override
+			public void apply() {
+				setUniformf("u_time", Time.time / Time.toSeconds);
+				setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
+			}
+		};
 	}
 	
 	public static class SectorLaunchShader extends Shader {

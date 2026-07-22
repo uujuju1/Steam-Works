@@ -44,6 +44,7 @@ public class SWVars implements Loadable {
 		}
 
 		matryoshka = new NestedLogic();
+		Core.app.addListener(matryoshka);
 	}
 	
 	public static void clearTree() {
