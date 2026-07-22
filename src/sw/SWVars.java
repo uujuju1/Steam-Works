@@ -10,6 +10,7 @@ import sw.core.*;
 import sw.dream.*;
 import sw.gen.*;
 import sw.graphics.*;
+import sw.matryoshka.*;
 import sw.ui.*;
 
 import java.util.*;
@@ -20,6 +21,8 @@ public class SWVars implements Loadable {
 	public static MusicPlayer musicPlayer;
 
 	public static SWPathfinds pathfind;
+
+	public static NestedLogic matryoshka;
 
 	public static boolean showSectorLaunchDialog = true;
 	
@@ -39,6 +42,8 @@ public class SWVars implements Loadable {
 			SWUI.load();
 			SWEnv.loadRenderers();
 		}
+
+		matryoshka = new NestedLogic();
 	}
 	
 	public static void clearTree() {
