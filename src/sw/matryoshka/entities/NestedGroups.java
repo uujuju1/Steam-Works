@@ -1,5 +1,6 @@
 package sw.matryoshka.entities;
 
+import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 
@@ -19,21 +20,23 @@ public class NestedGroups {
 
 	public void init() {
 		all = new EntityGroup<>(Entityc.class, false, false, (e, pos) -> {
-//			if (e instanceof IndexableEntity__all ix) {
-//				e.setIndex__all(pos);
-//			}
+			try {
+				Reflect.set(e.getClass(), "index__all", pos);
+			} catch (Exception ignored) {}
 		});
 		player = new EntityGroup<>(Player.class, false, true, (e, pos) -> ((Player) e).setIndex__player(pos));
 		bullet = new EntityGroup<>(Bullet.class, true, false, (e, pos) -> ((Bullet) e).setIndex__bullet(pos));
 		unit = new EntityGroup<>(Unit.class, true, true, (e, pos) -> ((Unit) e).setIndex__unit(pos));
 		build = new EntityGroup<>(Building.class, false, false, (e, pos) -> ((Building) e).setIndex__build(pos));
-		sync = new EntityGroup(Syncc.class, false, true, (e, pos) -> {
-//			((Sync) e).setIndex__sync(pos);
+		sync = new EntityGroup<>(Syncc.class, false, true, (e, pos) -> {
+			try {
+				Reflect.set(e.getClass(), "index__sync", pos);
+			} catch (Exception ignored) {}
 		});
-		draw = new EntityGroup(Drawc.class, false, false, (e, pos) -> {
-//			if (e instanceof IndexableEntity__draw ix) {
-//				ix.setIndex__draw(pos);
-//			}
+		draw = new EntityGroup<>(Drawc.class, false, false, (e, pos) -> {
+			try {
+				Reflect.set(e.getClass(), "index__draw", pos);
+			} catch (Exception ignored) {}
 		});
 		fire = new EntityGroup<>(Fire.class, false, false, (e, pos) -> ((Fire) e).setIndex__fire(pos));
 		puddle = new EntityGroup<>(Puddle.class, false, false, (e, pos) -> ((Puddle) e).setIndex__puddle(pos));

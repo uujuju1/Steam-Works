@@ -3,11 +3,13 @@ package sw.matryoshka;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.graphics.gl.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.graphics.*;
@@ -18,9 +20,11 @@ public class NestedLogic implements ApplicationListener {
 	public boolean shouldDraw;
 	public boolean shouldUpdate;
 
-	public float scale = 10;
-
 	public Camera camera = new Camera();
+
+	public FrameBuffer ambientOcclusion;
+
+	public float scale = 10;
 
 	public Seq<Nesting> active = new Seq<>();
 
@@ -58,10 +62,13 @@ public class NestedLogic implements ApplicationListener {
 //		Core.camera = oldCamera;
 	}
 	public void drawNesting(Nesting nesting) {
+		// border
 		Draw.color(Pal.darkerMetal);
 		Draw.z(Layer.min);
-		Fill.crect(nesting.x - Vars.tilesize / 2f - 2f, nesting.y - Vars.tilesize / 2f - 2f, Vars.world.unitWidth() + 4f, Vars.world.unitHeight() + 4f);
+		Fill.crect(-Vars.tilesize / 2f - 2f, -Vars.tilesize / 2f - 2f, Vars.world.unitWidth() + 4f, Vars.world.unitHeight() + 4f);
 		Draw.color();
+
+		// floors
 		Draw.draw(Layer.floor, () -> Vars.world.tiles.eachTile(tile -> {
 			if (tile.floor() == Blocks.air) {
 				Draw.color((tile.x + tile.y) % 2 == 0 ? Color.white : Color.lightGray);
@@ -69,9 +76,48 @@ public class NestedLogic implements ApplicationListener {
 			} else tile.floor().drawBase(tile);
 		}));
 
+		// darkness
+		Draw.proj(0, 0, Vars.world.width(), Vars.world.height());
+		Tmp.m1.set(Draw.trans());
+		Draw.trans(Draw.trans().idt());
+		ambientOcclusion.resize(Vars.world.width(), Vars.world.height());
+		ambientOcclusion.begin(Color.clear);
+		Vars.world.tiles.eachTile(tile -> {
+			if (tile.block().displayShadow(tile)) {
+				Fill.rect(tile.x + 1, tile.y + 1, 1f, 1f);
+			}
+		});
+		ambientOcclusion.end();
+		Draw.proj(camera);
+		Draw.trans(Tmp.m1);
+
+		Draw.z(Layer.blockUnder - 1);
+		Draw.color(Color.black, 0.3f);
+		Draw.rect(Draw.wrap(ambientOcclusion.getTexture()),
+			Vars.world.unitWidth() / 2f - Vars.tilesize / 2f,
+			Vars.world.unitHeight() / 2f - Vars.tilesize / 2f,
+			Vars.world.unitWidth(),
+			-Vars.world.unitHeight()
+		);
+		Draw.color();
+		Draw.flush();
+
+		// blocks
 		Draw.z(Layer.block);
 		Vars.world.tiles.eachTile(tile -> {
-			if (tile.build != null) tile.build.draw();
+			if (tile.build != null) {
+				if (tile.build.block.drawCached) tile.build.drawCached();
+				if (tile.build.block.drawDynamic) tile.build.draw();
+			}
+		});
+		Draw.flush();
+	}
+
+	@Override
+	public void init() {
+		ambientOcclusion = new FrameBuffer();
+		Events.on(EventType.DisposeEvent.class, e -> {
+			ambientOcclusion.dispose();
 		});
 	}
 
