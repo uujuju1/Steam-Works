@@ -1,8 +1,8 @@
 package sw.matryoshka.world;
 
 import mindustry.*;
-import mindustry.ai.*;
 import mindustry.core.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import sw.matryoshka.entities.*;
 
@@ -10,9 +10,9 @@ import sw.matryoshka.entities.*;
  * Standard version of a running world separate from the vanilla system. Can be updated via its context.
  */
 public class Nesting {
-	public World world = new World();
+	public World world = new NestedWorld();
 
-	public BlockIndexer indexer = new BlockIndexer();
+//	public NestedIndexer indexer = new NestedIndexer();
 
 	public NestedGroups groups = new NestedGroups();
 
@@ -20,9 +20,10 @@ public class Nesting {
 
 	public Nesting(int width, int height) {
 		world.resize(width, height);
-		world.tiles.fill();
+//		world.tiles.fill();
 		groups.init();
 		groups.resize(0, 0, world.unitWidth(), world.unitHeight());
+//		indexer.worldLoad();
 	}
 
 	/**
@@ -48,5 +49,65 @@ public class Nesting {
 			unit = Groups.unit;
 			weather = Groups.weather;
 		}};
+	}
+
+	public static class NestingContext {
+		private boolean isRunning;
+
+		public Nesting origin;
+
+		public World returnWorld;
+		public static EntityGroup<Entityc> all;
+		public static EntityGroup<Building> build;
+		public static EntityGroup<Bullet> bullet;
+		public static EntityGroup<Drawc> draw;
+		public static EntityGroup<Fire> fire;
+		public static EntityGroup<WorldLabel> label;
+		public static EntityGroup<Player> player;
+		public static EntityGroup<PowerGraphUpdaterc> powerGraph;
+		public static EntityGroup<Puddle> puddle;
+		public static EntityGroup<Syncc> sync;
+		public static EntityGroup<Unit> unit;
+		public static EntityGroup<WeatherState> weather;
+
+		public void begin() {
+			if (isRunning) throw new IllegalStateException("cannot begin a context that is running.");
+
+			Vars.world = origin.world;
+			Groups.all = origin.groups.all;
+			Groups.build = origin.groups.build;
+			Groups.bullet = origin.groups.bullet;
+			Groups.draw = origin.groups.draw;
+			Groups.fire = origin.groups.fire;
+			Groups.label = origin.groups.label;
+			Groups.player = origin.groups.player;
+			Groups.powerGraph = origin.groups.powerGraph;
+			Groups.puddle = origin.groups.puddle;
+			Groups.sync = origin.groups.sync;
+			Groups.unit = origin.groups.unit;
+			Groups.weather = origin.groups.weather;
+
+			isRunning = true;
+		}
+
+		public void end() {
+			if (!isRunning) throw new IllegalStateException("cannot end a context that is not running.");
+
+			Vars.world = returnWorld;
+			Groups.all = all;
+			Groups.build = build;
+			Groups.bullet = bullet;
+			Groups.draw = draw;
+			Groups.fire = fire;
+			Groups.label = label;
+			Groups.player = player;
+			Groups.powerGraph = powerGraph;
+			Groups.puddle = puddle;
+			Groups.sync = sync;
+			Groups.unit = unit;
+			Groups.weather = weather;
+
+			isRunning = false;
+		}
 	}
 }

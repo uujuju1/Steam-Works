@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.graphics.*;
 import sw.matryoshka.world.*;
+import sw.matryoshka.world.Nesting.*;
 
 public class NestedLogic implements ApplicationListener {
 	public boolean shouldDraw;
@@ -42,7 +43,7 @@ public class NestedLogic implements ApplicationListener {
 
 //			camera.position.set(nesting.x, nesting.y);
 //			camera.update();
-			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f, nesting.y - nesting.world.unitHeight() / 2f));
+			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f + Vars.tilesize / 2f, nesting.y - nesting.world.unitHeight() / 2f + Vars.tilesize / 2f));
 
 			context.begin();
 			Draw.sort(true);
@@ -57,9 +58,9 @@ public class NestedLogic implements ApplicationListener {
 //		Core.camera = oldCamera;
 	}
 	public void drawNesting(Nesting nesting) {
-		Draw.color(Color.gray);
+		Draw.color(Pal.darkerMetal);
 		Draw.z(Layer.min);
-		Fill.crect(nesting.x, nesting.y, Vars.world.unitWidth() + 4f, Vars.world.unitHeight() + 4f);
+		Fill.crect(nesting.x - Vars.tilesize / 2f - 2f, nesting.y - Vars.tilesize / 2f - 2f, Vars.world.unitWidth() + 4f, Vars.world.unitHeight() + 4f);
 		Draw.color();
 		Draw.draw(Layer.floor, () -> Vars.world.tiles.eachTile(tile -> {
 			if (tile.floor() == Blocks.air) {
