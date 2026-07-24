@@ -115,10 +115,12 @@ public class NestedLogic implements ApplicationListener {
 
 	@Override
 	public void init() {
-		ambientOcclusion = new FrameBuffer();
-		Events.on(EventType.DisposeEvent.class, e -> {
-			ambientOcclusion.dispose();
-		});
+		if (!Vars.headless) {
+			ambientOcclusion = new FrameBuffer();
+			Events.on(EventType.DisposeEvent.class, e -> {
+				ambientOcclusion.dispose();
+			});
+		}
 	}
 
 	@Override

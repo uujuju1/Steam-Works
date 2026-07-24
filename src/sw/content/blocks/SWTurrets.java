@@ -1,5 +1,6 @@
 package sw.content.blocks;
 
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -30,7 +31,7 @@ public class SWTurrets {
 	public static Block
 //		flow, vniz, rozpad,
 		imber, trebuchet,
-		curve, sonar,
+		rainfall, sonar,
 		push, thermikos, swing;
 
 	public static void load() {
@@ -482,6 +483,194 @@ public class SWTurrets {
 //
 //			spinConfig.hasSpin = false;
 //		}};
+		rainfall = new SWLiquidTurret("rainfall") {{
+			requirements(Category.turret, with());
+			size = 3;
+			scaledHealth = 150f;
+			range = 25f * 8f;
+			reload = 90f;
+			recoilTime = 30f;
+			rotateSpeed = 5f;
+
+			outlineIcon = false;
+
+			loopSound = Sounds.loopMachineSpin;
+			requireShootingSound = false;
+
+			Cons<LiquidBulletType> defaults = b -> {
+				b.speed = 4;
+				b.lifetime = 100f;
+				b.drag = 0.016f;
+				b.despawnHit = true;
+				b.hitSound = Sounds.stepWater;
+				b.hitSoundVolume = 0.2f;
+
+				b.scaleLife = true;
+				b.velocityScaleRandMin = b.lifeScaleRandMin = 0.9f;
+				b.velocityScaleRandMax = b.lifeScaleRandMax = 1.1f;
+			};
+
+			ammo(
+				SWLiquids.solvent, new LiquidBulletType(SWLiquids.solvent) {{
+					defaults.get(this);
+					puddleSize = 3f;
+
+					damage = 1;
+
+					shootSound = Sounds.stepWater;
+
+					trailEffect = Fx.vaporSmall;
+					trailChance = 0.25f;
+					trailColor = SWLiquids.solvent.color;
+
+					layer = Layer.bullet - 2f;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				},
+				Liquids.water, new LiquidBulletType(Liquids.water) {{
+					defaults.get(this);
+
+					shootSound = Sounds.stepWater;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				},
+				Liquids.slag, new LiquidBulletType(Liquids.slag) {{
+					defaults.get(this);
+
+					shootSound = Sounds.stepWater;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				},
+				Liquids.oil, new LiquidBulletType(Liquids.oil) {{
+					defaults.get(this);
+
+					shootSound = Sounds.stepWater;
+
+					layer = Layer.bullet - 2f;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				},
+				SWLiquids.gas, new LiquidBulletType(SWLiquids.gas) {{
+					defaults.get(this);
+
+					shootSound = Sounds.uiNotify;
+
+					trailEffect = Fx.vaporSmall;
+					trailChance = 0.05f;
+					trailColor = SWLiquids.gas.color;
+
+					boilTime = Float.POSITIVE_INFINITY;
+					hitEffect = Fx.vapor;
+					hitSound = Sounds.none;
+
+					incendAmount = 20;
+					incendChance = 0.5f;
+					incendSpread = 10f;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						createIncend(b, hitx, hity);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				},
+				SWLiquids.steam, new LiquidBulletType(SWLiquids.steam) {{
+					defaults.get(this);
+
+					damage = 6;
+
+					shootSound = Sounds.uiNotify;
+
+					boilTime = lifetime;
+					hitEffect = Fx.vapor;
+					hitSound = Sounds.none;
+				}
+					@Override
+					public void hit(Bullet b, float hitx, float hity, boolean createFrags) {
+						super.hit(b, hitx, hity, createFrags);
+
+						hitSound.at(b, hitSoundPitch + Mathf.range(hitSoundPitchRange), hitSoundVolume);
+					}
+				}
+			);
+			consume(new ConsumeSpin() {{
+				minSpeed = 1f;
+				maxSpeed = 100f / 10f;
+
+				showGraph = true;
+				minEfficiency = 1f;
+				maxEfficiency = 4f;
+				efficiencyScale = a -> a < 1 ? 0 : (a > 8 ? 4 : Mathf.log2(a) + 1);
+			}});
+			shoot = new ShootPattern() {{
+				shots = 10;
+				shotDelay = 2f;
+			}};
+			inaccuracy = 2.5f;
+			shootSound = Sounds.stepWater;
+			shootSoundVolume = 0.2f;
+
+			drawer = new DrawTurret() {{
+				parts.add(
+					new RegionPart("-pipe") {{
+						mirror = true;
+
+						x = 5.5f;
+						y = -2f;
+						moveX = 0.25f;
+						moveY = -0.5f;
+
+						progress = DrawPart.PartProgress.recoil.curve(Interp.circle);
+					}},
+					new RegionPart("-pipe-under") {{
+						mirror = true;
+						under = true;
+
+						x = 4f;
+						y = 6.75f;
+						moveX = 0.5f;
+						moveY = -1f;
+
+						progress = DrawPart.PartProgress.recoil.curve(Interp.circle);
+					}}
+				);
+			}
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			spinConfig = new SpinConfig() {{
+				resistance = 30f / 600f;
+
+				allowedEdges = new int[][] {
+					new int[] {0, 3, 6, 9},
+					new int[] {3, 6, 9, 0},
+					new int[] {6, 9, 0, 3},
+					new int[] {9, 0, 3, 6}
+				};
+			}};
+		}};
 
 		push = new ConsumeTurret("push") {{
 			requirements(Category.turret, with(

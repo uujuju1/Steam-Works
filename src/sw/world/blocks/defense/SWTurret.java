@@ -7,6 +7,7 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.consumers.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 import sw.world.meta.*;
@@ -14,6 +15,8 @@ import sw.world.modules.*;
 
 public class SWTurret extends Turret {
 	public SpinConfig spinConfig;
+
+	public boolean consumerScaleEfficiency = true;
 
 	public SWTurret(String name) {
 		super(name);
@@ -63,6 +66,15 @@ public class SWTurret extends Turret {
 		}
 
 		@Override
+		public float efficiencyScale() {
+			float mul = 1f;
+			if (consumerScaleEfficiency) for(Consume cons : consumers) {
+				mul *= cons.efficiencyMultiplier(this);
+			}
+			return mul;
+		}
+
+		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
 			
@@ -81,6 +93,14 @@ public class SWTurret extends Turret {
 			super.read(read, revision);
 
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+		}
+
+		@Override
+		public void updateEfficiencyMultiplier(){
+			if(heatRequirement > 0){
+				efficiency *= Math.min(Math.max(heatReq / heatRequirement, cheating() ? 1f : 0f), maxHeatEfficiency);
+			}
+			efficiency *= efficiencyScale();
 		}
 
 		@Override
