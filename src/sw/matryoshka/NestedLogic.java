@@ -37,16 +37,14 @@ public class NestedLogic implements ApplicationListener {
 		camera.update();
 
 		Draw.flush();
-//		Camera oldCamera = Core.camera;
+		Camera oldCamera = Core.camera;
 		Draw.proj(camera);
-//		Core.camera = camera;
+		Core.camera = camera;
 		Mat oldTrans = Tmp.m2.set(Draw.trans());
 
 		active.each(nesting -> {
 			var context = nesting.getContext();
 
-//			camera.position.set(nesting.x, nesting.y);
-//			camera.update();
 			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f + Vars.tilesize / 2f, nesting.y - nesting.world.unitHeight() / 2f + Vars.tilesize / 2f));
 
 			context.begin();
@@ -58,8 +56,7 @@ public class NestedLogic implements ApplicationListener {
 		});
 
 		Draw.trans(oldTrans);
-//		Draw.proj(oldCamera);
-//		Core.camera = oldCamera;
+		Core.camera = oldCamera;
 	}
 	public void drawNesting(Nesting nesting) {
 		// border
@@ -111,6 +108,15 @@ public class NestedLogic implements ApplicationListener {
 			}
 		});
 		Draw.flush();
+
+		// Drawc
+		Groups.draw.each(Drawc::draw);
+
+		// bloomed (assumes bloom settings are updated in Renderer)
+		if (Vars.renderer.bloom != null) {
+			Draw.draw(Layer.bullet - 0.02f, Vars.renderer.bloom::capture);
+			Draw.draw(Layer.effect + 0.02f, Vars.renderer.bloom::render);
+		}
 	}
 
 	@Override
@@ -140,8 +146,10 @@ public class NestedLogic implements ApplicationListener {
 
 		context.begin();
 
-		// TODO run world logic here
+		Camera oldCamera = Core.camera;
+		Core.camera = camera;
 		Groups.update();
+		Core.camera = oldCamera;
 
 		context.end();
 	}

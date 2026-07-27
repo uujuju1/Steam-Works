@@ -1,5 +1,6 @@
 package sw.content;
 
+import mindustry.content.*;
 import mindustry.type.*;
 
 import static arc.graphics.Color.*;
@@ -23,6 +24,8 @@ public class SWLiquids {
       gas = true;
 
       flammability = 1.5f;
+
+      effect = StatusEffects.burning;
     }};
   }
 }

@@ -1,6 +1,5 @@
 package sw.matryoshka.entities;
 
-import arc.util.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
 
@@ -19,30 +18,18 @@ public class NestedGroups {
 	public EntityGroup<WeatherState> weather;
 
 	public void init() {
-		all = new EntityGroup<>(Entityc.class, false, false, (e, pos) -> {
-			try {
-				Reflect.set(e.getClass(), "index__all", pos);
-			} catch (Exception ignored) {}
-		});
-		player = new EntityGroup<>(Player.class, false, true, (e, pos) -> ((Player) e).setIndex__player(pos));
-		bullet = new EntityGroup<>(Bullet.class, true, false, (e, pos) -> ((Bullet) e).setIndex__bullet(pos));
-		unit = new EntityGroup<>(Unit.class, true, true, (e, pos) -> ((Unit) e).setIndex__unit(pos));
-		build = new EntityGroup<>(Building.class, false, false, (e, pos) -> ((Building) e).setIndex__build(pos));
-		sync = new EntityGroup<>(Syncc.class, false, true, (e, pos) -> {
-			try {
-				Reflect.set(e.getClass(), "index__sync", pos);
-			} catch (Exception ignored) {}
-		});
-		draw = new EntityGroup<>(Drawc.class, false, false, (e, pos) -> {
-			try {
-				Reflect.set(e.getClass(), "index__draw", pos);
-			} catch (Exception ignored) {}
-		});
-		fire = new EntityGroup<>(Fire.class, false, false, (e, pos) -> ((Fire) e).setIndex__fire(pos));
-		puddle = new EntityGroup<>(Puddle.class, false, false, (e, pos) -> ((Puddle) e).setIndex__puddle(pos));
-		weather = new EntityGroup<>(WeatherState.class, false, false, (e, pos) -> ((WeatherState) e).setIndex__weather(pos));
-		label = new EntityGroup<>(WorldLabel.class, false, true, (e, pos) -> ((WorldLabel) e).setIndex__label(pos));
-		powerGraph = new EntityGroup<>(PowerGraphUpdaterc.class, false, false, (e, pos) -> ((PowerGraphUpdater) e).setIndex__powerGraph(pos));
+		all = new NestedGroup<>(Entityc.class, false, false);
+		player = new NestedGroup<>(Player.class, false, true);
+		bullet = new NestedGroup<>(Bullet.class, true, false);
+		unit = new NestedGroup<>(Unit.class, true, true);
+		build = new NestedGroup<>(Building.class, false, false);
+		sync = new NestedGroup<>(Syncc.class, false, true);
+		draw = new NestedGroup<>(Drawc.class, false, false);
+		fire = new NestedGroup<>(Fire.class, false, false);
+		puddle = new NestedGroup<>(Puddle.class, false, false);
+		weather = new NestedGroup<>(WeatherState.class, false, false);
+		label = new NestedGroup<>(WorldLabel.class, false, true);
+		powerGraph = new NestedGroup<>(PowerGraphUpdaterc.class, false, false);
 	}
 
 	public void resize(float x, float y, float w, float h) {
@@ -56,5 +43,16 @@ public class NestedGroups {
 		all.update();
 		build.update();
 		bullet.collide();
+	}
+
+	public static class NestedGroup<T extends Entityc> extends EntityGroup<T> {
+		public NestedGroup(Class<T> type, boolean spatial, boolean mapping) {
+			super(type, spatial, mapping);
+		}
+
+		@Override
+		public void removeIndex(T type, int position) {
+			remove(type);
+		}
 	}
 }
