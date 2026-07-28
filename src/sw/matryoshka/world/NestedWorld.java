@@ -12,7 +12,7 @@ public class NestedWorld extends World {
 	public NestedWorld() {
 		ExtraReflect.popEvent(TileChangeEvent.class);
 		ExtraReflect.popEvent(TileFloorChangeEvent.class);
-		ExtraReflect.popEvent(WorldLoadEndEvent.class);
+		ExtraReflect.popEvent(WorldLoadEvent.class);
 
 		tileChanges = floorChanges = -1;
 	}
