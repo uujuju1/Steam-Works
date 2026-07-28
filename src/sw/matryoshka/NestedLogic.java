@@ -30,11 +30,8 @@ public class NestedLogic implements ApplicationListener {
 
 	public void draw() {
 		Draw.blit(SWShaders.hintBackgroundShader);
-
-		camera.position.set(0, 0);
 		camera.width = 1920f / scale;
 		camera.height = 1080f / scale;
-		camera.update();
 
 		Draw.flush();
 		Camera oldCamera = Core.camera;
@@ -45,7 +42,9 @@ public class NestedLogic implements ApplicationListener {
 		active.each(nesting -> {
 			var context = nesting.getContext();
 
-			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f + Vars.tilesize / 2f, nesting.y - nesting.world.unitHeight() / 2f + Vars.tilesize / 2f));
+			camera.position.set(-nesting.x + nesting.world.unitWidth() / 2f - Vars.tilesize / 2f, -nesting.y + nesting.world.unitHeight() / 2f - Vars.tilesize / 2f);
+			camera.update();
+//			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f + Vars.tilesize / 2f, nesting.y - nesting.world.unitHeight() / 2f + Vars.tilesize / 2f));
 
 			context.begin();
 			Draw.sort(true);
