@@ -77,7 +77,6 @@ public class NestedLogic implements ApplicationListener {
 		Draw.proj(Core.scene.getCamera());
 		ui.draw();
 		Draw.flush();
-
 	}
 	public void drawNesting(Nesting nesting) {
 		// border
