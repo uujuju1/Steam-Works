@@ -3,6 +3,9 @@ package sw.matryoshka.entities;
 import mindustry.entities.*;
 import mindustry.gen.*;
 
+/**
+ * @see Groups
+ */
 public class NestedGroups {
 	public EntityGroup<Entityc> all;
 	public EntityGroup<Building> build;

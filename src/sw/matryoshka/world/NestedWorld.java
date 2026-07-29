@@ -8,6 +8,9 @@ import sw.matryoshka.*;
 
 import static mindustry.Vars.*;
 
+/**
+ * @see World
+ */
 public class NestedWorld extends World {
 	public NestedWorld() {
 		ExtraReflect.popEvent(TileChangeEvent.class);

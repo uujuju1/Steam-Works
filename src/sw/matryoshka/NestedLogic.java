@@ -5,6 +5,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.math.*;
+import arc.scene.event.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -13,20 +14,35 @@ import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import sw.graphics.*;
+import sw.matryoshka.ui.*;
 import sw.matryoshka.world.*;
 import sw.matryoshka.world.Nesting.*;
 
+/**
+ * Handler for the ponder system. Updates and draws Nestings and the ponder ui.
+ */
 public class NestedLogic implements ApplicationListener {
-	public boolean shouldDraw;
-	public boolean shouldUpdate;
+	private boolean enabled;
+
+	public boolean shouldDraw = true;
+	public boolean shouldUpdate = true;
 
 	public Camera camera = new Camera();
-
 	public FrameBuffer ambientOcclusion;
-
 	public float scale = 10;
 
+	public NestedUI ui;
+
 	public Seq<Nesting> active = new Seq<>();
+
+	/**
+	 * Properly disables the listener and enables the base ui.
+	 */
+	public void disable() {
+		enabled = false;
+		Vars.ui.hudGroup.touchable = Vars.ui.menuGroup.touchable = Touchable.childrenOnly;
+		ui.updateVisibility();
+	}
 
 	public void draw() {
 		Draw.blit(SWShaders.hintBackgroundShader);
@@ -34,16 +50,16 @@ public class NestedLogic implements ApplicationListener {
 		camera.height = 1080f / scale;
 
 		Draw.flush();
-		Camera oldCamera = Core.camera;
-		Draw.proj(camera);
-		Core.camera = camera;
 		Mat oldTrans = Tmp.m2.set(Draw.trans());
+		Camera oldCamera = Core.camera;
 
 		active.each(nesting -> {
 			var context = nesting.getContext();
 
 			camera.position.set(-nesting.x + nesting.world.unitWidth() / 2f - Vars.tilesize / 2f, -nesting.y + nesting.world.unitHeight() / 2f - Vars.tilesize / 2f);
+			Core.camera = camera;
 			camera.update();
+			Draw.proj(camera);
 //			Draw.trans(Tmp.m1.idt().translate(nesting.x - nesting.world.unitWidth() / 2f + Vars.tilesize / 2f, nesting.y - nesting.world.unitHeight() / 2f + Vars.tilesize / 2f));
 
 			context.begin();
@@ -52,10 +68,16 @@ public class NestedLogic implements ApplicationListener {
 			Draw.flush();
 			Draw.sort(false);
 			context.end();
+			Draw.flush();
 		});
 
 		Draw.trans(oldTrans);
 		Core.camera = oldCamera;
+
+		Draw.proj(Core.scene.getCamera());
+		ui.draw();
+		Draw.flush();
+
 	}
 	public void drawNesting(Nesting nesting) {
 		// border
@@ -118,6 +140,15 @@ public class NestedLogic implements ApplicationListener {
 		}
 	}
 
+	/**
+	 * Properly enables the listener and disables the base ui.
+	 */
+	public void enable() {
+		enabled = true;
+		Vars.ui.hudGroup.touchable = Vars.ui.menuGroup.touchable = Touchable.disabled;
+		ui.updateVisibility();
+	}
+
 	@Override
 	public void init() {
 		if (!Vars.headless) {
@@ -126,13 +157,32 @@ public class NestedLogic implements ApplicationListener {
 				ambientOcclusion.dispose();
 			});
 		}
+
+		ui = new NestedUI();
+		ui.touchablility = () -> enabled ? Touchable.childrenOnly : Touchable.disabled;
+		ui.visibility = () -> enabled;
+		ui.build(this);
+	}
+
+	/**
+	 * Enables/disables this listener.
+	 */
+	public void toggle() {
+		if (enabled) {
+			disable();
+		} else {
+			enable();
+		}
 	}
 
 	@Override
 	public void update() {
-		if (shouldUpdate) updateLogic();
-		if (shouldDraw) draw();
+		if (enabled) {
+			if (shouldUpdate) updateLogic();
+			if (shouldDraw) draw();
+		}
 	}
+
 	public void updateLogic() {
 		active.each(this::updateNesting);
 	}
@@ -153,6 +203,9 @@ public class NestedLogic implements ApplicationListener {
 		context.end();
 	}
 
+	/**
+	 * Runs code within the context of a Nesting.
+	 */
 	public void run(Nesting nesting, Runnable code) {
 		NestingContext context = nesting.getContext();
 
