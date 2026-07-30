@@ -425,7 +425,12 @@ public class SWProduction {
 			}};
 		}};
 		atmosphericSiphon = new SWGenericCrafter("atmospheric-siphon") {{
-			requirements(Category.production, with());
+			requirements(Category.production, with(
+				SWItems.verdigris, 85,
+				SWItems.iron, 50,
+				SWItems.aluminium, 60,
+				Items.graphite, 75
+			));
 			size = 3;
 			envRequired = SWEnv.gasPocket;
 			liquidCapacity = 100f;
@@ -521,6 +526,7 @@ public class SWProduction {
 				Items.graphite, 70
 			);
 			size = 3;
+			envRequired = Env.groundWater;
 			rotate = true;
 
 			consume(new ConsumeSpin() {{

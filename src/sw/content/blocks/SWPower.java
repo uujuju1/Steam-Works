@@ -380,7 +380,12 @@ public class SWPower {
 		}};
 
 		piston = new SWGenericCrafter("piston") {{
-			requirements(Category.power, with());
+			requirements(Category.power, with(
+				SWItems.iron, 100,
+				SWItems.bloom, 20,
+				Items.graphite, 50,
+				Items.silicon, 80
+			));
 			size = 3;
 
 			rotate = true;
@@ -406,7 +411,11 @@ public class SWPower {
 		}};
 		crankshaft = new StackableGenericCrafter("crankshaft") {{
 			requirements(Category.power, with(
-
+				SWItems.bloom, 40,
+				SWItems.aluminium, 80,
+				SWItems.verdigris, 140,
+				Items.silicon, 100,
+				Items.graphite, 120
 			));
 			size = 3;
 			rotate = true;
