@@ -6,13 +6,13 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.meta.*;
 import sw.content.blocks.*;
-import sw.maps.generators.*;
+import sw.type.*;
 
 public class SWPlanets {
 	public static Planet wendi;
 
 	public static void load() {
-		wendi = new Planet("wendi", Planets.sun, 1f, 3) {{
+		wendi = new ConfigurablePlanet("wendi", Planets.sun, 1f, 3, SWStorage.loadScaffold) {{
 			sectorSeed = 2;
 			allowWaves = true;
 			visible = accessible = false;
@@ -33,9 +33,9 @@ public class SWPlanets {
 
 			defaultCore = SWStorage.coreScaffold;
 
-			generator = new ModularPlanetGenerator() {{
-				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU=");
-			}};
+//			generator = new ModularPlanetGenerator() {{
+//				defaultLoadout = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU=");
+//			}};
 		}};
 	}
 }

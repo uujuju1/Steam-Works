@@ -31,6 +31,8 @@ public class SWStorage {
 		spring,
 		coreScaffold, coreMole, coreBunker;
 
+	public static Schematic loadScaffold, loadMole, loadBunker;
+
 	public static void load() {
 		compactContainer = new StorageBlock("compact-container") {{
 			requirements(Category.effect, with(
@@ -173,11 +175,15 @@ public class SWStorage {
 				new WrapEffect(Fx.dynamicExplosion, Color.white, 5f)
 			);
 		}};
-		
+
+		loadScaffold = Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU=");
+		loadMole = Schematics.readBase64("bXNjaAF4nBXLSwqAIBhF4euDiGorrqKxK4gGZv9A8IUKDaK9p5wz/SAgJGQ0gTDvqZBOnrDYFBvFpk0Gfz+sN1VbXG4uRQCTNxf5Cn6cDFt9lO1QhSEBNu79NxEWeA==");
+		loadBunker = Schematics.readBase64("bXNjaAF4nCXLMQqAIBQG4F/RhoTO0AW8RM2dIBrM3iDVM9RoiO5eEN/8QUMrKHY7wfQxUdudvFJC7SMX4jK4A/J+YBbKPoWjhMgAqs3NtGXIcRJo8mX9d+38X0AA8iNexXcYVw==");
+
 		Events.on(EventType.ClientLoadEvent.class, e -> {
-			putSchem(coreScaffold, Schematics.readBase64("bXNjaAF4nGNgZmBmZmDJS8xNZeBNSizOTA5OTkxLy89JYeBOSS1OLsosKMnMz2NgYGDLSUxKzSlmYIqOZWQQKC7XTc4vStUthqlmYGAEISABAKHWFQU="));
-			putSchem(coreMole, Schematics.readBase64("bXNjaAF4nBXLSwqAIBhF4euDiGorrqKxK4gGZv9A8IUKDaK9p5wz/SAgJGQ0gTDvqZBOnrDYFBvFpk0Gfz+sN1VbXG4uRQCTNxf5Cn6cDFt9lO1QhSEBNu79NxEWeA=="));
-			putSchem(coreBunker, Schematics.readBase64("bXNjaAF4nCXLMQqAIBQG4F/RhoTO0AW8RM2dIBrM3iDVM9RoiO5eEN/8QUMrKHY7wfQxUdudvFJC7SMX4jK4A/J+YBbKPoWjhMgAqs3NtGXIcRJo8mX9d+38X0AA8iNexXcYVw=="));
+			putSchem(coreScaffold, loadScaffold);
+			putSchem(coreMole, loadMole);
+			putSchem(coreBunker, loadBunker);
 		});
 	}
 	
