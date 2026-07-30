@@ -41,11 +41,11 @@ public class SWVars implements Loadable {
 			musicPlayer.init();
 			SWUI.load();
 			SWEnv.loadRenderers();
-		}
 
-		matryoshka = new NestedLogic();
-		Core.app.addListener(matryoshka);
-		matryoshka.init();
+			matryoshka = new NestedLogic();
+			Core.app.addListener(matryoshka);
+			matryoshka.init();
+		}
 	}
 	
 	public static void clearTree() {

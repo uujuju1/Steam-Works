@@ -1,5 +1,7 @@
 package sw.matryoshka.world;
 
+import arc.func.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.entities.*;
@@ -17,6 +19,9 @@ public class Nesting {
 	public NestedGroups groups = new NestedGroups();
 
 	public float x, y;
+
+	public float time;
+	public Floatp delta = () -> Time.delta;
 
 	public Nesting(int width, int height) {
 		world.resize(width, height);
