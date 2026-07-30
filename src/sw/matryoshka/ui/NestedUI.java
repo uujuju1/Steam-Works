@@ -6,6 +6,7 @@ import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.TextButton.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import mindustry.ui.*;
 import sw.gen.*;
 import sw.matryoshka.*;
 import sw.matryoshka.ui.TutorialSequence.*;
@@ -31,6 +32,7 @@ public class NestedUI extends WidgetGroup {
 		fill(t -> {
 			t.bottom().right();
 			t.button("@back", new TextButtonStyle() {{
+				font = Fonts.def;
 				up = Tex.buttonSideLeft;
 				down = Tex.buttonSideLeftDown;
 				over = Tex.buttonSideLeftOver;
@@ -51,7 +53,9 @@ public class NestedUI extends WidgetGroup {
 				.disabled(b -> currentTutorial == null || currentLayerIndex == 0)
 				.size(100f, 54f);
 			t.button(Icon.play, new ImageButtonStyle() {{
-				up = Tex.paneTop;
+				up = SWTex.paneCenter;
+				down = SWTex.paneCenterDown;
+				over = SWTex.paneCenterOver;
 				disabled = SWStyles.whiteui.tint(Color.valueOf("454545"));
 			}}, () -> {
 				// TODO pause / play
