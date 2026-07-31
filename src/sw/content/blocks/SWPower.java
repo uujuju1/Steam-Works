@@ -111,7 +111,7 @@ public class SWPower {
 			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 8f);
 			updateEffectSpread = 0f;
 			updateEffectChance = 0.5f;
-			
+			forceScales = speedScales = true;
 			consumeLiquid(SWLiquids.solvent, 1f/60f);
 			
 			outputRotation = 1f;

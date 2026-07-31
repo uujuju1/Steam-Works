@@ -10,7 +10,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.content.*;
@@ -32,7 +31,7 @@ public class SWProduction {
 		auger, quarry, rig, atmosphericSiphon,
 	
 		castingOutlet,
-		liquidCollector, artesianWell, pumpjack;
+		liquidCollector, centrifugalCollector, artesianWell, pumpjack;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -508,13 +507,49 @@ public class SWProduction {
 				new DrawRegion("-top")
 			);
 		}};
-		liquidCollector = new Pump("liquid-collector") {{
+		liquidCollector = new SWPump("liquid-collector") {{
 			requirements(Category.liquid, with(
 				SWItems.iron, 20
 			));
 			researchCost = with(
 				SWItems.iron, 40
 			);
+
+			multipliers.put(Liquids.oil, 0);
+			multipliers.put(Liquids.water, 0.25f);
+		}};
+		centrifugalCollector = new SWPump("centrifugal-collector") {{
+			Block self = this;
+			requirements(Category.liquid, with());
+			size = 2;
+			liquidCapacity = 100f;
+
+			multipliers.put(Liquids.oil, (12.5f / 60f) / 0.2f);
+			multipliers.put(Liquids.water, (2.5f / 60f) / 0.2f);
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 40f / 10f;
+
+				minEfficiency = 0.5f;
+				maxEfficiency = 2f;
+				showGraph = true;
+
+				efficiencyScale = s -> s < 0.5 ? 0 : (s > 4 ? 2 : (Mathf.log2(s) + 2f) / 2f);
+			}});
+
+			drawer = new DrawMulti(
+				new DrawDefault(),
+				new DrawRegion("-rotator", -5),
+				new DrawRegion("-top"),
+				new DrawPumpLiquid()
+			);
+
+			spinConfig = new SpinConfig() {{
+				connectors.add(self);
+
+				resistance = 2.5f / 600f;
+			}};
 		}};
 		artesianWell = new SWGenericCrafter("artesian-well") {{
 			requirements(Category.production, with(
