@@ -1,6 +1,6 @@
 package sw.matryoshka.actions;
 
-import arc.scene.ui.layout.*;
+import arc.scene.*;
 import sw.matryoshka.world.*;
 
 /**
@@ -12,7 +12,7 @@ public class RunnablesAction extends TutorialAction {
 	public UiAction init = (table, nesting) -> {};
 
 	@Override
-	public void init(Table table, Nesting nesting) {
+	public void init(Group table, Nesting nesting) {
 		init.run(table, nesting);
 	}
 
@@ -36,6 +36,6 @@ public class RunnablesAction extends TutorialAction {
 		void run(Nesting nesting, boolean nestingContext);
 	}
 	public static interface UiAction {
-		void run(Table table, Nesting nesting);
+		void run(Group table, Nesting nesting);
 	}
 }

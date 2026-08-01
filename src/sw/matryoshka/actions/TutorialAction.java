@@ -1,6 +1,6 @@
 package sw.matryoshka.actions;
 
-import arc.scene.ui.layout.*;
+import arc.scene.*;
 import sw.matryoshka.world.*;
 
 /**
@@ -19,7 +19,7 @@ public abstract class TutorialAction {
 	/**
 	 * Called once when the SequenceLayer is created. nestingContext is always false.
 	 */
-	public void init(Table table, Nesting nesting) {
+	public void init(Group table, Nesting nesting) {
 
 	}
 
