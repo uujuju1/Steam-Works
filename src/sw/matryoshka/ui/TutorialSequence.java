@@ -1,8 +1,10 @@
 package sw.matryoshka.ui;
 
 import arc.files.*;
+import arc.struct.*;
 import arc.util.serialization.*;
 import mindustry.content.*;
+import sw.matryoshka.actions.*;
 import sw.matryoshka.world.*;
 
 /**
@@ -47,6 +49,6 @@ public class TutorialSequence {
 	public static class SequenceLayer {
 		public Nesting nesting;
 
-//		public Seq<LayerAction> actions
+		public Seq<TutorialAction> actions = new Seq<>();
 	}
 }

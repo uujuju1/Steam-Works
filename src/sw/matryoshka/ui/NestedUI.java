@@ -21,12 +21,17 @@ public class NestedUI extends WidgetGroup {
 
 	private NestedLogic logic;
 
+	public Table layerTable = new Table();
+
 	public void build(NestedLogic logic) {
 		Core.scene.add(this);
 		setFillParent(true);
 		visible = false;
 		closeListener = logic::disable;
 		this.logic = logic;
+
+		layerTable.setFillParent(true);
+		addChild(layerTable);
 
 		// close button
 		fill(t -> {
@@ -91,5 +96,9 @@ public class NestedUI extends WidgetGroup {
 
 		logic.active.clear();
 		logic.active.add(currentLayer.nesting);
+
+		layerTable.clear();
+		currentLayer.actions.each(a -> a.init(layerTable, currentLayer.nesting));
+		layerTable.update(() -> currentLayer.actions.each(a -> a.update(currentLayer.nesting, false)));
 	}
 }

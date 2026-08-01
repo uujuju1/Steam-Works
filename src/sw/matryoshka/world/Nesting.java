@@ -1,11 +1,13 @@
 package sw.matryoshka.world;
 
 import arc.func.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.gen.*;
+import sw.matryoshka.actions.*;
 import sw.matryoshka.entities.*;
 
 /**
@@ -23,12 +25,12 @@ public class Nesting {
 	public float time;
 	public Floatp delta = () -> Time.delta;
 
+	public Seq<TutorialAction> actions = new Seq<>();
+
 	public Nesting(int width, int height) {
 		world.resize(width, height);
-//		world.tiles.fill();
 		groups.init();
 		groups.resize(0, 0, world.unitWidth(), world.unitHeight());
-//		indexer.worldLoad();
 	}
 
 	/**

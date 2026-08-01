@@ -196,6 +196,7 @@ public class NestedLogic implements ApplicationListener {
 
 		Camera oldCamera = Core.camera;
 		Core.camera = camera;
+		nesting.actions.each(a -> a.update(nesting, true));
 		nesting.time += nesting.delta.get();
 		Groups.update();
 		Core.camera = oldCamera;
