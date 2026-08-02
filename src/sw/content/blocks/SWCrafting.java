@@ -653,6 +653,13 @@ public class SWCrafting {
 				Items.silicon, 200,
 				Items.graphite, 190
 			));
+			researchCost = with(
+				SWItems.iron, 360,
+				SWItems.aluminium, 300,
+				SWItems.bloom, 10,
+				Items.silicon, 400,
+				Items.graphite, 400
+			);
 			size = 4;
 			liquidCapacity = 200;
 
@@ -898,6 +905,7 @@ public class SWCrafting {
 				SWItems.iron, 80,
 				SWItems.verdigris, 75
 			));
+			researchCost = mult(requirements, 10f);
 			size = 3;
 
 			ambientSound = Sounds.rain;

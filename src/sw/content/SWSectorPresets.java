@@ -14,6 +14,7 @@ public class SWSectorPresets {
 		crevasse, theDelta,
 		brokenCorridors, caustics,
 		liveStorm, bayOfEmbers,
+		bubbles,
 		abandonedMaze, cavern;
 
 	public static void load() {
@@ -26,13 +27,6 @@ public class SWSectorPresets {
 
 			rules = r -> {
 				r.winWave = 5;
-//				r.weather.add(new Weather.WeatherEntry(
-//					SWWeathers.souesiteDust,
-//					5f * Time.toMinutes,
-//					7.5f * Time.toMinutes,
-//					2.5f * Time.toMinutes,
-//					5f * Time.toMinutes
-//				));
 			};
 			
 			core = (CoreBlock) SWStorage.coreScaffold;
@@ -158,6 +152,16 @@ public class SWSectorPresets {
 			icon = () -> Icon.modeAttack;
 
 			landMusic = SWMusics.ouroEscuro;
+		}};
+		bubbles = new PositionSectorPreset("bubbles", SWPlanets.wendi, 8) {{
+			x = 100f;
+			y = 500f;
+
+			width = height = 100f;
+			landMusic = SWMusics.ignicao;
+
+			core = (CoreBlock) SWStorage.coreMole;
+			icon = () -> Icon.cloud;
 		}};
 	}
 }

@@ -27,12 +27,18 @@ public class SWTechTree {
 	  SWPlanets.wendi.techTree = nodeRoot("Steam Works", coreScaffold, () -> {
       // region crafting
       root("sw-crafting", engineSmelter, () -> {
-        node(cokeOven);
+        node(cokeOven, () -> {
+          node(blastFurnace, with(new OnSector(caustics)), () -> {
+            node(rte, with(new NonUnlockable()), () -> {});
+          });
+          node(burner, with(new OnSector(bubbles)), () -> {});
+        });
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
           node(crusher, with(new OnSector(caustics)), () -> {});
-          node(blastFurnace, with(new OnSector(caustics)), () -> {
-
-          });
+          node(coolingTower, with(new OrObjective(
+            new Research(burner),
+            new Research(rte)
+          )), () -> {});
         });
         node(constructionManifold, with(new OnSector(brokenCorridors)), () -> {
           node(deconstructionManifold);
@@ -88,7 +94,12 @@ public class SWTechTree {
       //region power
       root("sw-power", evaporator, () -> {
         node(handWheel);
-        node(combustionEngine, with(new OnSector(caustics)), () -> {});
+        node(combustionEngine, with(new OnSector(caustics)), () -> {
+          node(piston, with(
+            new Produce(steam),
+            new NonUnlockable()
+          ), () -> node(crankshaft));
+        });
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {
           node(convectionTurbine, with(new OnSector(caustics)), () -> {});
         });
@@ -119,6 +130,7 @@ public class SWTechTree {
             node(sieve, with(new OnSector(caustics)), () -> {});
             node(rig, with(new SectorComplete(caustics)), () -> {});
           });
+          node(centrifugalCollector, with(new SectorComplete(caustics)), () -> {});
           node(pumpjack, with(new OnSector(abandonedMaze)), () -> {
             node(castingOutlet, with(new Research(liquidBasin)), () -> {});
           });
@@ -150,13 +162,12 @@ public class SWTechTree {
       root("sw-sectors", crevasse, () -> {
         node(theDelta, () -> {
           node(abandonedMaze, () -> {
-            node(cavern, with(new Research(coreMole)), () -> {
-
-            });
+            node(cavern, with(new Research(coreMole)), () -> {});
           });
           node(liveStorm, with(new Produce(aluminium)), () -> {});
           node(brokenCorridors, with(new Produce(aluminium), new Research(trebuchet)), () -> {
             node(caustics, () -> {
+              node(bubbles, with(new Research(centrifugalCollector)), () -> {});
               node(bayOfEmbers, with(new NonUnlockable()), () -> {});
             });
           });
@@ -174,7 +185,7 @@ public class SWTechTree {
       });
       //endregion
 		  node(coreMole, with(new OnSector(abandonedMaze)), () -> {
-        node(coreBunker, with(new SectorComplete(caustics)), () -> {});
+        node(coreBunker, with(new SectorComplete(bayOfEmbers)), () -> {});
       });
     });
   }
