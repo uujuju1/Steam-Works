@@ -659,7 +659,7 @@ public class SWCrafting {
 			ambientSound = Sounds.beamLustre;
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.gas, 50f / 60f,
-				SWLiquids.solvent, 12f / 60f
+				SWLiquids.solvent, 36f / 60f
 			));
 			consume(new ConsumeSpin() {{
 				minSpeed = 5f / 10f;
