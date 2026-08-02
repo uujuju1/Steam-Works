@@ -1,5 +1,6 @@
 package sw.content;
 
+import arc.graphics.*;
 import arc.math.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -16,6 +17,7 @@ import sw.type.weather.*;
 public class SWWeathers {
 	public static Weather
 		thunderstorm,
+		firestorm,
 		embers,
 		souesiteDust;
 
@@ -57,6 +59,29 @@ public class SWWeathers {
 			status = StatusEffects.wet;
 			sound = Sounds.rain;
 			soundVol = 0.25f;
+		}};
+		firestorm = new FireStormWeather("firestorm") {{
+			scalesFromPlayer = false;
+
+			colors = new Color[]{Pal.accent, Pal.accentBack, Color.gray, Color.darkGray};
+			opacity = 0.75f;
+
+			windx = 10f;
+			windy = 2f;
+
+			sound = Sounds.beamLustre;
+			soundVol = 0.5f;
+
+			spawns = 3;
+
+			damage = 1f;
+			damageIncrease = 1f / 60f;
+			radius = 8f;
+			radiusIncrease = 16f / 60f;
+			status = StatusEffects.burning;
+			statusDuration = 10f * 60f;
+			incend = 1f;
+			incendIncrease = 2.5f / 60f;
 		}};
 		souesiteDust = new DustStormWeather("souesite-dust") {{
 			sound = Sounds.windHowl;

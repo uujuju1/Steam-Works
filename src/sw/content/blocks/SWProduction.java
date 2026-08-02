@@ -520,7 +520,11 @@ public class SWProduction {
 		}};
 		centrifugalCollector = new SWPump("centrifugal-collector") {{
 			Block self = this;
-			requirements(Category.liquid, with());
+			requirements(Category.liquid, with(
+				SWItems.iron, 50,
+				SWItems.aluminium, 35,
+				Items.silicon, 20
+			));
 			size = 2;
 			liquidCapacity = 100f;
 
