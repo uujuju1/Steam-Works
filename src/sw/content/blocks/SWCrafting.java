@@ -646,14 +646,27 @@ public class SWCrafting {
 		}};
 
 		burner = new SWGenericCrafter("burner") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.iron, 180,
+				SWItems.aluminium, 150,
+				SWItems.bloom, 50,
+				Items.silicon, 200,
+				Items.graphite, 190
+			));
+			researchCost = with(
+				SWItems.iron, 360,
+				SWItems.aluminium, 300,
+				SWItems.bloom, 10,
+				Items.silicon, 400,
+				Items.graphite, 400
+			);
 			size = 4;
 			liquidCapacity = 200;
 
 			ambientSound = Sounds.beamLustre;
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.gas, 50f / 60f,
-				SWLiquids.solvent, 12f / 60f
+				SWLiquids.solvent, 36f / 60f
 			));
 			consume(new ConsumeSpin() {{
 				minSpeed = 5f / 10f;
@@ -662,6 +675,7 @@ public class SWCrafting {
 				showGraph = true;
 				efficiencyScale = s -> Interp.pow5In.apply(Mathf.map(s, 0.5f, 5f, 0f, 1f));
 			}});
+			craftTime = 24f;
 			outputItems = with(Items.graphite, 1);
 			outputLiquids = LiquidStack.with(SWLiquids.steam, 110f / 60f);
 			updateEffect = new ParallaxFireEffect() {{
@@ -886,7 +900,12 @@ public class SWCrafting {
 			);
 		}};
 		coolingTower = new GenericCrafter("cooling-tower") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.aluminium, 50,
+				SWItems.iron, 80,
+				SWItems.verdigris, 75
+			));
+			researchCost = mult(requirements, 10f);
 			size = 3;
 
 			ambientSound = Sounds.rain;

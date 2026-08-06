@@ -1,10 +1,9 @@
 package sw.content;
 
-import arc.util.*;
-import mindustry.content.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.blocks.storage.*;
+import mindustry.world.meta.*;
 import sw.content.blocks.*;
 import sw.gen.*;
 import sw.type.*;
@@ -14,6 +13,7 @@ public class SWSectorPresets {
 		crevasse, theDelta,
 		brokenCorridors, caustics,
 		liveStorm, bayOfEmbers,
+		bubbles,
 		abandonedMaze, cavern;
 
 	public static void load() {
@@ -24,16 +24,7 @@ public class SWSectorPresets {
 			alwaysUnlocked = true;
 			landMusic = SWMusics.chamadoDoVazio;
 
-			rules = r -> {
-				r.winWave = 5;
-				r.weather.add(new Weather.WeatherEntry(
-					SWWeathers.souesiteDust,
-					5f * Time.toMinutes,
-					7.5f * Time.toMinutes,
-					2.5f * Time.toMinutes,
-					5f * Time.toMinutes
-				));
-			};
+			rules = r -> r.winWave = 5;
 			
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
@@ -43,23 +34,6 @@ public class SWSectorPresets {
 			width = height = 200;
 			icon = () -> Icon.effect;
 			landMusic = SWMusics.asTerras;
-
-			rules = r -> {
-				r.weather.add(new Weather.WeatherEntry(
-					SWWeathers.souesiteDust,
-					5f * Time.toMinutes,
-					7.5f * Time.toMinutes,
-					2.5f * Time.toMinutes,
-					5f * Time.toMinutes
-				));
-				r.weather.add(new Weather.WeatherEntry(
-					Weathers.fog,
-					2.5f * Time.toMinutes,
-					5f * Time.toMinutes,
-					5f * Time.toMinutes,
-					7.5f * Time.toMinutes
-				));
-			};
 
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
@@ -71,20 +45,7 @@ public class SWSectorPresets {
 
 			landMusic = SWMusics.motorPerpetuo;
 
-			rules = r -> {
-				r.winWave = 20;
-				r.hideSpawns = false;
-				r.weather.add(new Weather.WeatherEntry(
-					SWWeathers.souesiteDust,
-					5f * Time.toMinutes,
-					7.5f * Time.toMinutes,
-					2.5f * Time.toMinutes,
-					5f * Time.toMinutes
-				));
-				r.weather.add(new Weather.WeatherEntry(Weathers.fog) {{
-					always = true;
-				}});
-			};
+			rules = r -> r.winWave = 20;
 
 			core = (CoreBlock) SWStorage.coreScaffold;
 
@@ -98,9 +59,7 @@ public class SWSectorPresets {
 
 			landMusic = SWMusics.passadoEsquecido;
 			
-			rules = r -> {
-				r.waves = false;
-			};
+			rules = r -> r.waves = false;
 			
 			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
@@ -113,6 +72,7 @@ public class SWSectorPresets {
 			
 			rules = r -> {
 				r.cleanupDeadTeams = false;
+				r.env = Env.terrestrial | Env.oxygen;
 			};
 			
 			launcher = (PositionSectorPreset) abandonedMaze;
@@ -137,16 +97,7 @@ public class SWSectorPresets {
 
 			landMusic = SWMusics.motorPerpetuo;
 
-			rules = r -> {
-				r.winWave = 10;
-				r.weather.add(new Weather.WeatherEntry(
-					SWWeathers.souesiteDust,
-					5f * Time.toMinutes,
-					7.5f * Time.toMinutes,
-					2.5f * Time.toMinutes,
-					5f * Time.toMinutes
-				));
-			};
+			rules = r -> r.winWave = 10;
 
 			core = (CoreBlock) SWStorage.coreMole;
 		}};
@@ -156,7 +107,26 @@ public class SWSectorPresets {
 			width = height = 300;
 			icon = () -> Icon.modeAttack;
 
+			rules = r -> {
+				r.env = Env.terrestrial | Env.groundWater | Env.groundOil | Env.oxygen;
+			};
+
 			landMusic = SWMusics.ouroEscuro;
+
+			core = (CoreBlock) SWStorage.coreScaffold;
+		}};
+		bubbles = new PositionSectorPreset("bubbles", SWPlanets.wendi, 8) {{
+			x = 100f;
+			y = 500f;
+			width = height = 100f;
+			icon = () -> Icon.cloud;
+
+			rules = r -> r.env = Env.terrestrial | Env.oxygen | SWEnv.gasPocket;
+
+			landMusic = SWMusics.ignicao;
+
+			launcher = (PositionSectorPreset) caustics;
+			core = (CoreBlock) SWStorage.coreMole;
 		}};
 	}
 }

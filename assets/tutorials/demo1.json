@@ -1,0 +1,15 @@
+{
+  "maxLayers": 3,
+  "layer0": {
+    "width": 13,
+    "height": 9
+  },
+  "layer1": {
+    "width": 9,
+    "height": 13
+  },
+  "layer2": {
+    "width": 13,
+    "height": 13
+  }
+}

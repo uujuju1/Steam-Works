@@ -62,6 +62,8 @@ public class SWUnitTypes {
 				shineSpeed = -2f;
 				
 				blurAlpha = 0.4f;
+
+				rotorSoundVolume = 0.5f;
 			}});
 
 			weapons.addAll(
@@ -119,6 +121,8 @@ public class SWUnitTypes {
 					
 					speed = 8f;
 					shineSpeed = -2f;
+
+					rotorSoundVolume = 0.5f;
 				}},
 				new UnitRotor("-rotor", true) {{
 					x = 12f;
@@ -131,6 +135,8 @@ public class SWUnitTypes {
 					shineSpeed = -3f;
 					
 					blurAlpha = 0.5f;
+
+					rotorSoundVolume = 0.5f;
 				}}
 			);
 			

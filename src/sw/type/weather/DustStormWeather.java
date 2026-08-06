@@ -16,6 +16,7 @@ public class DustStormWeather extends Weather {
 	public float windx = 1, windy = 0.1f;
 	public float minAlpha = 1, maxAlpha = 1;
 	public float sinSclMin = 50, sinSclMax = 100, sinMagMin = 2, sinMagMax = 20;
+	public boolean scalesFromPlayer = true;
 
 	public DustStormWeather(String name) {
 		super(name);
@@ -56,13 +57,13 @@ public class DustStormWeather extends Weather {
 				Draw.alpha(alpha * opacity * state.opacity);
 				Fill.circle(
 					x, y,
-					size * Interp.smooth.apply(
+					size * (scalesFromPlayer ? Interp.smooth.apply(
 						Mathf.clamp(Mathf.dst(
 							Vars.player.x, Vars.player.y, x, y
 						) / Mathf.dst(
 							0f, 0f, Vars.world.unitWidth()/2f, Vars.world.unitHeight()/2f)
 						)
-					) * 2f
+					) : 1f) * 2f
 				);
 			}
 		}

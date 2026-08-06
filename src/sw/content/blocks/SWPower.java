@@ -111,7 +111,7 @@ public class SWPower {
 			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 8f);
 			updateEffectSpread = 0f;
 			updateEffectChance = 0.5f;
-			
+			forceScales = speedScales = true;
 			consumeLiquid(SWLiquids.solvent, 1f/60f);
 			
 			outputRotation = 1f;
@@ -122,6 +122,7 @@ public class SWPower {
 				SWItems.iron, 10,
 				SWItems.aluminium, 15
 			));
+			envDisabled = Env.groundWater;
 			rotate = true;
 			drawArrow = true;
 			hasAttribute = true;
@@ -380,7 +381,12 @@ public class SWPower {
 		}};
 
 		piston = new SWGenericCrafter("piston") {{
-			requirements(Category.power, with());
+			requirements(Category.power, with(
+				SWItems.iron, 100,
+				SWItems.bloom, 20,
+				Items.graphite, 50,
+				Items.silicon, 80
+			));
 			size = 3;
 
 			rotate = true;
@@ -406,7 +412,11 @@ public class SWPower {
 		}};
 		crankshaft = new StackableGenericCrafter("crankshaft") {{
 			requirements(Category.power, with(
-
+				SWItems.bloom, 40,
+				SWItems.aluminium, 80,
+				SWItems.verdigris, 140,
+				Items.silicon, 100,
+				Items.graphite, 120
 			));
 			size = 3;
 			rotate = true;

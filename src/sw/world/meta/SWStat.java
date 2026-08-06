@@ -17,6 +17,8 @@ public class SWStat {
 
   // region Stats
   public static final Stat
+		baseOutput = new Stat("sw-base-output", StatCat.crafting),
+
     spinRequirement = new Stat("sw-spin-requirement", spin),
     spinOutput = new Stat("sw-spin-output", spin),
     spinOutputForce = new Stat("sw-spin-output-force", spin),
