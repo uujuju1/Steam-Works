@@ -107,19 +107,26 @@ public class SWSectorPresets {
 			width = height = 300;
 			icon = () -> Icon.modeAttack;
 
+			rules = r -> {
+				r.env = Env.terrestrial | Env.groundWater | Env.groundOil | Env.oxygen;
+			};
+
 			landMusic = SWMusics.ouroEscuro;
+
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 		bubbles = new PositionSectorPreset("bubbles", SWPlanets.wendi, 8) {{
 			x = 100f;
 			y = 500f;
-
 			width = height = 100f;
-			landMusic = SWMusics.ignicao;
+			icon = () -> Icon.cloud;
 
 			rules = r -> r.env = Env.terrestrial | Env.oxygen | SWEnv.gasPocket;
 
+			landMusic = SWMusics.ignicao;
+
+			launcher = (PositionSectorPreset) caustics;
 			core = (CoreBlock) SWStorage.coreMole;
-			icon = () -> Icon.cloud;
 		}};
 	}
 }

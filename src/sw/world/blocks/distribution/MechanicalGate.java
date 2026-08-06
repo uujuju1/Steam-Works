@@ -25,6 +25,7 @@ public class MechanicalGate extends OverflowGate {
 		super(name);
 		saveConfig = copyConfig = true;
 		drawCached = false;
+		drawDynamic = true;
 		config(Boolean.class, (MechanicalGateBuild build, Boolean invert) -> {
 			build.invert = invert;
 		});

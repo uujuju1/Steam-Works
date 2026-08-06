@@ -122,6 +122,7 @@ public class SWPower {
 				SWItems.iron, 10,
 				SWItems.aluminium, 15
 			));
+			envDisabled = Env.groundWater;
 			rotate = true;
 			drawArrow = true;
 			hasAttribute = true;

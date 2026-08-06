@@ -15,6 +15,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.io.*;
 import mindustry.world.*;
+import mindustry.world.blocks.ConstructBlock.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
@@ -126,7 +127,7 @@ public class MechanicalArm extends PayloadBlock {
 
 		@Override
 		public boolean acceptPayload(Building source, Payload payload) {
-			return super.acceptPayload(source, payload) && payload.size() / 8f < payloadCapacity;
+			return super.acceptPayload(source, payload) && payload.size() / 8f < payloadCapacity && !(payload instanceof BuildPayload b && !(b.build instanceof ConstructBuild));
 		}
 
 		public void act() {

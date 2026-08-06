@@ -318,6 +318,7 @@ public class SWProduction {
 				SWItems.iron, 175,
 				Items.silicon, 180
 			));
+			envRequired = Env.groundOil;
 			size = 3;
 			rotate = true;
 

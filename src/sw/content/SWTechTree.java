@@ -72,7 +72,7 @@ public class SWTechTree {
           node(mechanicalSorter);
         });
         node(suspensionConveyor, () -> {
-          node(belt, with(new Research(combustionEngine)), () -> {});
+          node(belt, with(new NonUnlockable(), new Research(combustionEngine)), () -> {});
         });
         node(courierPort, with(new OnSector(brokenCorridors)), () -> {
           node(mechanicalArm, () -> {
@@ -101,7 +101,7 @@ public class SWTechTree {
           ), () -> node(crankshaft));
         });
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {
-          node(convectionTurbine, with(new OnSector(caustics)), () -> {});
+          node(convectionTurbine, with(new NonUnlockable()), () -> {});
         });
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
@@ -128,7 +128,7 @@ public class SWTechTree {
         node(liquidCollector, () -> {
           node(artesianWell, with(new Produce(solvent)), () -> {
             node(sieve, with(new OnSector(caustics)), () -> {});
-            node(rig, with(new SectorComplete(caustics)), () -> {});
+            node(atmosphericSiphon, with(new OnSector(bubbles)), () -> node(rig));
           });
           node(centrifugalCollector, with(new SectorComplete(caustics)), () -> {});
           node(pumpjack, with(new OnSector(abandonedMaze)), () -> {
