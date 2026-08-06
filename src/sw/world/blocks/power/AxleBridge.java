@@ -257,7 +257,7 @@ public class AxleBridge extends AxleBlock {
 			if (getLink() != null) Drawf.select(getLink().x, getLink().y, getLink().block.size * 4f + 2f, Pal.place);
 
 			if (links() < maxConnections) {
-				findBridges(tile, team, range, b -> link != b.pos() && b.link != pos() && b.links() < ((AxleBridge) b.block).maxConnections, b -> {
+				findBridges(tile, team, range, b -> link != b.pos() && b != this && b.link != pos() && b.links() < ((AxleBridge) b.block).maxConnections, b -> {
 					Drawf.select(b.x, b.y, b.block.size * 4 + 2 + Mathf.absin(4f, 1f), Pal.remove);
 				});
 			}
@@ -352,6 +352,12 @@ public class AxleBridge extends AxleBlock {
 				spin == null
 			) return true;
 
+			// linker is itself, disconnect
+			if (other == this) {
+				configure(-1);
+				if (link != null) link.incoming.removeValue(pos());
+				return false;
+			}
 			// Case other is the link, deselect
 			if (link == other) {
 				configure(-1);
@@ -362,7 +368,8 @@ public class AxleBridge extends AxleBlock {
 				return false;
 			}
 			// Case other's link is this, reverse if possible
-			if (build.getLink() == this && ((AxleBridge) build.block).radius <= radius) {
+			if (build.getLink() == this && dst(build) <= range) {
+				if (link != null) link.incoming.removeValue(pos());
 				configure(build.pos());
 				build.configure(-1);
 				incoming.removeValue(build.pos());
@@ -374,14 +381,15 @@ public class AxleBridge extends AxleBlock {
 			}
 			// Case neither of the above, link, reverse if needed and possibe
 			if (build.links() < ((AxleBridge) build.block).maxConnections && links() < maxConnections) {
-				if (((AxleBridge) build.block).radius <= radius) {
+				if (dst(build) <= range) {
 					if (link != null) link.incoming.removeValue(pos());
 					configure(build.pos());
 					build.incoming.add(pos());
-				} else if (build.getLink() == null) {
+				} else if (dst(build) <= ((AxleBridge) build.block).range) {
+					if (build.getLink() != null) build.getLink().incoming.removeValue(build.pos());
 					build.configure(pos());
 					incoming.add(build.pos());
-				}
+				} else return true;
 			} else return true;
 
 			new SpinGraph().mergeFlood(this);
