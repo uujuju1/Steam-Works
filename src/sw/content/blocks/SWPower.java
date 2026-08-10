@@ -32,7 +32,7 @@ public class SWPower {
 		piston, crankshaft,
 	
 		wireShaft, wireShaftRouter, shaftGearbox,
-		overheadBelt, largeOverheadBelt,
+		overheadBelt, largeOverheadBelt, torqueLine,
 
 		flywheel, clutch,
 		shaftTransmission, adjustableGearTrain, mechanicalGovernor;
@@ -678,6 +678,68 @@ public class SWPower {
 				}},
 				new DrawBitmask("-tiles", b -> 0, 64)
 			);
+		}};
+		torqueLine = new AxleBridge("torque-line") {{
+			buildVisibility = BuildVisibility.editorOnly;
+			category = Category.power;
+			size = 3;
+
+			radius = 10f;
+			range = 1600f;
+			ratioScl = 4f;
+
+			spinScl = 1/20f;
+			stroke = 1f;
+			spacing = 6f;
+			maxConnections = 1;
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawAxles() {{
+					for (int i : Mathf.signs) {
+						axles.add(Axles.halfBlock.position(10f, 8f * i, 0, 1f));
+					}
+				}},
+				new DrawRotated(),
+				new DrawParts() {{
+					for (int i = 0; i < 3; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-gear") {{
+							clampProgress = false;
+							outline = false;
+
+							rotation = 90f;
+							moveRot = -1;
+
+							progress = params -> params.rotation;
+
+							moves.add(
+								new PartMove(params -> Mathf.cosDeg(!(params instanceof DrawParts.BlockParams p) ? 0 : -p.spin + 120 * finalI), 5, 0, 0),
+								new PartMove(params -> Mathf.sinDeg(!(params instanceof DrawParts.BlockParams p) ? 0 : -p.spin + 120 * finalI), 0, 5, 0)
+							);
+						}});
+					}
+
+					parts.add(new RegionPart("-rotator") {{
+						clampProgress = false;
+						outline = false;
+
+						progress = DrawParts.spin;
+
+						moveRot = spinScl / (Mathf.PI * radius * 2) * 360f;
+					}});
+				}},
+				new DrawRegion("-top")
+			);
+
+			spinConfig = new SpinConfig() {{
+				allowedEdges = new int[][]{
+					new int[]{1, 11},
+					new int[]{4, 2},
+					new int[]{7, 5},
+					new int[]{10, 8}
+				};
+			}};
 		}};
 
 		flywheel = new AxleBlock("flywheel") {{

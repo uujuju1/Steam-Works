@@ -93,6 +93,11 @@ public class NestedLogic implements ApplicationListener {
 			} else tile.floor().drawBase(tile);
 		}));
 
+		// walls
+		Draw.draw(Layer.block - 0.09f, () -> Vars.world.tiles.eachTile(tile -> {
+			if (tile.block() != Blocks.air) tile.block().drawBase(tile);
+		}));
+
 		// darkness
 		Draw.proj(0, 0, Vars.world.width(), Vars.world.height());
 		Tmp.m1.set(Draw.trans());

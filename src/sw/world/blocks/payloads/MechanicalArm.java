@@ -127,7 +127,12 @@ public class MechanicalArm extends PayloadBlock {
 
 		@Override
 		public boolean acceptPayload(Building source, Payload payload) {
-			return super.acceptPayload(source, payload) && payload.size() / 8f < payloadCapacity && !(payload instanceof BuildPayload b && !(b.build instanceof ConstructBuild));
+			return
+				super.acceptPayload(source, payload) && payload.size() / 8f < payloadCapacity &&
+				(
+					(payload instanceof BuildPayload buildPayload && !(buildPayload.build instanceof ConstructBuild)) ||
+					(payload instanceof UnitPayload unitPayload && unitPayload.unit.type.allowedInPayloads)
+				);
 		}
 
 		public void act() {

@@ -151,10 +151,14 @@ public class SWTechTree {
         });
         nodeProduce(solvent, () -> {
           nodeProduce(Liquids.water, () -> {
+            nodeProduce(steam, () -> {});
             nodeProduce(Liquids.ozone, () -> {});
             nodeProduce(Liquids.hydrogen, () -> {});
           });
-          nodeProduce(Liquids.slag, () -> {});
+          nodeProduce(Liquids.slag, () -> {
+            nodeProduce(Liquids.oil, () -> {});
+            nodeProduce(gas, () -> {});
+          });
         });
       });
       // endregion

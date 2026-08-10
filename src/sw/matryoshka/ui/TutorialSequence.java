@@ -50,5 +50,8 @@ public class TutorialSequence {
 		public Nesting nesting;
 
 		public Seq<TutorialAction> actions = new Seq<>();
+
+		public FloatSeq timestamp = new FloatSeq();
+		public float maxTime;
 	}
 }

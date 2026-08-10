@@ -11,6 +11,7 @@ import mindustry.ui.*;
 import sw.gen.*;
 import sw.matryoshka.*;
 import sw.matryoshka.ui.TutorialSequence.*;
+import sw.matryoshka.ui.elements.*;
 import sw.ui.*;
 
 public class NestedUI extends WidgetGroup {
@@ -23,6 +24,7 @@ public class NestedUI extends WidgetGroup {
 	private NestedLogic logic;
 
 	public Group layerTable = new WidgetGroup();
+	public Timestamp timestamp;
 
 	public void build(NestedLogic logic) {
 		Core.scene.add(this);
@@ -80,12 +82,29 @@ public class NestedUI extends WidgetGroup {
 		fill(t -> {
 			t.top();
 			t.table(Tex.wavepane, top -> {
-
+				top.add(timestamp = new Timestamp(() -> currentLayer == null ? 1f : currentLayer.nesting.time / currentLayer.maxTime) {{
+					style = new TimestampStyle() {{
+						baseLine = Tex.buttonOver;
+						passedTime = Tex.buttonDisabled;
+						timestamp = Tex.sliderKnobDown;
+						timestampStroke = 10f;
+					}};
+				}}).pad(10).grow();
 			}).height(100f).growX();
 		});
 	}
 
 	public void putTutorial(TutorialSequence tutorial, int layer) {
+		if (tutorial == null) {
+			currentLayer = null;
+			currentTutorial = null;
+			currentLayerIndex = 0;
+			logic.active.clear();
+			layerTable.clear();
+			timestamp.timedRuns.clear();
+			return;
+		}
+
 		currentTutorial = tutorial;
 		currentLayer = tutorial.buildLayer(layer);
 		currentLayerIndex = layer;
@@ -96,5 +115,13 @@ public class NestedUI extends WidgetGroup {
 		layerTable.clear();
 		currentLayer.actions.each(a -> a.init(layerTable, currentLayer.nesting));
 		layerTable.update(() -> currentLayer.actions.each(a -> a.update(currentLayer.nesting, false)));
+
+		timestamp.timedRuns.clear();
+		for (float num : currentLayer.timestamp.toArray()) {
+			timestamp.timedRuns.put(num / currentLayer.maxTime, () -> {
+				putTutorial(tutorial, layer);
+				currentLayer.nesting.time = num;
+			});
+		}
 	}
 }
