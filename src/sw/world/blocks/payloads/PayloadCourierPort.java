@@ -15,9 +15,11 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 import mindustry.world.meta.*;
 import sw.math.*;
+import sw.net.*;
 import sw.type.units.*;
 
 import static sw.world.blocks.payloads.PayloadCourierPort.PayloadCourierState.*;
@@ -83,6 +85,25 @@ public class PayloadCourierPort extends PayloadBlock {
 		stats.add(Stat.range, range / 8f, StatUnit.blocks);
 		stats.add(Stat.payloadCapacity, StatValues.squared(payloadCapacity, StatUnit.blocksSquared));
 		stats.add(Stat.reload, 60f / buildTime, StatUnit.perSecond);
+	}
+
+	public static void createCourier(Tile tile, int id) {
+		if (!(tile.build instanceof PayloadCourierPortBuild portBuild)) return;
+		PayloadCourierPort portBlock = (PayloadCourierPort) portBuild.block;
+
+		portBuild.unitID = id;
+		portBlock.courierCreateEffect.at(portBuild);
+		portBlock.courierCreateSound.at(portBuild, 1, portBlock.courierCreateSoundVolume);
+	}
+	public static void removeCourier(Tile tile, Unit unit) {
+		if (!(tile.build instanceof PayloadCourierPortBuild portBuild)) return;
+		PayloadCourierPort portBlock = (PayloadCourierPort) portBuild.block;
+
+//		if (!(unit instanceof BuildingTetherc tetherUnit) || !(tetherUnit.building() instanceof PayloadCourierPortBuild origin)) return;
+
+		unit.remove();
+		portBlock.courierRemoveEffect.at(unit);
+		portBlock.courierRemoveSound.at(unit, 1, portBlock.courierRemoveSoundVolume);
 	}
 
 	public class PayloadCourierPortBuild extends PayloadBlockBuild<Payload> {
@@ -185,17 +206,9 @@ public class PayloadCourierPort extends PayloadBlock {
 					unit.set(x, y);
 					unit.rotation(90f);
 					unit.add();
-					Call.unitTetherBlockSpawned(tile, unit.id);
 					consume();
+					CourierSpawnPacket.call(tile, unit.id);
 				}
-				courierCreateEffect.at(this);
-				courierCreateSound.at(this, 1, courierCreateSoundVolume);
-
-//				getLink().launchers.removeFirst();
-//				getLink().launchers.addLast(this);
-//				getLink().handlePayload(this, getPayload());
-//				payload = null;
-//				getLink().checkState();
 				return true;
 			}
 			return false;
