@@ -237,6 +237,7 @@ public class SWDistribution {
 				payloadCapacity = 400f;
 				drawSoftShadow = false;
 				outlines = false;
+				outlineRadius = 0;
 				outlineColor = Color.valueOf("3B211B");
 
 				bodyHeight = 3f;

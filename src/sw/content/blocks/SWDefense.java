@@ -15,6 +15,7 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
+import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
 import sw.world.interfaces.*;
@@ -26,6 +27,7 @@ public class SWDefense {
 	public static Block
 		repairStation,
 		grindLamp, lavaLamp, lamparine,
+		phantomStation,
 		ironWall, ironWallLarge, bloomWall, bloomWallLarge,
 		thoriumClump;
 
@@ -222,6 +224,18 @@ public class SWDefense {
 			);
 		}};
 		// endregion
+
+		phantomStation = new BuilderPad("phantom-station") {{
+			requirements(Category.defense, with());
+			size = 3;
+
+			unitType = new UnitType("phantom") {{
+				isEnemy = false;
+				allowedInPayloads = false;
+				logicControllable = false;
+				playerControllable = false;
+			}};
+		}};
 
 		// region walls
 		ironWall = new Wall("iron-wall") {{

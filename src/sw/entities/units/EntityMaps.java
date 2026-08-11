@@ -18,6 +18,8 @@ public class EntityMaps {
 		registerUnit("sw-rho", UnitEntity::create);
 		registerUnit("sw-psi", CopterUnit::new);
 		registerUnit("sw-courier", BuildingTetherPayloadUnit::create);
+		// TODO custom entity, don't wanna have it be and instance of payloadc
+		registerUnit("sw-phantom", BuildingTetherPayloadUnit::create);
 		registerUnit("sw-ball-lightning", TimedKillUnit::create);
 	}
 
