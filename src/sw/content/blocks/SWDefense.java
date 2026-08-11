@@ -12,6 +12,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import sw.ai.*;
 import sw.content.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
@@ -226,14 +227,17 @@ public class SWDefense {
 		// endregion
 
 		phantomStation = new BuilderPad("phantom-station") {{
-			requirements(Category.defense, with());
+			requirements(Category.effect, with());
 			size = 3;
 
 			unitType = new UnitType("phantom") {{
+				controller = u -> new BuilderPadAI();
 				isEnemy = false;
 				allowedInPayloads = false;
 				logicControllable = false;
 				playerControllable = false;
+
+				buildSpeed = 1f;
 			}};
 		}};
 
