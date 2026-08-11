@@ -21,9 +21,9 @@ public class SpinSource extends AxleBlock {
 		category = Category.power;
 		group = BlockGroup.power;
 
-		config(Float[].class, (SpinSourceBuild build, Float[] values) -> {
-			build.targetSpeed = values[0];
-			build.force = values[1];
+		config(Object[].class, (SpinSourceBuild build, Object[] values) -> {
+			build.targetSpeed = (float) values[0];
+			build.force = (float) values[1];
 		});
 		configClear((SpinSourceBuild build) -> build.targetSpeed = build.force = 0);
 	}
@@ -39,9 +39,9 @@ public class SpinSource extends AxleBlock {
 		@Override
 		public void buildConfiguration(Table cont) {
 			cont.table(Styles.black6, table -> {
-				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new Float[]{value / 10f, force}), () -> targetSpeed * 10f);
+				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new Object[]{value / 10f, force}), () -> targetSpeed * 10f);
 				table.image(Tex.whiteui).color(Color.gray).padTop(10f).padBottom(10f).height(4f).growX().row();
-				SWTables.buildFloatSlider(table, "@stat.sw-spin-output-force", value -> configure(new Float[]{targetSpeed, value / 600f}), () -> force * 600f);
+				SWTables.buildFloatSlider(table, "@stat.sw-spin-output-force", value -> configure(new Object[]{targetSpeed, value / 600f}), () -> force * 600f);
 			}).margin(10f);
 		}
 

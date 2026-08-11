@@ -20,10 +20,10 @@ public class AxleBrake extends AxleBlock {
 
 		saveConfig = true;
 
-		config(float[].class, (AxleBrakeBuild build, float[] list) -> {
-			build.speedTarget = list[0];
-			build.torqueTarget = list[1];
-			build.torqueGradient = list[2];
+		config(Object[].class, (AxleBrakeBuild build, Object[] list) -> {
+			build.speedTarget = (float) list[0];
+			build.torqueTarget = (float) list[1];
+			build.torqueGradient = (float) list[2];
 		});
 	}
 	
