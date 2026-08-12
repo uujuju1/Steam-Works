@@ -49,17 +49,17 @@ public class SWTechTree {
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
           node(thermikos, () -> {});
+          node(rainfall, with(new NonUnlockable()), () -> {});
         });
         node(push, with(new OnSector(liveStorm)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> {
           node(ironWallLarge);
           node(bloomWall, () -> node(bloomWallLarge));
-          node(repairStation, with(new OnSector(liveStorm)), () -> {});
+          node(repairStation, with(new OnSector(liveStorm)), () -> {
+            node(phantomStation, with(new NonUnlockable()), () -> {});
+          });
         });
-        node(lamparine, with(new OnSector(cavern)), () -> {
-          node(grindLamp, with(new NonUnlockable()), () -> {});
-          node(lavaLamp, with(new NonUnlockable()), () -> {});
-        });
+        node(lamparine, with(new OnSector(cavern)), () -> {});
       });
       // endregion
       // region distribution

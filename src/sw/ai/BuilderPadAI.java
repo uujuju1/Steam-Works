@@ -28,14 +28,14 @@ public class BuilderPadAI extends AIController {
 			}
 		}
 
+		unit.plans.clear();
 		if (!Vars.net.client() && tether != null && closest != null && closest.unit() != null) {
 			tempPlans.set(closest.unit().plans.toArray(BuildPlan.class));
 
 			Player finalClosest = closest;
-			plan = tempPlans.min(f -> tether.dst(f) + (finalClosest.unit().shouldSkip(plan, finalClosest.core()) ? 1000000 * 8 : 0));
+			plan = tempPlans.min(f -> tether.dst(f) + (finalClosest.unit().shouldSkip(f, finalClosest.core()) ? 1000000 * 8 : 0));
 
-			unit.plans.clear();
-			if (plan != null && tether.efficiency > 0f) {
+			if (plan != null && finalClosest.unit().updateBuilding && tether.efficiency > 0f) {
 				unit.plans.add(plan);
 				moveTo(plan, unit.type.buildRange * 0.9f, 50f);
 				unit.lookAt(plan);
@@ -43,6 +43,9 @@ public class BuilderPadAI extends AIController {
 				moveTo(tether, 1, 50f);
 				if (unit.dst(tether) < 2f) unit.lookAt(90f);
 			}
+		} else if (tether != null) {
+			moveTo(tether, 1, 50f);
+			if (unit.dst(tether) < 2f) unit.lookAt(90f);
 		}
 	}
 }

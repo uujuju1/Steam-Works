@@ -484,7 +484,13 @@ public class SWTurrets {
 //			spinConfig.hasSpin = false;
 //		}};
 		rainfall = new SWLiquidTurret("rainfall") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.aluminium, 170,
+				SWItems.iron, 100,
+				SWItems.verdigris, 120,
+				Items.silicon, 150,
+				Items.graphite, 90
+			));
 			size = 3;
 			scaledHealth = 150f;
 			range = 25f * 8f;

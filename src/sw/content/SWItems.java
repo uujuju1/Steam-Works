@@ -41,18 +41,18 @@ public class SWItems {
       cost = 4f;
     }};
     
-    meteorite = new Item("meteorite", valueOf("E4CAAC"));
-    chalk = new Item("chalk", valueOf("E2E2E8")) {{
-      cost = 2f;
-    }};
-    soda = new Item("soda", valueOf("C9C3E4"));
-    residue = new Item("residue", valueOf("1C1C1C"));
-
-
-    oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
-    denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
-      cost = 1f;
-    }};
+//    meteorite = new Item("meteorite", valueOf("E4CAAC"));
+//    chalk = new Item("chalk", valueOf("E2E2E8")) {{
+//      cost = 2f;
+//    }};
+//    soda = new Item("soda", valueOf("C9C3E4"));
+//    residue = new Item("residue", valueOf("1C1C1C"));
+//
+//
+//    oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
+//    denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
+//      cost = 1f;
+//    }};
     compound = new Item("compound", valueOf("515151")) {{
       cost = 1f;
     }};

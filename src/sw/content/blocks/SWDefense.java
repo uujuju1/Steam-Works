@@ -233,7 +233,12 @@ public class SWDefense {
 		// endregion
 
 		phantomStation = new BuilderPad("phantom-station") {{
-			requirements(Category.effect, with());
+			requirements(Category.effect, with(
+				SWItems.bloom, 100,
+				SWItems.aluminium, 120,
+				Items.silicon, 150,
+				Items.graphite, 130
+			));
 			size = 3;
 			rotate = true;
 
