@@ -119,7 +119,9 @@ public class SWProduction {
 			}});
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(-6f, 4f * i, 0f, 1f));
@@ -205,7 +207,9 @@ public class SWProduction {
 			}});
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-rotator", 3, true),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -348,7 +352,9 @@ public class SWProduction {
 			dumpExtraLiquid = false;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-gear", 2),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -462,7 +468,9 @@ public class SWProduction {
 			outputLiquids = LiquidStack.with(SWLiquids.gas, 25f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawLiquidTile(SWLiquids.gas, 2f),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -593,7 +601,9 @@ public class SWProduction {
 			);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawLiquidTile(Liquids.water, 3f) {{
 					alpha = 0.75f;
 				}},

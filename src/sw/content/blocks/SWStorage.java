@@ -81,7 +81,9 @@ public class SWStorage {
 			outputForce = 400f / 600f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawRegion("-bar"),
 				new DrawAxles() {{
 					Axle base = new Axle("-axle") {{

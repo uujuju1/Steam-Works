@@ -88,7 +88,9 @@ public class SWPower {
 			}};
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawLiquidTile(SWLiquids.solvent) {{
 					alpha = 0.5f;
 				}},
@@ -203,7 +205,9 @@ public class SWPower {
 			updateEffectSpread = 0f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParticles() {{
 					color = Liquids.water.color.cpy().mul(1.5f);
 					reverse = true;
@@ -293,7 +297,9 @@ public class SWPower {
 			forceScales = true;
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					
@@ -402,7 +408,9 @@ public class SWPower {
 			consumeLiquid(SWLiquids.steam, 200f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-rotator", 3f),
 				new DrawRotated(),
 				new DrawRotated("-top") {{
@@ -435,7 +443,9 @@ public class SWPower {
 			connectSide = new boolean[]{false, true, false, true};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 
@@ -461,7 +471,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.right() != null && b.right().block == piston && b.right().front() == b
+					b -> b.right() != null && b.right().block == piston && b.right().front() == b && (b.tileX() == b.right().tileX() || b.tileY() == b.right().tileY())
 				),
 				new DrawCondition(
 					new DrawParts() {{
@@ -482,7 +492,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.left() != null && b.left().block == piston && b.left().front() == b
+					b -> b.left() != null && b.left().block == piston && b.left().front() == b && (b.tileX() == b.left().tileX() || b.tileY() == b.left().tileY())
 				),
 				new DrawRotated("-top") {{
 					layer = Layer.block + 0.05f;
@@ -573,7 +583,9 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(6f * offset.x, 4f * offset.y, 0f, 1f));
 					axles.addAll(
@@ -672,7 +684,9 @@ public class SWPower {
 			spacing = 3;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawAxles() {{
 					for (int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
 				}},
@@ -694,7 +708,9 @@ public class SWPower {
 			maxConnections = 1;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawAxles() {{
 					for (int i : Mathf.signs) {
 						axles.add(Axles.halfBlock.position(10f, 8f * i, 0, 1f));
@@ -764,7 +780,9 @@ public class SWPower {
 			}};
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-gear", 1f, true) {{
 					x = 4f;
 					y = 4f;
@@ -870,7 +888,9 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for(Point2 offset : Geometry.d8edge) {
 						axles.add(Axles.halfBlock.position(4f * offset.x, 6f * offset.y, -90f, offset.x > 0 ? 0.75f : 1.5f));
@@ -1003,7 +1023,9 @@ public class SWPower {
 			strength = 50f / 600f;
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for(int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
 				}},

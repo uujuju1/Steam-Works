@@ -60,7 +60,9 @@ public class SWDefense {
 			}});
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawArcSmelt() {{
 					flameColor = Pal.missileYellow;
 					drawCenter = false;
@@ -203,7 +205,9 @@ public class SWDefense {
 			));
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawArcSmelt() {{
 					midColor = Pal.accent;
 					flameColor = Pal.missileYellowBack;
@@ -238,6 +242,23 @@ public class SWDefense {
 				playerControllable = false;
 
 				buildSpeed = 1f;
+			}};
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					axles.add(Axles.tripleBlock.position(0, 0, 0, 1));
+				}},
+				new DrawRegion(),
+				new DrawRegion("-top", 4, true)
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20 / 600f;
 			}};
 		}};
 

@@ -129,7 +129,9 @@ public class SWCrafting {
 			outputItems = with(SWItems.coke, 1);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParticles() {{
 					particles = 15;
 
@@ -206,7 +208,9 @@ public class SWCrafting {
 			outputItems = with(Items.silicon, 1);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
@@ -249,7 +253,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 3f/60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawLiquidTile(Liquids.water, 2f),
 				new DrawParticles() {{
 					color = Color.valueOf("D1EFFF");
@@ -331,7 +337,9 @@ public class SWCrafting {
 			outputItems = with(SWItems.thermite, 3);
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(10f * offset.x, 8f * offset.y, 0f, 1f));
@@ -424,7 +432,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.slag, 7.5f / 60f);
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-4";
+				}},
 				new DrawLight(0.5f),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -501,7 +511,9 @@ public class SWCrafting {
 			maxBoost = 4f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawLiquidTile(Liquids.water, 1.5f),
 				new DrawParts() {{
 					parts.add(new RegionPart("-sieve") {{
@@ -695,7 +707,9 @@ public class SWCrafting {
 			updateEffectSpread = 0f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-4";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(4f * offset.x, 14f * offset.y, -90f, 1f));
@@ -916,7 +930,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.water, 10f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParts() {{
 					for (int i = 0; i < 3; i++) {
 						int finalI = i;
