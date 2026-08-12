@@ -99,8 +99,8 @@ public class AxleBrake extends AxleBlock {
 //			}).left().padTop(5f).row();
 //		}
 
-		@Override public float[] config() {
-			return new float[]{speedTarget, torqueTarget, torqueGradient};
+		@Override public Object[] config() {
+			return new Object[]{speedTarget, torqueTarget, torqueGradient};
 		}
 
 		@Override public float getForce() {

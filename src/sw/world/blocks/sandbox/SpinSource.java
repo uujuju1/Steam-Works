@@ -32,8 +32,8 @@ public class SpinSource extends AxleBlock {
 		public float targetSpeed, force;
 
 		@Override
-		public Float[] config() {
-			return new Float[]{targetSpeed, force};
+		public Object[] config() {
+			return new Object[]{targetSpeed, force};
 		}
 
 		@Override

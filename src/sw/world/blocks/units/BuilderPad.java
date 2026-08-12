@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.world.blocks.*;
 import mindustry.world.consumers.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.world.*;
 
 public class BuilderPad extends GenericSpinBlock {
@@ -58,6 +59,15 @@ public class BuilderPad extends GenericSpinBlock {
 	public void load() {
 		super.load();
 		drawer.load(this);
+	}
+
+	@Override
+	public void setStats() {
+		super.setStats();
+
+		stats.add(Stat.activationTime, unitBuildTime, StatUnit.seconds);
+
+		stats.addPercent(Stat.buildSpeed, unitType.buildSpeed);
 	}
 
 	public class BuilderPadBuild extends GenericSpinBuild implements UnitTetherBlock {
@@ -150,6 +160,10 @@ public class BuilderPad extends GenericSpinBlock {
 				}
 			} else {
 				warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+			}
+
+			if (unit != null && unit.isValid()) {
+				unit.buildSpeedMultiplier(efficiency);
 			}
 
 			totalProgress += warmup * Time.delta * efficiencyScale();

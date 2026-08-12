@@ -16,16 +16,33 @@ public class BuilderPadAI extends AIController {
 	public void updateMovement() {
 		if (unit instanceof BuildingTetherc tetherUnit) tether = (BuilderPad.BuilderPadBuild) tetherUnit.building();
 
-		if (!Vars.net.client() && tether != null) {
-			tempPlans.set(Vars.player.unit().plans.toArray(BuildPlan.class));
+		Player closest = null;
+		float minDst = Float.MAX_VALUE;
+		for (Player player : Groups.player) {
+			if(!player.dead() && player.isBuilder() && player.team() == unit.team && player.unit().updateBuilding){
+				float dst = player.dst2(unit);
+				if(dst < minDst){
+					closest = player;
+					minDst = dst;
+				}
+			}
+		}
 
-			plan = tempPlans.min(f -> tether.dst(f));
+		if (!Vars.net.client() && tether != null && closest != null && closest.unit() != null) {
+			tempPlans.set(closest.unit().plans.toArray(BuildPlan.class));
+
+			Player finalClosest = closest;
+			plan = tempPlans.min(f -> tether.dst(f) + (finalClosest.unit().shouldSkip(plan, finalClosest.core()) ? 1000000 * 8 : 0));
 
 			unit.plans.clear();
-			if (plan != null && Vars.control.input.isBuilding) {
+			if (plan != null && tether.efficiency > 0f) {
 				unit.plans.add(plan);
-				moveTo(plan, unit.type.buildRange * 0.5f);
-			} else moveTo(tether, 1);
+				moveTo(plan, unit.type.buildRange * 0.9f, 50f);
+				unit.lookAt(plan);
+			} else {
+				moveTo(tether, 1, 50f);
+				if (unit.dst(tether) < 2f) unit.lookAt(90f);
+			}
 		}
 	}
 }

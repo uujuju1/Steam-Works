@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -14,6 +15,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import sw.ai.*;
 import sw.content.*;
+import sw.type.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
 import sw.world.blocks.units.*;
@@ -233,15 +235,42 @@ public class SWDefense {
 		phantomStation = new BuilderPad("phantom-station") {{
 			requirements(Category.effect, with());
 			size = 3;
+			rotate = true;
 
-			unitType = new UnitType("phantom") {{
+			consume(new ConsumeSpin() {{
+				minSpeed = 20f / 10f;
+				maxSpeed = 80f / 10f;
+
+				efficiencyScale = a -> Mathf.map(a, 2, 8, 0.5f, 2.5f);
+				showGraph = true;
+				minEfficiency = 0.5f;
+				maxEfficiency = 2.5f;
+			}});
+
+			unitType = new SWUnitType("phantom") {{
 				controller = u -> new BuilderPadAI();
 				isEnemy = false;
 				allowedInPayloads = false;
 				logicControllable = false;
 				playerControllable = false;
+				hidden = true;
 
-				buildSpeed = 1f;
+				flying = true;
+				speed = 2.5f;
+
+				buildSpeed = 0.25f;
+
+				outlineLayerOffset = -0.002f;
+
+				parts.add(new RegionPart("-gear") {{
+					clampProgress = false;
+
+					layerOffset = -0.001f;
+
+					moveRot = 1f;
+
+					progress = PartProgress.time;
+				}});
 			}};
 
 			drawer = new DrawMulti(
@@ -253,12 +282,19 @@ public class SWDefense {
 
 					axles.add(Axles.tripleBlock.position(0, 0, 0, 1));
 				}},
-				new DrawRegion(),
+				new DrawFacingLightRegion(),
 				new DrawRegion("-top", 4, true)
 			);
 
 			spinConfig = new SpinConfig() {{
 				resistance = 20 / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 6},
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+				};
 			}};
 		}};
 
