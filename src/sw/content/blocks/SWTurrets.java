@@ -16,7 +16,6 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
-import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.part.*;
 import sw.world.blocks.defense.*;
@@ -202,7 +201,7 @@ public class SWTurrets {
 //			);
 //		}};
 
-		imber = new ItemTurret("imber") {{
+		imber = new SWItemTurret("imber") {{
 			requirements(Category.turret, with(
 				SWItems.verdigris, 20,
 				SWItems.iron, 30,
@@ -221,7 +220,7 @@ public class SWTurrets {
 
 			outlineIcon = false;
 
-			targetGround = false;
+			bulletsChangeTargeting = true;
 
 			drawer = new DrawTurret() {{
 				parts.add(
@@ -315,6 +314,50 @@ public class SWTurrets {
 						hitEffect = Fx.hitBulletBig;
 						despawnHit = true;
 					}};
+				}},
+				SWItems.thermite, new BasicBulletType(4, 125) {{
+					width = 8f;
+					height = 16f;
+					shrinkY = 0f;
+
+					lifetime = 60;
+					drag = 0.02f;
+					ammoMultiplier = 1f;
+
+					status = StatusEffects.melting;
+					statusDuration = 180f;
+
+					trailEffect = Fx.disperseTrail;
+					trailInterval = 5f;
+					trailRotation = true;
+
+					hitSound = Sounds.shootFlame;
+					hitEffect = Fx.hitBulletBig;
+					despawnHit = true;
+
+					intervalBullets = 3;
+					intervalRandomSpread = 90f;
+					bulletInterval = 5f;
+					intervalBullet = new BasicBulletType(2, 5, "casing") {{
+						width = 2f;
+						height = 4f;
+						shrinkY = 0f;
+
+						frontColor = Pal.accentBack;
+
+						layer = Layer.block + 0.01f;
+
+						lifetime = 8f;
+
+						pierce = true;
+
+						status = StatusEffects.melting;
+						statusDuration = 60f;
+
+						hitSound = Sounds.shootFlame;
+						hitEffect = Fx.hitBulletBig;
+						despawnHit = true;
+					}};
 				}}
 			);
 			coolant = consume(new ConsumeLiquidBoosters() {{
@@ -322,19 +365,8 @@ public class SWTurrets {
 				boosters.put(Liquids.water, 2);
 				boosters.put(SWLiquids.steam, 4);
 			}});
-		}
-
-			@Override
-			public void setStats() {
-				super.setStats();
-
-				if(coolant != null){
-					stats.remove(Stat.booster);
-					coolant.display(stats);
-				}
-			}
-		};
-		trebuchet = new ItemTurret("trebuchet") {{
+		}};
+		trebuchet = new SWItemTurret("trebuchet") {{
 			requirements(Category.turret, with(
 				SWItems.iron, 45,
 				SWItems.aluminium, 20,
@@ -918,18 +950,7 @@ public class SWTurrets {
 				boosters.put(Liquids.water, 2);
 				boosters.put(SWLiquids.steam, 4);
 			}});
-		}
-
-			@Override
-			public void setStats() {
-				super.setStats();
-
-				if(coolant != null){
-					stats.remove(Stat.booster);
-					coolant.display(stats);
-				}
-			}
-		};
+		}};
 //		swing = new ConsumeTurret("swing") {{
 //			requirements(Category.turret, BuildVisibility.hidden, with());
 //			size = 3;
