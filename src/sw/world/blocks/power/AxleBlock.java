@@ -16,7 +16,6 @@ public class AxleBlock extends GenericSpinBlock {
 
 	public AxleBlock(String name) {
 		super(name);
-		update = true;
 		rotate = true;
 		drawArrow = false;
 		group = BlockGroup.power;

@@ -241,6 +241,7 @@ public class SWDefense {
 			));
 			size = 3;
 			rotate = true;
+			drawArrow = false;
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 20f / 10f;

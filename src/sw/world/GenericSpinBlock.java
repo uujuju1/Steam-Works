@@ -16,6 +16,7 @@ public class GenericSpinBlock extends Block {
 
 	public GenericSpinBlock(String name) {
 		super(name);
+		destructible = true;
 	}
 
 	@Override

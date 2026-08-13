@@ -46,6 +46,7 @@ public class AxleBridge extends AxleBlock {
 	public AxleBridge(String name) {
 		super(name);
 
+		update = true;
 		configurable = true;
 
 		config(Integer.class, (AxleBridgeBuild build, Integer pos) -> build.link = pos);
