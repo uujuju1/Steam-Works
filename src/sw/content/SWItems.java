@@ -6,15 +6,8 @@ import static arc.graphics.Color.*;
 
 public class SWItems {
   public static Item
-    verdigris, iron, aluminium,
-    coke,
-    thermite, bloom,
-
-  compound, denseAlloy, oxycarbide,
-
-  meteorite,
-    chalk, soda,
-   residue;
+    verdigris, iron, aluminium, coke,
+    thermite, bloom, compound;
 
   public static void load() {
     verdigris = new Item("verdigris", valueOf("40916C")) {{
@@ -33,26 +26,14 @@ public class SWItems {
       buildable = false;
       flammability = explosiveness = 0.5f;
     }};
-    thermite = new Item("thermite", valueOf("6B7580")) {{
+    thermite = new Item("thermite", valueOf("6C5656")) {{
       buildable = false;
       flammability = explosiveness = 0.8f;
     }};
     bloom = new Item("bloom", valueOf("5F595D")) {{
       cost = 4f;
     }};
-    
-//    meteorite = new Item("meteorite", valueOf("E4CAAC"));
-//    chalk = new Item("chalk", valueOf("E2E2E8")) {{
-//      cost = 2f;
-//    }};
-//    soda = new Item("soda", valueOf("C9C3E4"));
-//    residue = new Item("residue", valueOf("1C1C1C"));
-//
-//
-//    oxycarbide = new Item("oxycarbide", valueOf("1C1C1C"));
-//    denseAlloy = new Item("dense-alloy", valueOf("6E7080")) {{
-//      cost = 1f;
-//    }};
+
     compound = new Item("compound", valueOf("515151")) {{
       cost = 1f;
     }};

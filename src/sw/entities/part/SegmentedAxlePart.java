@@ -28,6 +28,8 @@ public class SegmentedAxlePart extends DrawPart {
 	public boolean filled = true;
 	
 	public PartProgress progress = PartProgress.reload;
+
+	public Seq<PartMove> moves = new Seq<>();
 	
 	public @Load(value = "@name$-main", splits = true, width = "pixelWidth", height = "pixelHeight") TextureRegion[][] mainAxleRegions;
 	public @Load("@name$-segment-top") TextureRegion topSegmentRegion;
@@ -83,42 +85,43 @@ public class SegmentedAxlePart extends DrawPart {
 		Draw.z((layer > 0 ? layer : z) + layerOffset);
 		
 		float p = progress.get(params);
-		
+		float dx = params.x + Angles.trnsx(params.rotation - 90, x, y);
+		float dy = params.y + Angles.trnsy(params.rotation - 90, x, y);
+		float dr = params.rotation + rotation - 90f;
+
+		for (PartMove move : moves) {
+			float moveProgress = move.progress.get(params);
+			dx += Angles.trnsx(params.rotation - 90, move.x * moveProgress, move.y * moveProgress);
+			dy += Angles.trnsy(params.rotation - 90, move.x * moveProgress, move.y * moveProgress);
+			dr += move.rot * moveProgress;
+		}
+		float drawX = dx, drawY = dy, drawRot = dr;
+
 		Seq<Integer> drawOrder = new Seq<>();
 		for(int i : segmentSides) drawOrder.add(i);
 		
-		float blockRotation = (params.rotation + this.rotation - 90f) / 90f;
-		Color light = lightTint;
-		Color dark = darkTint;
-		if (blockRotation == 1 || blockRotation == 2) {
-			lightTint = dark;
-			darkTint = light;
-		}
-		
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(params, p + i * 360f/sides));
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(drawX, drawY, drawRot + 90f, p + i * 360f/sides));
 		if (filled) {
 			Draws.palette(lightTint, mediumTint, darkTint);
 			Draws.regionCylinder(
 				mainAxleRegions[0],
-				params.x + Angles.trnsx(params.rotation - 90f, this.x, this.y),
-				params.y + Angles.trnsy(params.rotation - 90f, this.x, this.y),
-				-height, minWidth, -p, params.rotation + this.rotation - 90, false
+				dx,
+				dy,
+				-height, minWidth, -p, dr, false
 			);
 			Draws.palette();
 		}
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(params, p + i * 360f/sides));
-		
-		lightTint = light;
-		darkTint = dark;
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(drawX, drawY, drawRot + 90f, p + i * 360f/sides));
 		
 		Draw.reset();
 		Draw.z(z);
 	}
 	
-	public void drawSegment(PartParams params, float angle) {
-		float x = params.x + Angles.trnsx(params.rotation - 90f, this.x, this.y);
-		float y = params.y + Angles.trnsy(params.rotation - 90f, this.x, this.y);
-		float rotation = params.rotation + this.rotation;
+	public void drawSegment(float x, float y, float rotation, float angle) {
+//		float x = params.x + Angles.trnsx(params.rotation - 90f, this.x, this.y);
+//		float y = params.y + Angles.trnsy(params.rotation - 90f, this.x, this.y);
+//		float rotation = params.rotation + this.rotation;
+
 		float radius = maxWidth / 2f;
 		float inRadius = minWidth / 2f;
 		float arc = 1f / sides;

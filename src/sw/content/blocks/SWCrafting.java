@@ -33,7 +33,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		wedger, pyrolysisSynthetizer, pressureKiln,
+		churner,
 		
 		burner, rte, coolingTower;
 	
@@ -355,7 +355,16 @@ public class SWCrafting {
 						
 						segmentSides = new int[]{0, 3, 6};
 						
-						progress = DrawParts.spin.mul(0.25f);
+						progress = DrawParts.spin.mul(0.25f).mul(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return -Mathf.sign(blockRot == 1 || blockRot == 2);
+						});
+
+						// reverse direction based on rotation
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
 					}});
 					parts.add(new SegmentedAxlePart() {{
 						suffix = "-wheel2";
@@ -367,7 +376,16 @@ public class SWCrafting {
 						
 						segmentSides = new int[]{0, 3, 6};
 						
-						progress = DrawParts.spin.mul(-0.25f).add(60f);
+						progress = DrawParts.spin.mul(-0.25f).mul(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return -Mathf.sign(blockRot == 1 || blockRot == 2);
+						}).add(60f);
+
+						// reverse direction based on rotation
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
 					}});
 				}},
 				new DrawFacingLightRegion()
@@ -947,6 +965,64 @@ public class SWCrafting {
 				}},
 				new DrawRegion()
 			);
+		}};
+
+		churner = new SWGenericCrafter("churner") {{
+			requirements(Category.crafting, with());
+			size = 5;
+			rotate = true;
+
+			drawer = new DrawMulti(
+//				new DrawAxles() {{
+//					for (Point2 offset : Geometry.d8edge) {
+//
+//					}
+//				}},
+				new DrawParts() {{
+					for (int j : Mathf.signs) {
+						for (int i = -1; i <= 1; i++) {
+							int finalI = i;
+							parts.add(new SegmentedAxlePart() {{
+								name = "sw-crusher-wheel1";
+
+								y = -7f * j;
+								minWidth = 2f;
+								maxWidth = 4f;
+								height = 24f;
+
+								segmentSides = new int[]{0, 3, 6};
+
+								progress = DrawParts.spin.mul(-0.25f * j).mul(params -> {
+									int blockRot = Mathf.round(params.rotation / 90 - 1);
+									return -Mathf.sign(blockRot == 1 || blockRot == 2);
+								});;
+
+								moves.add(new PartMove(
+									params -> Mathf.sinDeg(180 + j * 30 + DrawParts.spin.mul(0.05f).get(params) % 120f + finalI * 120f),
+									0, 5 * j, 0
+								));
+
+								// reverse direction based on rotation
+								moves.add(new PartMove(params -> {
+									int blockRot = Mathf.round(params.rotation / 90 - 1);
+									return blockRot == 1 || blockRot == 2 ? 180 : 0;
+								}, 0, 0, 1));
+							}});
+						}
+					}
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 400f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{1, 9, 11, 19},
+					new int[]{6, 14, 16, 4},
+					new int[]{11, 19, 1, 9},
+					new int[]{16, 4, 6, 14},
+				};
+			}};
 		}};
 
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
