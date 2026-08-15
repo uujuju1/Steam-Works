@@ -15,9 +15,11 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.entities.*;
 import sw.entities.effect.*;
 import sw.entities.part.*;
 import sw.gen.*;
+import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -810,7 +812,9 @@ public class SWCrafting {
 			updateEffectChance = 0.5f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-5";
+				}},
 				new DrawRegion("-rods"),
 				new DrawGlowRegion("-rods-glow1") {{
 					layer = -1f;
@@ -973,32 +977,58 @@ public class SWCrafting {
 			rotate = true;
 
 			drawer = new DrawMulti(
-//				new DrawAxles() {{
-//					for (Point2 offset : Geometry.d8edge) {
-//
-//					}
-//				}},
+				new DrawRegion() {{
+					name = "sw-bottom-5";
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation() * -Mathf.sign(b.rotation == 1 || b.rotation == 2);
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(new Axle("-holder") {{
+							pixelWidth = 2;
+							pixelHeight = 1;
+
+							x = 13 * offset.x;
+							y = 7 * offset.y;
+
+							spinScl = 0.05f * Mathf.sign(offset.y > 0);
+
+							width = 2f;
+							height = 13f;
+
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(18f * offset.x, 8f * offset.y, 0f, 1f));
+				}},
 				new DrawParts() {{
 					for (int j : Mathf.signs) {
 						for (int i = -1; i <= 1; i++) {
 							int finalI = i;
 							parts.add(new SegmentedAxlePart() {{
-								name = "sw-crusher-wheel1";
+								suffix = "-wheel1";
 
 								y = -7f * j;
 								minWidth = 2f;
 								maxWidth = 4f;
 								height = 24f;
 
-								segmentSides = new int[]{0, 3, 6};
+								colorTo = Color.gray;
+
+								segmentSides = new int[]{0, 2, 4};
 
 								progress = DrawParts.spin.mul(-0.25f * j).mul(params -> {
 									int blockRot = Mathf.round(params.rotation / 90 - 1);
 									return -Mathf.sign(blockRot == 1 || blockRot == 2);
-								});;
+								});
+								colorProgress = params -> (Mathf.cosDeg(DrawParts.spin.mul(0.05f).add(30 * j).get(params) % 120 + finalI * 120) + 1) / 2;
 
 								moves.add(new PartMove(
-									params -> Mathf.sinDeg(180 + j * 30 + DrawParts.spin.mul(0.05f).get(params) % 120f + finalI * 120f),
+									params -> Mathf.sinDeg(180 + DrawParts.spin.mul(0.05f).add(30 * j).get(params) % 120f + finalI * 120f),
 									0, 5 * j, 0
 								));
 
@@ -1010,7 +1040,8 @@ public class SWCrafting {
 							}});
 						}
 					}
-				}}
+				}},
+				new DrawRotated()
 			);
 
 			spinConfig = new SpinConfig() {{

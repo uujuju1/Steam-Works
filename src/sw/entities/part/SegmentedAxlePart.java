@@ -24,10 +24,14 @@ public class SegmentedAxlePart extends DrawPart {
 	public Color lightTint = SWPal.axleLight;
 	public Color mediumTint = SWPal.axleMedium;
 	public Color darkTint = SWPal.axleDark;
-	
+
+	public Color colorFrom = Color.white;
+	public Color colorTo = Color.white;
+
 	public boolean filled = true;
 	
 	public PartProgress progress = PartProgress.reload;
+	public PartProgress colorProgress = PartProgress.reload;
 
 	public Seq<PartMove> moves = new Seq<>();
 	
@@ -84,10 +88,12 @@ public class SegmentedAxlePart extends DrawPart {
 		float z = Draw.z();
 		Draw.z((layer > 0 ? layer : z) + layerOffset);
 		
-		float p = progress.get(params);
+		float progress = this.progress.get(params);
 		float dx = params.x + Angles.trnsx(params.rotation - 90, x, y);
 		float dy = params.y + Angles.trnsy(params.rotation - 90, x, y);
 		float dr = params.rotation + rotation - 90f;
+
+		Draw.color(colorFrom, colorTo, colorProgress.getClamp(params));
 
 		for (PartMove move : moves) {
 			float moveProgress = move.progress.get(params);
@@ -100,18 +106,18 @@ public class SegmentedAxlePart extends DrawPart {
 		Seq<Integer> drawOrder = new Seq<>();
 		for(int i : segmentSides) drawOrder.add(i);
 		
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(drawX, drawY, drawRot + 90f, p + i * 360f/sides));
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (progress + 360f/sides * (i + 0.5f))) < 0, i -> drawSegment(drawX, drawY, drawRot + 90f, progress + i * 360f/sides));
 		if (filled) {
 			Draws.palette(lightTint, mediumTint, darkTint);
 			Draws.regionCylinder(
 				mainAxleRegions[0],
 				dx,
 				dy,
-				-height, minWidth, -p, dr, false
+				-height, minWidth, -progress, dr, false
 			);
 			Draws.palette();
 		}
-		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (p + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(drawX, drawY, drawRot + 90f, p + i * 360f/sides));
+		drawOrder.each(i -> -Mathf.sin(Mathf.degreesToRadians * (progress + 360f/sides * (i + 0.5f))) >= 0, i -> drawSegment(drawX, drawY, drawRot + 90f, progress + i * 360f/sides));
 		
 		Draw.reset();
 		Draw.z(z);
