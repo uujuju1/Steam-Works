@@ -976,10 +976,16 @@ public class SWCrafting {
 			size = 5;
 			rotate = true;
 
+			consumeItem(Items.lead, 1);
+			consumeLiquid(Liquids.oil, 40 / 60f);
+
+			outputItems = with(SWItems.compound, 1);
+
 			drawer = new DrawMulti(
 				new DrawRegion() {{
 					name = "sw-bottom-5";
 				}},
+				new DrawLiquidTile(Liquids.oil, 3),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation() * -Mathf.sign(b.rotation == 1 || b.rotation == 2);
 					for (Point2 offset : Geometry.d8edge) {
@@ -1040,6 +1046,57 @@ public class SWCrafting {
 							}});
 						}
 					}
+				}},
+				new DrawParticlesDirectional() {{
+					color = Color.valueOf("313131").mul(1.5f);
+
+					rotation = 90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 2;
+					color = Color.valueOf("A69A96");
+
+					rotation = 90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 1;
+					color = Color.valueOf("313131").mul(1.5f);
+
+					rotation = -90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 3;
+					color = Color.valueOf("A69A96");
+
+					rotation = -90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
 				}},
 				new DrawRotated()
 			);
