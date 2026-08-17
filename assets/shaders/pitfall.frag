@@ -18,6 +18,8 @@ varying vec2 v_texCoords;
 // make sure it's an odd number so that the hitPos ends up inside the mask
 const int marchPrecision = 7;
 
+const float marchStep = 8.0;
+
 
 uniform sampler2D u_wall;
 uniform vec4 u_walluv;
@@ -48,6 +50,61 @@ vec2 projectMask(vec2 coords) {
         vec2(0.0),
         vec2(1.0)
     );
+}
+
+vec2 edgePos(vec2 center, vec2 pos, float maxDistance) {
+    vec2 dir = normalize(pos - center);
+
+    vec2 hit = pos / marchStep;
+    for(float i = 0.0; i < maxDistance; i++) {
+        if (length(hit - pos / marchStep) > maxDistance) break;
+        vec2 prev = hit;
+        hit += dir;
+
+        vec4 flooredPos = vec4(floor(prev), floor(hit));
+
+        bool hasX = false;
+        bool hasY = false;
+        vec4 intersections = vec4(0);
+
+        vec2 diff = vec2(flooredPos.z - flooredPos.x, flooredPos.w - flooredPos.y);
+        // i'm afraid of floating point inaccuracy
+        if (diff.x > 0.5) {
+            hasX = true;
+            intersections.x = flooredPos.z;
+        } else if (diff.x < 0.5) {
+            hasX = true;
+            intersections.x = flooredPos.x;
+        }
+        if (diff.y > 0.5) {
+            hasY = true;
+            intersections.w = flooredPos.w;
+        } else if (diff.y < 0.5) {
+            hasY = true;
+            intersections.w = flooredPos.y;
+        }
+
+        float a = (hit.y - prev.y) / (hit.x - prev.x);
+        float b = prev.y - a * prev.x;
+
+        if (hasX) intersections.y = a * intersections.x + b;
+        if (hasY) intersections.z = (intersections.w - b) / a;
+
+        vec4 colorX = texture2D(u_mask, (intersections.xy + diff.x / 2.0) * marchStep / u_masksize);
+        vec4 colorY = texture2D(u_mask, (intersections.zw + diff.y / 2.0) * marchStep / u_masksize);
+
+        if (length(intersections.xy - prev) < length(intersections.zw - prev)) {
+            if (colorY.a < 0.9) hit = intersections.xy + diff * 0.1;
+            if (colorX.a < 0.9) hit = intersections.xy + diff * 0.1;
+            break;
+        } else {
+            if (colorX.a < 0.9) hit = intersections.xy + diff * 0.1;
+            if (colorY.a < 0.9) hit = intersections.xy + diff * 0.1;
+            break;
+        }
+    }
+
+    return hit * marchStep;
 }
 
 vec2 raycast(vec2 center, vec2 pos, vec2 dir, float step, float maxLength) {
@@ -91,7 +148,8 @@ void main() {
     vec2 worldCoords = projectedUV * u_masksize;
     vec2 worldCenter = projectMask(vec2(0.5)) * u_masksize;
 
-    vec2 hitPos = raycast(worldCenter, worldCoords, normalize(worldCoords - worldCenter), 8.0, 200.0);
+    vec2 hitPos = raycast(worldCenter, worldCoords, normalize(worldCoords - worldCenter), 8.0, 400.0);
+//    vec2 hitPos = edgePos(worldCenter, worldCoords, 200.0);
     float dstPos = length(hitPos - worldCoords);
     float dstCenter = length(hitPos - worldCenter);
 
@@ -118,6 +176,8 @@ void main() {
             gl_FragColor = color * vec4(fade, 1.0);
         }
     }
+
+    //return;
 
     // TODO fix connecting with other pitfalls
     // chasm
