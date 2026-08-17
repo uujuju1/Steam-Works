@@ -4,8 +4,7 @@ uniform sampler2D u_texture;
 uniform sampler2D u_noise;
 uniform sampler2D u_mask;
 
-uniform vec2 u_maskprojectionuv;
-uniform vec2 u_maskprojectionuv2;
+uniform vec4 u_maskProjection;
 uniform vec2 u_masksize;
 
 uniform float u_scale;
@@ -44,8 +43,8 @@ vec2 mapVec2(vec2 value, vec2 froma, vec2 toa, vec2 fromb, vec2 tob) {
 vec2 projectMask(vec2 coords) {
     return mapVec2(
         coords,
-        u_maskprojectionuv,
-        u_maskprojectionuv2,
+        u_maskProjection.xy,
+        u_maskProjection.zw,
         vec2(0.0),
         vec2(1.0)
     );
