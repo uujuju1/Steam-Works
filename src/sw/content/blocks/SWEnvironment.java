@@ -285,12 +285,16 @@ public class SWEnvironment {
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
 
+			attributes.set(SWAttribute.gravity, 1f);
+
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
 		gratingPitfall = new Pitfall("pitfall-grating") {{
 			maskColor = SWPal.pitfallGratingMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			attributes.set(SWAttribute.gravity, 1f);
 
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
@@ -307,6 +311,8 @@ public class SWEnvironment {
 			maskColor = SWPal.chasmMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			attributes.set(SWAttribute.gravity, 1f);
 
 			mapColor = Color.valueOf("71727d").lerp(Pal.turretHeat, 0.25f).lerp(Color.black, 0.5f);
 			

@@ -29,9 +29,12 @@ public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
 		auger, quarry, rig, atmosphericSiphon,
+
+		aerialFilter,
 	
 		castingOutlet,
-		liquidCollector, centrifugalCollector, artesianWell, pumpjack;
+		liquidCollector, centrifugalCollector,
+		artesianWell, pumpjack;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -352,9 +355,7 @@ public class SWProduction {
 			dumpExtraLiquid = false;
 
 			drawer = new DrawMulti(
-				new DrawRegion() {{
-					name = "sw-bottom-3-flat";
-				}},
+				new DrawRegion("-bottom"),
 				new DrawRegion("-gear", 2),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -483,6 +484,99 @@ public class SWProduction {
 				resistance = 40f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9}
+				};
+			}};
+		}};
+
+		aerialFilter = new AreaAttributeCrafter("aerial-filter") {{
+			requirements(Category.production, with(
+				SWItems.verdigris, 85,
+				SWItems.iron, 50,
+				SWItems.aluminium, 60,
+				Items.graphite, 75
+			));
+			size = 3;
+			rotate = true;
+
+			hasAttribute = true;
+			requireVisible = true;
+			areaRect = new Rect(5, 0, 7, 7);
+			attribute = SWAttribute.gravity;
+			minEfficiency = 49f;
+			baseEfficiency = 0f;
+			boostScale = 1f / 49f;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 5f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 50f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawParticlesDirectional() {{
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 280;
+
+					x = 12;
+					particleRad = 16;
+					particleRadY = 8;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 1;
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 290;
+
+					x = 16;
+					particleRad = 24;
+					particleRadY = 8;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 2;
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 300;
+
+					x = 10;
+					particleRad = 20;
+					particleRadY = 8;
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					for (int i : Mathf.signs) {
+						axles.add(Axles.halfBlock.position(-10f, 8f * i, 0, 1f));
+					}
+				}},
+				new DrawRotated() {{
+					layer = Layer.blockOver;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 400f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{5, 7},
+					new int[]{8, 10},
+					new int[]{11, 1},
+					new int[]{2, 4}
 				};
 			}};
 		}};

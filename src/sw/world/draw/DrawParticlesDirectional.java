@@ -4,11 +4,15 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import mindustry.world.draw.*;
 
 public class DrawParticlesDirectional extends DrawParticles {
-	public float rotation;
 	public int seedOffset = 0;
+
+	public float rotation;
+
+	public float particleRadY = -1;
 
 	@Override
 	public void draw(Building build){
@@ -26,21 +30,21 @@ public class DrawParticlesDirectional extends DrawParticles {
 				float fout = 1f - fin;
 				float angle = build.rotdeg() + rotation;
 				float len = particleRad * particleInterp.apply(fout);
-				float offsetY = rand.range(particleRad);
+				float offsetY = rand.range(particleRadY);
 
 				Draw.alpha(a * (1f - Mathf.curve(fin, 1f - fadeMargin)));
 				if(poly){
 					Fill.poly(
-						build.x + x + Angles.trnsx(angle, -particleRad + len * 2f, offsetY),
-						build.y + y + Angles.trnsy(angle, -particleRad + len * 2f, offsetY),
+						build.x + Angles.trnsx(angle, x - particleRad + len * 2f, y + offsetY),
+						build.y + Angles.trnsy(angle, x - particleRad + len * 2f, y + offsetY),
 						sides,
 						particleSize * particleSizeInterp.apply(fin) * build.warmup(),
 						particleRotation
 					);
 				}else{
 					Fill.circle(
-						build.x + x + Angles.trnsx(angle, -particleRad + len * 2f, offsetY),
-						build.y + y + Angles.trnsy(angle, -particleRad + len * 2f, offsetY),
+						build.x + Angles.trnsx(angle, x - particleRad + len * 2f, y + offsetY),
+						build.y + Angles.trnsy(angle, x - particleRad + len * 2f, y + offsetY),
 						particleSize * particleSizeInterp.apply(fin) * build.warmup()
 					);
 				}
@@ -49,5 +53,10 @@ public class DrawParticlesDirectional extends DrawParticles {
 			Draw.blend();
 			Draw.reset();
 		}
+	}
+
+	@Override
+	public void load(Block block) {
+		if (particleRadY < 0) particleRadY = particleRad;
 	}
 }
