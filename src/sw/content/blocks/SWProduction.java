@@ -15,6 +15,7 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.entities.effect.*;
+import sw.entities.part.*;
 import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
@@ -498,6 +499,8 @@ public class SWProduction {
 			size = 3;
 			rotate = true;
 
+			ambientSound = Sounds.loopMachineSpin;
+
 			hasAttribute = true;
 			requireVisible = true;
 			areaRect = new Rect(5, 0, 7, 7);
@@ -563,6 +566,26 @@ public class SWProduction {
 					for (int i : Mathf.signs) {
 						axles.add(Axles.halfBlock.position(-10f, 8f * i, 0, 1f));
 					}
+
+					axles.add(Axles.block.position(-4f, 0f, 0f, 10f));
+				}},
+				new DrawParts() {{
+					parts.add(new SegmentedAxlePart() {{
+						suffix = "-fan";
+
+						minWidth = 3.5f;
+						maxWidth = 16;
+						height = 2;
+
+						segmentSides = new int[]{0, 2, 4, 6, 8, 10};
+
+						progress = DrawParts.spin.mul(-10);
+
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
+					}});
 				}},
 				new DrawRotated() {{
 					layer = Layer.blockOver;

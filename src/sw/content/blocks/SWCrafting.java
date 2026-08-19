@@ -1120,6 +1120,8 @@ public class SWCrafting {
 			requirements(Category.crafting, with());
 			size = 3;
 
+			warmupSpeed = 1/300f;
+
 			scaleLiquidConsumption = true;
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.slurry, 50f / 60f,
@@ -1131,7 +1133,22 @@ public class SWCrafting {
 				new DrawRegion() {{
 					name = "sw-bottom-3";
 				}},
-				new DrawParticles(),
+				new DrawParticles() {{
+					color = Liquids.hydrogen.color;
+					reverse = true;
+
+					particles = 9;
+					particleLife = 300;
+					particleSizeInterp = a -> Interp.circleOut.apply(Interp.slope.apply(a));
+				}},
+				new DrawParticles() {{
+					color = Liquids.oil.color.cpy().mul(1.5f);
+
+					rotateScl = 6f;
+					particles = 11;
+					particleLife = 300;
+					particleSizeInterp = a -> Interp.circleOut.apply(Interp.slope.apply(a));
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
