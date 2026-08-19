@@ -1,6 +1,7 @@
 package sw.core;
 
 import arc.*;
+import arc.math.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -32,10 +33,34 @@ public class ModSettings {
     // graphics
     categories.add(new SettingsTable() {{
       sliderPref("sw-stack-hint-opacity", 50, 0, 100, value -> value + "%");
+      sliderPref("sw-balloon-alpha", 50, 0, 100, value -> {
+        switch (value) {
+          case 0 -> {
+            return Core.bundle.get("setting.sw-balloon-alpha.never");
+          }
+          case 50 -> {
+            return Core.bundle.get("setting.sw-balloon-alpha.normal");
+          }
+          case 100 -> {
+            return Core.bundle.get("setting.sw-balloon-alpha.always");
+          }
+          default -> {
+            return (value + "%");
+          }
+        }
+      });
       checkPref("sw-menu-enabled", true);
       checkPref("sw-menu-override", true);
       checkPref("sw-ui-filter", true);
     }});
+  }
+
+  public static float scaleBalloonOpacity(float alpha) {
+    int settingValue = Core.settings.getInt("sw-balloon-alpha");
+
+    if (settingValue > 50) return Mathf.lerp(alpha, 1, Mathf.clamp((settingValue - 50) / 50f));
+    if (settingValue < 50) return Mathf.lerp(0, alpha, Mathf.clamp(settingValue / 50f));
+    return alpha;
   }
 
   public static void load() {

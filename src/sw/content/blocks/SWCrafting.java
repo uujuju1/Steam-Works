@@ -15,11 +15,13 @@ import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
 import sw.content.*;
+import sw.core.*;
 import sw.entities.*;
 import sw.entities.effect.*;
 import sw.entities.part.*;
 import sw.gen.*;
 import sw.graphics.*;
+import sw.math.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -35,7 +37,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		churner,
+		churner, infusingBellow,
 		
 		burner, rte, coolingTower;
 	
@@ -976,10 +978,12 @@ public class SWCrafting {
 			size = 5;
 			rotate = true;
 
+			craftTime = 150f;
 			consumeItem(Items.lead, 1);
-			consumeLiquid(Liquids.oil, 40 / 60f);
+			consumeLiquid(Liquids.oil, 100f / 60f);
+			outputItems = with(SWItems.compound, 2);
 
-			outputItems = with(SWItems.compound, 1);
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 50f / 60f);
 
 			drawer = new DrawMulti(
 				new DrawRegion() {{
@@ -1109,6 +1113,64 @@ public class SWCrafting {
 					new int[]{6, 14, 16, 4},
 					new int[]{11, 19, 1, 9},
 					new int[]{16, 4, 6, 14},
+				};
+			}};
+		}};
+		infusingBellow = new SWGenericCrafter("infusing-bellow") {{
+			requirements(Category.crafting, with());
+			size = 3;
+
+			scaleLiquidConsumption = true;
+			consumeLiquids(LiquidStack.with(
+				SWLiquids.slurry, 50f / 60f,
+				Liquids.hydrogen, 6f / 60f
+			));
+			outputLiquids = LiquidStack.with(Liquids.oil, 25f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawParticles(),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawRegion(),
+				new DrawParts() {{
+					hasIcon = false;
+
+					parts.add(new RegionPart("-bellow") {{
+						outline = false;
+						clampProgress = false;
+						layer = Layer.flyingUnitLow - 1;
+
+						color = Color.white.cpy().a(0);
+						colorTo = Color.white;
+
+						xScl = yScl = 64f / 160f;
+						growX = growY = 96f / 160f;
+
+						progress = p -> ModSettings.scaleBalloonOpacity(Mathf.clamp(Core.camera.position.dst(p.x, p.y) / (20f * (xScl + growProgress.get(p) * growX))));
+						growProgress = p -> (Mathf.absin(DrawParts.totalProgress.get(p), 20f, 0.1f) + 0.9f) * DrawParts.warmup.curve(Interp.pow5Out).get(p);
+
+						moves.add(new DrawPart.PartMove(
+							p -> Parallax.getParallaxFrom(p.x, Core.camera.position.x, DrawParts.warmup.curve(Interp.smooth).get(p)) - p.x,
+							1, 0, 0
+						));
+						moves.add(new DrawPart.PartMove(
+							p -> Parallax.getParallaxFrom(p.y, Core.camera.position.y, DrawParts.warmup.curve(Interp.smooth).get(p)) - p.y,
+							0, 1, 0
+						));
+					}});
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 10f/600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9}
 				};
 			}};
 		}};
