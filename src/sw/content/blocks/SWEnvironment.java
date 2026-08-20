@@ -134,9 +134,13 @@ public class SWEnvironment {
 		jadeWall = new StaticWall("jade-wall");
 		jade = new Floor("jade", 4) {{
 			wall = jadeWall;
+
+			attributes.set(Attribute.oil, 0.5f);
 		}};
 		fissuredJade = new Floor("fissured-jade", 4) {{
 			wall = jadeWall;
+
+			attributes.set(Attribute.oil, 0.75f);
 		}};
 		cascadingJade = new EffectFloor("cascading-jade") {{
 			wall = jadeWall;

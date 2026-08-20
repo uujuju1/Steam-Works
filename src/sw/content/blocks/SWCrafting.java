@@ -14,6 +14,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
 import sw.core.*;
 import sw.entities.*;
@@ -979,8 +980,16 @@ public class SWCrafting {
 			rotate = true;
 
 			craftTime = 150f;
+			consume(new ConsumeSpin() {{
+				minSpeed = maxSpeed = 100f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
 			consumeItem(Items.lead, 1);
-			consumeLiquid(Liquids.oil, 100f / 60f);
+			consumeLiquids(LiquidStack.with(
+				Liquids.oil, 100f / 60f,
+				Liquids.ozone, 2f / 60f
+			));
 			outputItems = with(SWItems.compound, 2);
 
 			outputLiquids = LiquidStack.with(SWLiquids.slurry, 50f / 60f);
@@ -1120,9 +1129,32 @@ public class SWCrafting {
 			requirements(Category.crafting, with());
 			size = 3;
 
+			ambientSound = Sounds.loopCultivator;
+			ambientSoundVolume = 0.1f;
+
 			warmupSpeed = 1/300f;
 
+			craftTime = 60f;
+			craftEffect = new WrapEffect(SWFx.groundWorms, SWLiquids.slurry.color, 24f);
+
+			hasAttribute = true;
+			displayEfficiency = true;
+			attribute = Attribute.oil;
+			minEfficiency = 4.5f;
+			baseEfficiency = 0f;
+			boostScale = 1f / 4.5f;
+
 			scaleLiquidConsumption = true;
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 15f / 10f;
+
+				showGraph = true;
+				minEfficiency = 0.5f;
+				maxEfficiency = 2f;
+
+				efficiencyScale = a -> Interp.pow2.apply(Mathf.map(a, 0.5f, 1.5f, 0, 1)) * 1.5f + 0.5f;
+			}});
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.slurry, 50f / 60f,
 				Liquids.hydrogen, 6f / 60f
