@@ -493,6 +493,7 @@ public class SWProduction {
 			requirements(Category.production, with(
 				SWItems.verdigris, 85,
 				SWItems.iron, 50,
+				SWItems.bloom, 100,
 				SWItems.aluminium, 60,
 				Items.graphite, 75
 			));

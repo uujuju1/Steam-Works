@@ -49,7 +49,7 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	public void setStats() {
 		super.setStats();
 
-		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boost-per-build.format"), boost * 100f);
+		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boost-per-build.format"), (boost > 0 ? "[stat]" : "[negstat]") + (addBoost ? (boost < 0 ? "-" : "+") : "*") + Strings.autoFixed(Math.abs(boost * 100f), 2) + "[]");
 	}
 
 	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {

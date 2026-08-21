@@ -11,7 +11,11 @@ import mindustry.world.draw.*;
 import sw.math.*;
 
 public class DrawLightPillar extends DrawBlock {
+	public TextureRegion region;
+	public String sprite;
+
 	public float layer = -1;
+	public float layerHeightOffset = 0f;
 	public Blending blending = Blending.normal;
 	public Color color = Color.white;
 	public float radius = 1f, radiusTo = -1;
@@ -34,7 +38,14 @@ public class DrawLightPillar extends DrawBlock {
 		for (int i = 0; i < divisions; i++) {
 			Parallax.getParallaxFrom(Tmp.v1.set(build).add(x, y), Core.camera.position, height / divisions * i * warmupCurve.apply(build.warmup()));
 
-			Fill.circle(Tmp.v1.x, Tmp.v1.y, Mathf.lerp(radius, radiusTo, i / (divisions - 1f)));
+			Draw.z(layer > 0 ? layer + layerHeightOffset * i : z + layerHeightOffset);
+			if (region == null) {
+				Fill.circle(Tmp.v1.x, Tmp.v1.y, Mathf.lerp(radius, radiusTo, i / (divisions - 1f)));
+			} else {
+				Draw.scl(Mathf.lerp(radius, radiusTo, i / (divisions - 1f)));
+				Draw.rect(region, Tmp.v1.x, Tmp.v1.y);
+				Draw.scl();
+			}
 		}
 		Draw.blend();
 		Draw.z(z);
@@ -43,5 +54,7 @@ public class DrawLightPillar extends DrawBlock {
 	@Override
 	public void load(Block block) {
 		if (radiusTo < 0) radiusTo = radius;
+
+		if (sprite != null) region = Core.atlas.find(sprite);
 	}
 }

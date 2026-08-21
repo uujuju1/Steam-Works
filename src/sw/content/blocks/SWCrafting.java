@@ -38,7 +38,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		churner, infusingBellow,
+		churner, infusingBellow, flareStack,
 		
 		burner, rte, coolingTower;
 	
@@ -1143,6 +1143,7 @@ public class SWCrafting {
 			minEfficiency = 4.5f;
 			baseEfficiency = 0f;
 			boostScale = 1f / 4.5f;
+			maxBoost = 2f;
 
 			scaleLiquidConsumption = true;
 			consume(new ConsumeSpin() {{
@@ -1223,7 +1224,46 @@ public class SWCrafting {
 				};
 			}};
 		}};
+		flareStack = new StackableGenericCrafter("flare-stack") {{
+			requirements(Category.crafting, with(
 
+			));
+			size = 1;
+
+			minBoost = 0f;
+			boost = -1;
+			addBoost = true;
+			scaleLiquidConsumption = true;
+
+			craftTime = 5;
+			craftEffect = new ParallaxFireEffect() {{
+				baseHeight = 2;
+
+				minRadius = 2;
+				maxRadius = 4;
+
+				taper = 0.5f;
+			}};
+			consumeLiquid(SWLiquids.gas, 50f / 60f);
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 25f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion(),
+				new DrawLightPillar() {{
+					layer = Layer.power + 1;
+					layerHeightOffset = 0.001f;
+
+					sprite = "sw-flare-stack-stack";
+
+					divisions = 20;
+					height = 2f;
+					radius = 1f;
+					radiusTo = 0.75f;
+
+					warmupCurve = Interp.one;
+				}}
+			);
+		}};
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
 //			));
