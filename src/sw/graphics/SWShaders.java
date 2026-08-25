@@ -138,22 +138,18 @@ public class SWShaders {
 			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
 			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
 			setUniformf("u_time", Time.time);
-//			super.apply();
 
-			Core.camera.project(Tmp.v1.setZero());
+			Core.camera.project(Tmp.v1.set(Vars.tilesize / 2f, Vars.tilesize / 2f));
+			Core.camera.project(Tmp.v2.set(Vars.world.unitWidth(), Vars.world.unitWidth()).add(Vars.tilesize / 2f, Vars.tilesize / 2f));
 			setUniformf(
-				"u_maskprojectionuv",
+				"u_maskProjection",
 				Tmp.v1.x / Core.graphics.getWidth(),
-				Tmp.v1.y / Core.graphics.getHeight()
-			);
-			Core.camera.project(Tmp.v1.set(Vars.world.unitWidth(), Vars.world.unitWidth()));
-			setUniformf(
-				"u_maskprojectionuv2",
-				Tmp.v1.x / Core.graphics.getWidth(),
-				Tmp.v1.y / Core.graphics.getHeight()
+				Tmp.v1.y / Core.graphics.getHeight(),
+				Tmp.v2.x / Core.graphics.getWidth(),
+				Tmp.v2.y / Core.graphics.getHeight()
 			);
 
-			setUniformf("u_masksize", SWVars.renderer.getPitfallTexture().width, SWVars.renderer.getPitfallTexture().height);
+			setUniformf("u_masksize", SWVars.renderer.getPitfallTexture().width * Vars.tilesize, SWVars.renderer.getPitfallTexture().height * Vars.tilesize);
 
 			setUniformf("u_scale", 64 / Mathf.log(2, 2 * Math.max(1f, Vars.renderer.getDisplayScale())));
 

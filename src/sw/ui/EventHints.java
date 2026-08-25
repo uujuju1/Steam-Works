@@ -19,7 +19,7 @@ import sw.world.meta.*;
 
 public enum EventHints implements Hint {
 	cokeOvenEfficiency(
-		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWCrafting.cokeOven).contains(b -> ((StackableGenericCrafterBuild) b).getEfficiency() > 1),
+		() -> Vars.state.rules.defaultTeam.data().getBuildings(SWCrafting.cokeOven).contains(b -> ((StackableGenericCrafterBuild) b).boostAmount > 1),
 		() -> Vars.control.input.block == SWCrafting.cokeOven || Vars.state.rules.defaultTeam.data().getBuildings(SWCrafting.cokeOven).size > 0
 	),
 	hydraulicDrill(

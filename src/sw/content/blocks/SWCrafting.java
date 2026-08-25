@@ -1,10 +1,13 @@
 package sw.content.blocks;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
+import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.game.*;
@@ -14,10 +17,15 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.*;
 import sw.content.*;
+import sw.core.*;
+import sw.entities.*;
 import sw.entities.effect.*;
 import sw.entities.part.*;
 import sw.gen.*;
+import sw.graphics.*;
+import sw.math.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
@@ -33,7 +41,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		wedger, pyrolysisSynthetizer, pressureKiln,
+		churner, infusingBellow, flareStack, oilBoiler,
 		
 		burner, rte, coolingTower;
 	
@@ -117,6 +125,7 @@ public class SWCrafting {
 			craftTime = 180f;
 
 			connectSide = new boolean[]{true, false, true, false};
+			addBoost = true;
 
 			ambientSound = Sounds.loopSmelter;
 			updateEffect = SWFx.cokeBurn;
@@ -129,7 +138,9 @@ public class SWCrafting {
 			outputItems = with(SWItems.coke, 1);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParticles() {{
 					particles = 15;
 
@@ -157,20 +168,16 @@ public class SWCrafting {
 				}
 				},
 				new DrawBitmask("-tiles", b -> {
-					int out = 0;
-					Building next = b.nearby(getEdges()[0].x, getEdges()[0].y);
-					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 1;
-					next = b.nearby(getEdges()[6].x, getEdges()[6].y);
-					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 2;
-					return out;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 1) + (tiling & 4) / 2;
 				}, 96),
 				new DrawGlowRegion() {{
 					color = Pal.turretHeat;
 
 					glowScale = 5f;
 					glowIntensity = 0.1f;
-				}
-				}
+				}}
 			);
 		}};
 		engineSmelter = new SWGenericCrafter("engine-smelter") {{
@@ -206,7 +213,9 @@ public class SWCrafting {
 			outputItems = with(Items.silicon, 1);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
@@ -249,7 +258,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.ozone, 1f/60f, Liquids.hydrogen, 3f/60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawLiquidTile(Liquids.water, 2f),
 				new DrawParticles() {{
 					color = Color.valueOf("D1EFFF");
@@ -331,7 +342,9 @@ public class SWCrafting {
 			outputItems = with(SWItems.thermite, 3);
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(10f * offset.x, 8f * offset.y, 0f, 1f));
@@ -347,7 +360,16 @@ public class SWCrafting {
 						
 						segmentSides = new int[]{0, 3, 6};
 						
-						progress = DrawParts.spin.mul(0.25f);
+						progress = DrawParts.spin.mul(0.25f).mul(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return -Mathf.sign(blockRot == 1 || blockRot == 2);
+						});
+
+						// reverse direction based on rotation
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
 					}});
 					parts.add(new SegmentedAxlePart() {{
 						suffix = "-wheel2";
@@ -359,7 +381,16 @@ public class SWCrafting {
 						
 						segmentSides = new int[]{0, 3, 6};
 						
-						progress = DrawParts.spin.mul(-0.25f).add(60f);
+						progress = DrawParts.spin.mul(-0.25f).mul(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return -Mathf.sign(blockRot == 1 || blockRot == 2);
+						}).add(60f);
+
+						// reverse direction based on rotation
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
 					}});
 				}},
 				new DrawFacingLightRegion()
@@ -424,7 +455,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.slag, 7.5f / 60f);
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-4";
+				}},
 				new DrawLight(0.5f),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -501,7 +534,9 @@ public class SWCrafting {
 			maxBoost = 4f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawLiquidTile(Liquids.water, 1.5f),
 				new DrawParts() {{
 					parts.add(new RegionPart("-sieve") {{
@@ -666,7 +701,7 @@ public class SWCrafting {
 			ambientSound = Sounds.beamLustre;
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.gas, 50f / 60f,
-				SWLiquids.solvent, 36f / 60f
+				SWLiquids.solvent, 48f / 60f
 			));
 			consume(new ConsumeSpin() {{
 				minSpeed = 5f / 10f;
@@ -695,7 +730,9 @@ public class SWCrafting {
 			updateEffectSpread = 0f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-4";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(4f * offset.x, 14f * offset.y, -90f, 1f));
@@ -778,7 +815,9 @@ public class SWCrafting {
 			updateEffectChance = 0.5f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-5";
+				}},
 				new DrawRegion("-rods"),
 				new DrawGlowRegion("-rods-glow1") {{
 					layer = -1f;
@@ -916,7 +955,9 @@ public class SWCrafting {
 			outputLiquids = LiquidStack.with(Liquids.water, 10f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParts() {{
 					for (int i = 0; i < 3; i++) {
 						int finalI = i;
@@ -933,6 +974,415 @@ public class SWCrafting {
 			);
 		}};
 
+		churner = new SWGenericCrafter("churner") {{
+			requirements(Category.crafting, with());
+			size = 5;
+			rotate = true;
+
+			craftTime = 150f;
+			consume(new ConsumeSpin() {{
+				minSpeed = maxSpeed = 100f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+			consumeItem(Items.lead, 1);
+			consumeLiquids(LiquidStack.with(
+				Liquids.oil, 100f / 60f,
+				Liquids.ozone, 2f / 60f
+			));
+			outputItems = with(SWItems.compound, 2);
+
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 50f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-5";
+				}},
+				new DrawLiquidTile(Liquids.oil, 3),
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation() * -Mathf.sign(b.rotation == 1 || b.rotation == 2);
+					for (Point2 offset : Geometry.d8edge) {
+						axles.add(new Axle("-holder") {{
+							pixelWidth = 2;
+							pixelHeight = 1;
+
+							x = 13 * offset.x;
+							y = 7 * offset.y;
+
+							spinScl = 0.05f * Mathf.sign(offset.y > 0);
+
+							width = 2f;
+							height = 13f;
+
+							paletteLight = SWPal.axleLight;
+							paletteMedium = SWPal.axleMedium;
+							paletteDark = SWPal.axleDark;
+						}});
+					}
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(18f * offset.x, 8f * offset.y, 0f, 1f));
+				}},
+				new DrawParts() {{
+					for (int j : Mathf.signs) {
+						for (int i = -1; i <= 1; i++) {
+							int finalI = i;
+							parts.add(new SegmentedAxlePart() {{
+								suffix = "-wheel1";
+
+								y = -7f * j;
+								minWidth = 2f;
+								maxWidth = 4f;
+								height = 24f;
+
+								colorTo = Color.gray;
+
+								segmentSides = new int[]{0, 2, 4};
+
+								progress = DrawParts.spin.mul(-0.25f * j).mul(params -> {
+									int blockRot = Mathf.round(params.rotation / 90 - 1);
+									return -Mathf.sign(blockRot == 1 || blockRot == 2);
+								});
+								colorProgress = params -> (Mathf.cosDeg(DrawParts.spin.mul(0.05f).add(30 * j).get(params) % 120 + finalI * 120) + 1) / 2;
+
+								moves.add(new PartMove(
+									params -> Mathf.sinDeg(180 + DrawParts.spin.mul(0.05f).add(30 * j).get(params) % 120f + finalI * 120f),
+									0, 5 * j, 0
+								));
+
+								// reverse direction based on rotation
+								moves.add(new PartMove(params -> {
+									int blockRot = Mathf.round(params.rotation / 90 - 1);
+									return blockRot == 1 || blockRot == 2 ? 180 : 0;
+								}, 0, 0, 1));
+							}});
+						}
+					}
+				}},
+				new DrawParticlesDirectional() {{
+					color = Color.valueOf("313131").mul(1.5f);
+
+					rotation = 90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 2;
+					color = Color.valueOf("A69A96");
+
+					rotation = 90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 1;
+					color = Color.valueOf("313131").mul(1.5f);
+
+					rotation = -90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 3;
+					color = Color.valueOf("A69A96");
+
+					rotation = -90;
+
+					particleRad = 16f;
+					particleLife = 300f;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particles = 15;
+					fadeMargin = 0.5f;
+					alpha = 0.8f;
+				}},
+				new DrawRotated()
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 400f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{1, 9, 11, 19},
+					new int[]{6, 14, 16, 4},
+					new int[]{11, 19, 1, 9},
+					new int[]{16, 4, 6, 14},
+				};
+			}};
+		}};
+		infusingBellow = new SWGenericCrafter("infusing-bellow") {{
+			requirements(Category.crafting, with());
+			size = 3;
+
+			ambientSound = Sounds.loopCultivator;
+			ambientSoundVolume = 0.1f;
+
+			warmupSpeed = 1/300f;
+
+			craftTime = 60f;
+			craftEffect = new WrapEffect(SWFx.groundWorms, SWLiquids.slurry.color, 24f);
+
+			hasAttribute = true;
+			displayEfficiency = true;
+			attribute = Attribute.oil;
+			minEfficiency = 4.5f;
+			baseEfficiency = 0f;
+			boostScale = 1f / 4.5f;
+			maxBoost = 2f;
+
+			scaleLiquidConsumption = true;
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 15f / 10f;
+
+				showGraph = true;
+				minEfficiency = 0.5f;
+				maxEfficiency = 2f;
+
+				efficiencyScale = a -> Interp.pow2.apply(Mathf.map(a, 0.5f, 1.5f, 0, 1)) * 1.5f + 0.5f;
+			}});
+			consumeLiquids(LiquidStack.with(
+				SWLiquids.slurry, 50f / 60f,
+				Liquids.hydrogen, 6f / 60f
+			));
+			outputLiquids = LiquidStack.with(Liquids.oil, 25f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawParticles() {{
+					color = Liquids.hydrogen.color;
+					reverse = true;
+
+					particles = 9;
+					particleLife = 300;
+					particleSizeInterp = a -> Interp.circleOut.apply(Interp.slope.apply(a));
+				}},
+				new DrawParticles() {{
+					color = Liquids.oil.color.cpy().mul(1.5f);
+
+					rotateScl = 6f;
+					particles = 11;
+					particleLife = 300;
+					particleSizeInterp = a -> Interp.circleOut.apply(Interp.slope.apply(a));
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
+				}},
+				new DrawRegion(),
+				new DrawParts() {{
+					hasIcon = false;
+
+					parts.add(new RegionPart("-bellow") {{
+						outline = false;
+						clampProgress = false;
+						layer = Layer.flyingUnitLow - 1;
+
+						color = Color.white.cpy().a(0);
+						colorTo = Color.white;
+
+						xScl = yScl = 64f / 160f;
+						growX = growY = 96f / 160f;
+
+						progress = p -> ModSettings.scaleBalloonOpacity(Mathf.clamp(Core.camera.position.dst(p.x, p.y) / (20f * (xScl + growProgress.get(p) * growX))));
+						growProgress = p -> (Mathf.absin(DrawParts.totalProgress.get(p), 20f, 0.1f) + 0.9f) * DrawParts.warmup.curve(Interp.pow5Out).get(p);
+
+						moves.add(new DrawPart.PartMove(
+							p -> Parallax.getParallaxFrom(p.x, Core.camera.position.x, DrawParts.warmup.curve(Interp.smooth).get(p)) - p.x,
+							1, 0, 0
+						));
+						moves.add(new DrawPart.PartMove(
+							p -> Parallax.getParallaxFrom(p.y, Core.camera.position.y, DrawParts.warmup.curve(Interp.smooth).get(p)) - p.y,
+							0, 1, 0
+						));
+					}});
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 10f/600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9}
+				};
+			}};
+		}};
+		flareStack = new StackableGenericCrafter("flare-stack") {{
+			requirements(Category.crafting, with(
+
+			));
+			size = 1;
+
+			minBoost = 0f;
+			boost = -1;
+			addBoost = true;
+			scaleLiquidConsumption = true;
+
+			ambientSound = Sounds.loopFire;
+			ambientSoundVolume = 0.005f;
+
+			craftTime = 5;
+			craftEffect = new ParallaxFireEffect() {{
+				baseHeight = 2;
+
+				minRadius = 2;
+				maxRadius = 4;
+
+				taper = 0.5f;
+			}};
+			consumeLiquid(SWLiquids.gas, 50f / 60f);
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 25f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion(),
+				new DrawLightPillar() {{
+					layer = Layer.power + 1;
+					layerHeightOffset = 0.001f;
+
+					sprite = "sw-flare-stack-stack";
+
+					divisions = 20;
+					height = 2f;
+					radius = 1f;
+					radiusTo = 0.75f;
+
+					warmupCurve = Interp.one;
+				}}
+			);
+		}};
+		oilBoiler = new StackableGenericCrafter("oil-boiler") {{
+			requirements(Category.crafting, with(
+
+			));
+			size = 3;
+
+			Effect smokeEffect = new ParticlePillarEffect() {{
+				color1 = color2 = Color.white;
+
+				lifetime = 150f;
+
+				particles = 2;
+				radius = 2f;
+				sizeMin = 2f;
+				sizeMax = 4f;
+
+				heightInterp = Interp.pow2Out;
+				sizeInterp = a -> Interp.pow2Out.apply(1 - a);
+				alphaInterp = a -> Interp.circleOut.apply(Mathf.slope(a));
+			}};
+			updateEffect = new Effect() {
+				@Override
+				public void create(float x, float y, float rotation, Color color, Object data) {
+					Building at = Vars.world.buildWorld(x, y);
+
+					if (at instanceof StackableGenericCrafterBuild stack) {
+						switch (stack.tiling) {
+							case 2 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y - 4f, 0, Color.white, null);
+							}
+							case 8 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y + 4, 0, Color.white, null);
+							}
+							case 10 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y, 0, Color.white, null);
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y + 12f, 0, Color.white, null);
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y - 12f, 0, Color.white, null);
+							}
+							default -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y, 0, Color.white, null);
+							}
+						}
+					}
+				}
+			};
+			updateEffectSpread = 1f;
+			updateEffectChance = 0.5f;
+
+			scaleLiquidConsumption = true;
+			consumeLiquids(LiquidStack.with(
+				Liquids.water, 10f / 60f,
+				Liquids.oil, 100f / 60f
+			));
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 100f / 60f);
+			boost = 2f;
+
+			Func<Vec2, DrawLightPillar> lights = pos -> new DrawLightPillar() {{
+				blending = Blending.additive;
+				color = Pal.turretHeat;
+
+				x = pos.x;
+				y = pos.y;
+
+				topOffsetX = Mathf.sign(pos.x) * 8f;
+
+				height = 1f;
+				heightWeaveMag = 0.1f;
+				heightWeaveScl = 40f + ((float) Math.random()) * 10f - 5f;
+				divisions = 20;
+				radius = 1.5f;
+				radiusTo = 0.5f;
+				alpha = 0.2f;
+				layer = Layer.blockOver;
+			}};
+			drawer = new DrawMulti(
+				new DrawBitmask("-tiles", b -> {
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
+				}, 96),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 4)),
+						lights.get(new Vec2(-7.25f, 4)),
+						lights.get(new Vec2(7.25f, -4)),
+						lights.get(new Vec2(-7.25f, -4))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 0
+				),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 0)),
+						lights.get(new Vec2(-7.25f, 0)),
+						lights.get(new Vec2(7.25f, -8)),
+						lights.get(new Vec2(-7.25f, -8)),
+						lights.get(new Vec2(7.25f, 8)),
+						lights.get(new Vec2(-7.25f, 8))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 2 ^ ((StackableGenericCrafterBuild) b).tiling == 8
+				),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 4)),
+						lights.get(new Vec2(-7.25f, 4)),
+						lights.get(new Vec2(7.25f, -4)),
+						lights.get(new Vec2(-7.25f, -4)),
+
+						lights.get(new Vec2(7.25f, 8)),
+						lights.get(new Vec2(-7.25f, 8)),
+						lights.get(new Vec2(7.25f, -8)),
+						lights.get(new Vec2(-7.25f, -8))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 10
+				)
+			);
+		}};
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
 //			));

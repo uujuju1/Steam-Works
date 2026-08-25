@@ -15,6 +15,7 @@ import mindustry.world.meta.*;
 import sw.content.*;
 import sw.entities.*;
 import sw.entities.effect.*;
+import sw.entities.part.*;
 import sw.graphics.*;
 import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
@@ -29,9 +30,12 @@ public class SWProduction {
 	public static Block
 		mechanicalBore, hydraulicDrill, mechanicalFracker,
 		auger, quarry, rig, atmosphericSiphon,
+
+		aerialFilter,
 	
 		castingOutlet,
-		liquidCollector, centrifugalCollector, artesianWell, pumpjack;
+		liquidCollector, centrifugalCollector,
+		artesianWell, pumpjack;
 
 	public static void load() {
 		mechanicalBore = new RangedDrill("mechanical-bore") {{
@@ -119,7 +123,9 @@ public class SWProduction {
 			}});
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(-6f, 4f * i, 0f, 1f));
@@ -205,7 +211,9 @@ public class SWProduction {
 			}});
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-rotator", 3, true),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -462,7 +470,9 @@ public class SWProduction {
 			outputLiquids = LiquidStack.with(SWLiquids.gas, 25f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawLiquidTile(SWLiquids.gas, 2f),
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
@@ -475,6 +485,122 @@ public class SWProduction {
 				resistance = 40f / 600f;
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9}
+				};
+			}};
+		}};
+
+		aerialFilter = new AreaAttributeCrafter("aerial-filter") {{
+			requirements(Category.production, with(
+				SWItems.verdigris, 85,
+				SWItems.iron, 50,
+				SWItems.bloom, 100,
+				SWItems.aluminium, 60,
+				Items.graphite, 75
+			));
+			size = 3;
+			rotate = true;
+
+			ambientSound = Sounds.loopMachineSpin;
+
+			hasAttribute = true;
+			requireVisible = true;
+			areaRect = new Rect(5, 0, 7, 7);
+			attribute = SWAttribute.gravity;
+			minEfficiency = 49f;
+			baseEfficiency = 0f;
+			boostScale = 1f / 49f;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 5f / 10f;
+				maxSpeed = 5f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+			outputLiquids = LiquidStack.with(SWLiquids.slurry, 50f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion("-bottom"),
+				new DrawParticlesDirectional() {{
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 280;
+
+					x = 12;
+					particleRad = 16;
+					particleRadY = 8;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 1;
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 290;
+
+					x = 16;
+					particleRad = 24;
+					particleRadY = 8;
+				}},
+				new DrawParticlesDirectional() {{
+					seedOffset = 2;
+					color = Color.valueOf("E3D8B6");
+
+					reverse = true;
+					particleInterp = a -> Interp.pow2In.apply(1 - a);
+					particleSizeInterp = Interp.circleOut;
+					particles = 10;
+					particleLife = 300;
+
+					x = 10;
+					particleRad = 20;
+					particleRadY = 8;
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					for (int i : Mathf.signs) {
+						axles.add(Axles.halfBlock.position(-10f, 8f * i, 0, 1f));
+					}
+
+					axles.add(Axles.block.position(-4f, 0f, 0f, 10f));
+				}},
+				new DrawParts() {{
+					parts.add(new SegmentedAxlePart() {{
+						suffix = "-fan";
+
+						minWidth = 3.5f;
+						maxWidth = 16;
+						height = 2;
+
+						segmentSides = new int[]{0, 2, 4, 6, 8, 10};
+
+						progress = DrawParts.spin.mul(-10);
+
+						moves.add(new PartMove(params -> {
+							int blockRot = Mathf.round(params.rotation / 90 - 1);
+							return blockRot == 1 || blockRot == 2 ? 180 : 0;
+						}, 0, 0, 1));
+					}});
+				}},
+				new DrawRotated() {{
+					layer = Layer.blockOver;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 400f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{5, 7},
+					new int[]{8, 10},
+					new int[]{11, 1},
+					new int[]{2, 4}
 				};
 			}};
 		}};
@@ -593,7 +719,9 @@ public class SWProduction {
 			);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawLiquidTile(Liquids.water, 3f) {{
 					alpha = 0.75f;
 				}},

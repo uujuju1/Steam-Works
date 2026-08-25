@@ -25,7 +25,7 @@ public class SWRenderer {
 		
 		Events.on(WorldLoadEvent.class, e -> {
 			FrameBuffer frameBuffer = buffers.get("pitfall");
-			frameBuffer.resize(Vars.world.unitWidth(), Vars.world.unitHeight());
+			frameBuffer.resize(Vars.world.width(), Vars.world.height());
 			frameBuffer.begin(Color.clear);
 
 			Draw.proj().setOrtho(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
@@ -33,7 +33,7 @@ public class SWRenderer {
 			Vars.world.tiles.eachTile(tile -> {
 				if (tile.floor() instanceof Pitfall floor) {
 					Draw.color(floor.maskColor);
-					Fill.square(tile.worldx(), tile.worldy(), Vars.tilesize/2f);
+					Fill.square(tile.x, tile.y, 0.5f);
 				}
 			});
 

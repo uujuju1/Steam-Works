@@ -134,9 +134,13 @@ public class SWEnvironment {
 		jadeWall = new StaticWall("jade-wall");
 		jade = new Floor("jade", 4) {{
 			wall = jadeWall;
+
+			attributes.set(Attribute.oil, 0.5f);
 		}};
 		fissuredJade = new Floor("fissured-jade", 4) {{
 			wall = jadeWall;
+
+			attributes.set(Attribute.oil, 0.75f);
 		}};
 		cascadingJade = new EffectFloor("cascading-jade") {{
 			wall = jadeWall;
@@ -285,12 +289,16 @@ public class SWEnvironment {
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
 
+			attributes.set(SWAttribute.gravity, 1f);
+
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
 		gratingPitfall = new Pitfall("pitfall-grating") {{
 			maskColor = SWPal.pitfallGratingMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			attributes.set(SWAttribute.gravity, 1f);
 
 			mapColor = Color.valueOf("71727d").lerp(Color.black, 0.5f);
 		}};
@@ -307,6 +315,8 @@ public class SWEnvironment {
 			maskColor = SWPal.chasmMask;
 			cacheLayer = SWShaders.pitfallLayer;
 			blendGroup = concrete;
+
+			attributes.set(SWAttribute.gravity, 1f);
 
 			mapColor = Color.valueOf("71727d").lerp(Pal.turretHeat, 0.25f).lerp(Color.black, 0.5f);
 			

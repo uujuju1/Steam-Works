@@ -3,6 +3,7 @@ package sw.world.blocks.production;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
@@ -21,9 +22,12 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 	public Rect areaRect;
 
 	public boolean requireVisible;
+	public boolean drawTextOnArea = true;
 
 	protected int updateEfficiencyTimer = timers++;
 	protected float updateEfficiencyTime = 60f;
+
+	private int rotation;
 
 	public AreaAttributeCrafter(String name) {
 		super(name);
@@ -31,11 +35,13 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 
 	@Override
 	public boolean canPlaceOn(Tile tile, Team team, int rotation){
+		this.rotation = rotation;
 		return baseEfficiency + sumAttribute(attribute, tile.x, tile.y) >= minEfficiency;
 	}
 
 	@Override
 	public void drawPlace(int x, int y, int rotation, boolean valid) {
+		this.rotation = rotation;
 		drawPotentialLinks(x, y);
 		drawOverlay(x * tilesize + offset, y * tilesize + offset, rotation);
 
@@ -47,6 +53,8 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 
 	@Override
 	public float drawPlaceText(String text, int x, int y, Color color, boolean drawLine){
+		if (!drawTextOnArea) return super.drawPlaceText(text, x, y, color, drawLine);
+
 		if(renderer.pixelate) return 0;
 
 		Font font = Fonts.outline;
@@ -59,7 +67,7 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 		float width = layout.width;
 
 		font.setColor(color);
-		float dx = (x + areaRect.x) * tilesize + offset, dy = (y + areaRect.y) * tilesize + offset + areaRect.height * tilesize / 2f + 3;
+		float dx = (x + Angles.trnsx(rotation * 90f, areaRect.x, areaRect.y)) * tilesize + offset, dy = (y + Angles.trnsy(rotation * 90f, areaRect.x, areaRect.y)) * tilesize + offset + areaRect.height * tilesize / 2f + 3;
 		font.draw(text, dx, dy + layout.height + 1, Align.center);
 		dy -= 1f;
 		if(drawLine){
@@ -102,8 +110,8 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 
 		Drawf.dashRect(
 			Pal.accent,
-			x + (-areaRect.width / 2f + areaRect.x) * Vars.tilesize,
-			y + (-areaRect.height / 2f + areaRect.y) * Vars.tilesize,
+			x + (Angles.trnsx(rotation * 90f, areaRect.x, areaRect.y) - areaRect.width / 2f) * Vars.tilesize,
+			y + (Angles.trnsy(rotation * 90f, areaRect.x, areaRect.y) - areaRect.height / 2f) * Vars.tilesize,
 			areaRect.width * Vars.tilesize,
 			areaRect.height * Vars.tilesize
 		);
@@ -126,7 +134,8 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 
 	@Override
 	public float sumAttribute(Attribute attr, int x, int y) {
-		int offsetX = x - ((int) areaRect.width - 1) / 2 + ((int) areaRect.x), offsetY = y - ((int) areaRect.height - 1) / 2 + ((int) areaRect.y);
+		Point2 offset = new Point2((int) areaRect.x, (int) areaRect.y).rotate(rotation);
+		int offsetX = x - ((int) areaRect.width - 1) / 2 + (offset.x), offsetY = y - ((int) areaRect.height - 1) / 2 + (offset.y);
 
 		float sum = 0;
 
@@ -146,6 +155,7 @@ public class AreaAttributeCrafter extends SWGenericCrafter {
 	public class AreaAttributeCrafterBuild extends SWGenericCrafterBuild {
 		@Override
 		public void updateTile() {
+			AreaAttributeCrafter.this.rotation = rotation;
 			if (timer(updateEfficiencyTimer, updateEfficiencyTime)) attrsum = sumAttribute(attribute, tileX(), tileY());
 			super.updateTile();
 		}

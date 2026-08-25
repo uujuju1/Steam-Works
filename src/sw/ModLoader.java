@@ -11,6 +11,7 @@ import sw.annotations.Annotations.*;
 import sw.entities.units.*;
 import sw.gen.*;
 import sw.graphics.*;
+import sw.net.*;
 import sw.ui.*;
 
 @SuppressWarnings("unused")
@@ -34,6 +35,7 @@ public class ModLoader extends Mod {
         }
       }
       EventHints.initHints();
+      SWPackets.load();
     });
 		Events.on(EventType.FileTreeInitEvent.class, e -> {
       if (SWVars.isMod && !Vars.headless) Core.app.post(SWShaders::load);

@@ -5,6 +5,7 @@ import arc.math.*;
 import arc.math.geom.*;
 import mindustry.content.*;
 import mindustry.entities.effect.*;
+import mindustry.entities.part.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -12,9 +13,12 @@ import mindustry.world.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
+import sw.ai.*;
 import sw.content.*;
+import sw.type.*;
 import sw.world.blocks.defense.*;
 import sw.world.blocks.power.*;
+import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
 import sw.world.interfaces.*;
@@ -26,6 +30,7 @@ public class SWDefense {
 	public static Block
 		repairStation,
 		grindLamp, lavaLamp, lamparine,
+		phantomStation,
 		ironWall, ironWallLarge, bloomWall, bloomWallLarge,
 		thoriumClump;
 
@@ -57,7 +62,9 @@ public class SWDefense {
 			}});
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawArcSmelt() {{
 					flameColor = Pal.missileYellow;
 					drawCenter = false;
@@ -200,7 +207,9 @@ public class SWDefense {
 			));
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawArcSmelt() {{
 					midColor = Pal.accent;
 					flameColor = Pal.missileYellowBack;
@@ -222,6 +231,78 @@ public class SWDefense {
 			);
 		}};
 		// endregion
+
+		phantomStation = new BuilderPad("phantom-station") {{
+			requirements(Category.effect, with(
+				SWItems.bloom, 100,
+				SWItems.aluminium, 120,
+				Items.silicon, 150,
+				Items.graphite, 130
+			));
+			size = 3;
+			rotate = true;
+			drawArrow = false;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 20f / 10f;
+				maxSpeed = 80f / 10f;
+
+				efficiencyScale = a -> Mathf.map(a, 2, 8, 0.5f, 2.5f);
+				showGraph = true;
+				minEfficiency = 0.5f;
+				maxEfficiency = 2.5f;
+			}});
+
+			unitType = new SWUnitType("phantom") {{
+				controller = u -> new BuilderPadAI();
+				isEnemy = false;
+				allowedInPayloads = false;
+				logicControllable = false;
+				playerControllable = false;
+				hidden = true;
+
+				flying = true;
+				speed = 2.5f;
+
+				buildSpeed = 0.25f;
+
+				outlineLayerOffset = -0.002f;
+
+				parts.add(new RegionPart("-gear") {{
+					clampProgress = false;
+
+					layerOffset = -0.001f;
+
+					moveRot = 1f;
+
+					progress = PartProgress.time;
+				}});
+			}};
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					axles.add(Axles.tripleBlock.position(0, 0, 0, 1));
+				}},
+				new DrawFacingLightRegion(),
+				new DrawRegion("-top", 4, true)
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20 / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 6},
+					new int[]{3, 9},
+					new int[]{6, 0},
+					new int[]{9, 3},
+				};
+			}};
+		}};
 
 		// region walls
 		ironWall = new Wall("iron-wall") {{

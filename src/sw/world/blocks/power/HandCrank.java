@@ -19,6 +19,7 @@ public class HandCrank extends AxleBlock {
 	
 	public HandCrank(String name) {
 		super(name);
+		update = true;
 		consumesTap = true;
 		copyConfig = false;
 		

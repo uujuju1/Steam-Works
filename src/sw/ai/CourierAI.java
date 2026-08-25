@@ -2,6 +2,7 @@ package sw.ai;
 
 import mindustry.entities.units.*;
 import mindustry.gen.*;
+import sw.net.*;
 import sw.world.blocks.payloads.*;
 
 public class CourierAI extends AIController {
@@ -29,10 +30,7 @@ public class CourierAI extends AIController {
 		) {
 			port.getLink().handlePayload(port.getLink(), carrier.payloads().peek());
 			port.getLink().launchers.remove(port);
-//				Call.unitDespawn(unit);
-			// TODO make a fix in case syncing issues appear with this thing
-			port.removeCourier();
+			CourierRemovePacket.call(port.getLink().tile, unit);
 		}
-//		} else Call.unitDespawn(unit);
 	}
 }

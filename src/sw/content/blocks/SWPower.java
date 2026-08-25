@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -88,7 +87,9 @@ public class SWPower {
 			}};
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawLiquidTile(SWLiquids.solvent) {{
 					alpha = 0.5f;
 				}},
@@ -203,7 +204,9 @@ public class SWPower {
 			updateEffectSpread = 0f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawParticles() {{
 					color = Liquids.water.color.cpy().mul(1.5f);
 					reverse = true;
@@ -254,21 +257,7 @@ public class SWPower {
 			size = 3;
 			
 			connectSide = new boolean[]{false, true, false, true};
-			
-			Boolf<Building> hasTop = b -> {
-				for(int i = 2; i < 5; i++) {
-					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
-					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
-				}
-				return false;
-			};
-			Boolf<Building> hasBottom = b -> {
-				for(int i = 8; i < 11; i++) {
-					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
-					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
-				}
-				return false;
-			};
+			addBoost = true;
 			
 			ambientSound = Sounds.loopCombustion;
 			ambientSoundVolume = 0.25f;
@@ -293,19 +282,18 @@ public class SWPower {
 			forceScales = true;
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 					
 					axles.add(Axles.tripleBlock.position(0f, 0f, -90f, 1f));
 				}},
 				new DrawBitmask("-base", b -> {
-					int tiling = 0;
-					
-					if (hasTop.get(b)) tiling |= 1;
-					if (hasBottom.get(b)) tiling |= 2;
-					
-					return tiling;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
 				}, 96),
 				new DrawParts() {{
 					name = "-pistons";
@@ -345,7 +333,7 @@ public class SWPower {
 							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 5 : 4)).loop(360f).slope().curve(Interp.smooth);
 						}});
 					}
-				}}, hasTop),
+				}}, b -> (((StackableGenericCrafterBuild) b).tiling & 2) != 0),
 				new DrawCondition(new DrawParts() {{
 					name = "-pistons";
 					
@@ -361,14 +349,11 @@ public class SWPower {
 							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 1 : 6)).loop(360f).slope().curve(Interp.smooth);
 						}});
 					}
-				}}, hasBottom),
+				}}, b -> (((StackableGenericCrafterBuild) b).tiling & 8) != 0),
 				new DrawBitmask("-top", b -> {
-					int tiling = 0;
-					
-					if (hasTop.get(b)) tiling |= 1;
-					if (hasBottom.get(b)) tiling |= 2;
-					
-					return tiling;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
 				}, 96)
 			);
 			
@@ -402,7 +387,9 @@ public class SWPower {
 			consumeLiquid(SWLiquids.steam, 200f / 60f);
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-rotator", 3f),
 				new DrawRotated(),
 				new DrawRotated("-top") {{
@@ -424,6 +411,7 @@ public class SWPower {
 			stackBlock = piston;
 			useNearbyEfficiency = true;
 			requireFacing = true;
+			addBoost = true;
 			boost = 0.5f;
 			minBoost = 0f;
 			scaleLiquidConsumption = true;
@@ -435,7 +423,9 @@ public class SWPower {
 			connectSide = new boolean[]{false, true, false, true};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawAxles() {{
 					rotationOverride = b -> ((HasSpin) b).getRotation();
 
@@ -461,7 +451,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.right() != null && b.right().block == piston && b.right().front() == b
+					b -> (((StackableGenericCrafterBuild) b).tiling & 8) != 0
 				),
 				new DrawCondition(
 					new DrawParts() {{
@@ -482,7 +472,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.left() != null && b.left().block == piston && b.left().front() == b
+					b -> (((StackableGenericCrafterBuild) b).tiling & 2) != 0
 				),
 				new DrawRotated("-top") {{
 					layer = Layer.block + 0.05f;
@@ -573,7 +563,9 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(6f * offset.x, 4f * offset.y, 0f, 1f));
 					axles.addAll(
@@ -672,7 +664,9 @@ public class SWPower {
 			spacing = 3;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawAxles() {{
 					for (int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
 				}},
@@ -694,7 +688,9 @@ public class SWPower {
 			maxConnections = 1;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
 				new DrawAxles() {{
 					for (int i : Mathf.signs) {
 						axles.add(Axles.halfBlock.position(10f, 8f * i, 0, 1f));
@@ -764,7 +760,9 @@ public class SWPower {
 			}};
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
 				new DrawRegion("-gear", 1f, true) {{
 					x = 4f;
 					y = 4f;
@@ -870,7 +868,9 @@ public class SWPower {
 			}};
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for(Point2 offset : Geometry.d8edge) {
 						axles.add(Axles.halfBlock.position(4f * offset.x, 6f * offset.y, -90f, offset.x > 0 ? 0.75f : 1.5f));
@@ -1003,7 +1003,9 @@ public class SWPower {
 			strength = 50f / 600f;
 			
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2-flat";
+				}},
 				new DrawAxles() {{
 					for(int i : Mathf.signs) axles.add(Axles.doubleBlock.position(0f, 4f * i, 0f, 1f));
 				}},

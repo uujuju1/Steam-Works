@@ -51,11 +51,15 @@ public class ConsumeSpin extends Consume {
 
 					table.table(base -> {
 						base.add(stat);
-						base.add(Core.bundle.format(
-							"stat.sw-spin-requirement.format",
-							minSpeed == Float.POSITIVE_INFINITY ? "∞" : (minSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(minSpeed * 10f, 2)),
-							maxSpeed == Float.POSITIVE_INFINITY ? "∞" : (maxSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(maxSpeed * 10f, 2))
-						));
+						if (minSpeed != maxSpeed) {
+							base.add(Core.bundle.format(
+								"stat.sw-spin-requirement.format",
+								minSpeed == Float.POSITIVE_INFINITY ? "∞" : (minSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(minSpeed * 10f, 2)),
+								maxSpeed == Float.POSITIVE_INFINITY ? "∞" : (maxSpeed == Float.NEGATIVE_INFINITY ? "-∞" : Strings.autoFixed(maxSpeed * 10f, 2))
+							));
+						} else {
+							StatValues.number(minSpeed, SWStat.spinMinute, true).display(base);
+						}
 					}).left();
 
 					table.row();

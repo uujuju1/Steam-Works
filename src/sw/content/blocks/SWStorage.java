@@ -78,10 +78,12 @@ public class SWStorage {
 
 			maxWindup = 3000f;
 			speed = 50f / 10f;
-			outputForce = 400f / 600f;
+			outputForce = 200f / 600f;
 
 			drawer = new DrawMulti(
-				new DrawRegion("-bottom"),
+				new DrawRegion() {{
+					name = "sw-bottom-2";
+				}},
 				new DrawRegion("-bar"),
 				new DrawAxles() {{
 					Axle base = new Axle("-axle") {{

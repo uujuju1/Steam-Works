@@ -7,6 +7,7 @@ import arc.math.geom.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.payloads.*;
+import sw.core.*;
 import sw.math.*;
 import sw.type.*;
 
@@ -33,7 +34,7 @@ public class BalloonUnitType extends SWUnitType {
 			Draw.alpha(1f);
 			Draw.mixcol(unit.floorOn().mapColor.write(Tmp.c1).mul(0.9f), 1f);
 		}
-		Draw.alpha(Mathf.clamp(Core.camera.position.dst(unit) / ropeSpacing));
+		Draw.alpha(ModSettings.scaleBalloonOpacity(Mathf.clamp(Core.camera.position.dst(unit) / ropeSpacing)));
 
 		Draw.rect(
 			region,

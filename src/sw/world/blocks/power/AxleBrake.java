@@ -20,10 +20,10 @@ public class AxleBrake extends AxleBlock {
 
 		saveConfig = true;
 
-		config(float[].class, (AxleBrakeBuild build, float[] list) -> {
-			build.speedTarget = list[0];
-			build.torqueTarget = list[1];
-			build.torqueGradient = list[2];
+		config(Object[].class, (AxleBrakeBuild build, Object[] list) -> {
+			build.speedTarget = (float) list[0];
+			build.torqueTarget = (float) list[1];
+			build.torqueGradient = (float) list[2];
 		});
 	}
 	
@@ -99,8 +99,8 @@ public class AxleBrake extends AxleBlock {
 //			}).left().padTop(5f).row();
 //		}
 
-		@Override public float[] config() {
-			return new float[]{speedTarget, torqueTarget, torqueGradient};
+		@Override public Object[] config() {
+			return new Object[]{speedTarget, torqueTarget, torqueGradient};
 		}
 
 		@Override public float getForce() {
