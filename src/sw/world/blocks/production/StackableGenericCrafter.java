@@ -2,6 +2,7 @@ package sw.world.blocks.production;
 
 import arc.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.util.*;
 import mindustry.entities.units.*;
@@ -49,19 +50,23 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	public void setStats() {
 		super.setStats();
 
-		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boost-per-build.format"), (boost > 0 ? "[stat]" : "[negstat]") + (addBoost ? (boost < 0 ? "-" : "+") : "*") + Strings.autoFixed(Math.abs(boost * 100f), 2) + "[]");
+		stats.add(Stat.boostEffect, Core.bundle.get("stat.sw-boost-per-build.format"), (boost > Mathf.num(!addBoost) ? "[stat]" : "[negstat]") + (addBoost ? (boost < 0 ? "- " : "+ ") : "* ") + Strings.autoFixed(Math.abs(boost * 100f), 2));
 	}
 
 	public class StackableGenericCrafterBuild extends SWGenericCrafterBuild {
+		public int tiling;
+		public float boostAmount;
+
 		@Override
 		public float efficiencyMultiplier() {
-			return addBoost ? getEfficiency() + super.efficiencyMultiplier() : getEfficiency() * super.efficiencyMultiplier();
+			return boostAmount * super.efficiencyMultiplier();
 		}
 
-		public float getEfficiency() {
+		public void getEfficiency() {
 			Point2[] edges = Edges.getEdges(size);
 
-			float eff = minBoost;
+			boostAmount = minBoost;
+			tiling = 0;
 			for(int i = 0; i < 4; i++) {
 				if (connectSide[(rotation + i) % 4]) {
 					Building nearby = nearby(
@@ -75,11 +80,20 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 						(nearby.tileX() == tileX() || nearby.tileY() == tileY()) &&
 						(!requireFacing || nearby.front() == this)
 					) {
-						eff += boost * (useNearbyEfficiency ? nearby.efficiency : 1f);
+						float value = boost * (useNearbyEfficiency ? nearby.efficiency : 1f);
+						if (addBoost) boostAmount += value; else boostAmount *= value;
+
+						tiling |= 1 << Mathf.mod(i - rotation, 4);
 					}
 				}
 			}
-			return eff;
+		}
+
+		@Override
+		public void onProximityUpdate() {
+			super.onProximityUpdate();
+
+			getEfficiency();
 		}
 	}
 }

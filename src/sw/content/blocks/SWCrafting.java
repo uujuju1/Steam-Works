@@ -1,10 +1,13 @@
 package sw.content.blocks;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
+import mindustry.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
 import mindustry.game.*;
@@ -38,7 +41,7 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		churner, infusingBellow, flareStack,
+		churner, infusingBellow, flareStack, oilBoiler,
 		
 		burner, rte, coolingTower;
 	
@@ -122,6 +125,7 @@ public class SWCrafting {
 			craftTime = 180f;
 
 			connectSide = new boolean[]{true, false, true, false};
+			addBoost = true;
 
 			ambientSound = Sounds.loopSmelter;
 			updateEffect = SWFx.cokeBurn;
@@ -164,20 +168,16 @@ public class SWCrafting {
 				}
 				},
 				new DrawBitmask("-tiles", b -> {
-					int out = 0;
-					Building next = b.nearby(getEdges()[0].x, getEdges()[0].y);
-					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 1;
-					next = b.nearby(getEdges()[6].x, getEdges()[6].y);
-					if (next != null && next.block == b.block && next.tileY() == b.tileY()) out |= 2;
-					return out;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 1) + (tiling & 4) / 2;
 				}, 96),
 				new DrawGlowRegion() {{
 					color = Pal.turretHeat;
 
 					glowScale = 5f;
 					glowIntensity = 0.1f;
-				}
-				}
+				}}
 			);
 		}};
 		engineSmelter = new SWGenericCrafter("engine-smelter") {{
@@ -1235,6 +1235,9 @@ public class SWCrafting {
 			addBoost = true;
 			scaleLiquidConsumption = true;
 
+			ambientSound = Sounds.loopFire;
+			ambientSoundVolume = 0.005f;
+
 			craftTime = 5;
 			craftEffect = new ParallaxFireEffect() {{
 				baseHeight = 2;
@@ -1262,6 +1265,122 @@ public class SWCrafting {
 
 					warmupCurve = Interp.one;
 				}}
+			);
+		}};
+		oilBoiler = new StackableGenericCrafter("oil-boiler") {{
+			requirements(Category.crafting, with(
+
+			));
+			size = 3;
+
+			Effect smokeEffect = new ParticlePillarEffect() {{
+				color1 = color2 = Color.white;
+
+				lifetime = 150f;
+
+				particles = 2;
+				radius = 2f;
+				sizeMin = 2f;
+				sizeMax = 4f;
+
+				heightInterp = Interp.pow2Out;
+				sizeInterp = a -> Interp.pow2Out.apply(1 - a);
+				alphaInterp = a -> Interp.circleOut.apply(Mathf.slope(a));
+			}};
+			updateEffect = new Effect() {
+				@Override
+				public void create(float x, float y, float rotation, Color color, Object data) {
+					Building at = Vars.world.buildWorld(x, y);
+
+					if (at instanceof StackableGenericCrafterBuild stack) {
+						switch (stack.tiling) {
+							case 2 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y - 4f, 0, Color.white, null);
+							}
+							case 8 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y + 4, 0, Color.white, null);
+							}
+							case 10 -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y, 0, Color.white, null);
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y + 12f, 0, Color.white, null);
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y - 12f, 0, Color.white, null);
+							}
+							default -> {
+								if (Mathf.chance(0.2f)) smokeEffect.create(x, y, 0, Color.white, null);
+							}
+						}
+					}
+				}
+			};
+			updateEffectSpread = 1f;
+			updateEffectChance = 0.5f;
+
+			scaleLiquidConsumption = true;
+			consumeLiquids(LiquidStack.with(
+				Liquids.water, 10f / 60f,
+				Liquids.oil, 100f / 60f
+			));
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 100f / 60f);
+			boost = 2f;
+
+			Func<Vec2, DrawLightPillar> lights = pos -> new DrawLightPillar() {{
+				blending = Blending.additive;
+				color = Pal.turretHeat;
+
+				x = pos.x;
+				y = pos.y;
+
+				topOffsetX = Mathf.sign(pos.x) * 8f;
+
+				height = 1f;
+				heightWeaveMag = 0.1f;
+				heightWeaveScl = 40f + ((float) Math.random()) * 10f - 5f;
+				divisions = 20;
+				radius = 1.5f;
+				radiusTo = 0.5f;
+				alpha = 0.2f;
+				layer = Layer.blockOver;
+			}};
+			drawer = new DrawMulti(
+				new DrawBitmask("-tiles", b -> {
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
+				}, 96),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 4)),
+						lights.get(new Vec2(-7.25f, 4)),
+						lights.get(new Vec2(7.25f, -4)),
+						lights.get(new Vec2(-7.25f, -4))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 0
+				),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 0)),
+						lights.get(new Vec2(-7.25f, 0)),
+						lights.get(new Vec2(7.25f, -8)),
+						lights.get(new Vec2(-7.25f, -8)),
+						lights.get(new Vec2(7.25f, 8)),
+						lights.get(new Vec2(-7.25f, 8))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 2 ^ ((StackableGenericCrafterBuild) b).tiling == 8
+				),
+				new DrawCondition(
+					new DrawMulti(
+						lights.get(new Vec2(7.25f, 4)),
+						lights.get(new Vec2(-7.25f, 4)),
+						lights.get(new Vec2(7.25f, -4)),
+						lights.get(new Vec2(-7.25f, -4)),
+
+						lights.get(new Vec2(7.25f, 8)),
+						lights.get(new Vec2(-7.25f, 8)),
+						lights.get(new Vec2(7.25f, -8)),
+						lights.get(new Vec2(-7.25f, -8))
+					),
+					b -> ((StackableGenericCrafterBuild) b).tiling == 10
+				)
 			);
 		}};
 //		pressureKiln = new GenericCrafter("pressure-kiln") {{

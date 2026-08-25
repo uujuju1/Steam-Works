@@ -20,7 +20,7 @@ public class DrawLightPillar extends DrawBlock {
 	public Color color = Color.white;
 	public float radius = 1f, radiusTo = -1;
 	public float alpha = 1f;
-	public float x, y;
+	public float x, y, topOffsetX, topOffsetY;
 	public float height;
 	public float heightWeaveScl = 1;
 	public float heightWeaveMag = 0f;
@@ -36,7 +36,7 @@ public class DrawLightPillar extends DrawBlock {
 		Draw.alpha(warmupCurve.apply(build.warmup()) * alpha);
 		float height = this.height + Mathf.sin(heightWeaveScl, heightWeaveMag);
 		for (int i = 0; i < divisions; i++) {
-			Parallax.getParallaxFrom(Tmp.v1.set(build).add(x, y), Core.camera.position, height / divisions * i * warmupCurve.apply(build.warmup()));
+			Parallax.getParallaxFrom(Tmp.v1.set(x, y).lerp(x + topOffsetX, y + topOffsetY, height / divisions * i * warmupCurve.apply(build.warmup())).add(build), Core.camera.position, height / divisions * i * warmupCurve.apply(build.warmup()));
 
 			Draw.z(layer > 0 ? layer + layerHeightOffset * i : z + layerHeightOffset);
 			if (region == null) {

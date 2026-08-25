@@ -1,6 +1,5 @@
 package sw.content.blocks;
 
-import arc.func.*;
 import arc.graphics.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -258,21 +257,7 @@ public class SWPower {
 			size = 3;
 			
 			connectSide = new boolean[]{false, true, false, true};
-			
-			Boolf<Building> hasTop = b -> {
-				for(int i = 2; i < 5; i++) {
-					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
-					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
-				}
-				return false;
-			};
-			Boolf<Building> hasBottom = b -> {
-				for(int i = 8; i < 11; i++) {
-					Building next = b.nearby(getEdges()[i].x, getEdges()[i].y);
-					if (next != null && next.block == b.block && next.tileX() == b.tileX()) return true;
-				}
-				return false;
-			};
+			addBoost = true;
 			
 			ambientSound = Sounds.loopCombustion;
 			ambientSoundVolume = 0.25f;
@@ -306,12 +291,9 @@ public class SWPower {
 					axles.add(Axles.tripleBlock.position(0f, 0f, -90f, 1f));
 				}},
 				new DrawBitmask("-base", b -> {
-					int tiling = 0;
-					
-					if (hasTop.get(b)) tiling |= 1;
-					if (hasBottom.get(b)) tiling |= 2;
-					
-					return tiling;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
 				}, 96),
 				new DrawParts() {{
 					name = "-pistons";
@@ -351,7 +333,7 @@ public class SWPower {
 							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 5 : 4)).loop(360f).slope().curve(Interp.smooth);
 						}});
 					}
-				}}, hasTop),
+				}}, b -> (((StackableGenericCrafterBuild) b).tiling & 2) != 0),
 				new DrawCondition(new DrawParts() {{
 					name = "-pistons";
 					
@@ -367,14 +349,11 @@ public class SWPower {
 							progress = DrawParts.spin.mul(2).add(360f / 8f * (i == -1 ? 1 : 6)).loop(360f).slope().curve(Interp.smooth);
 						}});
 					}
-				}}, hasBottom),
+				}}, b -> (((StackableGenericCrafterBuild) b).tiling & 8) != 0),
 				new DrawBitmask("-top", b -> {
-					int tiling = 0;
-					
-					if (hasTop.get(b)) tiling |= 1;
-					if (hasBottom.get(b)) tiling |= 2;
-					
-					return tiling;
+					int tiling = ((StackableGenericCrafterBuild) b).tiling;
+
+					return (tiling & 2) / 2 + (tiling & 8) / 4;
 				}, 96)
 			);
 			
@@ -432,6 +411,7 @@ public class SWPower {
 			stackBlock = piston;
 			useNearbyEfficiency = true;
 			requireFacing = true;
+			addBoost = true;
 			boost = 0.5f;
 			minBoost = 0f;
 			scaleLiquidConsumption = true;
@@ -471,7 +451,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.right() != null && b.right().block == piston && b.right().front() == b && (b.tileX() == b.right().tileX() || b.tileY() == b.right().tileY())
+					b -> (((StackableGenericCrafterBuild) b).tiling & 8) != 0
 				),
 				new DrawCondition(
 					new DrawParts() {{
@@ -492,7 +472,7 @@ public class SWPower {
 							));
 						}});
 					}},
-					b -> b.left() != null && b.left().block == piston && b.left().front() == b && (b.tileX() == b.left().tileX() || b.tileY() == b.left().tileY())
+					b -> (((StackableGenericCrafterBuild) b).tiling & 2) != 0
 				),
 				new DrawRotated("-top") {{
 					layer = Layer.block + 0.05f;
