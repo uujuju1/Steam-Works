@@ -1158,7 +1158,7 @@ public class SWCrafting {
 			}});
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.slurry, 50f / 60f,
-				Liquids.hydrogen, 6f / 60f
+				Liquids.hydrogen, 1f / 60f
 			));
 			outputLiquids = LiquidStack.with(Liquids.oil, 25f / 60f);
 

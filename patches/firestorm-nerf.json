@@ -1,0 +1,7 @@
+{
+  "name": "firestorm Nerf",
+
+  "weather.sw-firestorm.damage": 0,
+  "weather.sw-firestorm.damageIncrease": 0,
+  "weather.sw-firestorm.incendIncrease": 0
+}

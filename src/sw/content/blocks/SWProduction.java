@@ -799,33 +799,16 @@ public class SWProduction {
 			);
 			
 			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawRegion("-gear", 5),
 				new DrawDefault(),
 				new DrawGlowRegion() {{
 					layer = -1f;
-					color = Pal.accent;
+					color = Pal.turretHeat;
 					glowIntensity = 0.3f;
 					glowScale = 20f;
-				}},
-				new DrawParts() {{
-					parts.add(
-						new RegionPart("-gear") {{
-							outline = false;
-							progress = PartProgress.smoothReload.loop(960f);
-							moveRot = 360f;
-						}},
-						new RegionPart("-top") {{
-							outline = false;
-							clampProgress = false;
-							growProgress = PartProgress.smoothReload.loop(180f).curve(Interp.slope).curve(Interp.swing);
-							growX = growY = 0.125f;
-						}},
-						new RegionPart("-top-top") {{
-							outline = false;
-							clampProgress = false;
-							growProgress = PartProgress.smoothReload.add(45f).loop(180f).curve(Interp.slope).curve(Interp.swing);
-							growX = growY = 0.125f;
-						}}
-					);
 				}}
 			);
 		}};
