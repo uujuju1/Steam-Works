@@ -244,7 +244,7 @@ public class SegmentedAxlePart extends DrawPart {
 	
 	@Override
 	public void load(String name) {
-		if (this.name == null) this.name = name + suffix;
+		if (this.name == null) this.name = name == null ? suffix : name + suffix;
 		SWContentRegionRegistry.load(this);
 		sides = mainAxleRegions[0].length;
 	}
