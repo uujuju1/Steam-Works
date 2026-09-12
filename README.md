@@ -31,4 +31,4 @@ As far as i'm aware, this task is windows only (don't have linux to test that)
 - helicopter - modified for looping, original in [Pixabay](https://pixabay.com/sound-effects/film-special-effects-helicopter-sound-41975/)
 - chain - spliced, original in [Pixabay](https://pixabay.com/pt/sound-effects/dom%C3%A9stico-chains-6909/) (unsure if it is the correct link)
 - welding - Modified for looping, original in [Pixabay](https://pixabay.com/sound-effects/film-special-effects-lassen-35052/)
-- shoot pressure chain, pitch shifted and spliced versions of chain and [pipe launcher](https://github.com/Sh1penfire/Meld/blob/main/sounds/pipe-launcher.ogg), original pipe launcher audio created by CeebFrack and edited by sh1penfire
+- shoot pressure chain, Made by [Cirrus](https://github.com/CirrusIsAkey)

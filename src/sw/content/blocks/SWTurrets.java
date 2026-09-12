@@ -723,8 +723,8 @@ public class SWTurrets {
 
 			holdTime = 60f;
 			pull = 2f;
-			pullStrengthScale = 0.01f;
-			pullDamageScale = 0.005f;
+			pullStrengthScale = 0.005f;
+			pullDamageScale = 20f / 60f / 8f;
 
 			targetAsEffectData = true;
 			shootEffect = SWFx.chainShockwave;
@@ -734,8 +734,8 @@ public class SWTurrets {
 
 			shootSound = SWSounds.shootPressureChain;
 			shootSoundVolume = 1f;
-			soundPitchMin = 0.5f;
-			soundPitchMax = 0.6f;
+			soundPitchMin = 0.9f;
+			soundPitchMax = 1.1f;
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 80f / 10f;

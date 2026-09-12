@@ -12,6 +12,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
 import sw.annotations.*;
+import sw.world.meta.*;
 
 public class ChainTurret extends ConsumeTurret {
 	public float holdTime;
@@ -53,6 +54,7 @@ public class ChainTurret extends ConsumeTurret {
 		super.setStats();
 
 		stats.remove(Stat.ammo);
+		stats.add(Stat.damageMultiplier, pullDamageScale * 8f * 60f, SWStat.perBlock);
 	}
 
 	public class ChainTurretBuild extends ConsumeTurretBuild {
@@ -130,7 +132,7 @@ public class ChainTurret extends ConsumeTurret {
 
 			float distanceFrom = hit.dst(Tmp.v1);
 			hit.vel().add(Tmp.v2.trns(hit.angleTo(this), distanceFrom * pullStrengthScale));
-			hit.damage(distanceFrom * pullDamageScale);
+			hit.damage(distanceFrom * pullDamageScale * Time.delta);
 
 			if (hold > holdTime || hit.dead) {
 				endChainEffect.at(x, y, angleTo(hit), new Vec2().set(hit));
