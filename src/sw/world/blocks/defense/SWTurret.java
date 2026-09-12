@@ -92,15 +92,6 @@ public class SWTurret extends Turret {
 
 		@Override
 		protected Posc findEnemy(float range){
-//			if(targetAir && !targetGround){
-//				return Units.bestEnemy(team, x, y, range, e -> !e.dead() && !e.isGrounded() && unitFilter.get(e), unitSort);
-//			}else{
-//				var ammo = peekAmmo();
-//				boolean buildings = targetGround && targetBlocks && (ammo == null || ammo.targetBlocks), missiles = ammo == null || ammo.targetMissiles;
-//				return Units.bestTarget(team, x, y, range,
-//					e -> !e.dead() && unitFilter.get(e) && (e.isGrounded() || targetAir) && (!e.isGrounded() || targetGround) && (missiles || !(e instanceof TimedKillc)),
-//					b -> buildings && buildingFilter.get(b), unitSort);
-//			}
 			var ammo = peekAmmo();
 			if (!bulletsChangeTargeting || ammo == null) return super.findEnemy(range);
 

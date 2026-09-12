@@ -18,6 +18,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.draw.*;
 import sw.content.*;
 import sw.entities.part.*;
+import sw.gen.*;
 import sw.world.blocks.defense.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
@@ -30,7 +31,7 @@ public class SWTurrets {
 	public static Block
 //		flow, vniz, rozpad,
 		imber, trebuchet,
-		rainfall, sonar,
+		rainfall, anchor,
 		push, thermikos, swing;
 
 	public static void load() {
@@ -670,7 +671,7 @@ public class SWTurrets {
 			shootSound = Sounds.stepWater;
 			shootSoundVolume = 0.2f;
 
-			drawer = new DrawTurret() {{
+			drawer = new DrawTurret("torque-base-") {{
 				parts.add(
 					new RegionPart("-pipe") {{
 						mirror = true;
@@ -706,6 +707,68 @@ public class SWTurrets {
 					new int[] {3, 6, 9, 0},
 					new int[] {6, 9, 0, 3},
 					new int[] {9, 0, 3, 6}
+				};
+			}};
+		}};
+		anchor = new ChainTurret("anchor") {{
+			requirements(Category.turret, with());
+			size = 3;
+			scaledHealth = 150f;
+			range = 30f * 8f;
+			rotateSpeed = 2.5f;
+
+			outlineIcon = false;
+
+			reload = 120f;
+
+			holdTime = 60f;
+			pull = 2f;
+			pullStrengthScale = 0.01f;
+			pullDamageScale = 0.005f;
+
+			targetAsEffectData = true;
+			shootEffect = SWFx.chainShockwave;
+			endChainEffect = SWFx.chainBreak;
+
+			chainInterp = a -> Interp.smooth.apply(Math.min(1.1f / (1 / 12f) * a, -0.1f / (11f / 12f) * a + 1.1f + 0.1f / (11f / 12f) * (1f / 12f)) / 1.1f) * 1.1f;
+
+			shootSound = SWSounds.shootPressureChain;
+			shootSoundVolume = 1f;
+			soundPitchMin = 0.5f;
+			soundPitchMax = 0.6f;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 80f / 10f;
+				maxSpeed = 100f / 10f;
+
+				minEfficiency = 1f;
+				maxEfficiency = 1.5f;
+				showGraph = true;
+
+				efficiencyScale = s -> Mathf.map(s, 80f / 10f, 100f / 10f, 1f, 1.5f);
+			}});
+
+			drawer = new DrawTurret("torque-base-") {{
+				parts.add(new RegionPart("-gear") {{
+					clampProgress = false;
+					layerOffset = -0.001f;
+
+					moveRot = -2f;
+
+					progress = p -> p.rotation;
+				}});
+			}
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			spinConfig = new SpinConfig() {{
+				resistance = 5f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 3, 6, 9},
+					new int[]{3, 6, 9, 0},
+					new int[]{6, 9, 0, 3},
+					new int[]{9, 0, 3, 6}
 				};
 			}};
 		}};
@@ -831,7 +894,7 @@ public class SWTurrets {
 				efficiencyScale = Interp.one;
 			}});
 
-			drawer = new DrawTurret() {{
+			drawer = new DrawTurret("torque-base-") {{
 				parts.add(
 					new RegionPart("-wheel-outline") {{
 						under = true;

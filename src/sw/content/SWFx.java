@@ -99,6 +99,60 @@ public class SWFx {
       Draw.alpha(Pal.shadow.a * e.foutpowdown());
       Draw.rect("sw-courier", e.x + UnitType.shadowTX * (1f + e.fin()), e.y + UnitType.shadowTY * (1f + e.fin()));
     }),
+
+    chainBreak = new Effect(30f, 60 * 8f, e -> {
+      if (!(e.data instanceof Position data)) return;
+
+      rand.setSeed(e.id);
+
+      temp.trns(data.angleTo(e.x, e.y) + 180, data.dst(e.x, e.y));
+
+      TextureRegion chainRegion = Core.atlas.find("sw-chain");
+
+      float segmentWidth = chainRegion.width / 4f;
+      Lines.stroke(chainRegion.height / 4f);
+
+      float max = temp.len() / segmentWidth;
+      temp.add(e.x, e.y);
+      for (float i = max; i >= 0; i--) {
+        float randFin = Mathf.pow(e.fin(), rand.random(1f, 4f));
+        temp.trns(data.angleTo(e.x, e.y) + 180 + rand.range(1f) * randFin, data.dst(e.x, e.y));
+        Tmp.v3.trns(temp.angle(), rand.random(2f, 5f) * randFin);
+        temp.add(e.x, e.y);
+        Tmp.v1.set(e.x, e.y).lerp(temp, Mathf.clamp(i / max)).add(Tmp.v3);
+        Tmp.v2.set(e.x, e.y).lerp(temp, Mathf.clamp((i - 1) / max)).add(Tmp.v3);
+
+        Draw.alpha(1f - Mathf.pow(e.fin(), rand.random(0.25f, 1)));
+
+        Lines.line(chainRegion, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y, false);
+      }
+
+      temp.trns(data.angleTo(e.x, e.y) + 180 + rand.range(1f) * e.finpow(), data.dst(e.x, e.y));
+      Tmp.v3.trns(temp.angle(), rand.random(2f, 5f) * e.finpow());
+      temp.add(e.x, e.y).add(Tmp.v3);
+      Draw.alpha(e.foutpowdown());
+      Draw.rect("sw-chain-tip", temp.x, temp.y, data.angleTo(e.x, e.y) + 180);
+    }).followParent(false).layer(Layer.turret - 0.0005f),
+    chainShockwave = new Effect(30f, 60 * 8f, e -> {
+      if (!(e.data instanceof Position data)) return;
+
+      float spacing = 4f;
+
+      float dst = data.dst(e.x, e.y) * 1.1f - 10f;
+      float angle = data.angleTo(e.x, e.y) + 180f;
+
+      for (float i = 0; i < dst / spacing; i++) {
+        temp.trns(angle, 10f + i * spacing);
+
+        float fin = e.finpow() * (1 - i / (dst / spacing) / 2);
+        Draw.xscl = 0.5f * fin;
+        Draw.yscl = 0.25f * fin;
+        Draw.alpha(e.fout());
+        Draw.rect("sw-shockwave", e.x + temp.x, e.y + temp.y, angle - 90f);
+      }
+
+      Draw.xscl = Draw.yscl = 1;
+    }).followParent(false),
   
     cokeBurn = new Effect(60f, e -> {
       rand.setSeed(e.id);
