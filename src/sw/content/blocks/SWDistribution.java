@@ -137,7 +137,7 @@ public class SWDistribution {
 				Items.graphite, 1
 			));
 		}};
-		mechanicalBridge = new DuctBridge("mechanical-bridge") {{
+		mechanicalBridge = new MechanicalBridge("mechanical-bridge") {{
 			requirements(Category.distribution, with(
 				SWItems.verdigris, 5,
 				Items.graphite, 5
