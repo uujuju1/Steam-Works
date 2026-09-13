@@ -733,6 +733,7 @@ public class SWTurrets {
 			chainInterp = a -> Interp.smooth.apply(Math.min(1.1f / (1 / 12f) * a, -0.1f / (11f / 12f) * a + 1.1f + 0.1f / (11f / 12f) * (1f / 12f)) / 1.1f) * 1.1f;
 
 			shootSound = SWSounds.shootPressureChain;
+			hitSound = SWSounds.hitPressureChain;
 			shootSoundVolume = 1f;
 			soundPitchMin = 0.9f;
 			soundPitchMax = 1.1f;

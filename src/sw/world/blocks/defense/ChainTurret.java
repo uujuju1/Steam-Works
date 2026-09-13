@@ -1,5 +1,6 @@
 package sw.world.blocks.defense;
 
+import arc.audio.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -27,6 +28,8 @@ public class ChainTurret extends ConsumeTurret {
 
 	public Interp chainInterp = Interp.linear;
 	public float chainLayer = Layer.turret - 0.0005f;
+
+	public Sound hitSound = Sounds.none;
 
 	public @Annotations.Load(value = "@name$-chain", fallBack = "sw-chain") TextureRegion chainRegion;
 	public @Annotations.Load(value = "@name$-chain-tip", fallBack = "sw-chain-tip") TextureRegion chainTipRegion;
@@ -115,7 +118,8 @@ public class ChainTurret extends ConsumeTurret {
 				hold = 0;
 
 				shootEffect.at(x, y, angleTo(hit), targetAsEffectData ? hit : new Vec2().set(hit));
-				shootSound.at(x, y, Mathf.random(soundPitchMin, soundPitchMax), shootSoundVolume);
+				shootSound.at(hit.x, hit.y, Mathf.random(soundPitchMin, soundPitchMax), shootSoundVolume);
+				hitSound.at(x, y, Mathf.random(soundPitchMin, soundPitchMax), shootSoundVolume);
 			}
 		}
 
