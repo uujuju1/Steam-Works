@@ -711,7 +711,12 @@ public class SWTurrets {
 			}};
 		}};
 		anchor = new ChainTurret("anchor") {{
-			requirements(Category.turret, with());
+			requirements(Category.turret, with(
+				SWItems.verdigris, 200,
+				SWItems.bloom, 150,
+				Items.silicon, 180,
+				Items.graphite, 175
+			));
 			size = 3;
 			scaledHealth = 150f;
 			range = 30f * 8f;

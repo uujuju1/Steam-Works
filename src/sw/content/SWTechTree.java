@@ -48,8 +48,10 @@ public class SWTechTree {
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
-          node(thermikos, () -> {});
-          node(rainfall, with(new NonUnlockable()), () -> {});
+          node(thermikos, () -> {
+            node(rainfall, with(new NonUnlockable()), () -> {});
+            node(anchor, with(new NonUnlockable()), () -> {});
+          });
         });
         node(push, with(new OnSector(liveStorm)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> {
