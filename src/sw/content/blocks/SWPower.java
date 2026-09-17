@@ -49,6 +49,8 @@ public class SWPower {
 			
 			spinConfig = new SpinConfig() {{
 				resistance = 1f/600f;
+
+				hasStaticTorque = false;
 				allowedEdges = new int[][]{
 					new int[]{0},
 					new int[]{1},
@@ -82,6 +84,8 @@ public class SWPower {
 			
 			spinConfig = new SpinConfig() {{
 				connectors.add(self);
+
+				hasStaticTorque = false;
 				
 				resistance = 4f / 600f;
 			}};
@@ -125,6 +129,7 @@ public class SWPower {
 			));
 			envDisabled = Env.groundWater;
 			rotate = true;
+			quickRotate = false;
 			drawArrow = true;
 			hasAttribute = true;
 			
@@ -241,6 +246,9 @@ public class SWPower {
 
 			spinConfig = new SpinConfig() {{
 				resistance = 9f / 600f;
+
+				hasStaticTorque = false;
+
 				allowedEdges = new int[][]{
 					new int[]{0, 3, 6, 9}
 				};
@@ -359,6 +367,9 @@ public class SWPower {
 			
 			spinConfig = new SpinConfig() {{
 				resistance = 10f / 600f;
+
+				hasStaticTorque = false;
+
 				allowedEdges = new int[][]{
 					new int[]{3, 9}
 				};
@@ -481,6 +492,8 @@ public class SWPower {
 
 			spinConfig = new SpinConfig() {{
 				resistance = 20f / 600f;
+
+				hasStaticTorque = false;
 
 				allowedEdges = new int[][]{
 					new int[]{0, 6},

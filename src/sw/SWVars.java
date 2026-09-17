@@ -28,6 +28,9 @@ public class SWVars implements Loadable {
 	
 	public static boolean isMod = true;
 
+	// differences slower 1 rotation per day are to be considered the same
+	public static float speedTolerance = 1 / 60f / 24;
+
   public static void init() {
 //		if (isMod) dev();
 

@@ -1,10 +1,8 @@
 package sw.world.blocks.power;
 
-import arc.math.*;
-import sw.world.graph.*;
-import sw.world.interfaces.*;
 import sw.world.meta.*;
 
+// TODO Remake
 public class AxleClutch extends AxleBlock {
 	public float clutchStrength = 1f/600f;
 	
@@ -31,19 +29,21 @@ public class AxleClutch extends AxleBlock {
 	public class AxleClutchBuild extends AxleBlockBuild {
 		@Override
 		public float getForce() {
-			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == SpinGraph.graphContext;
-			float scalar = isBack ? -((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 0);
-			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
-			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
-			return Mathf.clamp((backSpeed - frontSpeed)/60f, -clutchStrength, clutchStrength) / scalar;
+//			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == SpinGraph.graphContext;
+//			float scalar = isBack ? -((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 0);
+//			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
+//			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
+//			return Mathf.clamp((backSpeed - frontSpeed)/60f, -clutchStrength, clutchStrength) / scalar;
+			return 0f;
 		}
 		@Override
 		public float getTargetSpeed() {
-			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == SpinGraph.graphContext;
-			float scalar = isBack ? ((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 1);
-			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
-			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
-			return (isBack ? frontSpeed : backSpeed) / scalar;
+//			boolean isBack = back() instanceof HasSpin build && build.spinGraph() == SpinGraph.graphContext;
+//			float scalar = isBack ? ((HasSpin) back()).getRatio() : (front() instanceof HasSpin build ? build.getRatio() : 1);
+//			float backSpeed = back() instanceof HasSpin build ? build.getSpeed() : 0f;
+//			float frontSpeed = front() instanceof HasSpin build ? build.getSpeed() : 0f;
+//			return (isBack ? frontSpeed : backSpeed) / scalar;
+			return 0f;
 		}
 	}
 }

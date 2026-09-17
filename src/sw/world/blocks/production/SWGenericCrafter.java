@@ -174,6 +174,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getForce() {
+			if (spinConfig != null && spinConfig.hasStaticTorque) return outputRotationForce;
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * (forceScales ? efficiency : 1) * warmup / getRatio() : 0;
 		}
 
@@ -183,6 +184,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getTargetSpeed() {
+			if (spinConfig != null && spinConfig.hasStaticTorque) return outputRotation;
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * (speedScales ? efficiency : 1) * warmup * getRatio() : 0;
 		}
 		

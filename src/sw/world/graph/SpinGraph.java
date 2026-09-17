@@ -3,6 +3,7 @@ package sw.world.graph;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import sw.*;
 import sw.world.interfaces.*;
 
 /**
@@ -21,14 +22,20 @@ public class SpinGraph extends Graph<HasSpin> {
 	 * constant values based on the builds.
 	 */
 	public float friction, inertia = 1;
-	
+
+	public float staticFriction, dynamicFriction;
+	public Seq<ForceEntry> staticTorque = new Seq<>();
+	public Seq<ForceEntry> dynamicTorque = new Seq<>();
+
 	public float torque, targetSpeed;
+
+	public static final Seq<ForceEntry> tmpTorque = new Seq<>();
 
 	/**
 	 * List of buildings of this graph.
 	 */
-	public final Seq<HasSpin> producers = new Seq<>();
-	public final Seq<HasSpin> consumers = new Seq<>();
+	public final Seq<HasSpin> staticBuilds = new Seq<>();
+	public final Seq<HasSpin> dynamicBuilds = new Seq<>();
 	/**
 	 * Buildings that aren't connected but still influence this graph with force.
 	 */
@@ -49,8 +56,8 @@ public class SpinGraph extends Graph<HasSpin> {
 	@Override
 	public void addBuild(HasSpin build) {
 		super.addBuild(build);
-		if (build.outputsSpin()) producers.add(build);
-		if (build.consumesSpin()) consumers.add(build);
+		if (build.spinConfig().hasStaticTorque || build.spinConfig().hasStaticFriction) staticBuilds.addUnique(build);
+		if (!build.spinConfig().hasStaticTorque || !build.spinConfig().hasStaticFriction) dynamicBuilds.addUnique(build);
 		build.spin().graph = this;
 	}
 	
@@ -67,8 +74,10 @@ public class SpinGraph extends Graph<HasSpin> {
 		builds.each(HasSpin::onGraphUpdate);
 		updateInertia();
 		
-		friction = builds.sumf(HasSpin::getResistance);
+//		friction = builds.sumf(HasSpin::getResistance);
 		inertia = Math.max(1f, builds.sumf(HasSpin::getInertia));
+
+		updateStaticForces();
 	}
 
 	public void mergeFlood(HasSpin other) {
@@ -87,39 +96,51 @@ public class SpinGraph extends Graph<HasSpin> {
 	@Override
 	public void removeBuild(HasSpin build) {
 		super.removeBuild(build);
-		producers.remove(build);
-		consumers.remove(build);
+		staticBuilds.remove(build);
+		dynamicBuilds.remove(build);
 	}
 	
 	@Override
 	public void update() {
 		super.update();
-		
-		targetSpeed = 0;
 
-		tmp.set(producers);
-		tmp.add(disconnected);
+		updateDynamicForces();
+
+		tmpTorque.clear();
+		staticTorque.each(forceEntry -> {
+			if (tmpTorque.contains(forceEntry)) {
+				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
+			} else tmpTorque.add(forceEntry);
+		});
+		dynamicTorque.each(forceEntry -> {
+			if (tmpTorque.contains(forceEntry)) {
+				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
+			} else tmpTorque.add(forceEntry);
+		});
+
+		targetSpeed = 0;
+		torque = tmpTorque.sumf(forceEntry -> forceEntry.value);
+
+		friction = staticFriction + dynamicFriction;
+
+		tmpTorque.sort(forceEntry -> -forceEntry.speed);
+
+		for (int i = 0; i < tmpTorque.size; i++) {
+			ForceEntry key = tmpTorque.get(i);
+			float prev = i < 1 ? 0 : tmpTorque.get(i - 1).value;
+			if (torque - prev >= friction) {
+				targetSpeed = key.speed;
+				torque -= prev;
+			}
+		};
 		
-		graphContext = this;
-		for(HasSpin build : tmp) {
-			if ((build.getTargetSpeed() > targetSpeed) && tmp.sumf(b -> b.getTargetSpeed() >= build.getTargetSpeed() || !b.spinConfig().checkSpeed ? b.getForce() : 0f) >= friction) targetSpeed = build.getTargetSpeed();
-		}
-		
-		torque = tmp.sumf(b -> b.getTargetSpeed() >= speed || !b.spinConfig().checkSpeed ? b.getForce() : 0f);
-		
-		float accel = Math.abs(torque + friction * -Mathf.sign(speed))/inertia;
+		float accel = Math.abs(torque - friction) / inertia;
 		
 		speed = Mathf.approachDelta(speed, targetSpeed, accel);
 
 		if (invalid) {
 			speed = 0;
 			// TODO make it better
-//			if (Math.abs(accel) > 0) {
-//				var b = builds.random();
-//
-//				b.asBuilding().damage(Math.abs(accel));
-//				if (Mathf.chance(0.5)) Fx.smoke.at(b.asBuilding());
-//			}
 		}
 
 		if (lastSpeed != speed) {
@@ -128,6 +149,20 @@ public class SpinGraph extends Graph<HasSpin> {
 		}
 
 		rotation += speed * Time.delta;
+	}
+
+	public void updateDynamicForces() {
+		dynamicFriction = 0;
+		dynamicTorque.clear();
+		dynamicBuilds.each(b -> {
+			if (!b.spinConfig().hasStaticFriction) dynamicFriction += b.getResistance();
+			if (!b.spinConfig().hasStaticTorque) {
+				ForceEntry forceEntry = new ForceEntry(b.spinConfig().checkSpeed ? b.getTargetSpeed() : Float.POSITIVE_INFINITY, b.getForce());
+				if (dynamicTorque.contains(forceEntry)) {
+					dynamicTorque.get(dynamicTorque.indexOf(forceEntry)).value += forceEntry.value;
+				} else dynamicTorque.add(forceEntry);
+			}
+		});
 	}
 
 	public void updateInertia() {
@@ -155,9 +190,43 @@ public class SpinGraph extends Graph<HasSpin> {
 		  });
 		}
 	}
+
+	public void updateStaticForces() {
+		staticFriction = 0;
+		staticTorque.clear();
+		staticBuilds.each(b -> {
+			if (b.spinConfig().hasStaticFriction) staticFriction += b.getResistance();
+			if (b.spinConfig().hasStaticTorque) {
+				ForceEntry forceEntry = new ForceEntry(b.spinConfig().checkSpeed ? b.getTargetSpeed() : Float.POSITIVE_INFINITY, b.getForce());
+				if (staticTorque.contains(forceEntry)) {
+					staticTorque.get(staticTorque.indexOf(forceEntry)).value += forceEntry.value;
+				} else staticTorque.add(forceEntry);
+			}
+		});	}
 	
 	@Override
 	public boolean validGraph() {
 		return !builds.removeAll(b -> !b.asBuilding().isValid() && b.spinGraph() != this).isEmpty();
+	}
+
+	// janky
+	public static class ForceEntry {
+		public final float speed;
+		public float value;
+
+		public ForceEntry(float speed, float value) {
+			this.speed = speed;
+			this.value = value;
+		}
+
+		@Override
+		public boolean equals(Object other) {
+			return other instanceof ForceEntry forceEntry && Mathf.equal(forceEntry.speed, speed, SWVars.speedTolerance);
+		}
+
+		@Override
+		public String toString() {
+			return speed + "=" + value;
+		}
 	}
 }
