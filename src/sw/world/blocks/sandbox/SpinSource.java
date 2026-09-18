@@ -28,6 +28,13 @@ public class SpinSource extends AxleBlock {
 		configClear((SpinSourceBuild build) -> build.targetSpeed = build.force = 0);
 	}
 
+	@Override
+	public void init() {
+		super.init();
+
+		if (spinConfig != null) spinConfig.hasStaticTorque = false;
+	}
+
 	public class SpinSourceBuild extends AxleBlockBuild {
 		public float targetSpeed, force;
 

@@ -69,7 +69,11 @@ public class SWPayloadLoader extends PayloadBlock {
 	@Override
 	public void init() {
 		super.init();
-		if (spinConfig != null) spinConfig.init(this);
+		if (spinConfig != null) {
+			spinConfig.init(this);
+
+			spinConfig.hasStaticTorque = false;
+		}
 	}
 	
 	@Override

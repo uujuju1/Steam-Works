@@ -110,12 +110,12 @@ public class SpinGraph extends Graph<HasSpin> {
 		staticTorque.each(forceEntry -> {
 			if (tmpTorque.contains(forceEntry)) {
 				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
-			} else tmpTorque.add(forceEntry);
+			} else tmpTorque.add(new ForceEntry(forceEntry));
 		});
 		dynamicTorque.each(forceEntry -> {
 			if (tmpTorque.contains(forceEntry)) {
 				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
-			} else tmpTorque.add(forceEntry);
+			} else tmpTorque.add(new ForceEntry(forceEntry));
 		});
 
 		targetSpeed = 0;
@@ -123,7 +123,7 @@ public class SpinGraph extends Graph<HasSpin> {
 
 		friction = staticFriction + dynamicFriction;
 
-		tmpTorque.sort(forceEntry -> -forceEntry.speed);
+		tmpTorque.sort(forceEntry -> forceEntry.speed);
 
 		for (int i = 0; i < tmpTorque.size; i++) {
 			ForceEntry key = tmpTorque.get(i);
@@ -217,6 +217,9 @@ public class SpinGraph extends Graph<HasSpin> {
 		public ForceEntry(float speed, float value) {
 			this.speed = speed;
 			this.value = value;
+		}
+		public ForceEntry(ForceEntry other) {
+			this(other.speed, other.value);
 		}
 
 		@Override

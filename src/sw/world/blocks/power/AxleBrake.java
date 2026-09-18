@@ -32,7 +32,9 @@ public class AxleBrake extends AxleBlock {
 		super.init();
 		
 		if (spinConfig != null) {
-			spinConfig.checkSpeed = false;
+//			spinConfig.checkSpeed = false;
+
+			spinConfig.hasStaticFriction = false;
 		}
 	}
 	
@@ -48,14 +50,14 @@ public class AxleBrake extends AxleBlock {
 		@Override
 		public void buildConfiguration(Table cont) {
 			cont.table(Styles.black6, table -> {
-				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new float[]{value / 10f, torqueTarget, torqueGradient}), () -> speedTarget * 10f);
+				SWTables.buildFloatSlider(table, "@ui.sw-max-speed", value -> configure(new Object[]{value / 10f, torqueTarget, torqueGradient}), () -> speedTarget * 10f);
 				if (strength < 0) {
 					table.image(Tex.whiteui).color(Color.gray).padTop(10f).padBottom(10f).height(4f).growX().row();
-					SWTables.buildFloatSlider(table, "@ui.sw-brake-strength", value -> configure(new float[]{speedTarget, value / 600f, torqueGradient}), () -> torqueTarget * 600f);
+					SWTables.buildFloatSlider(table, "@ui.sw-brake-strength", value -> configure(new Object[]{speedTarget, value / 600f, torqueGradient}), () -> torqueTarget * 600f);
 				}
 				if (speedGradient < 0) {
 					table.image(Tex.whiteui).color(Color.gray).padTop(10f).padBottom(10f).height(4f).growX().row();
-					SWTables.buildFloatSlider(table, "@ui.sw-brake-gradient", value -> configure(new float[]{speedTarget, torqueTarget, value / 10f}), () -> torqueGradient * 10f);
+					SWTables.buildFloatSlider(table, "@ui.sw-brake-gradient", value -> configure(new Object[]{speedTarget, torqueTarget, value / 10f}), () -> torqueGradient * 10f);
 				}
 			}).margin(10f);
 		}
@@ -103,8 +105,8 @@ public class AxleBrake extends AxleBlock {
 			return new Object[]{speedTarget, torqueTarget, torqueGradient};
 		}
 
-		@Override public float getForce() {
-			return Mathf.clamp(progress()) * -(strength < 0 ? torqueTarget : strength) / getRatio();
+		@Override public float getResistance() {
+			return (spinConfig.resistance + Mathf.clamp(progress()) * (strength < 0 ? torqueTarget : strength)) / getRatio();
 		}
 		
 		@Override public boolean outputsSpin() {
