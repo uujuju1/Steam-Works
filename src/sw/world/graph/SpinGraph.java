@@ -23,9 +23,10 @@ public class SpinGraph extends Graph<HasSpin> {
 	 */
 	public float friction, inertia = 1;
 
-	public float staticFriction, dynamicFriction;
+	public float staticFriction, dynamicFriction, disconnectedFriction;
 	public Seq<ForceEntry> staticTorque = new Seq<>();
 	public Seq<ForceEntry> dynamicTorque = new Seq<>();
+	public Seq<ForceEntry> disconnectedTorque = new Seq<>();
 
 	public float torque, targetSpeed;
 
@@ -104,6 +105,8 @@ public class SpinGraph extends Graph<HasSpin> {
 	public void update() {
 		super.update();
 
+		graphContext = this;
+
 		updateDynamicForces();
 
 		tmpTorque.clear();
@@ -117,11 +120,16 @@ public class SpinGraph extends Graph<HasSpin> {
 				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
 			} else tmpTorque.add(new ForceEntry(forceEntry));
 		});
+		disconnectedTorque.each(forceEntry -> {
+			if (tmpTorque.contains(forceEntry)) {
+				tmpTorque.get(tmpTorque.indexOf(forceEntry)).value += forceEntry.value;
+			} else tmpTorque.add(new ForceEntry(forceEntry));
+		});
 
 		targetSpeed = 0;
 		torque = tmpTorque.sumf(forceEntry -> forceEntry.value);
 
-		friction = staticFriction + dynamicFriction;
+		friction = staticFriction + dynamicFriction + disconnectedFriction;
 
 		tmpTorque.sort(forceEntry -> forceEntry.speed);
 
@@ -162,6 +170,16 @@ public class SpinGraph extends Graph<HasSpin> {
 					dynamicTorque.get(dynamicTorque.indexOf(forceEntry)).value += forceEntry.value;
 				} else dynamicTorque.add(forceEntry);
 			}
+		});
+
+		disconnectedFriction = 0;
+		disconnectedTorque.clear();
+		disconnected.each(b -> {
+			disconnectedFriction += b.getResistance();
+			ForceEntry forceEntry = new ForceEntry(b.spinConfig().checkSpeed ? b.getTargetSpeed() : Float.POSITIVE_INFINITY, b.getForce());
+			if (disconnectedTorque.contains(forceEntry)) {
+				disconnectedTorque.get(disconnectedTorque.indexOf(forceEntry)).value += forceEntry.value;
+			} else disconnectedTorque.add(forceEntry);
 		});
 	}
 
