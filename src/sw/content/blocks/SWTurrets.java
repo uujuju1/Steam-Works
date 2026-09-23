@@ -4,8 +4,11 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.content.*;
+import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
@@ -29,179 +32,12 @@ import static mindustry.type.ItemStack.*;
 
 public class SWTurrets {
 	public static Block
-//		flow, vniz, rozpad,
 		imber, trebuchet,
 		rainfall, anchor,
-		push, thermikos, swing;
+		push, thermikos,
+		flurry;
 
 	public static void load() {
-//		flow = new ItemTurret("flow") {{
-//			requirements(Category.turret, with(
-//				SWItems.verdigris, 20,
-//				Items.graphite, 25
-//			));
-//			researchCost = with(
-//				SWItems.verdigris, 100,
-//				Items.graphite, 100
-//			);
-//			size = 1;
-//			scaledHealth = 200;
-//			reload = 60f;
-//			range = 140f;
-//			targetAir = false;
-//
-//			shootSound = Sounds.shootAlt;
-//
-//			shoot = new ShootPattern() {{
-//				shotDelay = 5f;
-//				shots = 2;
-//			}};
-//
-//			ammo(
-//				SWItems.verdigris, new BasicBulletType(2, 10) {{
-//					frontColor = trailColor = Color.valueOf("A1A7AB");
-//					backColor = Color.valueOf("595E61");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 70f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 35f;
-//					homingPower = 0.02f;
-//					collidesAir = false;
-//				}},
-//				SWItems.iron, new BasicBulletType(2, 15) {{
-//					frontColor = trailColor = Color.valueOf("A1A1B8");
-//					backColor = Color.valueOf("6F6F85");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 70f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 35f;
-//					homingPower = 0.03f;
-//					collidesAir = false;
-//				}}
-//			);
-//		}};
-//		vniz = new ItemTurret("vniz") {{
-//			requirements(Category.turret, with(
-//				SWItems.verdigris, 25,
-//				Items.graphite, 20
-//			));
-//			researchCost = with(
-//				SWItems.verdigris, 100,
-//				Items.graphite, 100
-//			);
-//			size = 1;
-//			scaledHealth = 200;
-//			reload = 90f;
-//			range = 180f;
-//			targetGround = false;
-//
-//			BulletType frag = new BasicBulletType(2f, 5) {{
-//				frontColor = trailColor = Color.valueOf("A1A7AB");
-//				backColor = Color.valueOf("595E61");
-//				lifetime = 30f;
-//				trailWidth = 1f;
-//				trailLength = 5;
-//				homingRange = 60f;
-//				homingPower = 0.5f;
-//				collidesGround = false;
-//			}};
-//			ammo(
-//				SWItems.verdigris, new ArtilleryBulletType(4, 10) {{
-//					frontColor = trailColor = Color.valueOf("A1A7AB");
-//					backColor = Color.valueOf("595E61");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 45f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					collides = collidesAir = true;
-//
-//					fragBullets = 3;
-//					fragBullet = frag;
-//				}},
-//				SWItems.iron, new ArtilleryBulletType(4, 15) {{
-//					frontColor = trailColor = Color.valueOf("A1A1B8");
-//					backColor = Color.valueOf("6F6F85");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 45f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					collides = collidesAir = true;
-//
-//					fragBullets = 5;
-//					fragBullet = frag;
-//				}}
-//			);
-//		}};
-//		rozpad = new ItemTurret("rozpad") {{
-//			requirements(Category.turret, with(
-//				SWItems.verdigris, 45,
-//				SWItems.iron, 40,
-//				Items.graphite, 20
-//			));
-//			size = 2;
-//			scaledHealth = 200;
-//			reload = 60f;
-//			range = 200f;
-//			targetGround = false;
-//
-//			shoot = new ShootAlternate();
-//
-//			BulletType frag = new BasicBulletType(2f, 10) {{
-//				frontColor = trailColor = Color.valueOf("A1A7AB");
-//				backColor = Color.valueOf("595E61");
-//				lifetime = 30f;
-//				trailWidth = 1f;
-//				trailLength = 5;
-//				homingRange = 60f;
-//				homingPower = 0.5f;
-//				collidesGround = false;
-//			}};
-//			ammo(
-//				SWItems.verdigris, new ArtilleryBulletType(4, 20) {{
-//					frontColor = trailColor = Color.valueOf("A1A7AB");
-//					backColor = Color.valueOf("595E61");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 50f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 60f;
-//					homingPower = 0.2f;
-//					collides = collidesAir = true;
-//
-//					fragBullets = 3;
-//					fragBullet = frag;
-//				}},
-//				SWItems.iron, new ArtilleryBulletType(4, 25) {{
-//					frontColor = trailColor = Color.valueOf("A1A1B8");
-//					backColor = Color.valueOf("6F6F85");
-//					hitEffect = despawnEffect = Fx.hitBulletColor;
-//					width = 8f;
-//					height = 10f;
-//					lifetime = 50f;
-//					trailWidth = 1.5f;
-//					trailLength = 5;
-//					homingRange = 60f;
-//					homingPower = 0.2f;
-//					collides = collidesAir = true;
-//
-//					fragBullets = 5;
-//					fragBullet = frag;
-//				}}
-//			);
-//		}};
-
 		imber = new SWItemTurret("imber") {{
 			requirements(Category.turret, with(
 				SWItems.verdigris, 20,
@@ -417,105 +253,6 @@ public class SWTurrets {
 			consumeLiquid(Liquids.hydrogen, 3f/60f);
 		}};
 
-//		curve = new ConsumeTurret("curve") {{
-//			requirements(Category.turret, BuildVisibility.hidden, with());
-//			size = 3;
-//			scaledHealth = 220f;
-//			reload = 15f;
-//			shootY = 12f;
-//			range = 240f;
-//
-//			consumeItem(Items.silicon, 1);
-//
-//			drawer = new DrawTurret() {{
-//				parts.add(
-//					new RegionPart("-cannon") {{
-//						mirror = false;
-//						under = true;
-//						moveX = 2f;
-//						moveY = -1f;
-//						layerOffset = -0.001f;
-//						outlineLayerOffset = -0.03f;
-//						progress = PartProgress.reload.curve(Interp.circle).inv();
-//					}},
-//					new RegionPart("-cannon") {{
-//						mirror = false;
-//						under = true;
-//						x = 2f;
-//						y = -1f;
-//						moveX = -2f;
-//						moveY = -1f;
-//						layerOffset = -0.003f;
-//						outlineLayerOffset = -0.03f;
-//						progress = PartProgress.reload.curve(Interp.circle).inv();
-//					}},
-//					new RegionPart("-cannon") {{
-//						mirror = false;
-//						under = true;
-//						y = -2f;
-//						moveX = -2f;
-//						moveY = 1f;
-//						layerOffset = -0.002f;
-//						outlineLayerOffset = -0.03f;
-//						progress = PartProgress.reload.curve(Interp.circle).inv();
-//					}},
-//					new RegionPart("-cannon") {{
-//						mirror = false;
-//						under = true;
-//						x = -2f;
-//						y = -1f;
-//						moveX = 2f;
-//						moveY = 1f;
-//						outlineLayerOffset = -0.03f;
-//						progress = PartProgress.reload.curve(Interp.circle).inv();
-//					}}
-//				);
-//			}};
-//
-//			shootType = new BasicBulletType(3f, 20) {{
-//				shrinkY = 0f;
-//				width = 8f;
-//				height = 8f;
-//				trailWidth = 4f;
-//				trailLength = 5;
-//				hitSound = Sounds.explosion;
-//				lifetime = 80f;
-//			}};
-//
-//			spinConfig.hasSpin = false;
-//		}};
-//		sonar = new ConsumeTurret("sonar") {{
-//			requirements(Category.turret, BuildVisibility.hidden, with());
-//			size = 2;
-//			scaledHealth = 220;
-//			reload = 90f;
-//			range = 160f;
-//
-//			drawer = new DrawTurret() {{
-//				parts.add(
-//					new RegionPart("-back") {{
-//						moveY = 2f;
-//						under = true;
-//					}},
-//					new RegionPart("-side") {{
-//						moveX = -1f;
-//						moveY = 1f;
-//						mirror = true;
-//						under = true;
-//					}}
-//				);
-//			}};
-//
-//			shootY = 0f;
-//			shootType = new SoundLaserBulletType() {{
-//				damage = 30f;
-//				width = 16f;
-//				length = 160f;
-//				colors = new Color[]{Color.white};
-//			}};
-//
-//			spinConfig.hasSpin = false;
-//		}};
 		rainfall = new SWLiquidTurret("rainfall") {{
 			requirements(Category.turret, with(
 				SWItems.aluminium, 170,
@@ -732,7 +469,7 @@ public class SWTurrets {
 			pullDamageScale = 20f / 60f / 8f;
 
 			targetAsEffectData = true;
-			shootEffect = SWFx.chainShockwave;
+			shootEffect = SWFx.shockwave;
 			endChainEffect = SWFx.chainBreak;
 
 			chainInterp = a -> Interp.smooth.apply(Math.min(1.1f / (1 / 12f) * a, -0.1f / (11f / 12f) * a + 1.1f + 0.1f / (11f / 12f) * (1f / 12f)) / 1.1f) * 1.1f;
@@ -1020,47 +757,115 @@ public class SWTurrets {
 				boosters.put(SWLiquids.steam, 4);
 			}});
 		}};
-//		swing = new ConsumeTurret("swing") {{
-//			requirements(Category.turret, BuildVisibility.hidden, with());
-//			size = 3;
-//			scaledHealth = 220f;
-//			range = 200f;
-//			reload = 180f;
-//			recoil = 4f;
-//			rotateSpeed = 1f;
-//			cooldownTime = 90f;
-//
-//			shootY = 6f;
-//
-//			shootSound = Sounds.shootAlt;
-//
-//			consumeItem(SWItems.compound, 3);
-//
-//			drawer = new DrawTurret() {{
-//				parts.add(
-//					new RegionPart("-floor") {{
-//						under = true;
-//						layerOffset = -0.001f;
-//					}},
-//					new RegionPart() {{
-//						name = "sw-saw";
-//
-//						progress = PartProgress.heat;
-//						colorTo = Color.white.cpy().a(0f);
-//						color = Color.white;
-//						outline = false;
-//						under = true;
-//
-//						moves.add(new PartMove(PartProgress.charge.curve(Interp.circleOut), 0f, 0f, 720f));
-//					}}
-//				);
-//			}};
-//
-//			shootType = new BasicBulletType(4f, 25f, "sw-saw") {{
-//				width = height = 16f;
-//				shrinkY = 0f;
-//				lifetime = 50f;
-//			}};
-//		}};
+
+		flurry = new ConsumeTurret("flurry") {{
+			requirements(Category.turret, with(
+				SWItems.verdigris, 300,
+				SWItems.iron, 300,
+				SWItems.bloom, 200,
+				SWItems.aluminium, 350,
+				Items.silicon, 250,
+				Items.graphite, 400,
+				Items.thorium, 100
+			));
+			size = 4;
+
+			reload = 600f;
+			recoil = 4f;
+			recoilTime = 480;
+			range = 75 * 8f;
+			rotateSpeed = 1f;
+
+			scaledHealth = 100f;
+
+			outlineIcon = false;
+
+			itemCapacity = 20;
+
+			consumeItem(Items.lead, 10);
+			consumeLiquid(SWLiquids.gas, 50f / 60f);
+			consume(new ConsumeSpin() {{
+				minSpeed = 75f / 10f;
+				maxSpeed = 85f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+
+			chargeSound = SWSounds.chargeHum;
+			shootSound = Sounds.acceleratorLaunch;
+			soundPitchMin = 0.5f;
+			soundPitchMax = 0.7f;
+			shootEffect = SWFx.flurryShoot;
+			shootY = 0f;
+			shootType = new RailBulletType() {{
+				length = 75f * 8f;
+
+				damage = 300f;
+
+				pierceCap = 4;
+				pierceArmor = true;
+				pierceDamageFactor = 0.05f;
+
+				hitColor = trailColor = Color.valueOf("A294C6");
+				trailWidth = 3f;
+				trailLength = 20;
+
+				Effect hit = new Effect(60f, e -> {
+					Rand rand = SWFx.rand;
+					Vec2 temp = SWFx.temp.set(e.x, e.y);
+					if (e.data instanceof Vec2 data) temp.set(data);
+
+					rand.setSeed(e.id);
+					Draw.color(e.color, Color.white, rand.random(0.5f));
+					Angles.randLenVectors(e.id, 20, 80 * e.finpow(), e.rotation, 20f, (x, y) -> {
+						Lines.stroke(Mathf.dst(x, y) / 80f * rand.random(3f, 5f) * e.foutpowdown());
+						Lines.lineAngle(temp.x + x, temp.y + y, Mathf.angle(x, y), rand.random(5f, 10f) * e.fout());
+					});
+				});
+
+				lineEffect = new MultiEffect(
+					new Effect(10f, 75 * 8f, e -> {
+						if (!(e.data instanceof Vec2 data)) return;
+						Tmp.v1.set(e.x, e.y).lerp(data, e.finpowdown());
+						Lines.stroke(8f * e.foutpowdown());
+						Draw.color(Color.white, e.color, e.finpow());
+						Lines.line(Tmp.v1.x, Tmp.v1.y, data.x, data.y);
+					}),
+					hit
+				);
+
+				endEffect = hitEffect = hit;
+			}};
+
+			shoot.firstShotDelay = 60f;
+
+			drawer = new DrawTurret("torque-base-") {{
+				parts.add(
+					new RegionPart("-rod") {{
+						under = true;
+						outline = false;
+
+						yScl = 1f;
+						growY = -1f;
+
+						growProgress = PartProgress.recoil.curve(Interp.exp10);
+					}}
+				);
+			}
+
+				@Override public void getRegionsToOutline(Block block, Seq<TextureRegion> out) {}
+			};
+
+			spinConfig = new SpinConfig() {{
+				resistance = 200f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 1, 4, 5, 8, 9, 12, 13},
+					new int[]{12, 13, 0, 1, 4, 5, 8, 9},
+					new int[]{8, 9, 12, 13, 0, 1, 4, 5},
+					new int[]{4, 5, 8, 9, 12, 13, 0, 1}
+				};
+			}};
+		}};
 	}
 }

@@ -4,7 +4,7 @@ import arc.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 
-// TODO Remake
+// TODO Fix magic free torque when multiple clutches
 public class AxleClutch extends AxleBlock {
 	public float clutchStrength = 1f/600f;
 	

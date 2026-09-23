@@ -49,8 +49,8 @@ public class SWTechTree {
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
           node(thermikos, () -> {
-            node(rainfall, with(new NonUnlockable()), () -> {});
-            node(anchor, with(new NonUnlockable()), () -> {});
+            node(rainfall, with(new SectorComplete(bubbles)), () -> node(anchor, with(new NonUnlockable()), () -> {}));
+            node(flurry, with(new NonUnlockable()), () -> {});
           });
         });
         node(push, with(new OnSector(liveStorm)), () -> {});
