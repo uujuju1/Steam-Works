@@ -38,7 +38,10 @@ public class SWTechTree {
           node(coolingTower, with(new OrObjective(
             new Research(burner),
             new Research(rte)
-          )), () -> {});
+          )), () -> {
+            node(oilBoiler, with(new OrObjective(new Research(infusingBellow), new Research(rig)), new NonUnlockable()), () -> {});
+            node(infusingBellow, with(new Research(flareStack)), () -> {});
+          });
         });
         node(constructionManifold, with(new OnSector(brokenCorridors)), () -> {
           node(deconstructionManifold);

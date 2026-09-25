@@ -1126,7 +1126,13 @@ public class SWCrafting {
 			}};
 		}};
 		infusingBellow = new SWGenericCrafter("infusing-bellow") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.bloom, 50,
+				SWItems.iron, 80,
+				SWItems.verdigris, 120,
+				Items.silicon, 100,
+				Items.graphite, 90
+			));
 			size = 3;
 
 			ambientSound = Sounds.loopCultivator;
@@ -1226,7 +1232,8 @@ public class SWCrafting {
 		}};
 		flareStack = new StackableGenericCrafter("flare-stack") {{
 			requirements(Category.crafting, with(
-
+				SWItems.iron, 20,
+				Items.graphite, 30
 			));
 			size = 1;
 
@@ -1269,7 +1276,11 @@ public class SWCrafting {
 		}};
 		oilBoiler = new StackableGenericCrafter("oil-boiler") {{
 			requirements(Category.crafting, with(
-
+				SWItems.iron, 80,
+				SWItems.aluminium, 120,
+				SWItems.bloom, 100,
+				Items.graphite, 130,
+				Items.silicon, 70
 			));
 			size = 3;
 
@@ -1425,27 +1436,6 @@ public class SWCrafting {
 //			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
 //			consumeLiquid(Liquids.ozone, 1f/60f);
 //			outputItems = with(SWItems.oxycarbide, 1);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault(),
-//				new DrawFlame() {{
-//					flameRadius = 5f;
-//				}}
-//			);
-//		}};
-//
-//		rte = new GenericCrafter("rte") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItem(Items.thorium, 2);
-//			consumeLiquid(Liquids.water, 0.2f);
-//			outputItems = with(Items.silicon, 3);
-//			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.2f);
 //
 //			drawer = new DrawMulti(
 //				new DrawDefault(),
