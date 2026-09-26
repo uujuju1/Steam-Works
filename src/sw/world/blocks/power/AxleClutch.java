@@ -1,5 +1,6 @@
 package sw.world.blocks.power;
 
+import arc.math.*;
 import arc.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
@@ -69,6 +70,12 @@ public class AxleClutch extends AxleBlock {
 
 				frontFriction = front.spinGraph().staticFriction + front.spinGraph().dynamicFriction;
 				backFriction = back.spinGraph().staticFriction + back.spinGraph().dynamicFriction;
+
+				float clutches = back.spinGraph().disconnected.sumf(build -> Mathf.num(build instanceof AxleClutchBuild && front.spinGraph().disconnected.contains(build)));
+				frontFriction /= clutches;
+				backFriction /= clutches;
+				frontTorque /= clutches;
+				backTorque /= clutches;
 
 				shouldConnect = (frontTorque + backTorque) - (frontFriction + backFriction) > 0;
 

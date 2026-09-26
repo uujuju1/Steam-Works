@@ -1329,7 +1329,7 @@ public class SWCrafting {
 			scaleLiquidConsumption = true;
 			consumeLiquids(LiquidStack.with(
 				Liquids.water, 10f / 60f,
-				Liquids.oil, 100f / 60f
+				Liquids.oil, 50f / 60f
 			));
 			outputLiquids = LiquidStack.with(SWLiquids.steam, 100f / 60f);
 			boost = 2f;

@@ -3,6 +3,7 @@ package sw.world.graph;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import sw.*;
 import sw.world.interfaces.*;
 
@@ -141,7 +142,9 @@ public class SpinGraph extends Graph<HasSpin> {
 				torque -= prev;
 			}
 		};
-		
+
+		if (Vars.state.isEditor()) return;
+
 		float accel = Math.abs(torque - friction) / inertia;
 		
 		speed = Mathf.approachDelta(speed, targetSpeed, accel);

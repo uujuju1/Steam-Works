@@ -697,13 +697,13 @@ public class SWProduction {
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 0.5f;
-				maxSpeed = 20f;
+				maxSpeed = 5f;
 
 				minEfficiency = 1f;
-				maxEfficiency = 2f;
+				maxEfficiency = 10 / 3f;
 				showGraph = true;
 
-				efficiencyScale = t -> Mathf.pow(Mathf.map(t, 0.5f, 20f, 0f, 1f), 5f) + 1f;
+				efficiencyScale = t -> 1 + Mathf.clamp(Mathf.floor(Mathf.map(t, 0.5f, 5f, 0, 5)) / 4f) * 7f / 3;
 			}});
 
 			hasAttribute = true;

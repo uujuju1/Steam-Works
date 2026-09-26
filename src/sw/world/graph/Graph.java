@@ -1,10 +1,20 @@
 package sw.world.graph;
 
+import arc.*;
 import arc.func.*;
 import arc.struct.*;
+import mindustry.*;
+import mindustry.game.*;
+import mindustry.gen.*;
 import sw.entities.units.*;
 
 public abstract class Graph<T> {
+	static {
+		Events.run(EventType.Trigger.afterGameUpdate, () -> {
+			if (Vars.state.isEditor()) Groups.all.update(b -> b instanceof GraphUpdater);
+		});
+	}
+
 	public final Seq<T> builds = new Seq<>(false);
 	
 	public GraphUpdater updater = new GraphUpdater().setGraph(this);

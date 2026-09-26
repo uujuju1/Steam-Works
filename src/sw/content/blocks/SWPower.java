@@ -692,7 +692,7 @@ public class SWPower {
 			size = 3;
 
 			radius = 10f;
-			range = 1600f;
+			range = 400 * 8f;
 			ratioScl = 4f;
 
 			spinScl = 1/20f;
