@@ -426,6 +426,7 @@ public class SWPower {
 			boost = 0.5f;
 			minBoost = 0f;
 			scaleLiquidConsumption = true;
+			updateEfficiency = true;
 
 			outputRotation = 100f / 10f;
 			outputRotationForce = 220f / 600f;
@@ -837,6 +838,7 @@ public class SWPower {
 			clutchStrength = 50f/600f;
 			
 			spinConfig = new SpinConfig() {{
+
 				allowedEdges = new int[][]{
 					new int[]{0, 2},
 					new int[]{1, 3},

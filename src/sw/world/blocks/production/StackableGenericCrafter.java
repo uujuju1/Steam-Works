@@ -18,6 +18,8 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 	public float minBoost = 1f;
 	public boolean addBoost;
 
+	public boolean updateEfficiency = false;
+
 	public Block stackBlock;
 	public boolean useNearbyEfficiency;
 	public boolean requireFacing;
@@ -94,6 +96,13 @@ public class StackableGenericCrafter extends SWGenericCrafter {
 			super.onProximityUpdate();
 
 			getEfficiency();
+		}
+
+		@Override
+		public void updateTile() {
+			super.updateTile();
+
+			if (updateEfficiency) getEfficiency();
 		}
 	}
 }

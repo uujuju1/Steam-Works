@@ -466,7 +466,7 @@ public class SWTurrets {
 			holdTime = 60f;
 			pull = 2f;
 			pullStrengthScale = 0.005f;
-			pullDamageScale = 20f / 60f / 8f;
+			pullDamageScale = 100f / 60f / 8f;
 
 			targetAsEffectData = true;
 			shootEffect = SWFx.shockwave;

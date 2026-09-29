@@ -5,7 +5,7 @@ import arc.util.*;
 import sw.world.graph.*;
 import sw.world.interfaces.*;
 
-// TODO Fix magic free torque when multiple clutches
+// TODO Fix minor friction issues when making the clutch have friction by itself
 public class AxleClutch extends AxleBlock {
 	public float clutchStrength = 1f/600f;
 	
@@ -19,7 +19,6 @@ public class AxleClutch extends AxleBlock {
 		super.init();
 		
 		if (spinConfig != null) {
-//			spinConfig.checkSpeed = false;
 			spinConfig.disconnected = true;
 		}
 	}
@@ -27,7 +26,6 @@ public class AxleClutch extends AxleBlock {
 	@Override
 	public void setStats() {
 		super.setStats();
-//		stats.add(SWStat.spinOutputForce, clutchStrength * 600f, SWStat.force);
 	}
 	
 	public class AxleClutchBuild extends AxleBlockBuild {
@@ -41,18 +39,18 @@ public class AxleClutch extends AxleBlock {
 		@Override
 		public float getForce() {
 			if (front == null || back == null || !shouldConnect) return 0f;
-			return front.spinGraph() == SpinGraph.graphContext ? backTorque / back.getRatio() : frontTorque / front.getRatio();
+			return (front.spinGraph() == SpinGraph.graphContext ? backTorque * back.getRatio() / front.getRatio() : frontTorque * front.getRatio() / back.getRatio());
 		}
 		@Override
 		public float getTargetSpeed() {
 			if (front == null || back == null || !shouldConnect) return 0f;
-			return front.spinGraph() == SpinGraph.graphContext ? back.spinGraph().targetSpeed * back.getRatio() : front.spinGraph().targetSpeed * front.getRatio();
+			return front.spinGraph() == SpinGraph.graphContext ? back.spinGraph().targetSpeed / back.getRatio() * front.getRatio() : front.spinGraph().targetSpeed / front.getRatio() * back.getRatio();
 		}
 
 		@Override
 		public float getResistance() {
 			if (front == null || back == null || !shouldConnect) return spinConfig.resistance;
-			return front.spinGraph() == SpinGraph.graphContext ? (spinConfig.resistance + backFriction) / back.getRatio() : (spinConfig.resistance + frontFriction) / front.getRatio();
+			return (front.spinGraph() == SpinGraph.graphContext ? backFriction * back.getRatio() / front.getRatio() : frontFriction * front.getRatio() / back.getRatio());
 		}
 
 		@Override
@@ -77,7 +75,7 @@ public class AxleClutch extends AxleBlock {
 				frontTorque /= clutches;
 				backTorque /= clutches;
 
-				shouldConnect = (frontTorque + backTorque) - (frontFriction + backFriction) > 0;
+				shouldConnect = (frontTorque * front.getRatio() + backTorque * back.getRatio()) - (frontFriction * front.getRatio() + backFriction * back.getRatio()) > 0;
 
 				if (shouldConnect) {
 

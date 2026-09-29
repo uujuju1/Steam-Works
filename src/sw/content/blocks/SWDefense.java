@@ -48,6 +48,8 @@ public class SWDefense {
 			rotate = true;
 			drawArrow = false;
 
+			radius = 20f * 8f;
+
 			regenAmount = 10f;
 			regenPercentage = 0.01f;
 

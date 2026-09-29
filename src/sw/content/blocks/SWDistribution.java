@@ -459,7 +459,7 @@ public class SWDistribution {
 			);
 			padding = 0.75f;
 			
-			liquidCapacity = 20f;
+			liquidCapacity = 100f;
 		}};
 		mechanicalConduitRouter = new LiquidRouter("mechanical-conduit-router") {{
 			requirements(Category.liquid, with(
@@ -504,6 +504,7 @@ public class SWDistribution {
 			));
 
 			range = 10;
+			liquidCapacity = 100f;
 		}};
 		//endregion
 	}
