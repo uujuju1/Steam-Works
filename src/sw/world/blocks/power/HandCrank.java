@@ -51,11 +51,7 @@ public class HandCrank extends AxleBlock {
 		@Override public Graphics.Cursor getCursor() {
 			return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
 		}
-		
-		@Override public boolean outputsSpin() {
-			return true;
-		}
-		
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);

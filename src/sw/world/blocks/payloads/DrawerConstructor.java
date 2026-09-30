@@ -147,6 +147,15 @@ public class DrawerConstructor extends Constructor {
 		}
 
 		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override
 		public Block recipe() {
 			return filter.size == 1 ? filter.first() : super.recipe();
 		}

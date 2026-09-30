@@ -108,10 +108,6 @@ public class AxleBrake extends AxleBlock {
 		@Override public float getResistance() {
 			return (spinConfig.resistance + Mathf.clamp(progress()) * (strength < 0 ? torqueTarget : strength)) / getRatio();
 		}
-		
-		@Override public boolean outputsSpin() {
-			return true;
-		}
 
 		@Override
 		public float progress() {

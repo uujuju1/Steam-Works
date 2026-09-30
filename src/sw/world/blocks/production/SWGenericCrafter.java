@@ -194,11 +194,20 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 		}
-		
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-			
+
 			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
 		
@@ -208,12 +217,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 			
 			if (spin != null) spinGraph().removeBuild(this);
 		}
-		
-		@Override
-		public boolean outputsSpin() {
-			return outputRotation > 0 && outputRotationForce > 0;
-		}
-		
+
 		@Override
 		public void update() {
 			if ((this.timeScaleDuration -= Time.delta) <= 0.0F || !this.block.canOverdrive) {

@@ -58,11 +58,6 @@ public class SpinSource extends AxleBlock {
 		@Override public float getTargetSpeed() {
 			return targetSpeed * getRatio();
 		}
-		
-		@Override
-		public boolean outputsSpin() {
-			return true;
-		}
 
 		@Override
 		public void write(Writes write) {

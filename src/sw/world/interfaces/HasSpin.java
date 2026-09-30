@@ -57,20 +57,24 @@ public interface HasSpin {
 		return this;
 	}
 
-	default SpinModule spin() {
-		try {
-			return (SpinModule) asBuilding().getClass().getField("spin").get(this);
-		} catch (Exception ignored) {
-			return null;
-		}
-	}
-	default SpinConfig spinConfig() {
-		try {
-			return (SpinConfig) asBuilding().block.getClass().getField("spinConfig").get(asBuilding().block);
-		} catch (Exception ignored) {
-			return null;
-		}
-	}
+//	default SpinModule spin() {
+//		try {
+//			return (SpinModule) asBuilding().getClass().getField("spin").get(this);
+//		} catch (Exception ignored) {
+//			return null;
+//		}
+//	}
+//	default SpinConfig spinConfig() {
+//		try {
+//			return (SpinConfig) asBuilding().block.getClass().getField("spinConfig").get(asBuilding().block);
+//		} catch (Exception ignored) {
+//			return null;
+//		}
+//	}
+
+	SpinModule spin();
+	SpinConfig spinConfig();
+
 	default SpinGraph spinGraph() {
 		return spin().graph;
 	}
@@ -167,10 +171,6 @@ public interface HasSpin {
 	default void onGraphUpdate() {
 	}
 
-	default boolean outputsSpin() {
-		return false;
-	}
-	
 	/**
 	 * Called whenever a "new" building is found whose radius was already set.
 	 * @return True if the ratio that this building would set to the other is different than what the other currently has.

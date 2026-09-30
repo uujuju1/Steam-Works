@@ -261,6 +261,15 @@ public class AssemblerArm extends Block {
 		}
 
 		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override
 		public float totalProgress() {
 			return spinGraph().rotation / spinGraph().ratios.get(this, 1);
 		}

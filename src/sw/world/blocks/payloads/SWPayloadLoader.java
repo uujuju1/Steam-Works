@@ -240,16 +240,21 @@ public class SWPayloadLoader extends PayloadBlock {
 			
 			if (spin != null) spinGraph().removeBuild(this);
 		}
-		
-		@Override public boolean outputsSpin() {
-			return reverse;
-		}
-		
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+		}
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
 		}
 		
 		@Override public float totalProgress() {

@@ -127,6 +127,15 @@ public class SWTurret extends Turret {
 		}
 
 		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override
 		public void updateEfficiencyMultiplier(){
 			if(heatRequirement > 0){
 				efficiency *= Math.min(Math.max(heatReq / heatRequirement, cheating() ? 1f : 0f), maxHeatEfficiency);
