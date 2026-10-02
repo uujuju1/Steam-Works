@@ -1,0 +1,5 @@
+{
+  "name": "Enable Water Wheel",
+
+  "block.sw-water-wheel.envDisabled": 0,
+}

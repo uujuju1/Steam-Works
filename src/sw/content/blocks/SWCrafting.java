@@ -788,7 +788,13 @@ public class SWCrafting {
 			}};
 		}};
 		rte = new ReactorCrafter("rte") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.bloom, 250,
+				SWItems.iron, 400,
+				SWItems.aluminium, 500,
+				Items.silicon, 200,
+				Items.thorium, 299
+			));
 			size = 5;
 
 			ambientSound = Sounds.loopThoriumReactor;
@@ -1133,6 +1139,7 @@ public class SWCrafting {
 				Items.silicon, 100,
 				Items.graphite, 90
 			));
+			researchCost = mult(requirements, 5);
 			size = 3;
 
 			ambientSound = Sounds.loopCultivator;
@@ -1281,6 +1288,7 @@ public class SWCrafting {
 				Items.graphite, 130,
 				Items.silicon, 70
 			));
+			researchCost = mult(requirements, 10);
 			size = 3;
 
 			Effect smokeEffect = new ParticlePillarEffect() {{

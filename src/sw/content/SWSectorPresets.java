@@ -13,7 +13,7 @@ public class SWSectorPresets {
 		crevasse, theDelta,
 		brokenCorridors, caustics,
 		liveStorm, bayOfEmbers,
-		bubbles,
+		bubbles, flarePits,
 		abandonedMaze, cavern;
 
 	public static void load() {
@@ -79,8 +79,8 @@ public class SWSectorPresets {
 			core = (CoreBlock) SWStorage.coreMole;
 		}};
 		bayOfEmbers = new PositionSectorPreset("bay-of-embers", SWPlanets.wendi, 5) {{
-			x = 700f;
-			y = 400f;
+			x = 600f;
+			y = 500f;
 			width = 600f;
 			height = 300f;
 			icon = () -> Icon.modeAttack;
@@ -127,6 +127,18 @@ public class SWSectorPresets {
 
 			launcher = (PositionSectorPreset) caustics;
 			core = (CoreBlock) SWStorage.coreMole;
+		}};
+		flarePits = new PositionSectorPreset("flare-pits", SWPlanets.wendi, 9) {{
+			x = 100f;
+			y = 600f;
+			width = height = 400;
+			icon = () -> Icon.powerOld;
+
+			rules = r -> r.env = Env.terrestrial | Env.oxygen | Env.groundOil | Env.groundWater;
+
+			landMusic = SWMusics.terlahirKembali;
+
+			core = (CoreBlock) SWStorage.coreScaffold;
 		}};
 	}
 }
