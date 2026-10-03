@@ -599,13 +599,11 @@ public class SWCrafting {
 			);
 
 			// sillies with load order
-			Events.on(EventType.ClientLoadEvent.class, e -> {
-				filter.addAll(
-					SWDefense.ironWall, SWDefense.ironWallLarge,
-					SWDefense.bloomWall, SWDefense.bloomWallLarge,
-					SWStorage.compactContainer, SWStorage.liquidDistributor
-				);
-			});
+			Events.on(EventType.ClientLoadEvent.class, e -> filter.addAll(
+				SWDefense.ironWall, SWDefense.ironWallLarge,
+				SWDefense.bloomWall, SWDefense.bloomWallLarge,
+				SWStorage.compactContainer, SWStorage.liquidDistributor
+			));
 
 			spinConfig = new SpinConfig() {{
 				resistance = 5f / 600f;
@@ -1073,7 +1071,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1086,7 +1084,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1099,7 +1097,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1112,7 +1110,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;

@@ -167,7 +167,7 @@ public class SWTechTree {
           });
           nodeProduce(Liquids.slag, () -> {
             nodeProduce(Liquids.oil, () -> {});
-            nodeProduce(gas, () -> {});
+            nodeProduce(gas, () -> nodeProduce(slurry, () -> {}));
           });
         });
       });

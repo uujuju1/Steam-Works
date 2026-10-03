@@ -107,9 +107,7 @@ public class SWSectorPresets {
 			width = height = 300;
 			icon = () -> Icon.modeAttack;
 
-			rules = r -> {
-				r.env = Env.terrestrial | Env.groundWater | Env.groundOil | Env.oxygen;
-			};
+			rules = r -> r.env = Env.terrestrial | Env.groundWater | Env.groundOil | Env.oxygen;
 
 			landMusic = SWMusics.ouroEscuro;
 
@@ -134,7 +132,10 @@ public class SWSectorPresets {
 			width = height = 400;
 			icon = () -> Icon.powerOld;
 
-			rules = r -> r.env = Env.terrestrial | Env.oxygen | Env.groundOil | Env.groundWater;
+			rules = r -> {
+				r.env = Env.terrestrial | Env.oxygen | Env.groundOil | Env.groundWater;
+				r.worldProcessorPlayerLink = true;
+			};
 
 			landMusic = SWMusics.terlahirKembali;
 
