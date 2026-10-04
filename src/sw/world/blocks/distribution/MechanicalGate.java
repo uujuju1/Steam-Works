@@ -38,8 +38,7 @@ public class MechanicalGate extends OverflowGate {
 	public class MechanicalGateBuild extends OverflowGateBuild {
 		public boolean invert = false;
 
-		@Override
-		public Boolean config(){
+		@Override public Boolean config(){
 			return invert;
 		}
 

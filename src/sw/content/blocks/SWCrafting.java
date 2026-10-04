@@ -599,13 +599,11 @@ public class SWCrafting {
 			);
 
 			// sillies with load order
-			Events.on(EventType.ClientLoadEvent.class, e -> {
-				filter.addAll(
-					SWDefense.ironWall, SWDefense.ironWallLarge,
-					SWDefense.bloomWall, SWDefense.bloomWallLarge,
-					SWStorage.compactContainer, SWStorage.liquidDistributor
-				);
-			});
+			Events.on(EventType.ClientLoadEvent.class, e -> filter.addAll(
+				SWDefense.ironWall, SWDefense.ironWallLarge,
+				SWDefense.bloomWall, SWDefense.bloomWallLarge,
+				SWStorage.compactContainer, SWStorage.liquidDistributor
+			));
 
 			spinConfig = new SpinConfig() {{
 				resistance = 5f / 600f;
@@ -788,7 +786,13 @@ public class SWCrafting {
 			}};
 		}};
 		rte = new ReactorCrafter("rte") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.bloom, 250,
+				SWItems.iron, 400,
+				SWItems.aluminium, 500,
+				Items.silicon, 200,
+				Items.thorium, 299
+			));
 			size = 5;
 
 			ambientSound = Sounds.loopThoriumReactor;
@@ -1067,7 +1071,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1080,7 +1084,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1093,7 +1097,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1106,7 +1110,7 @@ public class SWCrafting {
 
 					particleRad = 16f;
 					particleLife = 300f;
-					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));;
+					particleSizeInterp = t -> Interp.circleOut.apply(Interp.slope.apply(t));
 					particles = 15;
 					fadeMargin = 0.5f;
 					alpha = 0.8f;
@@ -1126,7 +1130,14 @@ public class SWCrafting {
 			}};
 		}};
 		infusingBellow = new SWGenericCrafter("infusing-bellow") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, with(
+				SWItems.bloom, 50,
+				SWItems.iron, 80,
+				SWItems.verdigris, 120,
+				Items.silicon, 100,
+				Items.graphite, 90
+			));
+			researchCost = mult(requirements, 5);
 			size = 3;
 
 			ambientSound = Sounds.loopCultivator;
@@ -1158,7 +1169,7 @@ public class SWCrafting {
 			}});
 			consumeLiquids(LiquidStack.with(
 				SWLiquids.slurry, 50f / 60f,
-				Liquids.hydrogen, 6f / 60f
+				Liquids.hydrogen, 1f / 60f
 			));
 			outputLiquids = LiquidStack.with(Liquids.oil, 25f / 60f);
 
@@ -1226,12 +1237,12 @@ public class SWCrafting {
 		}};
 		flareStack = new StackableGenericCrafter("flare-stack") {{
 			requirements(Category.crafting, with(
-
+				SWItems.iron, 20,
+				Items.graphite, 30
 			));
 			size = 1;
 
-			minBoost = 0f;
-			boost = -1;
+			boost = -1f;
 			addBoost = true;
 			scaleLiquidConsumption = true;
 
@@ -1269,8 +1280,13 @@ public class SWCrafting {
 		}};
 		oilBoiler = new StackableGenericCrafter("oil-boiler") {{
 			requirements(Category.crafting, with(
-
+				SWItems.iron, 80,
+				SWItems.aluminium, 120,
+				SWItems.bloom, 100,
+				Items.graphite, 130,
+				Items.silicon, 70
 			));
+			researchCost = mult(requirements, 10);
 			size = 3;
 
 			Effect smokeEffect = new ParticlePillarEffect() {{
@@ -1317,10 +1333,10 @@ public class SWCrafting {
 
 			scaleLiquidConsumption = true;
 			consumeLiquids(LiquidStack.with(
-				Liquids.water, 10f / 60f,
-				Liquids.oil, 100f / 60f
+				Liquids.water, 20f / 60f,
+				Liquids.oil, 50f / 60f
 			));
-			outputLiquids = LiquidStack.with(SWLiquids.steam, 100f / 60f);
+			outputLiquids = LiquidStack.with(SWLiquids.steam, 200f / 60f);
 			boost = 2f;
 
 			Func<Vec2, DrawLightPillar> lights = pos -> new DrawLightPillar() {{
@@ -1425,27 +1441,6 @@ public class SWCrafting {
 //			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
 //			consumeLiquid(Liquids.ozone, 1f/60f);
 //			outputItems = with(SWItems.oxycarbide, 1);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault(),
-//				new DrawFlame() {{
-//					flameRadius = 5f;
-//				}}
-//			);
-//		}};
-//
-//		rte = new GenericCrafter("rte") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItem(Items.thorium, 2);
-//			consumeLiquid(Liquids.water, 0.2f);
-//			outputItems = with(Items.silicon, 3);
-//			outputLiquids = LiquidStack.with(SWLiquids.steam, 0.2f);
 //
 //			drawer = new DrawMulti(
 //				new DrawDefault(),

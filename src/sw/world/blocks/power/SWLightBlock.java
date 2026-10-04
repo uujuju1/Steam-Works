@@ -159,6 +159,15 @@ public class SWLightBlock extends Block {
 			progress = read.f();
 			totalProgress = read.f();
 		}
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
 		
 		@Override public float totalProgress() {
 			return totalProgress;

@@ -1,0 +1,8 @@
+{
+  "name": "Firestorm Nerf",
+
+  "weather.sw-firestorm.opacity": 0.25,
+  "weather.sw-firestorm.damage": 0,
+  "weather.sw-firestorm.damageIncrease": 0,
+  "weather.sw-firestorm.incendIncrease": 0
+}

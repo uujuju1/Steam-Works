@@ -33,6 +33,8 @@ public class HandCrank extends AxleBlock {
 		if (spinConfig != null) {
 			stats.add(SWStat.spinOutput, StatValues.number(speed * 10f, SWStat.spinMinute));
 			stats.add(SWStat.spinOutputForce, StatValues.number(torque * 600f, SWStat.force));
+
+			spinConfig.hasStaticTorque = false;
 		}
 	}
 	
@@ -49,11 +51,7 @@ public class HandCrank extends AxleBlock {
 		@Override public Graphics.Cursor getCursor() {
 			return interactable(player.team()) ? Graphics.Cursor.SystemCursor.hand : Graphics.Cursor.SystemCursor.arrow;
 		}
-		
-		@Override public boolean outputsSpin() {
-			return true;
-		}
-		
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);

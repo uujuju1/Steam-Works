@@ -13,6 +13,9 @@ import sw.world.interfaces.*;
 
 public class SpinConfig {
 	public boolean hasSpin = true;
+
+	public boolean hasStaticFriction = true;
+	public boolean hasStaticTorque = true;
 	
 	/**
 	 * When true, torque will be ignored if the graph's speed exceeds this block's target speed.

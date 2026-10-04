@@ -1,6 +1,9 @@
 package sw;
 
 import arc.*;
+import arc.files.*;
+import arc.graphics.*;
+import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.ctype.*;
@@ -26,6 +29,13 @@ public class ModLoader extends Mod {
       }
 
       if (Vars.headless) return;
+      Fi iconsReference = Vars.tree.get("textures/sw/icons/icons1.png");
+      if (iconsReference.exists()) {
+        Fi[] icons = iconsReference.parent().list();
+        int id = Mathf.clamp(Mathf.floor((float) (Math.random() * icons.length)), 0, icons.length - 1);
+
+        Vars.mods.getMod("sw").iconTexture = new Texture(icons[id]);
+      }
 
       if (Core.settings.getBool("sw-menu-enabled", true)) {
         try {

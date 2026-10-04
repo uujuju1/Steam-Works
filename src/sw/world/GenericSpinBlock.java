@@ -79,6 +79,15 @@ public class GenericSpinBlock extends Block {
 		}
 
 		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override
 		public void write(Writes write) {
 			super.write(write);
 

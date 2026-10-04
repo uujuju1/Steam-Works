@@ -174,6 +174,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getForce() {
+			if (spinConfig != null && spinConfig.hasStaticTorque) return outputRotationForce;
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotationForce * (forceScales ? efficiency : 1) * warmup / getRatio() : 0;
 		}
 
@@ -183,6 +184,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 		}
 
 		@Override public float getTargetSpeed() {
+			if (spinConfig != null && spinConfig.hasStaticTorque) return outputRotation;
 			return (efficiency > 0 && outputRotation > 0 && outputRotationForce > 0) ? outputRotation * (speedScales ? efficiency : 1) * warmup * getRatio() : 0;
 		}
 		
@@ -192,11 +194,20 @@ public class SWGenericCrafter extends AttributeCrafter {
 
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 		}
-		
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
 		@Override
 		public void onProximityUpdate() {
 			super.onProximityUpdate();
-			
+
 			if (spin != null) new SpinGraph().mergeFlood(this);
 		}
 		
@@ -206,12 +217,7 @@ public class SWGenericCrafter extends AttributeCrafter {
 			
 			if (spin != null) spinGraph().removeBuild(this);
 		}
-		
-		@Override
-		public boolean outputsSpin() {
-			return outputRotation > 0 && outputRotationForce > 0;
-		}
-		
+
 		@Override
 		public void update() {
 			if ((this.timeScaleDuration -= Time.delta) <= 0.0F || !this.block.canOverdrive) {

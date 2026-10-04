@@ -358,6 +358,15 @@ public class MechanicalArm extends PayloadBlock {
 			updatePath();
 		}
 
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
 		public void selectPos(int pos) {
 			configure(new int[]{puttingConfig ? takePos : pos, puttingConfig ? pos : putPos});
 		}

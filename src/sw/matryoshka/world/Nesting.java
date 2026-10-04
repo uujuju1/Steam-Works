@@ -47,11 +47,8 @@ public class Nesting {
 			build = Groups.build;
 			bullet = Groups.bullet;
 			draw = Groups.draw;
-			fire = Groups.fire;
-			label = Groups.label;
 			player = Groups.player;
 			powerGraph = Groups.powerGraph;
-			puddle = Groups.puddle;
 			sync = Groups.sync;
 			unit = Groups.unit;
 			weather = Groups.weather;
@@ -68,11 +65,8 @@ public class Nesting {
 		public static EntityGroup<Building> build;
 		public static EntityGroup<Bullet> bullet;
 		public static EntityGroup<Drawc> draw;
-		public static EntityGroup<Fire> fire;
-		public static EntityGroup<WorldLabel> label;
 		public static EntityGroup<Player> player;
 		public static EntityGroup<PowerGraphUpdaterc> powerGraph;
-		public static EntityGroup<Puddle> puddle;
 		public static EntityGroup<Syncc> sync;
 		public static EntityGroup<Unit> unit;
 		public static EntityGroup<WeatherState> weather;
@@ -85,11 +79,8 @@ public class Nesting {
 			Groups.build = origin.groups.build;
 			Groups.bullet = origin.groups.bullet;
 			Groups.draw = origin.groups.draw;
-			Groups.fire = origin.groups.fire;
-			Groups.label = origin.groups.label;
 			Groups.player = origin.groups.player;
 			Groups.powerGraph = origin.groups.powerGraph;
-			Groups.puddle = origin.groups.puddle;
 			Groups.sync = origin.groups.sync;
 			Groups.unit = origin.groups.unit;
 			Groups.weather = origin.groups.weather;
@@ -105,11 +96,8 @@ public class Nesting {
 			Groups.build = build;
 			Groups.bullet = bullet;
 			Groups.draw = draw;
-			Groups.fire = fire;
-			Groups.label = label;
 			Groups.player = player;
 			Groups.powerGraph = powerGraph;
-			Groups.puddle = puddle;
 			Groups.sync = sync;
 			Groups.unit = unit;
 			Groups.weather = weather;

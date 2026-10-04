@@ -46,6 +46,8 @@ public class SWStat {
 	public static final StatUnit spinMinute = new StatUnit("sw-spin-minute");
 	public static final StatUnit force = new StatUnit("sw-force");
 	public static final StatUnit mass = new StatUnit("sw-mass");
+
+	public static final StatUnit perBlock = new StatUnit("sw-per-block", true);
   // endregion
 
 	// fixes for SWItemTurret

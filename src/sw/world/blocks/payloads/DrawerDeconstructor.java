@@ -134,6 +134,15 @@ public class DrawerDeconstructor extends PayloadDeconstructor {
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
 		}
 
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
 		@Override public float totalProgress() {
 			return time;
 		}

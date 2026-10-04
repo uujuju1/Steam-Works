@@ -450,6 +450,15 @@ public class MechanicalAssembler extends Block {
 				!invalid && team.data().countType(getPlan().unit) < Units.getCap(team);
 		}
 
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
 		@Override public float totalProgress() {
 			return spinGraph().rotation / spinGraph().ratios.get(this, 1);
 		}

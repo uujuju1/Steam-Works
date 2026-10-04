@@ -30,7 +30,7 @@ public class SWDefense {
 	public static Block
 		repairStation,
 		grindLamp, lavaLamp, lamparine,
-		phantomStation,
+		phantomStation, repairer,
 		ironWall, ironWallLarge, bloomWall, bloomWallLarge,
 		thoriumClump;
 
@@ -47,6 +47,8 @@ public class SWDefense {
 			size = 2;
 			rotate = true;
 			drawArrow = false;
+
+			radius = 20f * 8f;
 
 			regenAmount = 10f;
 			regenPercentage = 0.01f;
@@ -300,6 +302,49 @@ public class SWDefense {
 					new int[]{3, 9},
 					new int[]{6, 0},
 					new int[]{9, 3},
+				};
+			}};
+		}};
+		repairer = new Repairer("repairer") {{
+			requirements(Category.effect, with());
+			size = 3;
+
+			baseRepairTime = 600f;
+
+			consume(new ConsumeSpin() {{
+				minSpeed = maxSpeed = 100f / 10f;
+
+				efficiencyScale = Interp.one;
+			}});
+
+			mixColor = Pal.lancerLaser.cpy().a(0.5f);
+			alpha = 0.25f;
+			alphaScl = 1f;
+			alphaMag = 0.2f;
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawAxles() {{
+					rotationOverride = b -> ((HasSpin) b).getRotation();
+
+					axles.add(Axles.tripleBlock.position(0, 0, 0, 1f));
+				}},
+				new DrawRegion(),
+				new DrawGlowRegion() {{
+					layer = -1f;
+					color = Pal.lancerLaser;
+					glowIntensity = 0.3f;
+					glowScale = 20f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 200f / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{0, 6}
 				};
 			}};
 		}};

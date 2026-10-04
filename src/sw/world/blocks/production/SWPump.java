@@ -161,6 +161,15 @@ public class SWPump extends Pump {
 		}
 
 		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
+
+		@Override
 		public byte version() {
 			return 1;
 		}

@@ -697,13 +697,13 @@ public class SWProduction {
 
 			consume(new ConsumeSpin() {{
 				minSpeed = 0.5f;
-				maxSpeed = 20f;
+				maxSpeed = 5f;
 
 				minEfficiency = 1f;
-				maxEfficiency = 2f;
+				maxEfficiency = 10 / 3f;
 				showGraph = true;
 
-				efficiencyScale = t -> Mathf.pow(Mathf.map(t, 0.5f, 20f, 0f, 1f), 5f) + 1f;
+				efficiencyScale = t -> 1 + Mathf.clamp(Mathf.floor(Mathf.map(t, 0.5f, 5f, 0, 5)) / 4f) * 7f / 3;
 			}});
 
 			hasAttribute = true;
@@ -799,33 +799,16 @@ public class SWProduction {
 			);
 			
 			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawRegion("-gear", 5),
 				new DrawDefault(),
 				new DrawGlowRegion() {{
 					layer = -1f;
-					color = Pal.accent;
+					color = Pal.turretHeat;
 					glowIntensity = 0.3f;
 					glowScale = 20f;
-				}},
-				new DrawParts() {{
-					parts.add(
-						new RegionPart("-gear") {{
-							outline = false;
-							progress = PartProgress.smoothReload.loop(960f);
-							moveRot = 360f;
-						}},
-						new RegionPart("-top") {{
-							outline = false;
-							clampProgress = false;
-							growProgress = PartProgress.smoothReload.loop(180f).curve(Interp.slope).curve(Interp.swing);
-							growX = growY = 0.125f;
-						}},
-						new RegionPart("-top-top") {{
-							outline = false;
-							clampProgress = false;
-							growProgress = PartProgress.smoothReload.add(45f).loop(180f).curve(Interp.slope).curve(Interp.swing);
-							growX = growY = 0.125f;
-						}}
-					);
 				}}
 			);
 		}};

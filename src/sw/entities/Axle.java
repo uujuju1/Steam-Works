@@ -2,7 +2,6 @@ package sw.entities;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.util.*;
 import sw.annotations.Annotations.*;
 import sw.gen.*;
 import sw.graphics.*;
@@ -10,7 +9,6 @@ import sw.graphics.*;
 public class Axle implements Cloneable {
 	public String suffix = "";
 	public String name;
-	@Deprecated public @Nullable String iconOverride;
 
 	public float x, y, rotation, angle;
 
@@ -23,7 +21,6 @@ public class Axle implements Cloneable {
 
 	public boolean circular = false;
 
-//	public TextureRegion[] regions;
 	public @Load(value = "@name$", splits = true, width = "pixelWidth", height = "pixelHeight") TextureRegion[][] regions;
 	public @Load("@name$-shadow") TextureRegion shadowRegion;
 
@@ -67,10 +64,6 @@ public class Axle implements Cloneable {
 		if (name == null) name = (base == null ? "" : base) + suffix;
 
 		SWContentRegionRegistry.load(this);
-//		String trueName = name == null ? (base == null ? "" : base) + suffix : name;
-
-//		if (hasSprites) regions = Core.atlas.find(trueName).split(pixelWidth, pixelHeight)[0];
-//		shadowRegion = Core.atlas.find(trueName + "-shadow");
 	}
 
 	public Axle position(float x, float y, float rot, float rotScl) {

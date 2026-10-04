@@ -29,16 +29,21 @@ public class SWTechTree {
       root("sw-crafting", engineSmelter, () -> {
         node(cokeOven, () -> {
           node(blastFurnace, with(new OnSector(caustics)), () -> {
-            node(rte, with(new NonUnlockable()), () -> {});
+            node(rte, with(new SectorComplete(flarePits)), () -> {});
           });
-          node(burner, with(new OnSector(bubbles)), () -> {});
+          node(burner, with(new OnSector(bubbles)), () -> {
+            node(flareStack, with(new OnSector(flarePits)), () -> {});
+          });
         });
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
           node(crusher, with(new OnSector(caustics)), () -> {});
           node(coolingTower, with(new OrObjective(
             new Research(burner),
             new Research(rte)
-          )), () -> {});
+          )), () -> {
+            node(oilBoiler, with(new OrObjective(new Research(infusingBellow), new Research(rig)), new OnSector(flarePits)), () -> {});
+            node(infusingBellow, with(new Research(flareStack)), () -> {});
+          });
         });
         node(constructionManifold, with(new OnSector(brokenCorridors)), () -> {
           node(deconstructionManifold);
@@ -48,15 +53,17 @@ public class SWTechTree {
       // region defense
       root("sw-defense", imber, with(new Produce(coke)), () -> {
         node(trebuchet, with(new OrObjective(new OnSector(cavern), new OnSector(liveStorm))), () -> {
-          node(thermikos, () -> {});
-          node(rainfall, with(new NonUnlockable()), () -> {});
+          node(thermikos, () -> {
+            node(rainfall, with(new SectorComplete(bubbles)), () -> node(anchor, with(new OnSector(flarePits)), () -> {}));
+            node(flurry, with(new NonUnlockable()), () -> {});
+          });
         });
         node(push, with(new OnSector(liveStorm)), () -> {});
         node(ironWall, with(new OnSector(theDelta)), () -> {
           node(ironWallLarge);
           node(bloomWall, () -> node(bloomWallLarge));
           node(repairStation, with(new OnSector(liveStorm)), () -> {
-            node(phantomStation, with(new NonUnlockable()), () -> {});
+            node(phantomStation, with(new SectorComplete(flarePits)), () -> {});
           });
         });
         node(lamparine, with(new OnSector(cavern)), () -> {});
@@ -97,19 +104,18 @@ public class SWTechTree {
         node(combustionEngine, with(new OnSector(caustics)), () -> {
           node(piston, with(
             new Produce(steam),
-            new NonUnlockable()
+            new SectorComplete(flarePits)
           ), () -> node(crankshaft));
         });
         node(waterWheel, with(new OnSector(abandonedMaze)), () -> {
-          node(convectionTurbine, with(new NonUnlockable()), () -> {});
+          node(convectionTurbine, with(new OnSector(bayOfEmbers)), () -> {});
         });
         node(wireShaft, () -> {
           node(wireShaftRouter, () -> {
             node(shaftGearbox);
             node(overheadBelt, () -> node(largeOverheadBelt));
           });
-          node(clutch, with(new Research(combustionEngine)), () -> {
-            node(mechanicalGovernor, () -> {});
+          node(clutch, with(new NonUnlockable(), new Research(combustionEngine)), () -> {
           });
           node(flywheel, () -> {});
           node(spring, with(new Research(mechanicalPayloadUnloader)), () -> {});
@@ -147,7 +153,11 @@ public class SWTechTree {
           nodeProduce(Items.sand, () -> {
             nodeProduce(Items.silicon, () -> {});
           });
-          nodeProduce(bloom, () -> {});
+          nodeProduce(bloom, () -> {
+            nodeProduce(Items.thorium, () -> {
+              nodeProduce(Items.lead, () -> nodeProduce(compound, () -> {}));
+            });
+          });
         });
         nodeProduce(solvent, () -> {
           nodeProduce(Liquids.water, () -> {
@@ -157,7 +167,7 @@ public class SWTechTree {
           });
           nodeProduce(Liquids.slag, () -> {
             nodeProduce(Liquids.oil, () -> {});
-            nodeProduce(gas, () -> {});
+            nodeProduce(gas, () -> nodeProduce(slurry, () -> {}));
           });
         });
       });
@@ -172,8 +182,11 @@ public class SWTechTree {
           node(brokenCorridors, with(new Produce(aluminium), new Research(trebuchet)), () -> {
             node(caustics, () -> {
               node(bubbles, with(new Research(centrifugalCollector)), () -> {});
-              node(bayOfEmbers, with(new NonUnlockable()), () -> {});
+              node(flarePits, with(new Research(rainfall)), () -> {
+
+              });
             });
+            node(bayOfEmbers, with(new SectorComplete(caustics)), () -> {});
           });
         });
       });

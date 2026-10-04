@@ -1,6 +1,7 @@
 package sw.world.blocks.payloads;
 
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
@@ -69,7 +70,11 @@ public class SWPayloadLoader extends PayloadBlock {
 	@Override
 	public void init() {
 		super.init();
-		if (spinConfig != null) spinConfig.init(this);
+		if (spinConfig != null) {
+			spinConfig.init(this);
+
+			spinConfig.hasStaticTorque = false;
+		}
 	}
 	
 	@Override
@@ -171,7 +176,7 @@ public class SWPayloadLoader extends PayloadBlock {
 			if (payload == null) return;
 			if (reverse) {
 				if (payload.block().hasItems) Vars.content.items().each(item -> {
-					int count = Math.min((int) (loadingSpeed * edelta()), getMaximumAccepted(item));
+					int count = Math.min(Mathf.ceil(loadingSpeed * edelta()), getMaximumAccepted(item));
 					count = Math.min(payload.build.items.get(item), acceptStack(item, count, payload.build));
 					if (count > 0) {
 						handleStack(item, count, payload.build);
@@ -190,7 +195,7 @@ public class SWPayloadLoader extends PayloadBlock {
 				}
 			} else {
 				if (payload.block().hasItems) Vars.content.items().each(item -> {
-					int count = Math.min((int) (loadingSpeed * edelta()), payload.build.getMaximumAccepted(item));
+					int count = Math.min(Mathf.ceil(loadingSpeed * edelta()), payload.build.getMaximumAccepted(item));
 					count = Math.min(items.get(item), payload.build.acceptStack(item, count, this));
 					if (count > 0) {
 						payload.build.handleStack(item, count, this);
@@ -235,16 +240,21 @@ public class SWPayloadLoader extends PayloadBlock {
 			
 			if (spin != null) spinGraph().removeBuild(this);
 		}
-		
-		@Override public boolean outputsSpin() {
-			return reverse;
-		}
-		
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
 
 			if (spinConfig != null) (spin == null ? new SpinModule() : spin).read(read);
+		}
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
 		}
 		
 		@Override public float totalProgress() {

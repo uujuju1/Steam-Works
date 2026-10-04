@@ -295,6 +295,15 @@ public class RangedDrill extends Block {
 		public boolean shouldConsume(){
 			return items.total() < itemCapacity && lastItem != null && enabled;
 		}
+
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
+		}
 		
 		@Override public float totalProgress() {
 			return totalTime;

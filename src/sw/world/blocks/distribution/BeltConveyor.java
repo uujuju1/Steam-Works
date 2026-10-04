@@ -101,6 +101,10 @@ public class BeltConveyor extends Block {
 			} else isEdge = true;
 			return hasSpin && sameTeam && (isEdge || (other instanceof BeltConveyorBuild && other.asBuilding().rotation == rotation));
 		}
+
+		public float conveyorSpeed() {
+			return spinGraph().speed / (spinGraph().ratios.get(this, 1) * 360f) * movementScale;
+		}
 		
 		@Override
 		public Building create(Block block, Team team) {
@@ -197,8 +201,13 @@ public class BeltConveyor extends Block {
 			return removed;
 		}
 
-		public float conveyorSpeed() {
-			return spinGraph().speed / (spinGraph().ratios.get(this, 1) * 360f) * movementScale;
+		@Override
+		public SpinModule spin() {
+			return spin;
+		}
+		@Override
+		public SpinConfig spinConfig() {
+			return spinConfig;
 		}
 
 		@Override
