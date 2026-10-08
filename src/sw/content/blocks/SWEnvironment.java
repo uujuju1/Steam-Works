@@ -30,7 +30,8 @@ public class SWEnvironment {
 	encrustedCrystalline, crystalline,
 
 	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
-	slagPlug,
+	verticalStriatedConcrete, horizontalStriatedConcrete, verticalStriatedConcreteWall, horizontalStriatedConcreteWall,
+	waterChannel, slagPlug,
 	pitfall, gratingPitfall, waterfall, chasm,
 
 	solvent, deepSolvent,
@@ -259,6 +260,8 @@ public class SWEnvironment {
 
 		//region concrete
 		concreteWall = new StaticWall("concrete-wall");
+		verticalStriatedConcreteWall = new StaticWall("vertical-striated-concrete-wall");
+		horizontalStriatedConcreteWall = new StaticWall("horizontal-striated-concrete-wall");
 		concrete = new Floor("concrete", 4) {{
 			wall = concreteWall;
 		}};
@@ -270,6 +273,17 @@ public class SWEnvironment {
 		}};
 		concreteStripes = new Floor("concrete-stripes", 4) {{
 			wall = concreteWall;
+		}};
+		verticalStriatedConcrete = new Floor("vertical-striated-concrete", 4) {{
+			wall = verticalStriatedConcreteWall;
+		}};
+		horizontalStriatedConcrete = new Floor("horizontal-striated-concrete", 4) {{
+			wall = horizontalStriatedConcreteWall;
+		}};
+		waterChannel = new Floor("water-channel", 2) {{
+			wall = concreteWall;
+
+			cacheLayer = SWShaders.shallowWaterLayer;
 		}};
 
 		slagPlug = new SteamVent("slag-plug") {{
@@ -326,38 +340,7 @@ public class SWEnvironment {
 		}};
 		//endregion
 
-		//region tuff
-//		tuffWall = new StaticWall("tuff-wall");
-//		tuffPile = new Prop("tuff-pile") {{
-//			variants = 2;
-//		}};
-//		columnarTuff = new TallBlock("columnar-tuff") {{
-//			variants = 2;
-//		}};
-//		tuffConcretion = new OverlayFloor("tuff-concretion") {{
-//			variants = 4;
-//		}};
-//		tuff = new Floor("tuff", 4) {{
-//			wall = tuffWall;
-//			decoration = tuffPile;
-//		}};
-//		shapedTuff = new Floor("shaped-tuff", 4) {{
-//			wall = tuffWall;
-//			decoration = tuffPile;
-//		}};
-//
-//		tuffShallowerSolvent = new Floor("tuff-shallower-solvent", 2) {{
-//			wall = tuffWall;
-//			cacheLayer = CacheLayer.water;
-//			isLiquid = true;
-//			liquidDrop = SWLiquids.solvent;
-//		}};
-//		tuffShallowSolvent = new Floor("tuff-shallow-solvent", 2) {{
-//			wall = tuffWall;
-//			cacheLayer = CacheLayer.water;
-//			isLiquid = true;
-//			liquidDrop = SWLiquids.solvent;
-//		}};
+		//region plants
 		//endregion
 
 		//region solvent

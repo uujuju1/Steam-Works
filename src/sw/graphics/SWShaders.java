@@ -17,7 +17,10 @@ public class SWShaders {
 	
 	public static PitfallShader pitfall;
 
+	public static SWSurfaceShader shallowWater;
+
 	public static CacheLayer pitfallLayer;
+	public static CacheLayer shallowWaterLayer;
 
 	public static Shader hintBackgroundShader;
 
@@ -27,6 +30,10 @@ public class SWShaders {
 		pitfall = new PitfallShader("pitfall");
 		pitfallLayer = new CacheLayer.ShaderLayer(pitfall);
 		CacheLayer.add(pitfallLayer);
+
+		shallowWater = new SWSurfaceShader("waterShallow");
+		shallowWaterLayer = new CacheLayer.ShaderLayer(shallowWater);
+		CacheLayer.add(shallowWaterLayer);
 
 		hintBackgroundShader = new Shader(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/hintBackground.frag")) {
 			@Override
