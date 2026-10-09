@@ -134,7 +134,10 @@ public class SWTechTree {
         node(liquidCollector, () -> {
           node(artesianWell, with(new Produce(solvent)), () -> {
             node(sieve, with(new OnSector(caustics)), () -> {});
-            node(atmosphericSiphon, with(new OnSector(bubbles)), () -> node(rig));
+            node(atmosphericSiphon, with(new OnSector(bubbles)), () -> {
+              node(rig);
+              node(aerialFilter, with(new OnSector(flarePits)), () -> {});
+            });
           });
           node(centrifugalCollector, with(new SectorComplete(caustics)), () -> {});
           node(pumpjack, with(new OnSector(abandonedMaze)), () -> {

@@ -497,6 +497,7 @@ public class SWProduction {
 				SWItems.aluminium, 60,
 				Items.graphite, 75
 			));
+			researchCost = mult(requirements, 10);
 			size = 3;
 			rotate = true;
 
