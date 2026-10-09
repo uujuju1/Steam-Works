@@ -3,6 +3,6 @@ name: "sw"
 author: "Liz Aurora"
 main: "sw.ModLoader"
 description: "No nowhere has nothing anywhere."
-version: 5.1
+version: 6
 minGameVersion: 160.5
 java: true
