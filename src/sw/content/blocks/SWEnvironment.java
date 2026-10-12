@@ -29,7 +29,7 @@ public class SWEnvironment {
 	encrustedCrystal, softCrust, exposedCrystal, crustWall, smallCrystal, smallEncrustedCrystal,
 	encrustedCrystalline, crystalline,
 
-	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall,
+	concrete, overrunConcrete, smoothConcrete, concreteStripes, concreteWall, concreteStep,
 	verticalStriatedConcrete, horizontalStriatedConcrete, verticalStriatedConcreteWall, horizontalStriatedConcreteWall,
 	waterChannel, slagPlug,
 	pitfall, gratingPitfall, waterfall, chasm,
@@ -262,6 +262,7 @@ public class SWEnvironment {
 
 		//region concrete
 		concreteWall = new StaticWall("concrete-wall");
+		concreteStep = new Cliff4("concrete-step");
 		verticalStriatedConcreteWall = new StaticWall("vertical-striated-concrete-wall");
 		horizontalStriatedConcreteWall = new StaticWall("horizontal-striated-concrete-wall");
 		concrete = new Floor("concrete", 4) {{
