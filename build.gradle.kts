@@ -5,6 +5,7 @@ import arc.util.serialization.JsonReader
 import arc.util.serialization.Jval
 import java.io.BufferedWriter
 import java.io.FileWriter
+import java.nio.file.InvalidPathException
 import java.util.regex.Pattern
 
 buildscript{
@@ -459,22 +460,39 @@ project(":") {
         val save = Fi.get(root.get("savePath").asString())
 
         doLast {
-            val process = ProcessBuilder(game)
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
-
-            if (Fi.get(game).extEquals("jar")) {
-                process.command("java", "-jar", game)
+//            val process = ProcessBuilder(game)
+//                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+//                .redirectError(ProcessBuilder.Redirect.INHERIT)
+//
+//            process.a
+            val file = Fi.get(game);
+            val args = project.property("args").toString();
+//
+            if (file.extEquals("jar")) {
+                exec {
+                    environment["MINDUSTRY_DATA_DIR"] = save.absolutePath()
+                    environment["DEVELOPMENT"] = "true"
+                    commandLine("java", "-jar", file.path())
+                    args(args.split(" "))
+                }
+            } else if (file.extEquals("exe")) {
+                exec {
+                    environment["MINDUSTRY_DATA_DIR"] = save.absolutePath()
+                    environment["DEVELOPMENT"] = "true"
+                    commandLine(file.path())
+                    args(args.split(" "))
+                }
             } else {
-                process.directory(project.rootDir)
+                throw InvalidPathException(Fi.get(game).extension(), "Game file must be a jar or exe file and it's instead a");
             }
+//
+//            val environment = process.environment()
+//            if (save.exists()) {
+//                environment["MINDUSTRY_DATA_DIR"] = save.absolutePath()
+//                environment["DEVELOPMENT"] = "true"
+//            }
+//            process.start()
 
-            val environment = process.environment()
-            if (save.exists()) {
-                environment["MINDUSTRY_DATA_DIR"] = save.absolutePath()
-                environment["DEVELOPMENT"] = "true"
-            }
-            process.start()
         }
     }
 
