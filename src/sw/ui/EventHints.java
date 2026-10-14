@@ -9,7 +9,6 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.ui.fragments.HintsFragment.*;
 import sw.content.blocks.*;
-import sw.core.*;
 import sw.entities.units.*;
 import sw.world.blocks.production.*;
 import sw.world.blocks.production.StackableGenericCrafter.*;
@@ -31,11 +30,11 @@ public enum EventHints implements Hint {
 		() -> Groups.all.contains(entity -> {
 			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
 
-			return (system.builds.first() != null && system.builds.first().asBuilding().team == Vars.player.team()) && Mathf.zero(system.torque + system.friction * -Mathf.sign(system.speed));
+			return Mathf.zero(system.torque - system.friction);
 		})
 	),
 	ratios(
-		() -> Core.input.keyDown(SWBinding.spinInfo) && SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null,
+		() -> SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null && SWUI.spinFragment.shown,
 		() -> Groups.all.contains(entity -> {
 			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
 
@@ -53,16 +52,13 @@ public enum EventHints implements Hint {
 		}
 	),
 	usefulInfo(
-		() -> Core.input.keyDown(SWBinding.spinInfo) && SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null,
+		() -> SWUI.spinFragment != null && SWUI.spinFragment.currentHovered != null && SWUI.spinFragment.shown,
 		() -> Groups.all.contains(entity -> {
-				if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
+			if(!(entity instanceof GraphUpdater graph) || !(graph.graph instanceof SpinGraph system) || system.builds.isEmpty() || system.builds.first().asBuilding().team != Vars.player.team()) return false;
 
-				return system.friction + system.torque > 50f / 600f;
-			})
-	) {{
-		visibility = visibleDesktop;
-		hintInfo = () -> new Object[]{SWBinding.spinInfo.value.key};
-	}};
+			return system.friction + system.torque > 50f / 600f;
+		})
+	);
 
 	final Boolp complete, shown;
 	EventHints[] requirements;
@@ -118,7 +114,8 @@ public enum EventHints implements Hint {
 	}
 
 	@Override public String text() {
-		return Core.bundle.formatString(Core.bundle.get("hint." + prefix + name(), "Missing bundle for hint: hint." + prefix + name()), hintInfo.get());
+		String bundle = "hint." + prefix + name();
+		return Core.bundle.formatString(Core.bundle.get(bundle + (Vars.mobile ? ".mobile" : ""), Core.bundle.get(bundle, "Missing bundle for hint: " + bundle)), hintInfo.get());
 	}
 
 	@Override
