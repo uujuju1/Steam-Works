@@ -34,7 +34,7 @@ public class SWEnvironment {
 	waterChannel, slagPlug,
 	pitfall, gratingPitfall, waterfall, chasm,
 
-	soil,
+	soil, verdantTree,
 
 	solvent, deepSolvent,
 	solventCrystal,
@@ -345,6 +345,7 @@ public class SWEnvironment {
 
 		//region garden
 		soil = new Floor("soil", 4);
+		verdantTree = new MultiLayeredTree("verdant-tree", 3);
 		//endregion
 
 		//region solvent

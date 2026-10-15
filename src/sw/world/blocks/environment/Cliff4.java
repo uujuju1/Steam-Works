@@ -21,6 +21,7 @@ public class Cliff4 extends Block {
 	public Cliff4(String name){
 		super(name);
 		breakable = alwaysReplace = false;
+		allowRectanglePlacement = true;
 		solid = true;
 		saveData = true;
 		cacheLayer = CacheLayer.walls;

@@ -43,6 +43,8 @@ public class SpinFragment extends Group{
 	public SpinFragment build(Group parent) {
 		parent.addChild(this);
 		touchable = Touchable.childrenOnly;
+
+		visible(() -> Vars.ui.hudfrag.shown);
 		
 		update(this::update);
 

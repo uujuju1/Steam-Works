@@ -28,7 +28,8 @@ public class SWItems {
     }};
     thermite = new Item("thermite", valueOf("6C5656")) {{
       buildable = false;
-      flammability = explosiveness = 0.8f;
+      flammability = 0.3f;
+      explosiveness = 1.2f;
     }};
     bloom = new Item("bloom", valueOf("5F595D")) {{
       cost = 4f;
