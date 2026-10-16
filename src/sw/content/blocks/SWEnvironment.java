@@ -39,7 +39,7 @@ public class SWEnvironment {
 	solvent, deepSolvent,
 	solventCrystal,
 
-	plateWall, agedPlateWall,
+	plateWall, agedPlateWall, growLamp,
 	truss, beam,
 	plate, waterloggedPlate, agedPlate, plateCross, plateVent,
 	lightningRod;
@@ -368,6 +368,15 @@ public class SWEnvironment {
 		// region plate
 		plateWall = new StaticWall("plate-wall");
 		agedPlateWall = new StaticWall("aged-plate-wall");
+		growLamp = new StaticWall("grow-lamp") {{
+			variants = 0;
+
+			cacheLayer = CacheLayer.normal;
+
+			emitLight = true;
+			lightColor = Color.yellow.cpy().mul(2f).a(0.5f);
+			lightRadius = 40f;
+		}};
 		truss = new SwayingBeam("truss") {{
 			baseRotation = -60f;
 			rotationOffset = 30f;
