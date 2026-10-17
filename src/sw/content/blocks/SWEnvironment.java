@@ -3,6 +3,7 @@ package sw.content.blocks;
 import arc.graphics.*;
 import arc.math.*;
 import mindustry.content.*;
+import mindustry.entities.effect.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.blocks.environment.*;
@@ -39,8 +40,8 @@ public class SWEnvironment {
 	solvent, deepSolvent,
 	solventCrystal,
 
-	plateWall, agedPlateWall, growLamp,
-	truss, beam,
+	plateWall, agedPlateWall, growLamp, coldLamp,
+	truss, beam, verticalSprinkler, horizontalSprinkler,
 	plate, waterloggedPlate, agedPlate, plateCross, plateVent,
 	lightningRod;
 
@@ -345,7 +346,7 @@ public class SWEnvironment {
 
 		//region garden
 		soil = new Floor("soil", 4);
-		verdantTree = new MultiLayeredTree("verdant-tree", 3);
+		verdantTree = new MultiLayeredTree("verdant-tree", 4);
 		//endregion
 
 		//region solvent
@@ -374,7 +375,16 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.normal;
 
 			emitLight = true;
-			lightColor = Color.yellow.cpy().mul(2f).a(0.5f);
+			lightColor = Color.valueOf("FEFFB5").cpy().a(0.5f);
+			lightRadius = 40f;
+		}};
+		coldLamp = new StaticWall("cold-lamp") {{
+			variants = 0;
+
+			cacheLayer = CacheLayer.normal;
+
+			emitLight = true;
+			lightColor = Color.valueOf("6367BF").cpy().a(0.5f);
 			lightRadius = 40f;
 		}};
 		truss = new SwayingBeam("truss") {{
@@ -395,6 +405,26 @@ public class SWEnvironment {
 		}};
 		plate = new Floor("plate", 4) {{
 			wall = plateWall;
+		}};
+		verticalSprinkler = new EffectFloor("vertical-sprinkler") {{
+			wall = plateWall;
+			blendGroup = plate;
+
+			variants = 0;
+
+			effect = new WrapEffect(SWFx.sprinkler, Color.valueOf("6E709B7F"), 90f);
+			effectTime = 10f;
+			effectTimeRand = 2f;
+		}};
+		horizontalSprinkler = new EffectFloor("horizontal-sprinkler") {{
+			wall = plateWall;
+			blendGroup = plate;
+
+			variants = 0;
+
+			effect = new WrapEffect(SWFx.sprinkler, Color.valueOf("6E709B7F"), 0f);
+			effectTime = 10f;
+			effectTimeRand = 2f;
 		}};
 		waterloggedPlate = new Floor("waterlogged-plate", 4) {{
 			wall = plateWall;

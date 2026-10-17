@@ -501,6 +501,41 @@ public class SWFx {
       Lines.stroke(2f * (1f - Interp.pow2In.apply(halfFin)));
       Lines.lineAngle(temp.x, temp.y, temp.angleTo(bottomX, bottomY), 4f * (1f - halfFin));
     }),
+
+    sprinkler = new Effect(60, e -> {
+      rand.setSeed(e.id);
+
+      final int particles = rand.random(1, 3);
+
+      Draw.color(e.color);
+
+      for (int j : Mathf.zeroOne) {
+        e.scaled(rand.random(e.lifetime / 2f, e.lifetime), b -> {
+          rand.setSeed(e.id + 1);
+          Lines.stroke(rand.random(0.5f, 1f));
+          for (int i = 0; i < particles / 2; i++) {
+            Parallax.getParallaxFrom(
+              temp.trns(e.rotation + j * 180f, rand.range(3f) + rand.random(20f, 40f) * b.fin(), rand.range(3f)).add(e.x, e.y),
+              Core.camera.position, e.fin(a -> Interp.slope.apply(Interp.pow2Out.apply(a)))
+            );
+            Fill.circle(temp.x, temp.y, e.fin(new Interp.ExpOut(10, 10)) * rand.random(0.5f, 2f) * b.foutpow());
+          }
+        });
+
+        rand.setSeed(e.id + 3);
+        e.scaled(rand.random(e.lifetime / 2f, e.lifetime), b -> {
+          rand.setSeed(e.id + 2);
+          Lines.stroke(rand.random(0.5f, 1f));
+          for (int i = 0; i < particles - particles / 2; i++) {
+            Parallax.getParallaxFrom(
+              temp.trns(e.rotation + j * 180f, rand.range(3f) + rand.random(20f, 40f) * b.fin(), rand.range(3f)).add(e.x, e.y),
+              Core.camera.position, e.fin(a -> Interp.slope.apply(Interp.pow2Out.apply(a)))
+            );
+            Fill.circle(temp.x, temp.y, e.fin(new Interp.ExpOut(10, 10)) * rand.random(0.5f, 2f) * b.foutpow());
+          }
+        });
+      }
+    }),
   
     thermiteCrush = new Effect(120f, e -> {
       rand.setSeed(e.id);

@@ -29,8 +29,8 @@ public class MultiLayeredTree extends Block {
 	public void drawBase(Tile tile) {
 		rand.setSeed(tile.pos());
 
-		Draw.alpha(Mathf.clamp(Core.camera.position.dst(tile.drawx(), tile.drawy()) / clipSize));
 		for (int i = 0; i < variantRegions.length; i++) {
+			Draw.alpha(i == 0 ? 1 : Mathf.clamp(Core.camera.position.dst(tile.drawx(), tile.drawy()) / clipSize));
 			float rotation = rand.random(rotationRand) + Mathf.absin(Mathf.degreesToRadians * (Time.time + rand.random(360f)), rand.random(swayScaleMin, swayScaleMax), swayMagnitude);
 			Draw.rect(variantShadowRegions[i], tile.drawx(), tile.drawy(), rotation);
 			Draw.rect(variantRegions[i], tile.drawx(), tile.drawy(), rotation);
