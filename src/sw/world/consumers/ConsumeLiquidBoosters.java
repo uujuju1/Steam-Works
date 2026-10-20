@@ -50,9 +50,14 @@ public class ConsumeLiquidBoosters extends ConsumeLiquidBase {
 
 	@Override
 	public float efficiency(Building build){
-		float ed = build.edelta() * build.efficiencyScale();
-		if(ed <= 0.00000001f || getCurrentBooster(build) == null) return 0f;
+		float ed = build.efficiency;
+		if(ed <= 0.00000001f || getCurrentBooster(build) == null) return 1f;
 		//there can be more liquid than necessary, so cap at 1
-		return boosters.get(getCurrentBooster(build), 1f) * Math.min(build.liquids.get(getCurrentBooster(build)) / (amount * ed * multiplier.get(build)), 1f);
+		return Math.max(1f, boosters.get(getCurrentBooster(build), 1f) * Math.min(build.liquids.get(getCurrentBooster(build)) / (amount * ed * multiplier.get(build)), 1f));
+	}
+
+	@Override
+	public float efficiencyMultiplier(Building build) {
+		return efficiency(build);
 	}
 }

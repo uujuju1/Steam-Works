@@ -11,8 +11,10 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
 import sw.entities.*;
+import sw.world.interfaces.*;
 
 public class DrawAxles extends DrawBlock {
+	public static final Floatf<Building> getSpin = b -> ((HasSpin) b).getRotation();
 	public @Nullable String iconName;
 	
 	public Seq<Axle> axles = new Seq<>();

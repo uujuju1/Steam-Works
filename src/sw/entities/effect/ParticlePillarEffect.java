@@ -17,6 +17,8 @@ public class ParticlePillarEffect extends Effect {
 	public float baseHeight, heightMin = 1f, heightMax = 5f;
 	public float sizeMin = 1f, sizeMax = 2f;
 	public int particles = 10;
+	public float x, y;
+	public boolean rotateOffset = true;
 	public Interp heightInterp = Interp.pow2In;
 	public Interp sizeInterp = Interp.pow2In;
 	public Interp alphaInterp = Interp.slope;
@@ -25,9 +27,9 @@ public class ParticlePillarEffect extends Effect {
 	public void render(EffectContainer e) {
 		rand.setSeed(e.id);
 
-		Angles.randLenVectors(e.id, particles, radius, (x, y) ->  {
+		Angles.randLenVectors(e.id, particles, radius, (offsetX, offsetY) ->  {
 			Parallax.getParallaxFrom(
-				temp.set(e.x + x, e.y + y),
+				temp.trns(rotateOffset ? e.rotation : 0f, x, y).add(e.x + offsetX, e.y + offsetY),
 				Core.camera.position,
 				baseHeight + rand.random(heightMin, heightMax) * e.fin(heightInterp)
 			);

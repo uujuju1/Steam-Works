@@ -197,8 +197,7 @@ public class SWPower {
 			boostScale = 1f / 36f;
 			maxBoost = 1f;
 			minEfficiency = 36f;
-
-			forceDrawStatus = true;
+			dumpExtraLiquid = true;
 
 			outputLiquids = LiquidStack.with(Liquids.water, 9f / 60f);
 			outputRotation = 20f / 10f;
@@ -223,7 +222,7 @@ public class SWPower {
 				}},
 				new DrawLiquidTile(Liquids.water, 2f),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
@@ -294,7 +293,7 @@ public class SWPower {
 					name = "sw-bottom-3-flat";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					
 					axles.add(Axles.tripleBlock.position(0f, 0f, -90f, 1f));
 				}},
@@ -439,7 +438,7 @@ public class SWPower {
 					name = "sw-bottom-3-flat";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					axles.add(Axles.tripleBlock.position(0, 0, 0, 1f));
 				}},

@@ -45,9 +45,6 @@ public class SWCrafting {
 		
 		burner, rte, coolingTower;
 	
-	public static Block compoundSmelter;
-	public static Block densePress;
-	
 	public static void load() {
 //		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
 //			requirements(Category.crafting, BuildVisibility.hidden, with(
@@ -217,7 +214,7 @@ public class SWCrafting {
 					name = "sw-bottom-3";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawRegion()
@@ -280,7 +277,7 @@ public class SWCrafting {
 					rotateScl = -1f;
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawRegion(),
@@ -346,7 +343,7 @@ public class SWCrafting {
 					name = "sw-bottom-3-flat";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(10f * offset.x, 8f * offset.y, 0f, 1f));
 				}},
 				new DrawParts() {{
@@ -460,7 +457,7 @@ public class SWCrafting {
 				}},
 				new DrawLight(0.5f),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(14f * offset.x, 4f * offset.y, 0f, 1f));
 				}},
 				new DrawParticles() {{
@@ -576,7 +573,7 @@ public class SWCrafting {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawConstruct(b -> ((DrawerConstructorBuild) b).recipe() != null ? ((DrawerConstructorBuild) b).recipe().uiIcon : null),
@@ -640,7 +637,7 @@ public class SWCrafting {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawConstruct(b -> ((PayloadDeconstructorBuild) b).deconstructing != null ? ((PayloadDeconstructorBuild) b).deconstructing.icon() : null) {{
@@ -732,7 +729,7 @@ public class SWCrafting {
 					name = "sw-bottom-4";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(4f * offset.x, 14f * offset.y, -90f, 1f));
 				}},
 				new DrawParts() {{
@@ -1025,7 +1022,7 @@ public class SWCrafting {
 					}
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(18f * offset.x, 8f * offset.y, 0f, 1f));
 				}},
 				new DrawParts() {{
@@ -1194,7 +1191,7 @@ public class SWCrafting {
 					particleSizeInterp = a -> Interp.circleOut.apply(Interp.slope.apply(a));
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.halfBlock.position(10f * offset.x, 10f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawRegion(),

@@ -21,7 +21,6 @@ import sw.world.blocks.power.*;
 import sw.world.blocks.units.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
-import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
@@ -90,7 +89,7 @@ public class SWDefense {
 					for (Point2 offset : Geometry.d8edge) {
 						axles.add(Axles.halfBlock.position(6f * offset.x, 4f * offset.y, 0, 1f));
 					}
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 				}},
 				new DrawFacingLightRegion(),
 				new DrawGlowRegion(true) {{
@@ -286,7 +285,7 @@ public class SWDefense {
 					name = "sw-bottom-3";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					axles.add(Axles.tripleBlock.position(0, 0, 0, 1));
 				}},
@@ -327,7 +326,7 @@ public class SWDefense {
 					name = "sw-bottom-3";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					axles.add(Axles.tripleBlock.position(0, 0, 0, 1f));
 				}},

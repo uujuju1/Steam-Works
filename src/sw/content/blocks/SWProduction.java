@@ -21,14 +21,13 @@ import sw.world.blocks.payloads.*;
 import sw.world.blocks.production.*;
 import sw.world.consumers.*;
 import sw.world.draw.*;
-import sw.world.interfaces.*;
 import sw.world.meta.*;
 
 import static mindustry.type.ItemStack.*;
 
 public class SWProduction {
 	public static Block
-		mechanicalBore, hydraulicDrill, mechanicalFracker,
+		mechanicalBore, bagger, hydraulicDrill, mechanicalFracker,
 		auger, quarry, rig, atmosphericSiphon,
 
 		aerialFilter,
@@ -57,10 +56,139 @@ public class SWProduction {
 			useAllowList = true;
 			drillMultipliers.put(Items.graphite, 1);
 
-			consumeLiquid(SWLiquids.solvent, 0.025f).boost();
-			optionalBoostIntensity = 2;
+			consume(new ConsumeLiquidBoosters() {{
+				amount = 1.5f / 60f;
+				boosters.put(SWLiquids.solvent, 2f);
+			}}).boost();
 
 			drawer = new DrawMulti(new DrawRegion(), new DrawRangedDrill());
+		}};
+		bagger = new RangedDrill("bagger") {{
+			requirements(Category.production, with(
+				SWItems.bloom, 50,
+				Items.graphite, 120,
+				Items.silicon, 100
+			));
+			size = 3;
+			scaledHealth = 80f;
+			drillTime = 120f;
+			tier = 4;
+			range = 1;
+			ambientSound = Sounds.loopCombustion;
+			ambientSoundVolume = 0.01f;
+			drillSoundVolume = 0.5f;
+
+			updateEffect = new MultiEffect(
+				new ParticlePillarEffect() {{
+					x = -7.5f;
+					y = 7.5f;
+					radius = 2f;
+
+					alpha = 0.25f;
+
+					sizeInterp = Interp.pow2Out;
+
+					lifetime = 120;
+				}},
+				new ParticlePillarEffect() {{
+					x = -7.5f;
+					y = -7.5f;
+					radius = 2f;
+
+					alpha = 0.25f;
+
+					sizeInterp = Interp.pow2Out;
+
+					lifetime = 120;
+				}}
+			);
+			updateEffectChance = 0.1f;
+
+			useAllowList = true;
+			drillMultipliers.put(Items.graphite, 1);
+			drillMultipliers.put(Items.thorium, 0.5f);
+			drillMultipliers.put(Items.silicon, 2f);
+
+			consume(new ConsumeSpin() {{
+				minSpeed = 40f / 10f;
+				maxSpeed = 60f / 10f;
+
+				minEfficiency = 0.5f;
+				maxEfficiency = 1.5f;
+				showGraph = true;
+
+				efficiencyScale = speed -> Mathf.map(speed, 4f, 6f, 0.5f, 1.5f);
+			}});
+			consume(new ConsumeLiquidBoosters() {{
+				amount = 50f / 60f;
+				boosters.put(SWLiquids.steam, 2f);
+			}}).boost();
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawAxles() {{
+					rotationOverride = DrawAxles.getSpin;
+
+					axles.add(Axles.halfBlock.position(-10f, 0, 0, 1f));
+				}},
+				new DrawParts() {{
+					for (int i = -1; i <= 1; i++) {
+						int finalI = i;
+						parts.add(new RegionPart("-grinder") {{
+							outline = false;
+							x = 12f;
+							y = 8f * finalI;
+
+							moveRot = 360f;
+
+							progress = DrawParts.totalProgress.loop(60f);
+						}});
+					}
+
+					for (int i : Mathf.signs) {
+						parts.add(
+							new RegionPart("-gear") {{
+								outline = false;
+								clampProgress = false;
+								x = 2f;
+								y = 5f * i;
+
+								progress = p -> Mathf.mod(DrawParts.totalProgress.get(p) * i, 90f);
+
+								moves.add(new PartMove(p -> -p.rotation + 90 + Mathf.mod(DrawParts.totalProgress.get(p) * i, 90f), 0, 0, 1f));
+							}},
+							new RegionPart("-gear") {{
+								outline = false;
+								clampProgress = false;
+								x = 2f;
+								y = 5f * i;
+								rotation = -90f;
+
+								color = Color.valueOf("FFFFFF00");
+								colorTo = Color.white;
+
+								progress = p -> Mathf.mod(DrawParts.totalProgress.get(p) * i, 90f) / 90f;
+
+								moves.add(new PartMove(p -> -p.rotation + 90 + Mathf.mod(DrawParts.totalProgress.get(p) * i, 90f), 0, 0, 1f));
+							}}
+						);
+					}
+				}},
+				new DrawRotated()
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 10 / 600f;
+
+				allowedEdges = new int[][]{
+					new int[]{6},
+					new int[]{9},
+					new int[]{0},
+					new int[]{3}
+				};
+			}};
 		}};
 		hydraulicDrill = new AreaDrill("hydraulic-drill") {{
 			requirements(Category.production, with(
@@ -127,7 +255,7 @@ public class SWProduction {
 					name = "sw-bottom-2-flat";
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (int i : Mathf.signs) axles.add(Axles.halfBlock.position(-6f, 4f * i, 0f, 1f));
 				}},
 				new DrawRotated(),
@@ -216,7 +344,7 @@ public class SWProduction {
 				}},
 				new DrawRegion("-rotator", 3, true),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					
 					for(int i : Mathf.signs) axles.add(Axles.halfBlock.position(10f * i, 0f, 0f, 1f));
 				}},
@@ -225,7 +353,7 @@ public class SWProduction {
 			);
 			
 			spinConfig = new SpinConfig() {{
-				resistance = 20/600f;
+				resistance = 10/600f;
 				
 				allowedEdges = new int[][]{
 					new int[]{0, 6},
@@ -273,7 +401,7 @@ public class SWProduction {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					for (Point2 offset : Geometry.d8edge) {
 						axles.add(Axles.halfBlock.position(14f * offset.x, 4 * offset.y, 0, 1f));
@@ -359,7 +487,7 @@ public class SWProduction {
 				new DrawRegion("-bottom"),
 				new DrawRegion("-gear", 2),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					axles.add(Axles.tripleBlock.position(8f, 0f, -90f, 1f));
 					axles.add(new Axle("-wheel") {{
@@ -475,7 +603,7 @@ public class SWProduction {
 				}},
 				new DrawLiquidTile(SWLiquids.gas, 2f),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d4) axles.add(Axles.quarterBlock.position(11f * offset.x, 11f * offset.y, offset.y == 0 ? 0f : -90f, 1f));
 				}},
 				new DrawRegion()
@@ -563,7 +691,7 @@ public class SWProduction {
 					particleRadY = 8;
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					for (int i : Mathf.signs) {
 						axles.add(Axles.halfBlock.position(-10f, 8f * i, 0, 1f));
@@ -752,7 +880,7 @@ public class SWProduction {
 					);
 				}},
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 
 					for(int i : Mathf.signs) axles.add(Axles.halfBlock.position(10f * i, 0f, 0f, 1f));
 					axles.add(new Axle("-axle-in") {{

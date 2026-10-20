@@ -197,11 +197,11 @@ public class SWTurrets {
 					}};
 				}}
 			);
-			coolant = consume(new ConsumeLiquidBoosters() {{
+			consume(new ConsumeLiquidBoosters() {{
 				amount = 20f / 60f;
 				boosters.put(Liquids.water, 2);
 				boosters.put(SWLiquids.steam, 4);
-			}});
+			}}).boost();
 		}};
 		trebuchet = new SWItemTurret("trebuchet") {{
 			requirements(Category.turret, with(
@@ -752,11 +752,11 @@ public class SWTurrets {
 					new int[] {9, 0, 3, 6}
 				};
 			}};
-			coolant = consume(new ConsumeLiquidBoosters() {{
+			consume(new ConsumeLiquidBoosters() {{
 				amount = 20f / 60f;
 				boosters.put(Liquids.water, 2);
 				boosters.put(SWLiquids.steam, 4);
-			}});
+			}}).boost();
 		}};
 
 		flurry = new ConsumeTurret("flurry") {{

@@ -19,10 +19,11 @@ public class SWTurret extends Turret {
 	public SpinConfig spinConfig;
 
 	public boolean consumerScaleEfficiency = true;
+	public boolean onlyRequiredConsumers = false;
 
 	public boolean bulletsChangeTargeting = false;
 
-	public boolean boosterDisplayStat = true;
+//	public boolean boosterDisplayStat = true;
 
 	public SWTurret(String name) {
 		super(name);
@@ -61,10 +62,10 @@ public class SWTurret extends Turret {
 			if (targetGround) stats.remove(Stat.targetsGround);
 		}
 
-		if(coolant != null && boosterDisplayStat){
-			stats.remove(Stat.booster);
-			coolant.display(stats);
-		}
+//		if(coolant != null && boosterDisplayStat){
+//			stats.remove(Stat.booster);
+//			coolant.display(stats);
+//		}
 	}
 
 	public class SWTurretBuild extends TurretBuild implements HasSpin {
@@ -84,8 +85,11 @@ public class SWTurret extends Turret {
 		@Override
 		public float efficiencyScale() {
 			float mul = 1f;
-			if (consumerScaleEfficiency) for(Consume cons : consumers) {
+			if (consumerScaleEfficiency) for(Consume cons : onlyRequiredConsumers ? nonOptionalConsumers : consumers) {
 				mul *= cons.efficiencyMultiplier(this);
+			}
+			if (heatRequirement > 0) {
+				mul *= Math.min(Math.max(heatReq / heatRequirement, cheating() ? 1f : 0f), maxHeatEfficiency);
 			}
 			return mul;
 		}
@@ -103,6 +107,11 @@ public class SWTurret extends Turret {
 				b -> canGround && targetBlocks && ammo.targetBlocks && buildingFilter.get(b),
 				unitSort
 			);
+		}
+
+		@Override
+		protected void updateReload() {
+			reloadCounter += delta() * ammoReloadMultiplier() * baseReloadSpeed() * efficiencyScale();
 		}
 
 		@Override
@@ -136,11 +145,10 @@ public class SWTurret extends Turret {
 		}
 
 		@Override
-		public void updateEfficiencyMultiplier(){
-			if(heatRequirement > 0){
-				efficiency *= Math.min(Math.max(heatReq / heatRequirement, cheating() ? 1f : 0f), maxHeatEfficiency);
-			}
-			efficiency *= efficiencyScale();
+		public void updateEfficiencyMultiplier() {
+			float scale = efficiencyScale();
+			efficiency *= scale;
+			optionalEfficiency *= scale;
 		}
 
 		@Override

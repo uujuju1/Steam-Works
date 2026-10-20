@@ -319,7 +319,7 @@ public class SWDistribution {
 			drawer = new DrawMulti(
 				new DrawRegion("-bottom"),
 				new DrawAxles() {{
-					rotationOverride = b -> ((HasSpin) b).getRotation();
+					rotationOverride = DrawAxles.getSpin;
 					axles.add(Axles.block.position(0f, 0f, 0f, 1f));
 				}},
 				new DrawFacingLightRegion(),

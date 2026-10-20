@@ -254,6 +254,8 @@ public class SWEnvironment {
 		crystalline = new TallBlock("crystalline") {{
 			variants = 2;
 			clipSize = 192f;
+
+			itemDrop = Items.thorium;
 		}};
 		encrustedCrystalline = new TallBlock("encrusted-crystalline") {{
 			variants = 2;

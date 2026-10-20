@@ -9,6 +9,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.io.*;
+import mindustry.content.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -38,10 +39,16 @@ public class RangedDrill extends Block {
 	public float
 		optionalBoostIntensity = 1f,
 		drillTime = 200f;
+
+	public boolean consumerScaleEfficiency = true;
+	public boolean onlyRequiredConsumers = false;
 	
 	public Sound drillSound = Sounds.drillImpact;
 	public float drillSoundVolume = 1;
 	public Effect drillEffect = SWFx.boreMine;
+
+	public Effect updateEffect = Fx.none;
+	public float updateEffectChance = 0.1f;
 	
 	public boolean useAllowList = false;
 	
@@ -163,6 +170,7 @@ public class RangedDrill extends Block {
 	}
 	
 	public float getDrillTime(Item item){
+		if (item == null) return drillTime;
 		return drillTime / drillMultipliers.get(item, 1f);
 	}
 	
@@ -197,7 +205,7 @@ public class RangedDrill extends Block {
 		
 		addBar("drillspeed", (sw.world.blocks.production.RangedDrill.RangedDrillBuild e) ->
 			                     new Bar(
-				                     () -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.lastDrillSpeed * 60, 2)),
+				                     () -> Core.bundle.format("bar.drillspeed", Strings.fixed(e.timeScale() * e.efficiency * 60 / getDrillTime(e.lastItem), 2)),
 				                     () -> Pal.ammo,
 				                     () -> e.warmup)
 		);
@@ -237,7 +245,6 @@ public class RangedDrill extends Block {
 		
 		public float time, totalTime;
 		public float warmup, boostWarmup;
-		public float lastDrillSpeed;
 		public int facingAmount;
 		
 		@Override
@@ -261,7 +268,16 @@ public class RangedDrill extends Block {
 				Draw.rect(lastItem.fullIcon, dx, dy, s, s);
 			}
 		}
-		
+
+		@Override
+		public float efficiencyScale() {
+			float mul = facingAmount;
+			if (consumerScaleEfficiency) for(Consume cons : onlyRequiredConsumers ? nonOptionalConsumers : consumers) {
+				mul *= cons.efficiencyMultiplier(this);
+			}
+			return mul;
+		}
+
 		@Override
 		public void onProximityUpdate() {
 			updateLasers();
@@ -364,13 +380,11 @@ public class RangedDrill extends Block {
 			totalTime += Time.delta * warmup;
 			
 			updateFacing();
-			
-			float multiplier = Mathf.lerp(1f, optionalBoostIntensity, optionalEfficiency);
+
 			float drillTime = getDrillTime(lastItem);
 			boostWarmup = Mathf.lerpDelta(boostWarmup, optionalEfficiency, 0.1f);
-			lastDrillSpeed = (facingAmount * multiplier * timeScale) / drillTime;
 			
-			time += edelta() * multiplier;
+			time += edelta() / facingAmount;
 			
 			if(time >= drillTime){
 				for(Tile tile : facing){
@@ -384,6 +398,8 @@ public class RangedDrill extends Block {
 				time %= drillTime;
 				drillSound.at(x, y, 1f, drillSoundVolume);
 			}
+
+			if (Mathf.chance(updateEffectChance * edelta()) && wasVisible) updateEffect.at(x, y, rotdeg());
 			
 			if(timer(timerDump, dumpTime)){
 				dump();
