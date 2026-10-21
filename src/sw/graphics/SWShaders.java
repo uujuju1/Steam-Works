@@ -24,6 +24,8 @@ public class SWShaders {
 
 	public static Shader hintBackgroundShader;
 
+	public static WeatherShader rainworldishFog;
+
 	public static void load() {
 		sectorLaunchShader = new SectorLaunchShader("sectorMap");
 		
@@ -42,6 +44,8 @@ public class SWShaders {
 				setUniformf("u_resolution", Core.graphics.getWidth(), Core.graphics.getHeight());
 			}
 		};
+
+		rainworldishFog = new WeatherShader("rainworldishFog", "noiseAlpha");
 	}
 	
 	public static class SectorLaunchShader extends Shader {
@@ -107,6 +111,7 @@ public class SWShaders {
 			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
 			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
 			setUniformf("u_time", Time.time);
+			setUniformf("u_scale", Vars.renderer.getDisplayScale());
 
 			if(hasUniform("u_noise")){
 				if(noise == null){
@@ -118,6 +123,43 @@ public class SWShaders {
 
 				setUniformi("u_noise", 1);
 			}
+		}
+
+		public void loadNoise(){
+			Core.assets.load("sprites/" + noiseName + ".png", Texture.class).loaded = t -> {
+				t.setFilter(Texture.TextureFilter.linear);
+				t.setWrap(Texture.TextureWrap.repeat);
+			};
+		}
+	}
+
+	public static class WeatherShader extends Shader {
+		public Texture noise;
+		public String noiseName;
+
+		public float intensity;
+
+		public WeatherShader(String frag, String noise) {
+			super(Core.files.internal("shaders/screenspace.vert"), Vars.tree.get("shaders/" + frag + ".frag"));
+
+			this.noiseName = noise;
+			loadNoise();
+		}
+
+		@Override
+		public void apply(){
+			setUniformf("u_campos", Core.camera.position.x - Core.camera.width / 2, Core.camera.position.y - Core.camera.height / 2);
+			setUniformf("u_resolution", Core.camera.width, Core.camera.height);
+			setUniformf("u_time", Time.time);
+			setUniformf("u_scale", Vars.renderer.getDisplayScale());
+
+			setUniformf("u_intensity", intensity);
+
+			if(noise == null) {
+				noise = Core.assets.get("sprites/" + noiseName + ".png", Texture.class);
+			}
+
+			noise.bind(0);
 		}
 
 		public void loadNoise(){

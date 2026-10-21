@@ -7,14 +7,21 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.type.weather.*;
 
 import static mindustry.Vars.*;
 
-public class EmberParticleWeather extends ParticleWeather {
+public class EmberParticleWeather extends SWWeather {
 	public Color lightColor = Color.white.cpy();
 	public float lightOpacity = 1f;
 	public float lightRadiusMin = 60f, lightRadiusMax = 80f;
+
+	public String particleRegion = "circle-shadow";
+	public Color color = Color.white.cpy();
+	public TextureRegion region;
+	public float yspeed = -2f, xspeed = 0.25f, sizeMin = 2.4f, sizeMax = 12f, density = 1200f, minAlpha = 1f, maxAlpha = 1f, force = 0;
+	public float sinSclMin = 30f, sinSclMax = 80f, sinMagMin = 1f, sinMagMax = 7f;
+
+	public boolean useWindVector = false, randomParticleRotation = false;
 	
 	public EmberParticleWeather(String name) {
 		super(name);
@@ -55,5 +62,24 @@ public class EmberParticleWeather extends ParticleWeather {
 		}
 		
 		Draw.reset();
+	}
+
+	@Override
+	public void load(){
+		super.load();
+
+		region = Core.atlas.find(particleRegion);
+	}
+
+	@Override
+	public void update(WeatherState state){
+		float speed = force * state.intensity * Time.delta;
+		if(speed > 0.001f){
+			float windx = state.windVector.x * speed, windy = state.windVector.y * speed;
+
+			for(Unit unit : Groups.unit){
+				unit.impulse(windx, windy);
+			}
+		}
 	}
 }

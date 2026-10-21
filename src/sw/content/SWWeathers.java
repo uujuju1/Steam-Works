@@ -12,6 +12,7 @@ import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.meta.*;
 import sw.content.blocks.*;
+import sw.graphics.*;
 import sw.type.weather.*;
 
 public class SWWeathers {
@@ -19,7 +20,8 @@ public class SWWeathers {
 		thunderstorm,
 		firestorm,
 		embers,
-		souesiteDust;
+		souesiteDust,
+		bandedFog;
 
 	public static void load() {
 		thunderstorm = new ThunderstormWeather("thunderstorm") {{
@@ -96,7 +98,7 @@ public class SWWeathers {
 			sizeMin = 5f;
 			sizeMax = 7f;
 			
-			color = Pal.darkPyraFlame;
+			color = Pal.accentBack;
 			lightColor = Pal.darkFlame;
 			lightOpacity = 0.15f;
 			lightRadiusMin = 20f;
@@ -107,6 +109,11 @@ public class SWWeathers {
 			soundVolOscMag = 1.5f;
 			soundVolOscScl = 1100f;
 			soundVolMin = 0.02f;
+
+			layerOver = Layer.effect;
+		}};
+		bandedFog = new ShaderWeather("banded-fog", SWShaders.rainworldishFog) {{
+			layerOver = 145f;
 		}};
 	}
 }
