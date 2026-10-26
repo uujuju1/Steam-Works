@@ -41,9 +41,11 @@ public class SWCrafting {
 		
 		crusher, blastFurnace, sieve,
 		constructionManifold, deconstructionManifold,
-		churner, infusingBellow, flareStack, oilBoiler,
+		infusingBellow, flareStack, oilBoiler,
+
+		steamInlet,
 		
-		burner, rte, coolingTower;
+		burner, rte, coolingTower, churner;
 	
 	public static void load() {
 //		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
@@ -974,6 +976,61 @@ public class SWCrafting {
 				new DrawRegion()
 			);
 		}};
+
+		steamInlet = new SWGenericCrafter("steam-inlet") {{
+			requirements(Category.crafting, with());
+			size = 3;
+			rotate = true;
+			quickRotate = false;
+			targetable = false;
+
+			lightRadius = 20f * 8f;
+			lightColor = Color.valueOf("6367BF");
+
+			consumeLiquid(SWLiquids.steam, 100 / 60f);
+
+			updateEffect = new MultiEffect(
+				new WrapEffect(SWFx.evaporate, Color.white, 8f),
+
+				new ParticlePillarEffect() {{
+					x = -8f;
+					y = 5f;
+					radius = 2f;
+
+					alpha = 0.25f;
+
+					sizeInterp = Interp.pow2Out;
+
+					lifetime = 120;
+				}},
+				new ParticlePillarEffect() {{
+					x = -8f;
+					y = -5f;
+					radius = 2f;
+
+					alpha = 0.25f;
+
+					sizeInterp = Interp.pow2Out;
+
+					lifetime = 120;
+				}}
+			);
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3";
+				}},
+				new DrawRegion("-rotator", 5f),
+				new DrawRotated(),
+				new DrawLight(0.5f)
+			);
+		}
+
+			@Override
+			public boolean canBreak(Tile tile) {
+				return buildVisibility.visible();
+			}
+		};
 
 		churner = new SWGenericCrafter("churner") {{
 			requirements(Category.crafting, with());

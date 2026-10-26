@@ -377,7 +377,7 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.normal;
 
 			emitLight = true;
-			lightColor = Color.valueOf("FEFFB5").cpy().a(0.5f);
+			lightColor = Color.valueOf("FEFFB5").a(0.5f);
 			lightRadius = 40f;
 		}};
 		coldLamp = new StaticWall("cold-lamp") {{
@@ -386,7 +386,7 @@ public class SWEnvironment {
 			cacheLayer = CacheLayer.normal;
 
 			emitLight = true;
-			lightColor = Color.valueOf("6367BF").cpy().a(0.5f);
+			lightColor = Color.valueOf("6367BF").a(0.5f);
 			lightRadius = 40f;
 		}};
 		truss = new SwayingBeam("truss") {{
