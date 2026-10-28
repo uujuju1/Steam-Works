@@ -16,6 +16,7 @@ public class SWBlocks {
 		SWStorage.load();
 		SWTurrets.load();
 		SWUnits.load();
+		SWSpecial.load();
 
 		Vars.content.blocks().each(b -> b.minfo != null && b.minfo.mod != null && b.minfo.mod.name.equals("sw") && b.category == Category.power, b -> b.databaseTag = "sw-torque");
 	}

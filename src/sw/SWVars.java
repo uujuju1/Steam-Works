@@ -7,7 +7,6 @@ import mindustry.content.*;
 import mindustry.ctype.*;
 import sw.content.*;
 import sw.core.*;
-import sw.dream.*;
 import sw.gen.*;
 import sw.graphics.*;
 import sw.matryoshka.*;
@@ -139,7 +138,6 @@ public class SWVars implements Loadable {
 		SWUnitTypes.load();
 		SWMusics.load();
 		SWBlocks.load();
-		DreamContent.load();
 		SWPlanets.load();
 		SWSectorPresets.load();
 		SWTechTree.load();

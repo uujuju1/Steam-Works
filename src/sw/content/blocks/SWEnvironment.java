@@ -348,7 +348,9 @@ public class SWEnvironment {
 
 		//region garden
 		soil = new Floor("soil", 4);
-		verdantTree = new MultiLayeredTree("verdant-tree", 4);
+		verdantTree = new MultiLayeredTree("verdant-tree", 4) {{
+			itemDrop = Items.graphite;
+		}};
 		//endregion
 
 		//region solvent

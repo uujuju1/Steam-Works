@@ -920,58 +920,6 @@ public class SWCrafting {
 			);
 		}};
 
-		steamInlet = new SWGenericCrafter("steam-inlet") {{
-			requirements(Category.crafting, BuildVisibility.editorOnly, with());
-			size = 3;
-			rotate = true;
-			quickRotate = false;
-			targetable = false;
-
-			consumeLiquid(SWLiquids.steam, 100 / 60f);
-
-			updateEffectSpread = 0;
-			updateEffect = new MultiEffect(
-				new WrapEffect(SWFx.evaporate, Color.white, 8f),
-
-				new ParticlePillarEffect() {{
-					x = -8f;
-					y = 5f;
-					radius = 2f;
-
-					alpha = 0.25f;
-
-					sizeInterp = Interp.pow2Out;
-
-					lifetime = 120;
-				}},
-				new ParticlePillarEffect() {{
-					x = -8f;
-					y = -5f;
-					radius = 2f;
-
-					alpha = 0.25f;
-
-					sizeInterp = Interp.pow2Out;
-
-					lifetime = 120;
-				}}
-			);
-
-			drawer = new DrawMulti(
-				new DrawRegion() {{
-					name = "sw-bottom-3";
-				}},
-				new DrawRegion("-rotator", 5f),
-				new DrawRotated(),
-				new DrawLight(Color.valueOf("6367BF7f"), 20f * 8f)
-			);
-		}
-			@Override
-			public boolean canBreak(Tile tile) {
-				return buildVisibility.visible();
-			}
-		};
-
 		churner = new SWGenericCrafter("churner") {{
 			requirements(Category.crafting, with());
 			size = 5;

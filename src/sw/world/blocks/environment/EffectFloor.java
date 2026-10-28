@@ -27,7 +27,7 @@ public class EffectFloor extends Floor {
 
 	@Override
 	public void renderUpdate(UpdateRenderState state){
-		if(state.tile.nearby(-1, -1) != null && state.tile.nearby(-1, -1).block() == Blocks.air && (state.data += (Time.delta + Mathf.range(effectTimeRand))) >= effectTime){
+		if(state.tile != null && state.tile.block() == Blocks.air && (state.data += (Time.delta + Mathf.range(effectTimeRand))) >= effectTime){
 			effect.at(state.tile.x * tilesize, state.tile.y * tilesize, effectColor);
 			state.data = 0f;
 		}
