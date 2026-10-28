@@ -198,22 +198,23 @@ public class SWFx {
     combust = new Effect(60f, e -> {
       rand.setSeed(e.id);
 
-      if (rand.chance(0.5)) {
+      if (rand.chance(0.5f)) {
         temp.trns(rand.random(4) * 90f, 4f, 4f);
       } else temp.set(0, 0);
 
-      Angles.randLenVectors(e.id, 10, 4 * e.finpow(), (x, y) -> {
-	      float h = rand.random(5);
+      float startX = temp.x, startY = temp.y;
 
-	      Draw.color(Pal.accent, Color.gray, 1 - e.foutpow() * Mathf.clamp(h - rand.random(h)));
-	      Draw.alpha((1 - h/5f) * e.fout());
+      Angles.randLenVectors(e.id, 10, 4f * e.finpow(), (x, y) -> {
+        float h = rand.random(5f);
 
-	      Fill.circle(
-		      Parallax.getParallaxFrom(temp.x + e.x + x, Core.camera.position.x, h * e.finpow()),
-		      Parallax.getParallaxFrom(temp.y + e.y + y, Core.camera.position.y, h * e.finpow()),
-		      rand.random(1, 5)
-	      );
+        Draw.color(Pal.accent, Color.gray, 1f - e.foutpow() * Mathf.clamp(h - rand.random(h)));
+        Draw.alpha((1f - h / 5f) * e.fout());
 
+        Parallax.getParallaxFrom(temp.set(startX + e.x + x, startY + e.y + y), Core.camera.position, h * e.finpow());
+
+        Fill.circle(temp.x, temp.y, rand.random(1f, 5f));
+
+        Drawf.light(temp, rand.random(20f, 40f) * e.finpow() * e.fout(), Tmp.c1.set(Pal.accent).lerp(Color.gray, rand.random(1f)), 0.5f);
       });
     }),
 
@@ -257,6 +258,8 @@ public class SWFx {
             Angles.randLenVectors(e.id + 1 + i, rand.random(1, 2), 16f * e.finpow(), 90f - sign * 90f, 30f, (ox, oy) -> {
               Parallax.getParallaxFrom(temp.set(x + ox, y + oy), Core.camera.position, rand.random(10f, 15f) * e.finpowdown());
               Fill.circle(temp.x, temp.y, rand.random(1f, 2f) * Math.min(10f * e.fin(), 1f));
+
+              Drawf.light(temp, rand.random(8f, 12f) * e.fout() * e.finpow(), Tmp.c1, 0.25f);
             });
           }
         }

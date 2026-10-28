@@ -938,7 +938,8 @@ public class SWProduction {
 					color = Pal.turretHeat;
 					glowIntensity = 0.3f;
 					glowScale = 20f;
-				}}
+				}},
+				new DrawLight(Pal.darkFlame.cpy().a(0.2f), 80f)
 			);
 		}};
 	}

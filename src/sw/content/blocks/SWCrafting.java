@@ -48,63 +48,6 @@ public class SWCrafting {
 		burner, rte, coolingTower, churner;
 	
 	public static void load() {
-//		compoundSmelter = new SWGenericCrafter("compound-smelter") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//				SWItems.iron, 80,
-//				SWItems.verdigris, 200,
-//				Items.silicon, 150,
-//				Items.graphite, 160
-//			));
-//			size = 3;
-//			health = 200;
-//
-//			ambientSound = Sounds.torch;
-//			craftTime = 30f;
-//			craftEffect = SWFx.compoundCraft;
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault(),
-//				new DrawFlame(Color.valueOf("BEB5B2")) {{
-//					flameRadiusInMag = flameRadiusMag = 5f;
-//					flameRadius = 5;
-//					flameRadiusIn = 2.5f;
-//				}}
-//			);
-//
-//			consumeItems(with(
-//				Items.silicon, 1,
-//				SWItems.verdigris, 2
-//			));
-//			consumeLiquid(SWLiquids.solvent, 0.1f);
-//
-//			outputItem = new ItemStack(SWItems.compound, 1);
-//		}};
-//
-//		densePress = new SWGenericCrafter("dense-press") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//				SWItems.iron, 160,
-//				SWItems.verdigris, 200,
-//				Items.silicon, 80,
-//				Items.graphite, 160
-//			));
-//			size = 3;
-//			health = 200;
-//
-//			ambientSound = Sounds.grinding;
-//			craftTime = 60f;
-//			craftEffect = SWFx.denseAlloyCraft;
-//			craftSound = Sounds.dullExplosion;
-//			craftSoundVolume = 0.1f;
-//
-//			consumeItems(with(
-//				Items.silicon, 2,
-//				SWItems.iron, 2
-//			));
-//			consumeLiquid(SWLiquids.solvent, 0.1f);
-//
-//			outputItem = new ItemStack(SWItems.denseAlloy, 2);
-//		}};
-
 		cokeOven = new StackableGenericCrafter("coke-oven") {{
 			requirements(Category.crafting, with(
 				SWItems.iron, 50,
@@ -176,7 +119,8 @@ public class SWCrafting {
 
 					glowScale = 5f;
 					glowIntensity = 0.1f;
-				}}
+				}},
+				new DrawLight(Pal.darkFlame.cpy().a(0.25f), 10f * 8f)
 			);
 		}};
 		engineSmelter = new SWGenericCrafter("engine-smelter") {{
@@ -446,9 +390,6 @@ public class SWCrafting {
 			ambientSound = Sounds.shootSublimate;
 			ambientSoundVolume = 0.25f;
 			ambientSoundPitch = 0.5f;
-
-			lightRadius = 120f;
-			lightColor = Color.orange;
 			
 			outputItems = with(SWItems.bloom, 9);
 			outputLiquids = LiquidStack.with(Liquids.slag, 7.5f / 60f);
@@ -457,7 +398,6 @@ public class SWCrafting {
 				new DrawRegion() {{
 					name = "sw-bottom-4";
 				}},
-				new DrawLight(0.5f),
 				new DrawAxles() {{
 					rotationOverride = DrawAxles.getSpin;
 					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(14f * offset.x, 4f * offset.y, 0f, 1f));
@@ -501,7 +441,8 @@ public class SWCrafting {
 					particleHeightMax = 2f;
 					particleLife = 120f;
 				}},
-				new DrawRegion()
+				new DrawRegion(),
+				new DrawLight(Color.orange.cpy().a(0.5f), 15f * 8)
 			);
 			
 			spinConfig = new SpinConfig() {{
@@ -774,7 +715,8 @@ public class SWCrafting {
 					radiusTo = 4f;
 
 					warmupCurve = Interp.pow5;
-				}}
+				}},
+				new DrawLight(Color.valueOf("FFFF7F7F"), 15f * 8)
 			);
 
 			spinConfig = new SpinConfig() {{
@@ -938,7 +880,8 @@ public class SWCrafting {
 					radius = 3f;
 					alpha = 0.05f;
 					layer = Layer.blockOver;
-				}}
+				}},
+				new DrawLight(Pal.turretHeat.cpy().a(0.25f), 25f * 8f)
 			);
 		}};
 		coolingTower = new GenericCrafter("cooling-tower") {{
@@ -978,17 +921,15 @@ public class SWCrafting {
 		}};
 
 		steamInlet = new SWGenericCrafter("steam-inlet") {{
-			requirements(Category.crafting, with());
+			requirements(Category.crafting, BuildVisibility.editorOnly, with());
 			size = 3;
 			rotate = true;
 			quickRotate = false;
 			targetable = false;
 
-			lightRadius = 20f * 8f;
-			lightColor = Color.valueOf("6367BF");
-
 			consumeLiquid(SWLiquids.steam, 100 / 60f);
 
+			updateEffectSpread = 0;
 			updateEffect = new MultiEffect(
 				new WrapEffect(SWFx.evaporate, Color.white, 8f),
 
@@ -1022,10 +963,9 @@ public class SWCrafting {
 				}},
 				new DrawRegion("-rotator", 5f),
 				new DrawRotated(),
-				new DrawLight(0.5f)
+				new DrawLight(Color.valueOf("6367BF7f"), 20f * 8f)
 			);
 		}
-
 			@Override
 			public boolean canBreak(Tile tile) {
 				return buildVisibility.visible();
@@ -1329,7 +1269,8 @@ public class SWCrafting {
 					radiusTo = 0.75f;
 
 					warmupCurve = Interp.one;
-				}}
+				}},
+				new DrawLight(Pal.darkFlame.cpy().a(0.2f), 2.5f * 8f)
 			);
 		}};
 		oilBoiler = new StackableGenericCrafter("oil-boiler") {{
@@ -1450,73 +1391,9 @@ public class SWCrafting {
 						lights.get(new Vec2(-7.25f, -8))
 					),
 					b -> ((StackableGenericCrafterBuild) b).tiling == 10
-				)
+				),
+				new DrawLight(Pal.darkFlame.cpy().a(0.5f), 10f * 8f)
 			);
 		}};
-//		pressureKiln = new GenericCrafter("pressure-kiln") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItems(with(SWItems.steel, 1, Items.sand, 2));
-//			consumeLiquids(LiquidStack.with(Liquids.hydrogen, 3f/60f));
-//			outputItems = with(SWItems.denseAlloy, 2);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
-//		wedger = new GenericCrafter("wedger") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItems(with(SWItems.oxycarbide, 2, SWItems.iron, 2));
-//			outputItems = with(SWItems.compound, 2);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
-//		pyrolysisSynthetizer = new GenericCrafter("pyrolysis-synthetizer") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 180f;
-//
-//			consumeItems(with(SWItems.coke, 1, Items.silicon, 1));
-//			consumeLiquid(Liquids.ozone, 1f/60f);
-//			outputItems = with(SWItems.oxycarbide, 1);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault(),
-//				new DrawFlame() {{
-//					flameRadius = 5f;
-//				}}
-//			);
-//		}};
-//		crystalFurnace = new GenericCrafter("crystal-furnace") {{
-//			requirements(Category.crafting, BuildVisibility.hidden, with(
-//			));
-//			size = 3;
-//			health = 240;
-//
-//			craftTime = 60f;
-//
-//			consumeItems(with(Items.lead, 1, Items.sand, 2));
-//			outputItems = with(Items.metaglass, 2);
-//
-//			drawer = new DrawMulti(
-//				new DrawDefault()
-//			);
-//		}};
 	}
 }
