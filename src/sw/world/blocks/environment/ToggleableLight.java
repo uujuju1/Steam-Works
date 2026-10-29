@@ -2,6 +2,7 @@ package sw.world.blocks.environment;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.util.*;
 import arc.util.io.*;
 import mindustry.*;
@@ -22,6 +23,7 @@ public class ToggleableLight extends Block {
 		update = true;
 
 		config(Integer.class, (TogglableLightBuild build, Integer i) -> build.link = i);
+		config(Point2.class, (TogglableLightBuild build, Point2 i) -> build.link = Point2.pack(build.tileX() + i.x, build.tileY() + i.y));
 	}
 
 	public boolean accessible() {
@@ -50,8 +52,8 @@ public class ToggleableLight extends Block {
 			return false;
 		}
 
-		@Override public Integer config() {
-			return link;
+		@Override public Point2 config() {
+			return Point2.unpack(link).sub(tileX(), tileY());
 		}
 
 		@Override public void damage(float damage) {}
@@ -72,8 +74,8 @@ public class ToggleableLight extends Block {
 
 			if (getLink() != null) {
 				float angle = angleTo(getLink());
-				Tmp.v1.trns(angle + 180f, size * Vars.tilesize * Mathf.sqrt2 / 2f + sin).add(x, y);
-				Tmp.v2.trns(angle, getLink().block.size * Vars.tilesize * Mathf.sqrt2 / 2f + sin).add(getLink().x, getLink().y);
+				Tmp.v1.trns(angle, size * Vars.tilesize * Mathf.sqrt2 / 2f + sin).add(x, y);
+				Tmp.v2.trns(angle + 180f, getLink().block.size * Vars.tilesize * Mathf.sqrt2 / 2f + sin).add(getLink().x, getLink().y);
 				Drawf.line(Pal.accent, Tmp.v1.x, Tmp.v1.y, Tmp.v2.x, Tmp.v2.y);
 			}
 
