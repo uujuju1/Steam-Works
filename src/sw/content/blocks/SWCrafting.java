@@ -39,11 +39,9 @@ public class SWCrafting {
 	public static Block
 		cokeOven, engineSmelter, waterBallMill,
 		
-		crusher, blastFurnace, sieve,
+		crusher, blastFurnace, sieve, compressor,
 		constructionManifold, deconstructionManifold,
 		infusingBellow, flareStack, oilBoiler,
-
-		steamInlet,
 		
 		burner, rte, coolingTower, churner;
 	
@@ -490,6 +488,134 @@ public class SWCrafting {
 				new DrawRegion()
 			);
 		}};
+		compressor = new SWGenericCrafter("compressor") {{
+			requirements(Category.crafting, with(
+				SWItems.verdigris, 100,
+				SWItems.iron, 120,
+				Items.silicon, 80
+			));
+			size = 3;
+			health = 240;
+			rotate = true;
+
+			rotateCraftEffect = true;
+			craftSound = Sounds.payloadDrop3;
+			craftTime = 60f;
+			craftEffect = new MultiEffect(
+				new ParticlePillarEffect() {{
+					color1 = Color.white;
+					color2 = Color.valueOf("98ADC1");
+					x = 0f;
+					y = 0f;
+					radius = 2f;
+
+					particles = 20;
+
+					alpha = 0.25f;
+
+					alphaInterp = a -> Interp.pow10Out.apply(Mathf.slope(a));
+					heightInterp = Interp.pow2Out;
+					sizeInterp = Interp.one;
+
+					lifetime = 90f;
+				}},
+				new ParticlePillarEffect() {{
+					color1 = Color.white;
+					color2 = Color.valueOf("98ADC1");
+					x = -8f;
+					y = 0f;
+					radius = 2f;
+
+					particles = 20;
+
+					alpha = 0.25f;
+
+					alphaInterp = a -> Interp.pow10Out.apply(Mathf.slope(a));
+					heightInterp = Interp.pow2Out;
+					sizeInterp = Interp.one;
+
+					lifetime = 90f;
+				}},
+				new ParticlePillarEffect() {{
+					color1 = Color.white;
+					color2 = Color.valueOf("98ADC1");
+					x = 8f;
+					y = 0f;
+					radius = 2f;
+
+					particles = 20;
+
+					alpha = 0.25f;
+
+					alphaInterp = a -> Interp.pow10Out.apply(Mathf.slope(a));
+					heightInterp = Interp.pow2Out;
+					sizeInterp = Interp.one;
+
+					lifetime = 90f;
+				}}
+			);
+			consumeLiquids(LiquidStack.with(
+				SWLiquids.slurry, 25f / 60f,
+				Liquids.water, 10f / 60f
+			));
+			consumeItems(with(SWItems.coke, 1));
+			consume(new ConsumeSpin() {{
+				minSpeed = 0.5f;
+				maxSpeed = 1.5f;
+
+				efficiencyScale = Interp.one;
+			}});
+			outputLiquids = LiquidStack.with(SWLiquids.solvent, 20f / 60f);
+
+			drawer = new DrawMulti(
+				new DrawRegion() {{
+					name = "sw-bottom-3-flat";
+				}},
+				new DrawAxles() {{
+					rotationOverride = DrawAxles.getSpin;
+					for (Point2 offset : Geometry.d8edge) axles.add(Axles.halfBlock.position(10f * offset.x, 8f * offset.y, 0f, 1f));
+				}},
+				new DrawFacingLightRegion(),
+				new DrawParts() {{
+					for (int i : Mathf.signs) {
+						parts.add(new RegionPart("-press-" + (i == -1 ? "light" : "dark")) {{
+							outline = false;
+							clampProgress = false;
+
+							layer = Layer.block + 1f;
+
+							moves.add(
+								new PartMove(
+									p -> Mathf.sign((Mathf.round(p.rotation / 90) & 2) != 0),
+									0, 5 * i, 0, 0, 0
+								),
+								new PartMove(
+									p -> Mathf.sign((Mathf.round(p.rotation / 90) & 2) != 0) * DrawParts.progress.curve(Interp.slope).curve(Interp.pow2Out).get(p),
+									0, 5.5f * i, 0, 0, 0
+								),
+								new PartMove(
+									p -> Mathf.num((Mathf.round(p.rotation / 90) & 2) != 0),
+									0, 0, 0, -2f, 0
+								)
+							);
+						}});
+					}
+				}},
+				new DrawRotated("-top") {{
+					layer = Layer.block + 2f;
+				}}
+			);
+
+			spinConfig = new SpinConfig() {{
+				resistance = 20f / 600f;
+				allowedEdges = new int[][]{
+					new int[]{11, 1, 5, 7},
+					new int[]{2, 4, 8, 10},
+					new int[]{5, 7, 11, 1},
+					new int[]{8, 10, 2, 4}
+				};
+			}};
+		}};
 
 		constructionManifold = new DrawerConstructor("construction-manifold") {{
 			requirements(Category.units, with(
@@ -732,7 +858,7 @@ public class SWCrafting {
 				SWItems.iron, 400,
 				SWItems.aluminium, 500,
 				Items.silicon, 200,
-				Items.thorium, 299
+				Items.thorium, 300
 			));
 			size = 5;
 
@@ -892,6 +1018,7 @@ public class SWCrafting {
 			));
 			researchCost = mult(requirements, 10f);
 			size = 3;
+			health = 240;
 
 			ambientSound = Sounds.rain;
 			updateEffect = new WrapEffect(SWFx.evaporate, Color.white, 8f);
@@ -1081,6 +1208,7 @@ public class SWCrafting {
 			));
 			researchCost = mult(requirements, 5);
 			size = 3;
+			health = 240;
 
 			ambientSound = Sounds.loopCultivator;
 			ambientSoundVolume = 0.1f;
@@ -1231,6 +1359,7 @@ public class SWCrafting {
 			));
 			researchCost = mult(requirements, 10);
 			size = 3;
+			health = 240;
 
 			Effect smokeEffect = new ParticlePillarEffect() {{
 				color1 = color2 = Color.white;

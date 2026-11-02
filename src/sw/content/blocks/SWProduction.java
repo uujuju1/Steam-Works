@@ -110,14 +110,14 @@ public class SWProduction {
 			drillMultipliers.put(Items.silicon, 2f);
 
 			consume(new ConsumeSpin() {{
-				minSpeed = 40f / 10f;
-				maxSpeed = 60f / 10f;
+				minSpeed = 20f / 10f;
+				maxSpeed = 30f / 10f;
 
 				minEfficiency = 0.5f;
 				maxEfficiency = 1.5f;
 				showGraph = true;
 
-				efficiencyScale = speed -> Mathf.map(speed, 4f, 6f, 0.5f, 1.5f);
+				efficiencyScale = speed -> Mathf.map(speed, 2f, 3f, 0.5f, 1.5f);
 			}});
 			consume(new ConsumeLiquidBoosters() {{
 				amount = 50f / 60f;

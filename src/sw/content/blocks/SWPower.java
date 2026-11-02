@@ -197,7 +197,7 @@ public class SWPower {
 			boostScale = 1f / 36f;
 			maxBoost = 1f;
 			minEfficiency = 36f;
-			dumpExtraLiquid = true;
+			ignoreLiquidFullness = true;
 
 			outputLiquids = LiquidStack.with(Liquids.water, 9f / 60f);
 			outputRotation = 20f / 10f;

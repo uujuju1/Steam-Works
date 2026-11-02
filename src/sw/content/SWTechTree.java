@@ -33,6 +33,7 @@ public class SWTechTree {
           });
           node(burner, with(new OnSector(bubbles)), () -> {
             node(flareStack, with(new OnSector(flarePits)), () -> {});
+            node(compressor, with(new Produce(slurry), new NonUnlockable()), () -> {});
           });
         });
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
