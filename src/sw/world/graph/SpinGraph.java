@@ -83,7 +83,7 @@ public class SpinGraph extends Graph<HasSpin> {
 	}
 
 	public void mergeFlood(HasSpin other) {
-		floodFill(other, HasSpin::nextBuilds).each(build -> {
+		floodFill(other, b -> b.spinConfig().disconnected ? Seq.with() : b.nextBuilds()).each(build -> {
 			if (build.spin() != null && build.spinGraph() != null && build.spinGraph() != this) {
 				if (build.spinConfig().disconnected) {
 					disconnected.addUnique(build);
@@ -201,7 +201,8 @@ public class SpinGraph extends Graph<HasSpin> {
       HasSpin current = tmp.pop();
 			tmp2.add(current);
 
-		  current.nextBuilds().each(next -> {
+			// TODO separate ignoresRatio field?
+		  current.nextBuilds().each(next -> !next.spinConfig().disconnected, next -> {
 			  if (!tmp2.contains(next)) {
 				  tmp.addUnique(next);
 				  ratios.put(next, current.ratioTo(next) * next.ratioScl(current));
