@@ -37,7 +37,7 @@ public class SWTechTree {
           });
         });
         node(waterBallMill, with(new Produce(Liquids.water), new OnSector(abandonedMaze)), () -> {
-          node(crusher, with(new OnSector(caustics)), () -> {});
+          node(crusher, with(new OrObjective(new OnSector(caustics), new OnSector(bayOfEmbers))), () -> {});
           node(coolingTower, with(new OrObjective(
             new Research(burner),
             new Research(rte)
@@ -102,7 +102,7 @@ public class SWTechTree {
       //region power
       root("sw-power", evaporator, () -> {
         node(handWheel);
-        node(combustionEngine, with(new OnSector(caustics)), () -> {
+        node(combustionEngine, with(new OrObjective(new OnSector(caustics), new OnSector(bayOfEmbers))), () -> {
           node(piston, with(
             new Produce(steam),
             new SectorComplete(flarePits)
@@ -116,7 +116,7 @@ public class SWTechTree {
             node(shaftGearbox);
             node(overheadBelt, () -> node(largeOverheadBelt));
           });
-          node(clutch, with(new NonUnlockable(), new Research(combustionEngine)), () -> {
+          node(clutch, with(new Research(combustionEngine)), () -> {
           });
           node(flywheel, () -> {});
           node(spring, with(new Research(mechanicalPayloadUnloader)), () -> {});
