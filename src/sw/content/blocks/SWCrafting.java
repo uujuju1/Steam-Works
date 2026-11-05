@@ -500,7 +500,7 @@ public class SWCrafting {
 
 			rotateCraftEffect = true;
 			craftSound = Sounds.payloadDrop3;
-			craftTime = 60f;
+			craftTime = 180f;
 			craftEffect = new MultiEffect(
 				new ParticlePillarEffect() {{
 					color1 = Color.white;
@@ -517,7 +517,7 @@ public class SWCrafting {
 					heightInterp = Interp.pow2Out;
 					sizeInterp = Interp.one;
 
-					lifetime = 90f;
+					lifetime = 270f;
 				}},
 				new ParticlePillarEffect() {{
 					color1 = Color.white;
@@ -534,7 +534,7 @@ public class SWCrafting {
 					heightInterp = Interp.pow2Out;
 					sizeInterp = Interp.one;
 
-					lifetime = 90f;
+					lifetime = 270f;
 				}},
 				new ParticlePillarEffect() {{
 					color1 = Color.white;
@@ -551,7 +551,7 @@ public class SWCrafting {
 					heightInterp = Interp.pow2Out;
 					sizeInterp = Interp.one;
 
-					lifetime = 90f;
+					lifetime = 270f;
 				}}
 			);
 			consumeLiquids(LiquidStack.with(
