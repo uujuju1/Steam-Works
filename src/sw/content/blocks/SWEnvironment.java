@@ -36,6 +36,7 @@ public class SWEnvironment {
 	pitfall, gratingPitfall, waterfall, chasm,
 
 	soil, verdantTree,
+	moss, denseMoss,
 
 	solvent, deepSolvent,
 	solventCrystal,
@@ -350,6 +351,12 @@ public class SWEnvironment {
 		soil = new Floor("soil", 4);
 		verdantTree = new MultiLayeredTree("verdant-tree", 4) {{
 			itemDrop = Items.graphite;
+		}};
+		moss = new OverlayFloor("moss") {{
+			variants = 4;
+		}};
+		denseMoss = new OverlayFloor("dense-moss") {{
+			variants = 4;
 		}};
 		//endregion
 

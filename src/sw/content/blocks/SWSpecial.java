@@ -66,8 +66,9 @@ public class SWSpecial {
 
 			consumeLiquid(SWLiquids.steam, 100 / 60f);
 
-			updateEffectSpread = 0;
-			updateEffect = new MultiEffect(
+			rotateCraftEffect = true;
+			craftTime = 5f;
+			craftEffect = new MultiEffect(
 				new WrapEffect(SWFx.evaporate, Color.white, 8f),
 
 				new ParticlePillarEffect() {{
