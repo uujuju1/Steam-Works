@@ -11,7 +11,7 @@ varying vec2 v_texCoords;
 
 const vec4 tint = vec4(0.75, 1.0, 0.75, 0.5);
 
-const float bands = 20;
+const float bands = 20.0;
 
 void main() {
   vec2 uv = (v_texCoords * u_resolution + u_campos) / u_resolution / u_scale * vec2(1.0, 2.0) * 1.0;
