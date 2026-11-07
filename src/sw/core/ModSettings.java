@@ -55,7 +55,7 @@ public class ModSettings {
     }});
   }
 
-  public static float scaleBalloonOpacity(float alpha) {
+  public static float scaleOpacity(float alpha) {
     int settingValue = Core.settings.getInt("sw-balloon-alpha");
 
     if (settingValue > 50) return Mathf.lerp(alpha, 1, Mathf.clamp((settingValue - 50) / 50f));

@@ -4,7 +4,9 @@ import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.util.*;
+import mindustry.graphics.*;
 import mindustry.world.*;
+import sw.core.*;
 
 public class MultiLayeredTree extends Block {
 	public static final Rand rand = new Rand();
@@ -29,8 +31,10 @@ public class MultiLayeredTree extends Block {
 	public void drawBase(Tile tile) {
 		rand.setSeed(tile.pos());
 
+		Draw.z(Layer.power + 1);
+
 		for (int i = 0; i < variantRegions.length; i++) {
-			Draw.alpha(i == 0 ? 1 : Mathf.clamp(Core.camera.position.dst(tile.drawx(), tile.drawy()) / clipSize));
+			Draw.alpha(i == 0 ? 1 : ModSettings.scaleOpacity(Mathf.clamp(Core.camera.position.dst(tile.drawx(), tile.drawy()) / clipSize)));
 			float rotation = rand.random(rotationRand) + Mathf.absin(Mathf.degreesToRadians * (Time.time + rand.random(360f)), rand.random(swayScaleMin, swayScaleMax), swayMagnitude);
 			Draw.rect(variantShadowRegions[i], tile.drawx(), tile.drawy(), rotation);
 			Draw.rect(variantRegions[i], tile.drawx(), tile.drawy(), rotation);

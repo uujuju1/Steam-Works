@@ -1282,7 +1282,7 @@ public class SWCrafting {
 						xScl = yScl = 64f / 160f;
 						growX = growY = 96f / 160f;
 
-						progress = p -> ModSettings.scaleBalloonOpacity(Mathf.clamp(Core.camera.position.dst(p.x, p.y) / (20f * (xScl + growProgress.get(p) * growX))));
+						progress = p -> ModSettings.scaleOpacity(Mathf.clamp(Core.camera.position.dst(p.x, p.y) / (20f * (xScl + growProgress.get(p) * growX))));
 						growProgress = p -> (Mathf.absin(DrawParts.totalProgress.get(p), 20f, 0.1f) + 0.9f) * DrawParts.warmup.curve(Interp.pow5Out).get(p);
 
 						moves.add(new DrawPart.PartMove(
