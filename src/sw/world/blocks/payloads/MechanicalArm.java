@@ -394,7 +394,7 @@ public class MechanicalArm extends PayloadBlock {
 			return false;
 		}
 		public boolean take(Unit unit) {
-			if (unit.hitSize / 8f > payloadCapacity || unit.controller() instanceof Player) return false;
+			if (unit.hitSize / 8f > payloadCapacity || unit.controller() instanceof Player || !unit.type.allowedInPayloads) return false;
 			if (unit.isAdded()) unit.team.data().updateCount(unit.type, 1);
 
 			unit.remove();
