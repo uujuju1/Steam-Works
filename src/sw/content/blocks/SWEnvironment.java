@@ -291,6 +291,8 @@ public class SWEnvironment {
 			wall = concreteWall;
 
 			cacheLayer = SWShaders.shallowWaterLayer;
+
+			liquidDrop = Liquids.water;
 		}};
 
 		slagPlug = new SteamVent("slag-plug") {{

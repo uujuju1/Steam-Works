@@ -57,7 +57,7 @@ public class SWSpecial {
 			};
 		}};
 
-		steamInlet = new SWGenericCrafter("steam-inlet") {{
+		steamInlet = new EnvironmentCrafter("steam-inlet") {{
 			requirements(Category.crafting, BuildVisibility.editorOnly, with());
 			size = 3;
 			rotate = true;
