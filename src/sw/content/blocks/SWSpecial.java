@@ -103,12 +103,7 @@ public class SWSpecial {
 				new DrawRotated(),
 				new DrawLight(Color.valueOf("6367BF7f"), 20f * 8f)
 			);
-		}
-			@Override
-			public boolean canBreak(Tile tile) {
-				return buildVisibility.visible();
-			}
-		};
+		}};
 
 		toggleableLight = new ToggleableLight("toggleable-light") {{
 			lightColor = Pal.lancerLaser.cpy().a(0.5f);
