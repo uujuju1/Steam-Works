@@ -21,6 +21,7 @@ public class EntityMaps {
 		// TODO custom entity, don't wanna have it be and instance of payloadc
 		registerUnit("sw-phantom", BuildingTetherPayloadUnit::create);
 		registerUnit("sw-ball-lightning", TimedKillUnit::create);
+		registerUnit("sw-shade", UnitEntity::create);
 		registerEntity(SWWeatherState.class, SWWeatherState::new);
 	}
 

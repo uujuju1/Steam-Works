@@ -28,7 +28,7 @@ public class SWUnitTypes {
 		soar, volare,
 		ballistra,
 		wisp,
-		ballLightning,
+		ballLightning, shade,
 
 	  lambda, rho, psi;
 
@@ -517,7 +517,7 @@ public class SWUnitTypes {
 			}});
 	  }};
 
-		ballLightning = new BallLightningUnitType("ball-lightning") {{
+		ballLightning = new BallUnitType("ball-lightning") {{
 			controller = u -> new RandomAI();
 			omniMovement = false;
 			hidden = true;
@@ -562,6 +562,89 @@ public class SWUnitTypes {
 					color = Pal.lancerLaser;
 				}}
 			);
+		}};
+
+		shade = new BallUnitType("shade") {{
+			omniMovement = false;
+			hidden = true;
+			lifetime = 600f;
+
+			speed = 4f;
+			sizeScl = 6f;
+			hitSize = 12f;
+			tint = Color.black;
+
+			range = maxRange = 60f;
+
+			accel = 0.01f;
+			drag = 0f;
+
+			fallEffect = fallEngineEffect = Fx.none;
+			deathExplosionEffect = SWFx.ballDeath;
+			createScorch = false;
+
+			weapons.add(new Weapon() {{
+				mirror = false;
+
+				x = y = 0;
+
+				rotate = true;
+				rotateSpeed = 360f;
+
+				reload = 5f;
+				shootSound = Sounds.wreckFallBig;
+				soundPitchMin = 0.2f;
+				soundPitchMax = 0.6f;
+				bullet = new RailBulletType() {{
+					length = 60f;
+					damage = 10f;
+
+					pierceCap = 1;
+
+					hitColor = Color.black;
+
+					shootEffect = smokeEffect = Fx.none;
+					pierceEffect = new ParticleEffect() {{
+						lifetime = 180f;
+						length = 8f;
+
+						colorFrom = Color.black.cpy().a(0.5f);
+						colorTo = Color.clear;
+
+						sizeFrom = 3f;
+
+						sizeInterp = Interp.pow2In;
+					}}.layer(Layer.effect + 1f);
+					lineEffect = new Effect(60f, e -> {
+						if (!(e.data instanceof Vec2 data)) return;
+						Vec2 temp = SWFx.temp;
+						Rand rand = SWFx.rand;
+
+						Draw.color(e.color, 0.75f);
+
+						rand.setSeed(e.id);
+
+						int lineParticles = 5;
+						for (int i = 0; i < lineParticles; i++) {
+							temp.set(e.x, e.y).lerp(data, (float) i / lineParticles + (1f - (float) i / lineParticles) * rand.random(1f) + 1f / lineParticles * rand.range(1f) * e.fin(Interp.smooth));
+							Fill.circle(temp.x, temp.y, rand.random(2f, 4f) * e.foutpowdown());
+						}
+
+						Lines.stroke(4f * e.foutpow());
+						Lines.circle(data.x, data.y, 20f * e.finpow());
+
+						e.scaled(15f, b -> {
+							Angles.randLenVectors(e.id, 3, 20f * b.finpow(), data.angleTo(e.x, e.y) + 180f, 10f, (x, y) -> {
+								Fill.circle(e.x + x, e.y + y, rand.random(2f, 4f) * b.foutpowdown());
+							});
+						});
+					}).layer(Layer.effect + 1f);
+				}};
+			}});
+
+			abilities.add(new MoveEffectAbility(0, 0, Color.white, new WrapEffect(SWFx.skyWorms, Color.black, 12f), 15f) {{
+				minVelocity = 0f;
+			}});
 		}};
 	  
 	  //region core

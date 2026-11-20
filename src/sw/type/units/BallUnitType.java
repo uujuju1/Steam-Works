@@ -7,22 +7,20 @@ import arc.util.*;
 import mindustry.gen.*;
 import sw.type.*;
 
-/**
- * Unit type whose body ties to its payload and has parallax scrolling.
- * Do not put weapons on this thing.
- */
-public class BallLightningUnitType extends SWUnitType {
+public class BallUnitType extends SWUnitType {
 	public float sizeScl = 1;
 	public float sizeMag = 2;
 
 	public Color tint = Color.white;
 
-	public BallLightningUnitType(String name) {
+	public BallUnitType(String name) {
 		super(name);
 		hittable = targetable = false;
 		physics = false;
 		isEnemy = false;
 		useUnitCap = false;
+		outlines = false;
+		outlineRadius = 0;
 	}
 
 	@Override

@@ -482,6 +482,24 @@ public class SWFx {
       }
     }),
 
+    skyWorms = new Effect(60f, 96f, e -> {
+      rand.setSeed(e.id);
+      Draw.color(e.color);
+      for(int j = 0; j < 5f / 8f * e.rotation; j++) {
+      Vec2 lastPos = new Vec2(e.x, e.y);
+      float lastRot = rand.random(360);
+
+      for(int i = 0; i < e.rotation; i++) {
+        temp.trns(lastRot, 8f).add(lastPos);
+        Lines.stroke(2f * (4 - 1f / 8f * i) * e.fout() * Interp.smooth.apply(Interp.slope.apply(Mathf.clamp(e.fin() * (e.rotation) / 8f - i / 8f))));
+        Lines.line(lastPos.x, lastPos.y, temp.x, temp.y);
+        lastRot += rand.range(50f);
+        lastPos.set(temp);
+      }
+    }
+
+    }).layer(Layer.effect + 1f),
+
     solventDrip = new Effect(60f, e -> {
       rand.setSeed(e.id);
       Draw.color(e.color);
