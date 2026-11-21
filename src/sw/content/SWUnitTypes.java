@@ -565,6 +565,10 @@ public class SWUnitTypes {
 		}};
 
 		shade = new BallUnitType("shade") {{
+			controller = u -> new RandomAI() {{
+				turnSpeed = 20f;
+				homeToTarget = true;
+			}};
 			omniMovement = false;
 			hidden = true;
 			lifetime = 600f;
@@ -574,7 +578,8 @@ public class SWUnitTypes {
 			hitSize = 12f;
 			tint = Color.black;
 
-			range = maxRange = 60f;
+			range = 60f;
+			maxRange = 120f;
 
 			accel = 0.01f;
 			drag = 0f;

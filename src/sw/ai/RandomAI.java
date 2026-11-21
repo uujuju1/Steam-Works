@@ -4,9 +4,11 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.entities.units.*;
+import mindustry.gen.*;
 
 public class RandomAI extends AIController {
-	public static float turnSpeed = 10f;
+	public float turnSpeed = 10f;
+	public boolean homeToTarget;
 	private float randomDir = Mathf.random(360f);
 
 	@Override
@@ -22,6 +24,12 @@ public class RandomAI extends AIController {
 
 		Tmp.v1.add(unit);
 
-		moveTo(Tmp.v1, 0);
+
+		Teamc homingTarget = findTarget(unit.x, unit.y, unit.type.maxRange, true, true);
+		if (homingTarget != null && homeToTarget) {
+			moveTo(homingTarget, 0);
+		} else {
+			moveTo(Tmp.v1, 0);
+		}
 	}
 }
